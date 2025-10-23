@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.data.origin;
 
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.PowerType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
@@ -16,7 +15,7 @@ import java.util.Optional;
 public record Origin(List<Power> powers, Optional<ItemStack> icon, boolean unchoosable, int order, int impact,
                      Optional<Component> name, Optional<Component> description, List<Upgrade> upgrades) {
     public static final Codec<Origin> CODEC = RecordCodecBuilder.create(i -> i.group(
-            PowerType.CODEC.listOf().optionalFieldOf("powers", List.of()).forGetter(Origin::powers),
+            Power.CODEC.listOf().optionalFieldOf("powers", List.of()).forGetter(Origin::powers),
             ItemStack.CODEC.optionalFieldOf("icon").forGetter(Origin::icon),
             Codec.BOOL.optionalFieldOf("unchoosable", false).forGetter(Origin::unchoosable),
             Codec.INT.optionalFieldOf("order", Integer.MAX_VALUE).forGetter(Origin::order),
