@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record SourceActionAction(EntityAction action) implements BiEntityAction {
     public static final MapCodec<SourceActionAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityAction.CODEC.fieldOf("action").forGetter(SourceActionAction::action)
+            EntityAction.CODEC.fieldOf("event").forGetter(SourceActionAction::action)
     ).apply(i, SourceActionAction::new));
 
     @Override

@@ -10,6 +10,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+//TODO::Modifiers
 public record DamageAction(Holder<DamageType> damageType, float amount) implements EntityAction {
     public static final MapCodec<DamageAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageAction::damageType),

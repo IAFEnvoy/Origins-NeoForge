@@ -7,14 +7,13 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.CraftingMenu;
+import net.minecraft.world.inventory.ChestMenu;
 import org.jetbrains.annotations.NotNull;
 
-public enum CraftingTableAction implements EntityAction {
+public enum EnderChestAction implements EntityAction {
     INSTANCE;
-    public static final MapCodec<CraftingTableAction> CODEC = MapCodec.unit(INSTANCE);
-    private static final Component TITLE = Component.translatable("container.crafting");
+    public static final MapCodec<EnderChestAction> CODEC = MapCodec.unit(INSTANCE);
+    private static final Component TITLE = Component.translatable("container.enderchest");
 
     @Override
     public @NotNull MapCodec<? extends EntityAction> codec() {
@@ -24,8 +23,8 @@ public enum CraftingTableAction implements EntityAction {
     @Override
     public void accept(@NotNull Entity source) {
         if (source instanceof Player player) {
-            player.openMenu(new SimpleMenuProvider((syncId, inventory, p) -> new CraftingMenu(syncId, inventory, ContainerLevelAccess.create(p.level(), p.blockPosition())), TITLE));
-            player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
+            player.openMenu(new SimpleMenuProvider((syncId, inventory, p) -> ChestMenu.threeRows(syncId, inventory, p.getEnderChestInventory()), TITLE));
+            player.awardStat(Stats.OPEN_ENDERCHEST);
         }
     }
 }

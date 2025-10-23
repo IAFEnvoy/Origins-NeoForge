@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record BlockActionAction(BlockAction action) implements EntityAction {
     public static final MapCodec<BlockActionAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BlockAction.CODEC.fieldOf("action").forGetter(BlockActionAction::action)
+            BlockAction.CODEC.fieldOf("event").forGetter(BlockActionAction::action)
     ).apply(i, BlockActionAction::new));
 
     @Override

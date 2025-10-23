@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record InvertAction(BiEntityAction action) implements BiEntityAction {
     public static final MapCodec<InvertAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BiEntityAction.CODEC.fieldOf("action").forGetter(InvertAction::action)
+            BiEntityAction.CODEC.fieldOf("event").forGetter(InvertAction::action)
     ).apply(i, InvertAction::new));
 
     @Override

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record RelativeOffsetAction(BlockAction action, int distance) implements BlockAction {
     public static final MapCodec<RelativeOffsetAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BlockAction.CODEC.fieldOf("action").forGetter(RelativeOffsetAction::action),
+            BlockAction.CODEC.fieldOf("event").forGetter(RelativeOffsetAction::action),
             Codec.INT.fieldOf("distance").forGetter(RelativeOffsetAction::distance)
     ).apply(i, RelativeOffsetAction::new));
 
