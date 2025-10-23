@@ -12,11 +12,21 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 
 @EventBusSubscriber
 public final class ActionRegistries {
-    public static final ResourceKey<Registry<ActionType>> ACTION_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "action"));
-    public static final Registry<ActionType> ACTION = new MappedRegistry<>(ACTION_KEY, Lifecycle.stable());
+    public static final ResourceKey<Registry<ActionType<BiEntityAction>>> BI_ENTITY_ACTION_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "bi_entity_action"));
+    public static final ResourceKey<Registry<ActionType<BlockAction>>> BLOCK_ACTION_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "block_action"));
+    public static final ResourceKey<Registry<ActionType<EntityAction>>> ENTITY_ACTION_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "entity_action"));
+    public static final ResourceKey<Registry<ActionType<ItemAction>>> ITEM_ACTION_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item_action"));
+
+    public static final Registry<ActionType<BiEntityAction>> BI_ENTITY_ACTION = new MappedRegistry<>(BI_ENTITY_ACTION_KEY, Lifecycle.stable());
+    public static final Registry<ActionType<BlockAction>> BLOCK_ACTION = new MappedRegistry<>(BLOCK_ACTION_KEY, Lifecycle.stable());
+    public static final Registry<ActionType<EntityAction>> ENTITY_ACTION = new MappedRegistry<>(ENTITY_ACTION_KEY, Lifecycle.stable());
+    public static final Registry<ActionType<ItemAction>> ITEM_ACTION = new MappedRegistry<>(ITEM_ACTION_KEY, Lifecycle.stable());
 
     @SubscribeEvent
     public static void newRegistries(NewRegistryEvent event) {
-        event.register(ACTION);
+        event.register(BI_ENTITY_ACTION);
+        event.register(BLOCK_ACTION);
+        event.register(ENTITY_ACTION);
+        event.register(ITEM_ACTION);
     }
 }

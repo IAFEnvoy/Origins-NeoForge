@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 public record Origin(List<Power> powers, Optional<ItemStack> icon, boolean unchoosable, int order, int impact,
-                     Optional<Component> name, Optional<Component> description, List<Upgrade> upgrades,
-                     int loading_priority) {
+                     Optional<Component> name, Optional<Component> description, List<Upgrade> upgrades) {
     public static final Codec<Origin> CODEC = RecordCodecBuilder.create(i -> i.group(
             PowerType.CODEC.listOf().optionalFieldOf("powers", List.of()).forGetter(Origin::powers),
             ItemStack.CODEC.optionalFieldOf("icon").forGetter(Origin::icon),
@@ -24,8 +23,7 @@ public record Origin(List<Power> powers, Optional<ItemStack> icon, boolean uncho
             ExtraCodecs.intRange(0, 3).optionalFieldOf("impact", 0).forGetter(Origin::impact),
             ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(Origin::name),
             ComponentSerialization.CODEC.optionalFieldOf("description").forGetter(Origin::description),
-            Upgrade.CODEC.listOf().optionalFieldOf("upgrades", List.of()).forGetter(Origin::upgrades),
-            Codec.INT.optionalFieldOf("loading_priority", 0).forGetter(Origin::loading_priority)
+            Upgrade.CODEC.listOf().optionalFieldOf("upgrades", List.of()).forGetter(Origin::upgrades)
     ).apply(i, Origin::new));
 
     public record Upgrade(ResourceLocation condition, ResourceLocation origin, Optional<Component> announcement) {
