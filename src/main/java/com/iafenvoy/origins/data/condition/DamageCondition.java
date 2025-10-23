@@ -10,8 +10,9 @@ import java.util.function.BiPredicate;
 public interface DamageCondition extends BiPredicate<DamageSource, Float> {
     Codec<DamageCondition> CODEC = ConditionRegistries.DAMAGE_CONDITION.byNameCodec().dispatch("type", DamageCondition::codec, x -> x);
 
+    @NotNull
     MapCodec<? extends DamageCondition> codec();
 
     @Override
-    boolean test(DamageSource source, @NotNull Float amount);
+    boolean test(@NotNull DamageSource source, @NotNull Float amount);
 }

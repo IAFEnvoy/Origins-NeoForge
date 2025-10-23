@@ -2,16 +2,17 @@ package com.iafenvoy.origins.data.action;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public interface EntityAction extends BiConsumer<Level, BlockPos> {
+public interface EntityAction extends Consumer<Entity> {
     Codec<EntityAction> CODEC = ActionRegistries.ENTITY_ACTION.byNameCodec().dispatch("type", EntityAction::codec, x -> x);
 
+    @NotNull
     MapCodec<? extends EntityAction> codec();
 
     @Override
-    void accept(Level level, BlockPos pos);
+    void accept(@NotNull Entity source);
 }
