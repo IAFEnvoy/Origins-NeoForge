@@ -1,8 +1,8 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
 import com.iafenvoy.origins.data.action.EntityAction;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public record RemoveEffectAction(Either<Holder<MobEffect>, List<Holder<MobEffect>>> effect) implements EntityAction {
     public static final MapCodec<RemoveEffectAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.either(MobEffect.CODEC, MobEffect.CODEC.listOf()).optionalFieldOf("effect", Either.right(List.of())).forGetter(RemoveEffectAction::effect)
+            CombinedCodecs.MOB_EFFECT.optionalFieldOf("effect", Either.right(List.of())).forGetter(RemoveEffectAction::effect)
     ).apply(i, RemoveEffectAction::new));
 
     @Override

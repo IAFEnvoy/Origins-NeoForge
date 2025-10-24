@@ -22,6 +22,7 @@ public record EquippedItemActionAction(EquipmentSlot slot, ItemAction action) im
 
     @Override
     public void accept(@NotNull Entity source) {
-        if (source instanceof LivingEntity living) this.action.accept(living.level(), living.getItemBySlot(this.slot));
+        if (source instanceof LivingEntity living)
+            this.action.accept(living.level(), source, living.getItemBySlot(this.slot));
     }
 }

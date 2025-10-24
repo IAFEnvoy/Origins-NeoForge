@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.data.action.builtin.entity;
+package com.iafenvoy.origins.data.action.builtin.entity.meta;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.BiEntityAction;

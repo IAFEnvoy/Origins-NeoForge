@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.util.CombinedCodecs;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

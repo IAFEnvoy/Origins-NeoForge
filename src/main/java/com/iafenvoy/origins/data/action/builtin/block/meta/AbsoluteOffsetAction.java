@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.data.action.builtin.block;
+package com.iafenvoy.origins.data.action.builtin.block.meta;
 
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.mojang.serialization.Codec;

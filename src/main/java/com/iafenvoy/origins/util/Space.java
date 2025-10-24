@@ -48,9 +48,9 @@ public enum Space {
         Matrix3f res = new Matrix3f();
         // X
         res.set(0, 0, (float) xX);
-        res.set(1, 0, 0.0F); // X vector is horizontal, set its Y component (a10 (mathematically a21)) to 0
+        res.set(1, 0, 0.0F); // X vector is horizontal, set its Y components (a10 (mathematically a21)) to 0
         res.set(2, 0, (float) xZ);
-        // Y (cross product of Z and X, simplified by the fact that X has a Y component of 0)
+        // Y (cross product of Z and X, simplified by the fact that X has a Y components of 0)
         res.set(0, 1, (float) (zY * xZ));
         res.set(1, 1, (float) (zZ * xX - zX * xZ));
         res.set(2, 1, (float) (-zY * xX));

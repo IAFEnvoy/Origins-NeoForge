@@ -49,6 +49,7 @@ public record BlockExplodeAction(float power, DestructionType destructionType,
         level.explode(null, level.damageSources().explosion(null, null), calculator, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, this.power, this.createFire, Level.ExplosionInteraction.MOB);
     }
 
+    //FIXME::Share enum
     public enum DestructionType implements StringRepresentable {
         NONE(Explosion.BlockInteraction.KEEP),
         BREAK(Explosion.BlockInteraction.DESTROY_WITH_DECAY),

@@ -4,6 +4,7 @@ import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.ActionRegistries;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.builtin.entity.*;
+import com.iafenvoy.origins.data.action.builtin.entity.meta.*;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -39,6 +40,14 @@ public final class EntityActionTypes {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnEntityAction>> SPAWN_ENTITY = REGISTRY.register("spawn_entity", () -> SpawnEntityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnParticlesAction>> SPAWN_PARTICLES = REGISTRY.register("spawn_particles", () -> SpawnParticlesAction.CODEC);
     //Meta
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityAndAction>> AND = REGISTRY.register("and", () -> EntityAndAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityChanceAction>> CHANCE = REGISTRY.register("chance", () -> EntityChanceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityChoiceAction>> CHOICE = REGISTRY.register("choice", () -> EntityChoiceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityDelayAction>> DELAY = REGISTRY.register("delay", () -> EntityDelayAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityIfElseAction>> IF_ELSE = REGISTRY.register("if_else", () -> EntityIfElseAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityIfElseListAction>> IF_ELSE_LIST = REGISTRY.register("if_else_list", () -> EntityIfElseListAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityNothingAction>> NOTHING = REGISTRY.register("nothing", () -> EntityNothingAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityRegionApplyAction>> REGION_APPLY = REGISTRY.register("region_apply", () -> EntityRegionApplyAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntitySelectorApplyAction>> SELECTOR_APPLY = REGISTRY.register("selector_apply", () -> EntitySelectorApplyAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntitySideAction>> SIDE = REGISTRY.register("side", () -> EntitySideAction.CODEC);
 }

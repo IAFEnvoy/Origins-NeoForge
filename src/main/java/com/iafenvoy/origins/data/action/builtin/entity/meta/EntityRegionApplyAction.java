@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.data.action.builtin.entity;
+package com.iafenvoy.origins.data.action.builtin.entity.meta;
 
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.EntityAction;
@@ -44,6 +44,7 @@ public record EntityRegionApplyAction(double radius, Shape shape, BiEntityAction
         }
     }
 
+    //FIXME::Share enum
     public enum Shape implements StringRepresentable {
         CUBE((level, center, radius) -> level.getEntitiesOfClass(Entity.class, createArea(center, radius))),
         STAR((level, center, radius) -> level.getEntitiesOfClass(Entity.class, createArea(center, radius), EntitySelector.NO_SPECTATORS.and(entity -> Math.abs(entity.getX() - center.x) + Math.abs(entity.getY() - center.y) + Math.abs(entity.getZ() - center.z) <= radius))),

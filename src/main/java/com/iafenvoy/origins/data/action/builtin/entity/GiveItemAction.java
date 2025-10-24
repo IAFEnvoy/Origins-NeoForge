@@ -29,7 +29,7 @@ public record GiveItemAction(ItemStack stack, Optional<ItemAction> itemAction,
     public void accept(@NotNull Entity source) {
         if (source instanceof Player player) {
             ItemStack stack = this.stack.copy();
-            this.itemAction.ifPresent(x -> x.accept(player.level(), stack));
+            this.itemAction.ifPresent(x -> x.accept(player.level(), source, stack));
             if (this.preferredSlot.isPresent() && player.getItemBySlot(this.preferredSlot.get()).isEmpty())
                 player.setItemSlot(this.preferredSlot.get(), stack);
             else player.getInventory().placeItemBackInInventory(stack);

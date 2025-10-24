@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.data.action.builtin.block;
+package com.iafenvoy.origins.data.action.builtin.block.meta;
 
 import com.google.common.collect.ImmutableList;
 import com.iafenvoy.origins.data.action.BlockAction;
@@ -38,6 +38,7 @@ public record BlockRegionApplyAction(int radius, Shape shape, BlockAction blockA
         positions.forEach(x -> this.blockAction.accept(level, x, direction));
     }
 
+    //FIXME::Share enum
     public enum Shape implements StringRepresentable {
         CUBE((center, radius) -> {
             ImmutableList.Builder<BlockPos> builder = ImmutableList.builder();

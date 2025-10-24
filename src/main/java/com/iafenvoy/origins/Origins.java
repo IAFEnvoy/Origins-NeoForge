@@ -2,6 +2,8 @@ package com.iafenvoy.origins;
 
 import com.iafenvoy.origins.data.action.builtin.BiEntityActionTypes;
 import com.iafenvoy.origins.data.action.builtin.BlockActionTypes;
+import com.iafenvoy.origins.data.action.builtin.EntityActionTypes;
+import com.iafenvoy.origins.data.action.builtin.ItemActionTypes;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
@@ -19,5 +21,7 @@ public final class Origins {
 
         BiEntityActionTypes.REGISTRY.register(bus);
         BlockActionTypes.REGISTRY.register(bus);
+        EntityActionTypes.REGISTRY.register(bus);
+        ItemActionTypes.REGISTRY.register(bus);
     }
 }
