@@ -1,9 +1,10 @@
 package com.iafenvoy.origins;
 
-import com.iafenvoy.origins.data.action.builtin.BiEntityActionTypes;
-import com.iafenvoy.origins.data.action.builtin.BlockActionTypes;
-import com.iafenvoy.origins.data.action.builtin.EntityActionTypes;
-import com.iafenvoy.origins.data.action.builtin.ItemActionTypes;
+import com.iafenvoy.origins.data.action.builtin.BiEntityActions;
+import com.iafenvoy.origins.data.action.builtin.BlockActions;
+import com.iafenvoy.origins.data.action.builtin.EntityActions;
+import com.iafenvoy.origins.data.action.builtin.ItemActions;
+import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
@@ -18,10 +19,12 @@ public final class Origins {
 
     public Origins(ModContainer container, IEventBus bus) {
         OriginsAttachments.REGISTRY.register(bus);
-
-        BiEntityActionTypes.REGISTRY.register(bus);
-        BlockActionTypes.REGISTRY.register(bus);
-        EntityActionTypes.REGISTRY.register(bus);
-        ItemActionTypes.REGISTRY.register(bus);
+        //Action
+        BiEntityActions.REGISTRY.register(bus);
+        BlockActions.REGISTRY.register(bus);
+        EntityActions.REGISTRY.register(bus);
+        ItemActions.REGISTRY.register(bus);
+        //Powers
+        RegularPowers.REGISTRY.register(bus);
     }
 }

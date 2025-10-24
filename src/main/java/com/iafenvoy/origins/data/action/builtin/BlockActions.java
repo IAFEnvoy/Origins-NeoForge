@@ -10,7 +10,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 @SuppressWarnings("unused")
-public final class BlockActionTypes {
+public final class BlockActions {
     public static final DeferredRegister<MapCodec<? extends BlockAction>> REGISTRY = DeferredRegister.create(ActionRegistries.BLOCK_ACTION, Origins.MOD_ID);
     //List
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BonemealAction>> BONEMEAL = REGISTRY.register("bonemeal", () -> BonemealAction.CODEC);

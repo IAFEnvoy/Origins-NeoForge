@@ -10,7 +10,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 @SuppressWarnings("unused")
-public final class ItemActionTypes {
+public final class ItemActions {
     public static final DeferredRegister<MapCodec<? extends ItemAction>> REGISTRY = DeferredRegister.create(ActionRegistries.ITEM_ACTION, Origins.MOD_ID);
     //List
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ConsumeAction>> CONSUME = REGISTRY.register("consume", () -> ConsumeAction.CODEC);

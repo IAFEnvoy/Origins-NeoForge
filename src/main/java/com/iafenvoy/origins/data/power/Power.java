@@ -2,9 +2,7 @@ package com.iafenvoy.origins.data.power;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 public interface Power {
@@ -12,5 +10,18 @@ public interface Power {
 
     MapCodec<? extends Power> codec();
 
-    void execute(@NotNull LivingEntity living, @NotNull Level level, @NotNull RegistryAccess access);
+    default void grant(@NotNull Entity entity) {
+    }
+
+    default void revoke(@NotNull Entity entity) {
+    }
+
+    default void entityLoad(@NotNull Entity entity) {
+    }
+
+    default void entitySave(@NotNull Entity entity) {
+    }
+
+    default void tick(@NotNull Entity entity) {
+    }
 }
