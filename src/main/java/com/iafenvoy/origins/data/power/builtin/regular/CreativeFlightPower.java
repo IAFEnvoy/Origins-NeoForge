@@ -11,7 +11,7 @@ public enum CreativeFlightPower implements Power {
     public static final MapCodec<CreativeFlightPower> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
-    public MapCodec<? extends Power> codec() {
+    public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
     }
 

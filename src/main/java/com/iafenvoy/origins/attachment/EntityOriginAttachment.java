@@ -6,7 +6,9 @@ import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
+import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -61,7 +63,7 @@ public final class EntityOriginAttachment {
     }
 
     @NotNull
-    public <T extends Power> Collection<Power> getPowers(DeferredHolder<Power, T> holder) {
+    public <T extends Power> Collection<Power> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder) {
         return this.getPowers(holder.getId());
     }
 
@@ -72,5 +74,9 @@ public final class EntityOriginAttachment {
 
     private static void executeOnPowers(@Nullable Holder<Origin> origin, Consumer<Power> consumer) {
         if (origin != null) origin.value().powers().forEach(consumer);
+    }
+
+    public static EntityOriginAttachment get(Entity entity) {
+        return entity.getData(OriginsAttachments.ENTITY_ORIGIN);
     }
 }

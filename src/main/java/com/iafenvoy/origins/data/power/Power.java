@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Power {
     Codec<Power> CODEC = PowerRegistries.POWER_TYPE.byNameCodec().dispatch("type", Power::codec, x -> x);
 
+    @NotNull
     MapCodec<? extends Power> codec();
 
     default void grant(@NotNull Entity entity) {

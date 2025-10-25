@@ -2,7 +2,10 @@
   "required": true,
   "package": "com.iafenvoy.origins.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "power.FoodDataMixin",
+    "power.PlayerMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },

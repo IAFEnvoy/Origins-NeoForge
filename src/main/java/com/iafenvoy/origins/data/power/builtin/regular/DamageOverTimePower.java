@@ -48,7 +48,7 @@ public class DamageOverTimePower implements Power {
     }
 
     @Override
-    public MapCodec<? extends Power> codec() {
+    public @NotNull MapCodec<? extends Power> codec() {
         return null;
     }
 

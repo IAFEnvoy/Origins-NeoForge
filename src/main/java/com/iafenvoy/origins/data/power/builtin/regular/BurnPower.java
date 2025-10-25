@@ -21,7 +21,7 @@ public class BurnPower implements Power {
     }
 
     @Override
-    public MapCodec<? extends Power> codec() {
+    public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
     }
 
