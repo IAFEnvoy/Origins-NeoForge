@@ -3,7 +3,7 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 import com.iafenvoy.origins.attachment.EntityOriginAttachment;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
-import com.iafenvoy.origins.event.CheckNaturalRegenEvent;
+import com.iafenvoy.origins.event.common.CanNaturalRegenEvent;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -20,8 +20,8 @@ public enum DisableRegenPower implements Power {
     }
 
     @SubscribeEvent
-    public static void disableNaturalRegen(CheckNaturalRegenEvent event) {
-        if (!EntityOriginAttachment.get(event.getPlayer()).getPowers(RegularPowers.EFFECT_IMMUNITY).isEmpty())
-            event.setCanceled(true);
+    public static void disableNaturalRegen(CanNaturalRegenEvent event) {
+        if (!EntityOriginAttachment.get(event.getPlayer()).getPowers(RegularPowers.DISABLE_REGEN).isEmpty())
+            event.deny();
     }
 }

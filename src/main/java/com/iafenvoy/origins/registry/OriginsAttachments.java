@@ -18,7 +18,7 @@ public final class OriginsAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EntityOriginAttachment>> ENTITY_ORIGIN = REGISTRY.register("entity_origin", () -> AttachmentType.builder(EntityOriginAttachment::new).serialize(EntityOriginAttachment.CODEC).copyOnDeath().build());
 
     @SubscribeEvent
-    public static void onEntityTick(EntityTickEvent event) {
+    public static void onEntityTick(EntityTickEvent.Post event) {
         Entity entity = event.getEntity();
         entity.getData(ENTITY_ORIGIN).tick(entity);
     }

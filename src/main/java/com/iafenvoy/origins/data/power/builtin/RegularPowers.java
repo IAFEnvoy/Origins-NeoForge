@@ -17,4 +17,9 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<DamageOverTimePower>> DAMAGE_OVER_TIME = REGISTRY.register("damage_over_time", () -> DamageOverTimePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<DisableRegenPower>> DISABLE_REGEN = REGISTRY.register("disable_regen", () -> DisableRegenPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<EffectImmunityPower>> EFFECT_IMMUNITY = REGISTRY.register("effect_immunity", () -> EffectImmunityPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ElytraFlightPower>> ELYTRA_FLIGHT = REGISTRY.register("elytra_flight", () -> ElytraFlightPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<EntityGlowPower>> ENTITY_GLOW = REGISTRY.register("entity_glow", () -> EntityGlowPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ExhaustPower>> EXHAUST = REGISTRY.register("exhaust", () -> ExhaustPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<FireImmunityPower>> FIRE_IMMUNITY = REGISTRY.register("fire_immunity", () -> FireImmunityPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<FreezePower>> FREEZE = REGISTRY.register("freeze", () -> FreezePower.CODEC);
 }

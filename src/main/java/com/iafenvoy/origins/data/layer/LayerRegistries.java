@@ -13,7 +13,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
 @EventBusSubscriber
 public final class LayerRegistries {
-    public static final ResourceKey<Registry<Layer>> LAYER_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "origin"));
+    public static final ResourceKey<Registry<Layer>> LAYER_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "layer"));
     public static final Codec<Holder<Layer>> LAYER_CODEC = RegistryFixedCodec.create(LAYER_KEY);
 
     @SubscribeEvent

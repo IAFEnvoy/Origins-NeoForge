@@ -4,7 +4,12 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "power.FoodDataMixin",
+    "power.LivingEntityMixin",
     "power.PlayerMixin"
+  ],
+  "client": [
+    "power.EntityMixin",
+    "power.PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
