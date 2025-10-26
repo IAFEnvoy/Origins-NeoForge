@@ -27,4 +27,7 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<FreezePower>> FREEZE = REGISTRY.register("freeze", () -> FreezePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<IgnoreWaterPower>> IGNORE_WATER = REGISTRY.register("ignore_water", () -> IgnoreWaterPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<InvulnerabilityPower>> INVULNERABILITY = REGISTRY.register("invulnerability", () -> InvulnerabilityPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<NightVisionPower>> NIGHT_VISION = REGISTRY.register("night_vision", () -> NightVisionPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<SelfGlowPower>> SELF_GLOW = REGISTRY.register("self_glow", () -> SelfGlowPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<TooltipPower>> TOOLTIP = REGISTRY.register("tooltip", () -> TooltipPower.CODEC);
 }

@@ -21,7 +21,7 @@ public enum IgnoreWaterPower implements Power {
 
     @SubscribeEvent
     public static void ignoreWater(IgnoreWaterEvent event) {
-        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.IGNORE_WATER).isEmpty())
+        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.IGNORE_WATER, IgnoreWaterPower.class).isEmpty())
             event.allow();
     }
 }

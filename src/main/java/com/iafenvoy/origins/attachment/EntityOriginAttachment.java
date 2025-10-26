@@ -17,9 +17,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public final class EntityOriginAttachment {
@@ -63,13 +61,17 @@ public final class EntityOriginAttachment {
     }
 
     @NotNull
-    public <T extends Power> Collection<Power> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder) {
-        return this.getPowers(holder.getId());
+    public <T extends Power> Collection<T> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder, Class<T> clazz) {
+        return this.getPowers(holder.getId(), clazz);
     }
 
     @NotNull
-    public Collection<Power> getPowers(ResourceLocation id) {
-        return this.powerMap.get(id);
+    public <T extends Power> List<T> getPowers(ResourceLocation id, Class<T> clazz) {
+        List<T> results = new LinkedList<>();
+        for (Power power : this.powerMap.get(id))
+            if (power != null && clazz.isAssignableFrom(power.getClass()))
+                results.add(clazz.cast(power));
+        return results;
     }
 
     private static void executeOnPowers(@Nullable Holder<Origin> origin, Consumer<Power> consumer) {

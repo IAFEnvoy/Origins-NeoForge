@@ -21,7 +21,7 @@ public enum DisableRegenPower implements Power {
 
     @SubscribeEvent
     public static void disableNaturalRegen(CanNaturalRegenEvent event) {
-        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.DISABLE_REGEN).isEmpty())
+        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.DISABLE_REGEN, DisableRegenPower.class).isEmpty())
             event.deny();
     }
 }

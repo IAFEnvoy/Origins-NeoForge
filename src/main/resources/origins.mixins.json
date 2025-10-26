@@ -9,6 +9,7 @@
   ],
   "client": [
     "power.EntityMixin",
+    "power.FogRendererMixin",
     "power.PlayerRendererMixin"
   ],
   "injectors": {

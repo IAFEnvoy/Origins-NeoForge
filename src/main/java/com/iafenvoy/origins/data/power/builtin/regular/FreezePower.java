@@ -26,8 +26,8 @@ public record FreezePower(EntityCondition condition) implements Power {
     @SubscribeEvent
     public static void enableFrozen(EntityFrozenEvent event) {
         Entity entity = event.getEntity();
-        for (Power power : EntityOriginAttachment.get(entity).getPowers(RegularPowers.FREEZE))
-            if (power instanceof FreezePower(EntityCondition condition) && condition.test(entity))
+        for (FreezePower power : EntityOriginAttachment.get(entity).getPowers(RegularPowers.FREEZE, FreezePower.class))
+            if (power.condition.test(entity))
                 event.allow();
     }
 }

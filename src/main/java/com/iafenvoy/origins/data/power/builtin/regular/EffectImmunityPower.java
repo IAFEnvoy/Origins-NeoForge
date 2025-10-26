@@ -39,8 +39,8 @@ public record EffectImmunityPower(List<Holder<MobEffect>> effect, boolean invert
 
     @SubscribeEvent
     public static void disableEffectApply(MobEffectEvent.Applicable event) {
-        for (Power power : EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.EFFECT_IMMUNITY))
-            if (power instanceof EffectImmunityPower effectImmunity && !effectImmunity.canApply(event.getEffectInstance()))
+        for (EffectImmunityPower power : EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.EFFECT_IMMUNITY, EffectImmunityPower.class))
+            if (!power.canApply(event.getEffectInstance()))
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
     }
 }

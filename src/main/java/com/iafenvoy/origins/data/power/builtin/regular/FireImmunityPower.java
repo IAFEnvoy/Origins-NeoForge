@@ -26,8 +26,8 @@ public record FireImmunityPower(EntityCondition condition) implements Power {
     @SubscribeEvent
     public static void enableFireImmune(EntityFireImmuneEvent event) {
         Entity entity = event.getEntity();
-        for (Power power : EntityOriginAttachment.get(entity).getPowers(RegularPowers.FIRE_IMMUNITY))
-            if (power instanceof FireImmunityPower(EntityCondition condition) && condition.test(entity))
+        for (FireImmunityPower power : EntityOriginAttachment.get(entity).getPowers(RegularPowers.FIRE_IMMUNITY, FireImmunityPower.class))
+            if (power.condition.test(entity))
                 event.allow();
     }
 }

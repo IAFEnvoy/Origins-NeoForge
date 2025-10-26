@@ -27,17 +27,15 @@ public record ElytraFlightPower(boolean renderElytra, Optional<ResourceLocation>
 
     @SubscribeEvent
     public static void enableElytraFly(CanFlyWithoutElytraEvent event) {
-        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT).isEmpty())
+        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class).isEmpty())
             event.deny();
     }
 
     @SubscribeEvent
     public static void enableElytraRender(ElytraTextureEvent event) {
-        for (Power power : EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT))
-            if (power instanceof ElytraFlightPower(
-                    boolean renderElytra, Optional<ResourceLocation> textureLocation
-            ) && renderElytra && textureLocation.isPresent()) {
-                event.setTexture(textureLocation.get());
+        for (ElytraFlightPower power : EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class))
+            if (power.renderElytra && power.textureLocation.isPresent()) {
+                event.setTexture(power.textureLocation.get());
                 break;
             }
     }
