@@ -23,7 +23,7 @@ public record BlockSideAction(BlockAction action, Dist side) implements BlockAct
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
-        if (Environment.get().getDist() == this.side) this.action.accept(level, pos, direction);
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+        if (Environment.get().getDist() == this.side) this.action.execute(level, pos, direction);
     }
 }

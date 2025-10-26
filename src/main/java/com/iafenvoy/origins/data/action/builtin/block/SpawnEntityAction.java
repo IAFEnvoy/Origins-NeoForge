@@ -18,11 +18,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public record SpawnEntityAction(EntityType<?> entityType, Optional<CompoundTag> tag,
-                                Optional<EntityAction> entityAction) implements BlockAction {
+                                EntityAction entityAction) implements BlockAction {
     public static final MapCodec<SpawnEntityAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity_type").forGetter(SpawnEntityAction::entityType),
             CompoundTag.CODEC.optionalFieldOf("tag").forGetter(SpawnEntityAction::tag),
-            EntityAction.CODEC.optionalFieldOf("entity_action").forGetter(SpawnEntityAction::entityAction)
+            EntityAction.optionalCodec("entity_action").forGetter(SpawnEntityAction::entityAction)
     ).apply(i, SpawnEntityAction::new));
 
     @Override
@@ -31,10 +31,10 @@ public record SpawnEntityAction(EntityType<?> entityType, Optional<CompoundTag> 
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
         if (level instanceof ServerLevel serverLevel) {
             Entity entity = this.entityType.spawn(serverLevel, x -> this.tag.ifPresent(x::load), pos, MobSpawnType.MOB_SUMMONED, false, false);
-            if (entity != null && this.entityAction.isPresent()) this.entityAction.get().accept(entity);
+            if (entity != null) this.entityAction.execute(entity);
         }
     }
 }

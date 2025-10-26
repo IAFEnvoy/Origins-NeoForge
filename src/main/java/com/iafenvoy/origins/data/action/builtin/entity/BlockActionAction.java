@@ -19,7 +19,7 @@ public record BlockActionAction(BlockAction action) implements EntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
-        this.action.accept(source.level(), source.blockPosition(), Direction.DOWN);
+    public void execute(@NotNull Entity source) {
+        this.action.execute(source.level(), source.blockPosition(), Direction.DOWN);
     }
 }

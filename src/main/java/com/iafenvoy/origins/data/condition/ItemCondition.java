@@ -6,14 +6,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.BiPredicate;
-
-public interface ItemCondition extends BiPredicate<Level, ItemStack> {
+public interface ItemCondition {
     Codec<ItemCondition> CODEC = ConditionRegistries.ITEM_CONDITION.byNameCodec().dispatch("type", ItemCondition::codec, x -> x);
+
+    static MapCodec<ItemCondition> optionalCodec(String name) {
+        return CODEC.optionalFieldOf(name, EmptyCondition.INSTANCE);
+    }
 
     @NotNull
     MapCodec<? extends ItemCondition> codec();
 
-    @Override
     boolean test(@NotNull Level level, @NotNull ItemStack stack);
 }

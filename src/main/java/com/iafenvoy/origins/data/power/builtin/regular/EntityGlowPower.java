@@ -18,14 +18,12 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
 @EventBusSubscriber(Dist.CLIENT)
-public record EntityGlowPower(Optional<EntityCondition> entityCondition, Optional<BiEntityCondition> biEntityCondition,
-                              boolean useTeam, int color) implements Power {
+public record EntityGlowPower(EntityCondition entityCondition, BiEntityCondition biEntityCondition, boolean useTeam,
+                              int color) implements Power {
     public static final MapCodec<EntityGlowPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityCondition.CODEC.optionalFieldOf("entity_condition").forGetter(EntityGlowPower::entityCondition),
-            BiEntityCondition.CODEC.optionalFieldOf("bientity_condition").forGetter(EntityGlowPower::biEntityCondition),
+            EntityCondition.optionalCodec("entity_condition").forGetter(EntityGlowPower::entityCondition),
+            BiEntityCondition.optionalCodec("bientity_condition").forGetter(EntityGlowPower::biEntityCondition),
             Codec.BOOL.optionalFieldOf("use_teams", true).forGetter(EntityGlowPower::useTeam),
             Codec.INT.optionalFieldOf("color", 0xFFFFFFFF).forGetter(EntityGlowPower::color)
     ).apply(i, EntityGlowPower::new));
@@ -42,11 +40,8 @@ public record EntityGlowPower(Optional<EntityCondition> entityCondition, Optiona
         if (player != null)
             for (Power power : EntityOriginAttachment.get(player).getPowers(RegularPowers.ENTITY_GLOW))
                 if (power instanceof EntityGlowPower(
-                        Optional<EntityCondition> entityCondition, Optional<BiEntityCondition> biEntityCondition,
-                        boolean useTeam, int color
-                ) && !useTeam &&
-                        entityCondition.map(x -> x.test(entity)).orElse(true) &&
-                        biEntityCondition.map(x -> x.test(player, entity)).orElse(true))
+                        EntityCondition entityCondition, BiEntityCondition biEntityCondition, boolean useTeam, int color
+                ) && !useTeam && entityCondition.test(entity) && biEntityCondition.test(player, entity))
                     event.setColor(color);
     }
 
@@ -56,9 +51,7 @@ public record EntityGlowPower(Optional<EntityCondition> entityCondition, Optiona
         Entity entity = event.getEntity();
         if (player != null)
             for (Power power : EntityOriginAttachment.get(player).getPowers(RegularPowers.ENTITY_GLOW))
-                if (power instanceof EntityGlowPower entityGlow &&
-                        entityGlow.entityCondition.map(x -> x.test(entity)).orElse(true) &&
-                        entityGlow.biEntityCondition.map(x -> x.test(player, entity)).orElse(true))
+                if (power instanceof EntityGlowPower entityGlow && entityGlow.entityCondition.test(entity) && entityGlow.biEntityCondition.test(player, entity))
                     event.allow();
     }
 }

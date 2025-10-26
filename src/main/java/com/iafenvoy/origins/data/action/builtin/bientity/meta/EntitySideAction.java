@@ -21,7 +21,7 @@ public record EntitySideAction(BiEntityAction action, Dist side) implements BiEn
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
-        if (Environment.get().getDist() == this.side) this.action.accept(source, target);
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
+        if (Environment.get().getDist() == this.side) this.action.execute(source, target);
     }
 }

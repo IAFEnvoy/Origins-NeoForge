@@ -23,9 +23,9 @@ public record BlockChoiceAction(List<WeightedActionHolder> actions) implements B
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
         WeightedActionHolder holder = WeightedRandomSelector.selectRandomByWeight(this.actions);
-        if (holder != null) holder.element.accept(level, pos, direction);
+        if (holder != null) holder.element.execute(level, pos, direction);
     }
 
     private record WeightedActionHolder(BlockAction element,

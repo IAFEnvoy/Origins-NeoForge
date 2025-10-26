@@ -3,6 +3,7 @@ package com.iafenvoy.origins.mixin.power;
 import com.iafenvoy.origins.event.client.ClientShouldGlowingEvent;
 import com.iafenvoy.origins.event.common.CanFlyWithoutElytraEvent;
 import com.iafenvoy.origins.event.common.EntityFrozenEvent;
+import com.iafenvoy.origins.event.common.IgnoreWaterEvent;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -45,5 +46,10 @@ public abstract class LivingEntityMixin extends Entity {
     private void handleFrozen(CallbackInfo ci) {
         if (NeoForge.EVENT_BUS.post(new EntityFrozenEvent(this.origins$self())).getResult().allow())
             this.isInPowderSnow = true;
+    }
+
+    @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/core/Holder;)D", ordinal = 0))
+    private double handleSpeedInWater(double original) {
+        return NeoForge.EVENT_BUS.post(new IgnoreWaterEvent(this.origins$self())).getResult().allow() ? 1 : original;
     }
 }

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import java.util.Optional;
 
+//FIXME::No optional
 public record EntityExplodeAction(float power, DestructionType destructionType,
                                   Optional<BlockCondition> indestructible, boolean createFire) implements EntityAction {
     public static final MapCodec<EntityExplodeAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -35,7 +36,7 @@ public record EntityExplodeAction(float power, DestructionType destructionType,
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         Level level = source.level();
         Vec3 pos = source.position();
         //FIXME::Rewrite this

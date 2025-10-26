@@ -20,7 +20,7 @@ public record EntityExecuteCommandAction(String command) implements EntityAction
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source.level() instanceof ServerLevel serverLevel)
             CommandHelper.executeCommand(serverLevel.getServer(), this.command);
     }

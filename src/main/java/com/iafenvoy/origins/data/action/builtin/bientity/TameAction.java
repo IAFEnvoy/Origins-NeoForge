@@ -17,7 +17,7 @@ public enum TameAction implements BiEntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
         if (source instanceof Player player && target instanceof TamableAnimal ownable)
             ownable.tame(player);
     }

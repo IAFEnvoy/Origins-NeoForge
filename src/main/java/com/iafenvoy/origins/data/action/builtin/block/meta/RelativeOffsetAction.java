@@ -21,7 +21,7 @@ public record RelativeOffsetAction(BlockAction action, int distance) implements 
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
-        this.action.accept(level, pos.relative(direction, this.distance), direction);
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+        this.action.execute(level, pos.relative(direction, this.distance), direction);
     }
 }

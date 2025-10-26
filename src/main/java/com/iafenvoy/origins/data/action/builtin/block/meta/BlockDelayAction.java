@@ -22,7 +22,7 @@ public record BlockDelayAction(BlockAction action, int ticks) implements BlockAc
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
-        Timeout.create(this.ticks, () -> this.action.accept(level, pos, direction));
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+        Timeout.create(this.ticks, () -> this.action.execute(level, pos, direction));
     }
 }

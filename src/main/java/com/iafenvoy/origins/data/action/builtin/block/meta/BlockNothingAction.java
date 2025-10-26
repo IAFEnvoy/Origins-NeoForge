@@ -17,6 +17,6 @@ public enum BlockNothingAction implements BlockAction {
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
     }
 }

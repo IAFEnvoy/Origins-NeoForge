@@ -23,7 +23,7 @@ public record AbsoluteOffsetAction(BlockAction action, int x, int y, int z) impl
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
-        this.action.accept(level, pos.offset(this.x, this.y, this.z), direction);
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+        this.action.execute(level, pos.offset(this.x, this.y, this.z), direction);
     }
 }

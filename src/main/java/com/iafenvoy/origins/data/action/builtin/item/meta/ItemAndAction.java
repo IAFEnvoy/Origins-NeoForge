@@ -21,7 +21,7 @@ public record ItemAndAction(List<ItemAction> actions) implements ItemAction {
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
-        this.actions.forEach(x -> x.accept(level, source, stack));
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+        this.actions.forEach(x -> x.execute(level, source, stack));
     }
 }

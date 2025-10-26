@@ -17,7 +17,7 @@ public enum SetInLoveAction implements BiEntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
         if (target instanceof Animal animal)
             animal.setInLove(source instanceof Player player ? player : null);
     }

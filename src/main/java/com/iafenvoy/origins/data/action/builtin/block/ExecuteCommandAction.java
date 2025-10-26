@@ -22,7 +22,7 @@ public record ExecuteCommandAction(String command) implements BlockAction {
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
         if (level instanceof ServerLevel serverLevel)
             CommandHelper.executeCommand(serverLevel.getServer(), this.command);
     }

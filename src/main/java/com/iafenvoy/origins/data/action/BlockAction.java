@@ -5,15 +5,17 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 
-public interface BlockAction extends TriConsumer<Level, BlockPos, Direction> {
+public interface BlockAction {
     Codec<BlockAction> CODEC = ActionRegistries.BLOCK_ACTION.byNameCodec().dispatch("type", BlockAction::codec, x -> x);
+
+    static MapCodec<BlockAction> optionalCodec(String name) {
+        return CODEC.optionalFieldOf(name, EmptyAction.INSTANCE);
+    }
 
     @NotNull
     MapCodec<? extends BlockAction> codec();
 
-    @Override
-    void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction);
+    void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction);
 }

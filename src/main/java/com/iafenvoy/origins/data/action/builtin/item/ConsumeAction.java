@@ -20,7 +20,7 @@ public record ConsumeAction(int amount) implements ItemAction {
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
         stack.shrink(this.amount);
     }
 }

@@ -20,7 +20,7 @@ public record FeedAction(int food, float saturation) implements EntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source instanceof Player player) player.getFoodData().eat(this.food, this.saturation);
     }
 }

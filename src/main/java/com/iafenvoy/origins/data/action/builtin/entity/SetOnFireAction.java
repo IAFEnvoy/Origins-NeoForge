@@ -18,7 +18,7 @@ public record SetOnFireAction(int tick) implements EntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         source.setRemainingFireTicks(this.tick);
     }
 }

@@ -23,10 +23,10 @@ public record ItemIfElseListAction(List<ConditionedActionHolder> actions) implem
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
         for (ConditionedActionHolder holder : this.actions)
             if (holder.condition.test(level, stack)) {
-                holder.action.accept(level, source, stack);
+                holder.action.execute(level, source, stack);
                 break;
             }
     }

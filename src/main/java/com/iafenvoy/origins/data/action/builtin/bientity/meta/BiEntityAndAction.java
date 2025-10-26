@@ -19,7 +19,7 @@ public record BiEntityAndAction(List<BiEntityAction> actions) implements BiEntit
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
-        this.actions.forEach(x -> x.accept(source, target));
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
+        this.actions.forEach(x -> x.execute(source, target));
     }
 }

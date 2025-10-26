@@ -19,7 +19,7 @@ public record ExhaustAction(float amount) implements EntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source instanceof Player player) player.causeFoodExhaustion(this.amount);
     }
 }

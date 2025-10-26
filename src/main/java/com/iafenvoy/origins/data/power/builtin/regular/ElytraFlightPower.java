@@ -27,7 +27,7 @@ public record ElytraFlightPower(boolean renderElytra, Optional<ResourceLocation>
 
     @SubscribeEvent
     public static void enableElytraFly(CanFlyWithoutElytraEvent event) {
-        if (!EntityOriginAttachment.get(event.getPlayer()).getPowers(RegularPowers.ELYTRA_FLIGHT).isEmpty())
+        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT).isEmpty())
             event.deny();
     }
 

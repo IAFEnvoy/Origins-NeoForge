@@ -15,6 +15,6 @@ public enum EntityNothingAction implements BiEntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
     }
 }

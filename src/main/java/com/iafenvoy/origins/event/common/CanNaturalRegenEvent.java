@@ -1,18 +1,10 @@
 package com.iafenvoy.origins.event.common;
 
-import com.iafenvoy.origins.event.ResultedEvent;
+import com.iafenvoy.origins.event.EntityResultedEvent;
 import net.minecraft.world.entity.player.Player;
 
-//Cancel this event to cancel natural regeneration
-public class CanNaturalRegenEvent extends ResultedEvent {
-    private final Player player;
-
+public class CanNaturalRegenEvent extends EntityResultedEvent<Player> {
     public CanNaturalRegenEvent(Player player) {
-        super(Result.ALLOW);
-        this.player = player;
-    }
-
-    public Player getPlayer() {
-        return this.player;
+        super(Result.ALLOW, player);
     }
 }

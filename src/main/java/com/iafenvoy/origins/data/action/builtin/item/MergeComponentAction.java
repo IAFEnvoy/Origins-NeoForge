@@ -20,7 +20,7 @@ public record MergeComponentAction(DataComponentPatch components) implements Ite
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
         stack.applyComponents(this.components);
     }
 }

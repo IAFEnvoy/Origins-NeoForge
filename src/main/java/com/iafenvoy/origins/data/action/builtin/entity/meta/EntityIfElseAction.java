@@ -7,14 +7,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
 public record EntityIfElseAction(EntityCondition condition, EntityAction ifAction,
-                                 Optional<EntityAction> elseAction) implements EntityAction {
+                                 EntityAction elseAction) implements EntityAction {
     public static final MapCodec<EntityIfElseAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             EntityCondition.CODEC.fieldOf("condition").forGetter(EntityIfElseAction::condition),
             EntityAction.CODEC.fieldOf("if_action").forGetter(EntityIfElseAction::ifAction),
-            EntityAction.CODEC.optionalFieldOf("else_action").forGetter(EntityIfElseAction::elseAction)
+            EntityAction.optionalCodec("else_action").forGetter(EntityIfElseAction::elseAction)
     ).apply(i, EntityIfElseAction::new));
 
     @Override
@@ -23,8 +21,8 @@ public record EntityIfElseAction(EntityCondition condition, EntityAction ifActio
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
-        if (this.condition.test(source)) this.ifAction.accept(source);
-        else this.elseAction.ifPresent(x -> x.accept(source));
+    public void execute(@NotNull Entity source) {
+        if (this.condition.test(source)) this.ifAction.execute(source);
+        else this.elseAction.execute(source);
     }
 }

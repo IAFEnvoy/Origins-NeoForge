@@ -15,6 +15,6 @@ public enum EntityNothingAction implements EntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
     }
 }

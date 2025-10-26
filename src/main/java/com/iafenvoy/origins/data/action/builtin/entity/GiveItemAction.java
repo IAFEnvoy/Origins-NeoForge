@@ -12,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record GiveItemAction(ItemStack stack, Optional<ItemAction> itemAction,
+public record GiveItemAction(ItemStack stack, ItemAction itemAction,
                              Optional<EquipmentSlot> preferredSlot) implements EntityAction {
     public static final MapCodec<GiveItemAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             ItemStack.CODEC.fieldOf("stack").forGetter(GiveItemAction::stack),
-            ItemAction.CODEC.optionalFieldOf("item_action").forGetter(GiveItemAction::itemAction),
+            ItemAction.optionalCodec("item_action").forGetter(GiveItemAction::itemAction),
             EquipmentSlot.CODEC.optionalFieldOf("preferred_slot").forGetter(GiveItemAction::preferredSlot)
     ).apply(i, GiveItemAction::new));
 
@@ -26,10 +26,10 @@ public record GiveItemAction(ItemStack stack, Optional<ItemAction> itemAction,
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source instanceof Player player) {
             ItemStack stack = this.stack.copy();
-            this.itemAction.ifPresent(x -> x.accept(player.level(), source, stack));
+            this.itemAction.execute(player.level(), source, stack);
             if (this.preferredSlot.isPresent() && player.getItemBySlot(this.preferredSlot.get()).isEmpty())
                 player.setItemSlot(this.preferredSlot.get(), stack);
             else player.getInventory().placeItemBackInInventory(stack);

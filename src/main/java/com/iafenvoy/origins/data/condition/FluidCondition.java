@@ -5,14 +5,15 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Predicate;
-
-public interface FluidCondition extends Predicate<FluidState> {
+public interface FluidCondition {
     Codec<FluidCondition> CODEC = ConditionRegistries.FLUID_CONDITION.byNameCodec().dispatch("type", FluidCondition::codec, x -> x);
+
+    static MapCodec<FluidCondition> optionalCodec(String name) {
+        return CODEC.optionalFieldOf(name, EmptyCondition.INSTANCE);
+    }
 
     @NotNull
     MapCodec<? extends FluidCondition> codec();
 
-    @Override
     boolean test(@NotNull FluidState state);
 }

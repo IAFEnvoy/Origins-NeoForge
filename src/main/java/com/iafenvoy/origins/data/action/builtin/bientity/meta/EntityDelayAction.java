@@ -20,7 +20,7 @@ public record EntityDelayAction(BiEntityAction action, int ticks) implements BiE
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
-        Timeout.create(this.ticks, () -> this.action.accept(source, target));
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
+        Timeout.create(this.ticks, () -> this.action.execute(source, target));
     }
 }

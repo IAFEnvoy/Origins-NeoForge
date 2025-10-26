@@ -19,7 +19,7 @@ public record GainAirAction(int amount) implements EntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source instanceof Player player) player.setAirSupply(player.getAirSupply() + this.amount);
     }
 }

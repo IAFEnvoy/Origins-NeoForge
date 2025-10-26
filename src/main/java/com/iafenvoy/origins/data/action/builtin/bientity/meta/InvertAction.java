@@ -17,7 +17,7 @@ public record InvertAction(BiEntityAction action) implements BiEntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
-        this.action.accept(target, source);
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
+        this.action.execute(target, source);
     }
 }

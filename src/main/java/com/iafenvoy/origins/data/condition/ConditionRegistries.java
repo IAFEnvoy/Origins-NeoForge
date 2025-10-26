@@ -1,9 +1,11 @@
 package com.iafenvoy.origins.data.condition;
 
+import com.iafenvoy.origins.Constants;
 import com.iafenvoy.origins.Origins;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.DefaultedMappedRegistry;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -21,13 +23,13 @@ public final class ConditionRegistries {
     public static final ResourceKey<Registry<MapCodec<? extends FluidCondition>>> FLUID_CONDITION_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "fluid_condition"));
     public static final ResourceKey<Registry<MapCodec<? extends ItemCondition>>> ITEM_CONDITION_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item_condition"));
 
-    public static final Registry<MapCodec<? extends BiEntityCondition>> BI_ENTITY_CONDITION = new MappedRegistry<>(BI_ENTITY_CONDITION_KEY, Lifecycle.stable());
-    public static final Registry<MapCodec<? extends BiomeCondition>> BIOME_CONDITION = new MappedRegistry<>(BIOME_CONDITION_KEY, Lifecycle.stable());
-    public static final Registry<MapCodec<? extends BlockCondition>> BLOCK_CONDITION = new MappedRegistry<>(BLOCK_CONDITION_KEY, Lifecycle.stable());
-    public static final Registry<MapCodec<? extends DamageCondition>> DAMAGE_CONDITION = new MappedRegistry<>(DAMAGE_CONDITION_KEY, Lifecycle.stable());
-    public static final Registry<MapCodec<? extends EntityCondition>> ENTITY_CONDITION = new MappedRegistry<>(ENTITY_CONDITION_KEY, Lifecycle.stable());
-    public static final Registry<MapCodec<? extends FluidCondition>> FLUID_CONDITION = new MappedRegistry<>(FLUID_CONDITION_KEY, Lifecycle.stable());
-    public static final Registry<MapCodec<? extends ItemCondition>> ITEM_CONDITION = new MappedRegistry<>(ITEM_CONDITION_KEY, Lifecycle.stable());
+    public static final DefaultedRegistry<MapCodec<? extends BiEntityCondition>> BI_ENTITY_CONDITION = new DefaultedMappedRegistry<>(Constants.EMPTY_KEY, BI_ENTITY_CONDITION_KEY, Lifecycle.stable(), false);
+    public static final DefaultedRegistry<MapCodec<? extends BiomeCondition>> BIOME_CONDITION = new DefaultedMappedRegistry<>(Constants.EMPTY_KEY, BIOME_CONDITION_KEY, Lifecycle.stable(), false);
+    public static final DefaultedRegistry<MapCodec<? extends BlockCondition>> BLOCK_CONDITION = new DefaultedMappedRegistry<>(Constants.EMPTY_KEY, BLOCK_CONDITION_KEY, Lifecycle.stable(), false);
+    public static final DefaultedRegistry<MapCodec<? extends DamageCondition>> DAMAGE_CONDITION = new DefaultedMappedRegistry<>(Constants.EMPTY_KEY, DAMAGE_CONDITION_KEY, Lifecycle.stable(), false);
+    public static final DefaultedRegistry<MapCodec<? extends EntityCondition>> ENTITY_CONDITION = new DefaultedMappedRegistry<>(Constants.EMPTY_KEY, ENTITY_CONDITION_KEY, Lifecycle.stable(), false);
+    public static final DefaultedRegistry<MapCodec<? extends FluidCondition>> FLUID_CONDITION = new DefaultedMappedRegistry<>(Constants.EMPTY_KEY, FLUID_CONDITION_KEY, Lifecycle.stable(), false);
+    public static final DefaultedRegistry<MapCodec<? extends ItemCondition>> ITEM_CONDITION = new DefaultedMappedRegistry<>(Constants.EMPTY_KEY, ITEM_CONDITION_KEY, Lifecycle.stable(), false);
 
     @SubscribeEvent
     public static void newRegistries(NewRegistryEvent event) {

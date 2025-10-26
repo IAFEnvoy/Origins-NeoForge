@@ -18,7 +18,7 @@ public record TargetActionAction(EntityAction action) implements BiEntityAction 
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
-        this.action.accept(target);
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
+        this.action.execute(target);
     }
 }

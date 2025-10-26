@@ -22,7 +22,7 @@ public enum CraftingTableAction implements EntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source instanceof Player player) {
             player.openMenu(new SimpleMenuProvider((syncId, inventory, p) -> new CraftingMenu(syncId, inventory, ContainerLevelAccess.create(p.level(), p.blockPosition())), TITLE));
             player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);

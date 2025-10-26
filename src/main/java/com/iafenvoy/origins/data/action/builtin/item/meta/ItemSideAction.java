@@ -23,7 +23,7 @@ public record ItemSideAction(ItemAction action, Dist side) implements ItemAction
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
-        if (Environment.get().getDist() == this.side) this.action.accept(level, source, stack);
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+        if (Environment.get().getDist() == this.side) this.action.execute(level, source, stack);
     }
 }

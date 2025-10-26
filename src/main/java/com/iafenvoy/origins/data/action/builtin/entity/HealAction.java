@@ -19,7 +19,7 @@ public record HealAction(float amount) implements EntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source instanceof LivingEntity living) living.heal(this.amount);
     }
 }

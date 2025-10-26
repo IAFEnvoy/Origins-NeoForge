@@ -17,16 +17,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 public record EntityRegionApplyAction(double radius, Shape shape, BiEntityAction biEntityAction,
-                                      Optional<BiEntityCondition> biEntityCondition,
+                                      BiEntityCondition biEntityCondition,
                                       boolean includeActor) implements EntityAction {
     public static final MapCodec<EntityRegionApplyAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.DOUBLE.optionalFieldOf("radius", 16.0).forGetter(EntityRegionApplyAction::radius),
             Shape.CODEC.optionalFieldOf("shape", Shape.CUBE).forGetter(EntityRegionApplyAction::shape),
             BiEntityAction.CODEC.fieldOf("bientity_action").forGetter(EntityRegionApplyAction::biEntityAction),
-            BiEntityCondition.CODEC.optionalFieldOf("bientity_condition").forGetter(EntityRegionApplyAction::biEntityCondition),
+            BiEntityCondition.optionalCodec("bientity_condition").forGetter(EntityRegionApplyAction::biEntityCondition),
             Codec.BOOL.optionalFieldOf("includeActor", false).forGetter(EntityRegionApplyAction::includeActor)
     ).apply(i, EntityRegionApplyAction::new));
 
@@ -36,11 +35,11 @@ public record EntityRegionApplyAction(double radius, Shape shape, BiEntityAction
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         for (Entity target : this.shape.getProcessor().apply(source.level(), source.position(), this.radius)) {
             if (target == source && !this.includeActor) continue;
-            if (this.biEntityCondition.isPresent() && !this.biEntityCondition.get().test(source, target)) continue;
-            this.biEntityAction.accept(source, target);
+            if (!this.biEntityCondition.test(source, target)) continue;
+            this.biEntityAction.execute(source, target);
         }
     }
 

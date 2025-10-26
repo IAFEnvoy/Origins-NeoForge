@@ -12,12 +12,10 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
 @EventBusSubscriber
-public record FireImmunityPower(Optional<EntityCondition> condition) implements Power {
+public record FireImmunityPower(EntityCondition condition) implements Power {
     public static final MapCodec<FireImmunityPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityCondition.CODEC.optionalFieldOf("condition").forGetter(FireImmunityPower::condition)
+            EntityCondition.optionalCodec("condition").forGetter(FireImmunityPower::condition)
     ).apply(i, FireImmunityPower::new));
 
     @Override
@@ -29,9 +27,7 @@ public record FireImmunityPower(Optional<EntityCondition> condition) implements 
     public static void enableFireImmune(EntityFireImmuneEvent event) {
         Entity entity = event.getEntity();
         for (Power power : EntityOriginAttachment.get(entity).getPowers(RegularPowers.FIRE_IMMUNITY))
-            if (power instanceof FireImmunityPower(
-                    Optional<EntityCondition> condition
-            ) && condition.map(x -> x.test(entity)).orElse(true))
+            if (power instanceof FireImmunityPower(EntityCondition condition) && condition.test(entity))
                 event.allow();
     }
 }

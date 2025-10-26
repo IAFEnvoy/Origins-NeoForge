@@ -23,9 +23,9 @@ public record ItemChoiceAction(List<WeightedActionHolder> actions) implements It
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
         WeightedActionHolder holder = WeightedRandomSelector.selectRandomByWeight(this.actions);
-        if (holder != null) holder.element.accept(level, source, stack);
+        if (holder != null) holder.element.execute(level, source, stack);
     }
 
     private record WeightedActionHolder(ItemAction element, int weight) implements WeightedRandomSelector.WeightGetter {

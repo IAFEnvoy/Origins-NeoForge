@@ -9,15 +9,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
-public record PassengerActionAction(Optional<EntityAction> action, Optional<BiEntityAction> biEntityAction,
-                                    Optional<BiEntityCondition> biEntityCondition,
-                                    boolean recursive) implements EntityAction {
+public record PassengerActionAction(EntityAction action, BiEntityAction biEntityAction,
+                                    BiEntityCondition biEntityCondition, boolean recursive) implements EntityAction {
     public static final MapCodec<PassengerActionAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityAction.CODEC.optionalFieldOf("action").forGetter(PassengerActionAction::action),
-            BiEntityAction.CODEC.optionalFieldOf("bientity_action").forGetter(PassengerActionAction::biEntityAction),
-            BiEntityCondition.CODEC.optionalFieldOf("bientity_condition").forGetter(PassengerActionAction::biEntityCondition),
+            EntityAction.optionalCodec("action").forGetter(PassengerActionAction::action),
+            BiEntityAction.optionalCodec("bientity_action").forGetter(PassengerActionAction::biEntityAction),
+            BiEntityCondition.optionalCodec("bientity_condition").forGetter(PassengerActionAction::biEntityCondition),
             Codec.BOOL.optionalFieldOf("recursive", false).forGetter(PassengerActionAction::recursive)
     ).apply(i, PassengerActionAction::new));
 
@@ -27,12 +24,12 @@ public record PassengerActionAction(Optional<EntityAction> action, Optional<BiEn
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         for (Entity vehicle : source.getPassengers())
-            if (this.biEntityCondition.map(x -> x.test(source, vehicle)).orElse(true)) {
-                this.action.ifPresent(x -> x.accept(vehicle));
-                this.biEntityAction.ifPresent(x -> x.accept(source, vehicle));
-                if (this.recursive) this.accept(vehicle);
+            if (this.biEntityCondition.test(source, vehicle)) {
+                this.action.execute(vehicle);
+                this.biEntityAction.execute(source, vehicle);
+                if (this.recursive) this.execute(vehicle);
             }
     }
 }

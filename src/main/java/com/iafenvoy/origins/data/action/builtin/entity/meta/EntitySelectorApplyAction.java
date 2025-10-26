@@ -12,14 +12,12 @@ import net.minecraft.commands.arguments.selector.EntitySelectorParser;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
-public record EntitySelectorApplyAction(String selector, Optional<BiEntityAction> biEntityAction,
-                                        Optional<BiEntityCondition> biEntityCondition) implements EntityAction {
+public record EntitySelectorApplyAction(String selector, BiEntityAction biEntityAction,
+                                        BiEntityCondition biEntityCondition) implements EntityAction {
     public static final MapCodec<EntitySelectorApplyAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.STRING.fieldOf("selector").forGetter(EntitySelectorApplyAction::selector),
-            BiEntityAction.CODEC.optionalFieldOf("bientity_action").forGetter(EntitySelectorApplyAction::biEntityAction),
-            BiEntityCondition.CODEC.optionalFieldOf("bientity_condition").forGetter(EntitySelectorApplyAction::biEntityCondition)
+            BiEntityAction.optionalCodec("bientity_action").forGetter(EntitySelectorApplyAction::biEntityAction),
+            BiEntityCondition.optionalCodec("bientity_condition").forGetter(EntitySelectorApplyAction::biEntityCondition)
     ).apply(i, EntitySelectorApplyAction::new));
 
     @Override
@@ -28,11 +26,11 @@ public record EntitySelectorApplyAction(String selector, Optional<BiEntityAction
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         try {
             for (Entity entity : new EntitySelectorParser(new StringReader(this.selector), true).getSelector().findEntities(source.createCommandSourceStack()))
-                if (this.biEntityCondition.map(x -> x.test(source, entity)).orElse(true))
-                    this.biEntityAction.ifPresent(x -> x.accept(source, entity));
+                if (this.biEntityCondition.test(source, entity))
+                    this.biEntityAction.execute(source, entity);
         } catch (Exception e) {
             Origins.LOGGER.error("Failed to execute selector.", e);
         }

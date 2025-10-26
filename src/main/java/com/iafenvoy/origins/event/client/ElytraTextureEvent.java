@@ -2,22 +2,17 @@ package com.iafenvoy.origins.event.client;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-public class ElytraTextureEvent extends Event {
-    private final LivingEntity entity;
+public class ElytraTextureEvent extends LivingEvent {
     private Optional<ResourceLocation> texture = Optional.empty();
 
     public ElytraTextureEvent(LivingEntity entity) {
-        this.entity = entity;
-    }
-
-    public LivingEntity getEntity() {
-        return this.entity;
+        super(entity);
     }
 
     public void setTexture(@NotNull ResourceLocation texture) {

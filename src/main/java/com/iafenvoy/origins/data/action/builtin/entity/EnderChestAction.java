@@ -21,7 +21,7 @@ public enum EnderChestAction implements EntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source instanceof Player player) {
             player.openMenu(new SimpleMenuProvider((syncId, inventory, p) -> ChestMenu.threeRows(syncId, inventory, p.getEnderChestInventory()), TITLE));
             player.awardStat(Stats.OPEN_ENDERCHEST);

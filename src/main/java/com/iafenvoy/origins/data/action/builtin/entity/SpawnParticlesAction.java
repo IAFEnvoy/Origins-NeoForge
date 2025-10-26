@@ -14,14 +14,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
-public record SpawnParticlesAction(ParticleType<?> particle, Optional<BiEntityCondition> biEntityCondition, int count,
+public record SpawnParticlesAction(ParticleType<?> particle, BiEntityCondition biEntityCondition, int count,
                                    float speed, boolean force, Vec3 spread, float offsetX, float offsetY,
                                    float offsetZ) implements EntityAction {
     public static final MapCodec<SpawnParticlesAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BuiltInRegistries.PARTICLE_TYPE.byNameCodec().fieldOf("particle").forGetter(SpawnParticlesAction::particle),
-            BiEntityCondition.CODEC.optionalFieldOf("bientity_condition").forGetter(SpawnParticlesAction::biEntityCondition),
+            BiEntityCondition.optionalCodec("bientity_condition").forGetter(SpawnParticlesAction::biEntityCondition),
             Codec.intRange(0, Integer.MAX_VALUE).fieldOf("count").forGetter(SpawnParticlesAction::count),
             Codec.FLOAT.optionalFieldOf("speed", 0F).forGetter(SpawnParticlesAction::speed),
             Codec.BOOL.optionalFieldOf("force", false).forGetter(SpawnParticlesAction::force),
@@ -37,14 +35,14 @@ public record SpawnParticlesAction(ParticleType<?> particle, Optional<BiEntityCo
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source.level() instanceof ServerLevel serverLevel) {
             Vec3 delta = this.spread.multiply(source.getBbWidth(), source.getEyeHeight(source.getPose()), source.getBbWidth());
             Vec3 pos = source.position().add(this.offsetX, this.offsetY, this.offsetZ);
             //FIXME::Not get options in this way
             if (this.particle instanceof ParticleOptions options)
                 for (ServerPlayer player : serverLevel.players()) {
-                    if (this.biEntityCondition.map(x -> x.test(source, player)).orElse(true))
+                    if (this.biEntityCondition.test(source, player))
                         serverLevel.sendParticles(player, options, this.force, pos.x, pos.y, pos.z, this.count, delta.x, delta.y, delta.z, this.speed);
                 }
         }

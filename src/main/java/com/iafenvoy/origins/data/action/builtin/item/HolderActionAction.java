@@ -20,7 +20,7 @@ public record HolderActionAction(EntityAction action) implements ItemAction {
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
-        this.action.accept(source);
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+        this.action.execute(source);
     }
 }

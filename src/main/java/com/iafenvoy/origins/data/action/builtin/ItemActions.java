@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.action.builtin;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.ActionRegistries;
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.data.action.EmptyAction;
 import com.iafenvoy.origins.data.action.builtin.item.*;
 import com.iafenvoy.origins.data.action.builtin.item.meta.*;
 import com.mojang.serialization.MapCodec;
@@ -12,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("unused")
 public final class ItemActions {
     public static final DeferredRegister<MapCodec<? extends ItemAction>> REGISTRY = DeferredRegister.create(ActionRegistries.ITEM_ACTION, Origins.MOD_ID);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<EmptyAction>> EMPTY = REGISTRY.register("empty", () -> EmptyAction.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ConsumeAction>> CONSUME = REGISTRY.register("consume", () -> ConsumeAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ItemDamageAction>> DAMAGE = REGISTRY.register("damage", () -> ItemDamageAction.CODEC);

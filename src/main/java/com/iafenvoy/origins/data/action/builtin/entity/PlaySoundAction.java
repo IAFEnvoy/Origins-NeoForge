@@ -28,7 +28,7 @@ public record PlaySoundAction(SoundEvent sound, Optional<SoundSource> category, 
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         source.level().playSound(null, source.getX(), source.getY(), source.getZ(), this.sound, this.category.orElse(source.getSoundSource()), this.volume, this.pitch);
     }
 }

@@ -19,7 +19,7 @@ public record EmitGameEventAction(Holder<GameEvent> event) implements EntityActi
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         source.gameEvent(this.event);
     }
 }

@@ -14,16 +14,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 public record BlockRegionApplyAction(int radius, Shape shape, BlockAction blockAction,
-                                     Optional<BlockCondition> blockCondition) implements BlockAction {
+                                     BlockCondition blockCondition) implements BlockAction {
     public static final MapCodec<BlockRegionApplyAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.INT.optionalFieldOf("radius", 16).forGetter(BlockRegionApplyAction::radius),
             Shape.CODEC.optionalFieldOf("shape", Shape.CUBE).forGetter(BlockRegionApplyAction::shape),
             BlockAction.CODEC.fieldOf("block_action").forGetter(BlockRegionApplyAction::blockAction),
-            BlockCondition.CODEC.optionalFieldOf("block_condition").forGetter(BlockRegionApplyAction::blockCondition)
+            BlockCondition.optionalCodec("block_condition").forGetter(BlockRegionApplyAction::blockCondition)
     ).apply(i, BlockRegionApplyAction::new));
 
     @Override
@@ -32,10 +31,10 @@ public record BlockRegionApplyAction(int radius, Shape shape, BlockAction blockA
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
         List<BlockPos> positions = this.shape.getProcessor().apply(pos, this.radius);
-        this.blockCondition.ifPresent(x -> positions.removeIf(p -> !x.test(level, p)));
-        positions.forEach(x -> this.blockAction.accept(level, x, direction));
+        positions.removeIf(p -> !this.blockCondition.test(level, p));
+        positions.forEach(x -> this.blockAction.execute(level, x, direction));
     }
 
     //FIXME::Share enum

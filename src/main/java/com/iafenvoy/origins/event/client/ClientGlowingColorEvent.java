@@ -1,21 +1,16 @@
 package com.iafenvoy.origins.event.client;
 
 import net.minecraft.world.entity.Entity;
-import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.event.entity.EntityEvent;
 
 import java.util.OptionalInt;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-public class ClientGlowingColorEvent extends Event {
-    private final Entity entity;
+public class ClientGlowingColorEvent extends EntityEvent {
     private OptionalInt color = OptionalInt.empty();
 
     public ClientGlowingColorEvent(Entity entity) {
-        this.entity = entity;
-    }
-
-    public Entity getEntity() {
-        return this.entity;
+        super(entity);
     }
 
     public void setColor(int color) {

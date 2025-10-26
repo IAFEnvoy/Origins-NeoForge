@@ -3,16 +3,16 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 import com.iafenvoy.origins.attachment.EntityOriginAttachment;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
-import com.iafenvoy.origins.event.common.CanNaturalRegenEvent;
+import com.iafenvoy.origins.event.common.IgnoreWaterEvent;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
-public enum DisableRegenPower implements Power {
+public enum IgnoreWaterPower implements Power {
     INSTANCE;
-    public static final MapCodec<DisableRegenPower> CODEC = MapCodec.unit(INSTANCE);
+    public static final MapCodec<IgnoreWaterPower> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
@@ -20,8 +20,8 @@ public enum DisableRegenPower implements Power {
     }
 
     @SubscribeEvent
-    public static void disableNaturalRegen(CanNaturalRegenEvent event) {
-        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.DISABLE_REGEN).isEmpty())
-            event.deny();
+    public static void ignoreWater(IgnoreWaterEvent event) {
+        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.IGNORE_WATER).isEmpty())
+            event.allow();
     }
 }

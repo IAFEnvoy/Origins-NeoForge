@@ -21,9 +21,9 @@ public record EntityChoiceAction(List<WeightedActionHolder> actions) implements 
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
         WeightedActionHolder holder = WeightedRandomSelector.selectRandomByWeight(this.actions);
-        if (holder != null) holder.element.accept(source, target);
+        if (holder != null) holder.element.execute(source, target);
     }
 
     private record WeightedActionHolder(BiEntityAction element,

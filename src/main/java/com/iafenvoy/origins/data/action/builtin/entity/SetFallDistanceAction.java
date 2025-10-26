@@ -18,7 +18,7 @@ public record SetFallDistanceAction(float fallDistance) implements EntityAction 
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         source.fallDistance = this.fallDistance;
     }
 }

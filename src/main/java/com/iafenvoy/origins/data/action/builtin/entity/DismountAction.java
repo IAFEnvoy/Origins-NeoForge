@@ -15,7 +15,7 @@ public enum DismountAction implements EntityAction {
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         source.stopRiding();
     }
 }

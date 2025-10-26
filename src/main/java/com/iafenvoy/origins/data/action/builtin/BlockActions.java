@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.action.builtin;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.ActionRegistries;
 import com.iafenvoy.origins.data.action.BlockAction;
+import com.iafenvoy.origins.data.action.EmptyAction;
 import com.iafenvoy.origins.data.action.builtin.block.*;
 import com.iafenvoy.origins.data.action.builtin.block.meta.*;
 import com.mojang.serialization.MapCodec;
@@ -12,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("unused")
 public final class BlockActions {
     public static final DeferredRegister<MapCodec<? extends BlockAction>> REGISTRY = DeferredRegister.create(ActionRegistries.BLOCK_ACTION, Origins.MOD_ID);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<EmptyAction>> EMPTY = REGISTRY.register("empty", () -> EmptyAction.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BonemealAction>> BONEMEAL = REGISTRY.register("bonemeal", () -> BonemealAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<ExecuteCommandAction>> EXECUTE_COMMAND = REGISTRY.register("execute_command", () -> ExecuteCommandAction.CODEC);

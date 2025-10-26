@@ -8,6 +8,10 @@ import org.jetbrains.annotations.NotNull;
 public interface Power {
     Codec<Power> CODEC = PowerRegistries.POWER_TYPE.byNameCodec().dispatch("type", Power::codec, x -> x);
 
+    static MapCodec<Power> optionalCodec(String name) {
+        return CODEC.optionalFieldOf(name, EmptyPower.INSTANCE);
+    }
+
     @NotNull
     MapCodec<? extends Power> codec();
 

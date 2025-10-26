@@ -21,7 +21,7 @@ public record SetBlockAction(Block block) implements BlockAction {
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
         level.setBlock(pos, this.block.defaultBlockState(), Block.UPDATE_ALL);
     }
 }

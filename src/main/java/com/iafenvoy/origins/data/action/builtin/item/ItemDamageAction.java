@@ -22,7 +22,7 @@ public record ItemDamageAction(int amount, boolean ignoreUnbreaking) implements 
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
         if (this.ignoreUnbreaking) stack.setDamageValue(stack.getDamageValue() - this.amount);
         else if (level instanceof ServerLevel serverLevel) stack.hurtAndBreak(this.amount, serverLevel, null, item -> {
         });

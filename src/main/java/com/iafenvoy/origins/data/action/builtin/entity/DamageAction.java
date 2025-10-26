@@ -23,7 +23,7 @@ public record DamageAction(Holder<DamageType> damageType, float amount) implemen
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         source.hurt(new DamageSource(this.damageType), this.amount);
     }
 }

@@ -22,7 +22,7 @@ public record AddExperienceAction(Optional<Integer> points, Optional<Integer> le
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source instanceof Player player) {
             this.points.ifPresent(player::giveExperiencePoints);
             this.levels.ifPresent(player::giveExperienceLevels);

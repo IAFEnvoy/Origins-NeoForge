@@ -4,7 +4,6 @@ import com.iafenvoy.origins.attachment.EntityOriginAttachment;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -19,8 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @EventBusSubscriber
-public record EffectImmunityPower(Either<Holder<MobEffect>, List<Holder<MobEffect>>> effect,
-                                  boolean inverted) implements Power {
+public record EffectImmunityPower(List<Holder<MobEffect>> effect, boolean inverted) implements Power {
     public static final MapCodec<EffectImmunityPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             CombinedCodecs.MOB_EFFECT.fieldOf("effect").forGetter(EffectImmunityPower::effect),
             Codec.BOOL.optionalFieldOf("inverted", false).forGetter(EffectImmunityPower::inverted)
@@ -36,7 +34,7 @@ public record EffectImmunityPower(Either<Holder<MobEffect>, List<Holder<MobEffec
     }
 
     public boolean canApply(Holder<MobEffect> effect) {
-        return !this.effect.map(List::of, x -> x).contains(effect) ^ this.inverted;
+        return !this.effect.contains(effect) ^ this.inverted;
     }
 
     @SubscribeEvent

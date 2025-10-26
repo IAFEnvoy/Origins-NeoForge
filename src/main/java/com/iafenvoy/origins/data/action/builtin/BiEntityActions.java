@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.action.builtin;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.ActionRegistries;
 import com.iafenvoy.origins.data.action.BiEntityAction;
+import com.iafenvoy.origins.data.action.EmptyAction;
 import com.iafenvoy.origins.data.action.builtin.bientity.*;
 import com.iafenvoy.origins.data.action.builtin.bientity.meta.*;
 import com.mojang.serialization.MapCodec;
@@ -12,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("unused")
 public final class BiEntityActions {
     public static final DeferredRegister<MapCodec<? extends BiEntityAction>> REGISTRY = DeferredRegister.create(ActionRegistries.BI_ENTITY_ACTION, Origins.MOD_ID);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<EmptyAction>> EMPTY = REGISTRY.register("empty", () -> EmptyAction.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<AddVelocityAction>> ADD_VELOCITY = REGISTRY.register("add_velocity", () -> AddVelocityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<DamageTargetAction>> DAMAGE = REGISTRY.register("damage_target", () -> DamageTargetAction.CODEC);

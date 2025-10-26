@@ -23,7 +23,7 @@ public record DamageTargetAction(Holder<DamageType> damageType, float amount) im
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
         target.hurt(new DamageSource(this.damageType, source), this.amount);
     }
 }

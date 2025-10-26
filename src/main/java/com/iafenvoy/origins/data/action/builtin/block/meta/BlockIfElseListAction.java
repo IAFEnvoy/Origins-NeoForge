@@ -23,10 +23,10 @@ public record BlockIfElseListAction(List<ConditionedActionHolder> actions) imple
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
         for (ConditionedActionHolder holder : this.actions)
             if (holder.condition.test(level, pos)) {
-                holder.action.accept(level, pos, direction);
+                holder.action.execute(level, pos, direction);
                 break;
             }
     }

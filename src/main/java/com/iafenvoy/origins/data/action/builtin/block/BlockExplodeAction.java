@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import java.util.Optional;
 
+//FIXME::No optional
 public record BlockExplodeAction(float power, DestructionType destructionType,
                                  Optional<BlockCondition> indestructible, boolean createFire) implements BlockAction {
     public static final MapCodec<BlockExplodeAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -34,7 +35,7 @@ public record BlockExplodeAction(float power, DestructionType destructionType,
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
         //FIXME::Rewrite this
         if (level.isClientSide()) return;
         ExplosionDamageCalculator calculator = this.indestructible().isEmpty() ? new ExplosionDamageCalculator() : new ExplosionDamageCalculator() {

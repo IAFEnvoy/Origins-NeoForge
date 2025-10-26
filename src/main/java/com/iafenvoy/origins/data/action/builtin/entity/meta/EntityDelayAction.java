@@ -20,7 +20,7 @@ public record EntityDelayAction(EntityAction action, int ticks) implements Entit
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
-        Timeout.create(this.ticks, () -> this.action.accept(source));
+    public void execute(@NotNull Entity source) {
+        Timeout.create(this.ticks, () -> this.action.execute(source));
     }
 }

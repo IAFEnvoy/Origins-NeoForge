@@ -21,7 +21,7 @@ public record BlockAndAction(List<BlockAction> actions) implements BlockAction {
     }
 
     @Override
-    public void accept(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
-        this.actions.forEach(x -> x.accept(level, pos, direction));
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+        this.actions.forEach(x -> x.execute(level, pos, direction));
     }
 }

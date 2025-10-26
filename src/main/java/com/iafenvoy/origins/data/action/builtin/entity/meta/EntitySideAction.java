@@ -21,7 +21,7 @@ public record EntitySideAction(EntityAction action, Dist side) implements Entity
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
-        if (Environment.get().getDist() == this.side) this.action.accept(source);
+    public void execute(@NotNull Entity source) {
+        if (Environment.get().getDist() == this.side) this.action.execute(source);
     }
 }

@@ -33,7 +33,7 @@ public record AddVelocityAction(float x, float y, float z, Reference reference, 
     }
 
     @Override
-    public void accept(@NotNull Entity source, @NotNull Entity target) {
+    public void execute(@NotNull Entity source, @NotNull Entity target) {
         //FIXME::May not work properly
         Vector3f velocity = new Vector3f(this.x, this.y, this.z);
         Vec3 refVec = this.reference.apply(source, target);

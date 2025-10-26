@@ -5,14 +5,15 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Predicate;
-
-public interface EntityCondition extends Predicate<Entity> {
+public interface EntityCondition {
     Codec<EntityCondition> CODEC = ConditionRegistries.ENTITY_CONDITION.byNameCodec().dispatch("type", EntityCondition::codec, x -> x);
+
+    static MapCodec<EntityCondition> optionalCodec(String name) {
+        return CODEC.optionalFieldOf(name, EmptyCondition.INSTANCE);
+    }
 
     @NotNull
     MapCodec<? extends EntityCondition> codec();
 
-    @Override
     boolean test(@NotNull Entity entity);
 }

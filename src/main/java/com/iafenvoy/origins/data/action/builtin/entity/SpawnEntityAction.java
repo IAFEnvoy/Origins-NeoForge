@@ -14,14 +14,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record SpawnEntityAction(EntityType<?> entityType, Optional<CompoundTag> tag,
-                                Optional<EntityAction> entityAction,
-                                Optional<BiEntityAction> biEntityAction) implements EntityAction {
+public record SpawnEntityAction(EntityType<?> entityType, Optional<CompoundTag> tag, EntityAction entityAction,
+                                BiEntityAction biEntityAction) implements EntityAction {
     public static final MapCodec<SpawnEntityAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity_type").forGetter(SpawnEntityAction::entityType),
             CompoundTag.CODEC.optionalFieldOf("tag").forGetter(SpawnEntityAction::tag),
-            EntityAction.CODEC.optionalFieldOf("entity_action").forGetter(SpawnEntityAction::entityAction),
-            BiEntityAction.CODEC.optionalFieldOf("bientity_action").forGetter(SpawnEntityAction::biEntityAction)
+            EntityAction.optionalCodec("entity_action").forGetter(SpawnEntityAction::entityAction),
+            BiEntityAction.optionalCodec("bientity_action").forGetter(SpawnEntityAction::biEntityAction)
     ).apply(i, SpawnEntityAction::new));
 
     @Override
@@ -30,12 +29,12 @@ public record SpawnEntityAction(EntityType<?> entityType, Optional<CompoundTag> 
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         if (source.level() instanceof ServerLevel serverLevel)
             this.entityType.spawn(serverLevel, c -> {
                 this.tag.ifPresent(c::load);
-                this.entityAction.ifPresent(x -> x.accept(c));
-                this.biEntityAction.ifPresent(x -> x.accept(source, c));
+                this.entityAction.execute(c);
+                this.biEntityAction.execute(source, c);
             }, source.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
     }
 }

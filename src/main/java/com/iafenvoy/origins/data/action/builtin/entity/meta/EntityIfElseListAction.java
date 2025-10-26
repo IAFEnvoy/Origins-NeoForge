@@ -21,10 +21,10 @@ public record EntityIfElseListAction(List<ConditionedActionHolder> actions) impl
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
+    public void execute(@NotNull Entity source) {
         for (ConditionedActionHolder holder : this.actions)
             if (holder.condition.test(source)) {
-                holder.action.accept(source);
+                holder.action.execute(source);
                 break;
             }
     }

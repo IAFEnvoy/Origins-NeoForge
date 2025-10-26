@@ -19,7 +19,7 @@ public record EntityAndAction(List<EntityAction> actions) implements EntityActio
     }
 
     @Override
-    public void accept(@NotNull Entity source) {
-        this.actions.forEach(x -> x.accept(source));
+    public void execute(@NotNull Entity source) {
+        this.actions.forEach(x -> x.execute(source));
     }
 }
