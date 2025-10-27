@@ -7,20 +7,20 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.Optional;
 
-public record Origin(List<Holder<Power>> powers, Optional<ItemStack> icon, boolean unchoosable, int order, int impact,
+public record Origin(List<Holder<Power>> powers, Optional<ItemStack> icon, boolean unchoosable, int order,
+                     Impact impact,
                      Optional<Component> name, Optional<Component> description, List<Upgrade> upgrades) {
     public static final Codec<Origin> CODEC = RecordCodecBuilder.create(i -> i.group(
             Power.CODEC.listOf().optionalFieldOf("powers", List.of()).forGetter(Origin::powers),
             ItemStack.CODEC.optionalFieldOf("icon").forGetter(Origin::icon),
             Codec.BOOL.optionalFieldOf("unchoosable", false).forGetter(Origin::unchoosable),
             Codec.INT.optionalFieldOf("order", Integer.MAX_VALUE).forGetter(Origin::order),
-            ExtraCodecs.intRange(0, 3).optionalFieldOf("impact", 0).forGetter(Origin::impact),
+            Impact.CODEC.optionalFieldOf("impact", Impact.NONE).forGetter(Origin::impact),
             ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(Origin::name),
             ComponentSerialization.CODEC.optionalFieldOf("description").forGetter(Origin::description),
             Upgrade.CODEC.listOf().optionalFieldOf("upgrades", List.of()).forGetter(Origin::upgrades)
