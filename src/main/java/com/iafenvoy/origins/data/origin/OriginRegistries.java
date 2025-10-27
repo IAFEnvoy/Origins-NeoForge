@@ -18,6 +18,6 @@ public final class OriginRegistries {
 
     @SubscribeEvent
     public static void newDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(ORIGIN_KEY, Origin.CODEC);
+        event.dataPackRegistry(ORIGIN_KEY, Origin.DIRECT_CODEC, Origin.DIRECT_CODEC);
     }
 }

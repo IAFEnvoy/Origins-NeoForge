@@ -2,6 +2,7 @@ package com.iafenvoy.origins.screen;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.badge.Badge;
+import com.iafenvoy.origins.data.badge.BadgeManager;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Impact;
 import com.iafenvoy.origins.data.origin.Origin;
@@ -11,23 +12,21 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class OriginDisplayScreen extends Screen {
-
     private static final ResourceLocation WINDOW_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "choose_origin/background");
     private static final ResourceLocation WINDOW_BORDER = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "choose_origin/border");
     private static final ResourceLocation WINDOW_NAME_PLATE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "choose_origin/name_plate");
@@ -42,10 +41,8 @@ public class OriginDisplayScreen extends Screen {
 
     protected final boolean showDirtBackground;
 
-    private Origin origin;
-    private Origin prevOrigin;
-    private Layer layer;
-    private Layer prevLayer;
+    private Holder<Origin> origin, prevOrigin;
+    private Holder<Layer> layer, prevLayer;
     private Component randomOriginText;
     private ScrollingTextWidget originNameWidget;
 
@@ -67,7 +64,7 @@ public class OriginDisplayScreen extends Screen {
         this.showDirtBackground = showDirtBackground;
     }
 
-    public void showOrigin(Origin origin, Layer layer, boolean isRandom) {
+    public void showOrigin(Holder<Origin> origin, Holder<Layer> layer, boolean isRandom) {
         this.origin = origin;
         this.layer = layer;
         this.isOriginRandom = isRandom;
@@ -92,7 +89,7 @@ public class OriginDisplayScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void renderBackground(@NotNull GuiGraphics context, int mouseX, int mouseY, float delta) {
         if (this.showDirtBackground) {
             super.renderBackground(context, mouseX, mouseY, delta);
         } else {
@@ -107,7 +104,7 @@ public class OriginDisplayScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void render(@NotNull GuiGraphics context, int mouseX, int mouseY, float delta) {
 
         this.renderedBadges.clear();
 
@@ -176,11 +173,11 @@ public class OriginDisplayScreen extends Screen {
 
     }
 
-    public Origin getCurrentOrigin() {
+    public Holder<Origin> getCurrentOrigin() {
         return this.origin;
     }
 
-    public Layer getCurrentLayer() {
+    public Holder<Layer> getCurrentLayer() {
         return this.layer;
     }
 
@@ -211,12 +208,9 @@ public class OriginDisplayScreen extends Screen {
     }
 
     protected void renderBadgeTooltips(GuiGraphics context, int mouseX, int mouseY, float delta) {
-
-        GuiGraphicsAccessor contextAccessor = (GuiGraphicsAccessor) context;
         int widthLimit = this.width - mouseX - 24;
-
         if (this.isWithinWindowBoundaries(mouseX, mouseY)) {
-            this.renderedBadges.stream().filter(RenderedBadge::hasTooltip).filter(renderedBadge -> this.isWithinBadgeBoundaries(renderedBadge, mouseX, mouseY)).map(renderedBadge -> renderedBadge.getTooltipComponents(textRenderer, widthLimit, delta)).forEach(tooltipComponents -> contextAccessor.invokeDrawTooltip(textRenderer, tooltipComponents, mouseX, mouseY, HoveredTooltipPositioner.INSTANCE));
+            this.renderedBadges.stream().filter(RenderedBadge::hasTooltip).filter(renderedBadge -> this.isWithinBadgeBoundaries(renderedBadge, mouseX, mouseY)).map(renderedBadge -> renderedBadge.getTooltipComponents(this.font, widthLimit, delta)).forEach(tooltipComponents -> context.renderTooltipInternal(this.font, tooltipComponents, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE));
         }
 
     }
@@ -265,8 +259,7 @@ public class OriginDisplayScreen extends Screen {
     }
 
     protected void renderOriginImpact(GuiGraphics context, int mouseX, int mouseY) {
-
-        Impact impact = this.origin.impact();
+        Impact impact = this.origin.value().impact();
         context.blitSprite(impact.getSpriteId(), this.guiLeft + 128, this.guiTop + 19, 2, 28, 8);
 
         if (this.isWithinWindowBoundaries(mouseX, mouseY) && this.isWithinImpactBoundaries(mouseX, mouseY)) {
@@ -288,10 +281,9 @@ public class OriginDisplayScreen extends Screen {
     protected void renderOriginName(GuiGraphics context, int mouseX, int mouseY, float delta) {
 
         if (this.refreshOriginNameWidget || (this.origin != this.prevOrigin || this.layer != this.prevLayer)) {
+            Optional<Component> name = this.origin.value() == Origin.EMPTY && this.layer != null && this.layer.value().missingName().isPresent() ? this.layer.value().missingName() : this.origin.value().name();
 
-            Component name = this.origin == Origin.EMPTY && this.layer != null && this.layer.missingName() != null ? this.layer.missingName() : this.origin.name();
-
-            this.originNameWidget = new ScrollingTextWidget(this.guiLeft + 38, this.guiTop + 18, WINDOW_WIDTH - (62 + 3 * 8), 9, name, true, this.font);
+            this.originNameWidget = new ScrollingTextWidget(this.guiLeft + 38, this.guiTop + 18, WINDOW_WIDTH - (62 + 3 * 8), 9, name.orElse(Component.empty()), true, this.font);
             this.originNameWidget.setAlignment(TextAlignment.LEFT);
 
             this.refreshOriginNameWidget = false;
@@ -303,7 +295,7 @@ public class OriginDisplayScreen extends Screen {
 
         this.originNameWidget.render(context, mouseX, mouseY, delta);
 
-        ItemStack iconStack = this.getCurrentOrigin().icon().get();
+        ItemStack iconStack = this.getCurrentOrigin().value().icon().orElse(ItemStack.EMPTY);
         context.renderItem(iconStack, this.guiLeft + 15, this.guiTop + 15);
 
     }
@@ -327,8 +319,8 @@ public class OriginDisplayScreen extends Screen {
 
         y -= this.scrollPos;
 
-        Component description = this.origin == Origin.EMPTY && this.layer != null && this.layer.missingDescription() != null ? this.layer.missingDescription() : this.origin.description();
-        for (FormattedCharSequence descriptionLine : this.font.split(description, textWidthLimit)) {
+        Optional<Component> description = this.origin.value() == Origin.EMPTY && this.layer != null && this.layer.value().missingDescription().isPresent() ? this.layer.value().missingDescription() : this.origin.value().description();
+        for (FormattedCharSequence descriptionLine : this.font.split(description.orElse(Component.empty()), textWidthLimit)) {
             context.drawString(this.font, descriptionLine, x + 2, y, 0xCCCCCC);
             y += 12;
         }
@@ -345,17 +337,17 @@ public class OriginDisplayScreen extends Screen {
 
         } else {
 
-            for (Holder<Power> power : this.origin.powers()) {
+            for (Holder<Power> power : this.origin.value().powers()) {
 
-                if (power.value().isHidden()) {
+                if (power.value().hidden()) {
                     continue;
                 }
 
-                LinkedList<FormattedCharSequence> powerName = new LinkedList<>(font.split(power.getName().formatted(ChatFormatting.UNDERLINE), textWidthLimit));
-                int powerNameWidth = font.width(powerName.getLast());
+                LinkedList<FormattedCharSequence> powerName = new LinkedList<>(this.font.split(power.value().getName().withStyle(ChatFormatting.UNDERLINE), textWidthLimit));
+                int powerNameWidth = this.font.width(powerName.getLast());
 
                 for (FormattedCharSequence powerNameLine : powerName) {
-                    context.drawString(font, powerNameLine, x, y, 0xFFFFFF);
+                    context.drawString(this.font, powerNameLine, x, y, 0xFFFFFF);
                     y += 12;
                 }
 
@@ -367,9 +359,8 @@ public class OriginDisplayScreen extends Screen {
                 int badgeOffsetX = 0;
                 int badgeOffsetY = 0;
 
-                for (Power selfOrSubPower : this.getSelfOrSubPowers(power, BadgeManager::hasPowerBadges)) {
-
-                    for (Badge badge : BadgeManager.getPowerBadges(selfOrSubPower.getId())) {
+                for (Power selfOrSubPower : this.getSelfOrSubPowers(power.value(), BadgeManager::has)) {
+                    for (Badge badge : BadgeManager.get(selfOrSubPower.getId())) {
 
                         int badgeX = badgeStartX + 10 * badgeOffsetX;
                         int badgeY = (y - 1) + 10 * badgeOffsetY;
@@ -396,9 +387,9 @@ public class OriginDisplayScreen extends Screen {
 
                 y += badgeOffsetY * 10;
 
-                for (OrderedText powerDescriptionLine : textRenderer.wrapLines(power.getDescription(), textWidthLimit)) {
+                for (FormattedCharSequence powerDescriptionLine : this.font.split(power.value().getDescription(), textWidthLimit)) {
                     y += 12;
-                    context.drawTextWithShadow(textRenderer, powerDescriptionLine, x + 2, y, 0xCCCCCC);
+                    context.drawString(this.font, powerDescriptionLine, x + 2, y, 0xCCCCCC);
                 }
 
                 y += 20;
@@ -412,20 +403,19 @@ public class OriginDisplayScreen extends Screen {
 
     }
 
-    protected final Collection<? extends Power> getSelfOrSubPowers(Power power, Predicate<Power> selfPredicate) {
-
-        if (!selfPredicate.test(power) && power instanceof MultiplePower multiplePower) {
-            return multiplePower.getSubPowers();
-        } else {
-            return Set.of(power);
-        }
-
+    protected final Collection<? extends Power> getSelfOrSubPowers(Power power, Predicate<ResourceLocation> selfPredicate) {
+        //TODO
+//        if (!selfPredicate.test(power) && power instanceof MultiplePower multiplePower) {
+//            return multiplePower.getSubPowers();
+//        } else {
+        return Set.of(power);
+//        }
     }
 
     protected record RenderedBadge(Power power, Badge badge, int x, int y) {
 
-        public List<TooltipComponent> getTooltipComponents(Font textRenderer, int widthLimit, float delta) {
-            return this.badge.getTooltipComponents(this.power, widthLimit, delta, textRenderer);
+        public List<ClientTooltipComponent> getTooltipComponents(Font textRenderer, int widthLimit, float delta) {
+            return this.badge.getTooltipComponents(this.power, textRenderer, widthLimit, delta);
         }
 
         public boolean hasTooltip() {

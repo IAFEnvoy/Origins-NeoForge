@@ -18,6 +18,6 @@ public final class LayerRegistries {
 
     @SubscribeEvent
     public static void newDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(LAYER_KEY, Layer.CODEC);
+        event.dataPackRegistry(LAYER_KEY, Layer.CODEC, Layer.CODEC);
     }
 }

@@ -28,6 +28,6 @@ public final class PowerRegistries {
 
     @SubscribeEvent
     public static void newDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(POWER_KEY, Power.LOAD_CODEC);
+        event.dataPackRegistry(POWER_KEY, Power.DIRECT_CODEC, Power.DIRECT_CODEC);
     }
 }

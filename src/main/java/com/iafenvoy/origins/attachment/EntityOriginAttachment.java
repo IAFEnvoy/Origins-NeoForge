@@ -2,6 +2,7 @@ package com.iafenvoy.origins.attachment;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
 import com.iafenvoy.origins.data.power.Power;
@@ -11,6 +12,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -72,6 +74,14 @@ public final class EntityOriginAttachment {
             if (power != null && clazz.isAssignableFrom(power.getClass()))
                 results.add(clazz.cast(power));
         return results;
+    }
+
+    public boolean hasOrigin(ResourceLocation id) {
+        return this.origins.containsKey(id) && this.origins.get(id).value() != Origin.EMPTY;
+    }
+
+    public boolean hasOrigin(Holder<Layer> layer) {
+        return layer.unwrapKey().map(ResourceKey::location).map(this::hasOrigin).orElse(false);
     }
 
     private static void executeOnPowers(@Nullable Holder<Origin> origin, Consumer<Power> consumer) {
