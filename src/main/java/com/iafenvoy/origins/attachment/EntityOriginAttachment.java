@@ -49,7 +49,7 @@ public final class EntityOriginAttachment {
 
     public void refreshPowerMap() {
         this.powerMap.clear();
-        this.origins.values().forEach(o -> o.value().powers().forEach(p -> this.powerMap.put(PowerRegistries.POWER_TYPE.getKey(p.codec()), p)));
+        this.origins.values().forEach(o -> o.value().powers().stream().map(Holder::value).forEach(p -> this.powerMap.put(PowerRegistries.POWER_TYPE.getKey(p.codec()), p)));
     }
 
     public void tick(@NotNull Entity entity) {
@@ -75,7 +75,7 @@ public final class EntityOriginAttachment {
     }
 
     private static void executeOnPowers(@Nullable Holder<Origin> origin, Consumer<Power> consumer) {
-        if (origin != null) origin.value().powers().forEach(consumer);
+        if (origin != null) origin.value().powers().stream().map(Holder::value).forEach(consumer);
     }
 
     public static EntityOriginAttachment get(Entity entity) {

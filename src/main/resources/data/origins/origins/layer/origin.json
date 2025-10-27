@@ -1,0 +1,11 @@
+{
+  "order": 0,
+  "enabled": true,
+  "origins": "origins:origin",
+  "allow_random": true,
+  "exclude_random": [
+    "origins:human"
+  ],
+  "allow_random_unchoosable": false,
+  "hidden": false
+}

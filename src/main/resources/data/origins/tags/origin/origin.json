@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "origins:arachnid",
+    "origins:avian",
+    "origins:blazeborn",
+    "origins:elytrian",
+    "origins:enderian",
+    "origins:feline",
+    "origins:human",
+    "origins:merling",
+    "origins:phantom",
+    "origins:shulk"
+  ]
+}

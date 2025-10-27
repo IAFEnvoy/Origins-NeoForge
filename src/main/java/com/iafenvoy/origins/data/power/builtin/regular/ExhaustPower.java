@@ -37,6 +37,7 @@ public class ExhaustPower extends IntervalPower {
             player.causeFoodExhaustion(this.exhaustion);
     }
 
+    @Override
     public int getInterval() {
         return this.interval;
     }

@@ -1,16 +1,18 @@
 package com.iafenvoy.origins.data.power;
 
+import com.iafenvoy.origins.util.codec.DefaultedCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public interface Power {
-    Codec<Power> CODEC = PowerRegistries.POWER_TYPE.byNameCodec().dispatch("type", Power::codec, x -> x);
+import java.util.function.Function;
 
-    static MapCodec<Power> optionalCodec(String name) {
-        return CODEC.optionalFieldOf(name, EmptyPower.INSTANCE);
-    }
+public interface Power {
+    Codec<Power> LOAD_CODEC = DefaultedCodec.registryDispatch(PowerRegistries.POWER_TYPE, Power::codec, Function.identity(), EmptyPower::new);
+    Codec<Holder<Power>> CODEC = RegistryFixedCodec.create(PowerRegistries.POWER_KEY);
 
     @NotNull
     MapCodec<? extends Power> codec();

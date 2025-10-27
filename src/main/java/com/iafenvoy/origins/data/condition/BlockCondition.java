@@ -1,13 +1,16 @@
 package com.iafenvoy.origins.data.condition;
 
+import com.iafenvoy.origins.util.codec.DefaultedCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Function;
+
 public interface BlockCondition {
-    Codec<BlockCondition> CODEC = ConditionRegistries.BLOCK_CONDITION.byNameCodec().dispatch("type", BlockCondition::codec, x -> x);
+    Codec<BlockCondition> CODEC = DefaultedCodec.registryDispatch(ConditionRegistries.BLOCK_CONDITION, BlockCondition::codec, Function.identity(), () -> EmptyCondition.INSTANCE);
 
     static MapCodec<BlockCondition> optionalCodec(String name) {
         return CODEC.optionalFieldOf(name, EmptyCondition.INSTANCE);

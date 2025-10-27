@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.IntervalPower;
+import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -48,6 +48,7 @@ public class DamageOverTimePower extends IntervalPower {
         entity.hurt(new DamageSource(this.damageType), entity.level().getDifficulty() == Difficulty.EASY ? this.damageEasy : this.damage);
     }
 
+    @Override
     public int getInterval() {
         return this.interval;
     }

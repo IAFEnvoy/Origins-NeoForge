@@ -2,8 +2,8 @@ package com.iafenvoy.origins.data.action.builtin;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.ActionRegistries;
-import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.EmptyAction;
+import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.builtin.entity.*;
 import com.iafenvoy.origins.data.action.builtin.entity.meta.*;
 import com.mojang.serialization.MapCodec;
