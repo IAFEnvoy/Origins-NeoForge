@@ -38,7 +38,7 @@ public class DefaultedCodec<A> implements Codec<A> {
     public <T> DataResult<Pair<A, T>> decode(DynamicOps<T> ops, T input) {
         DataResult<Pair<A, T>> result = this.baseCodec.decode(ops, input);
         if (result instanceof DataResult.Error<Pair<A, T>> error) {
-            LOGGER.error("Failed to load {}", this.name, new IllegalStateException(error.message()));
+            LOGGER.error("Failed to decode {}", this.name, new IllegalStateException(error.message()));
             result = DataResult.success(new Pair<>(this.defaultValue.get(), input));
         }
         return result;
@@ -46,6 +46,11 @@ public class DefaultedCodec<A> implements Codec<A> {
 
     @Override
     public <T> DataResult<T> encode(A input, DynamicOps<T> ops, T prefix) {
-        return this.baseCodec.encode(input, ops, prefix);
+        DataResult<T> result = this.baseCodec.encode(input, ops, prefix);
+        if (result instanceof DataResult.Error<T> error) {
+            LOGGER.error("Failed to encode {}", this.name, new IllegalStateException(error.message()));
+            result = DataResult.success(prefix);
+        }
+        return result;
     }
 }

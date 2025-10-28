@@ -4,6 +4,7 @@ import com.iafenvoy.origins.util.codec.DefaultedCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.RegistryFixedCodec;
@@ -39,15 +40,15 @@ public interface Power {
         return false;
     }
 
-    default ResourceLocation getId() {
-        return PowerRegistries.POWER_TYPE.getKey(this.codec());
+    default ResourceLocation getId(RegistryAccess access) {
+        return access.registryOrThrow(PowerRegistries.POWER_KEY).getKey(this);
     }
 
-    default MutableComponent getName() {
-        return Component.translatable(this.getId().toLanguageKey("power", "name"));
+    default MutableComponent getName(RegistryAccess access) {
+        return Component.translatable(this.getId(access).toLanguageKey("power", "name"));
     }
 
-    default MutableComponent getDescription() {
-        return Component.translatable(this.getId().toLanguageKey("power", "description"));
+    default MutableComponent getDescription(RegistryAccess access) {
+        return Component.translatable(this.getId(access).toLanguageKey("power", "description"));
     }
 }

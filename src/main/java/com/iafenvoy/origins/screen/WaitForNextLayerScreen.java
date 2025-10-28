@@ -8,12 +8,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public class WaitForNextLayerScreen extends Screen {
-
     private final List<Holder<Layer>> layerList;
     private final int currentLayerIndex;
     private final boolean showDirtBackground;
@@ -56,5 +58,10 @@ public class WaitForNextLayerScreen extends Screen {
     public void renderBackground(@NotNull GuiGraphics context, int mouseX, int mouseY, float delta) {
         if (this.showDirtBackground) super.renderMenuBackground(context);
         else super.renderBackground(context, mouseX, mouseY, delta);
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return false;
     }
 }

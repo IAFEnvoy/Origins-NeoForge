@@ -17,7 +17,6 @@ public class EmptyBadge implements Badge {
 
     @Override
     public void execute(@NotNull LivingEntity living, @NotNull Level level, @NotNull RegistryAccess access) {
-
     }
 
     @Override

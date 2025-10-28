@@ -11,26 +11,25 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 public record Layer(int order, TagKey<Origin> origins, boolean enabled, Optional<Component> name,
-                    Optional<GuiTitle> guiTitle, Optional<Component> missingName,
-                    Optional<Component> missingDescription, boolean allowRandom, boolean allowRandomUnchoosable,
-                    List<Holder<Origin>> excludeRandom, Optional<ResourceLocation> defaultOrigin,
-                    boolean autoChoose, boolean hidden) {
-    public static final Codec<Layer> CODEC = RecordCodecBuilder.create(i -> i.group(
+                    Optional<GuiTitle> guiTitle, boolean allowRandom, boolean allowRandomUnchoosable,
+                    List<Holder<Origin>> excludeRandom, Optional<ResourceLocation> defaultOrigin, boolean autoChoose,
+                    boolean hidden) implements Comparable<Layer> {
+    public static final Codec<Layer> DIRECT_CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.INT.optionalFieldOf("order", Integer.MAX_VALUE).forGetter(Layer::order),
             TagKey.codec(OriginRegistries.ORIGIN_KEY).fieldOf("origins").forGetter(Layer::origins),
             Codec.BOOL.optionalFieldOf("enabled", true).forGetter(Layer::enabled),
             ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(Layer::name),
             GuiTitle.CODEC.optionalFieldOf("gui_title").forGetter(Layer::guiTitle),
-            ComponentSerialization.CODEC.optionalFieldOf("missing_name").forGetter(Layer::missingName),
-            ComponentSerialization.CODEC.optionalFieldOf("missing_description").forGetter(Layer::missingDescription),
             Codec.BOOL.optionalFieldOf("allow_random", false).forGetter(Layer::allowRandom),
             Codec.BOOL.optionalFieldOf("allow_random_unchoosable", false).forGetter(Layer::allowRandomUnchoosable),
             Origin.CODEC.listOf().optionalFieldOf("exclude_random", List.of()).forGetter(Layer::excludeRandom),
@@ -38,6 +37,7 @@ public record Layer(int order, TagKey<Origin> origins, boolean enabled, Optional
             Codec.BOOL.optionalFieldOf("auto_choose", false).forGetter(Layer::autoChoose),
             Codec.BOOL.optionalFieldOf("hidden", false).forGetter(Layer::hidden)
     ).apply(i, Layer::new));
+    public static final Codec<Holder<Layer>> CODEC = RegistryFixedCodec.create(LayerRegistries.LAYER_KEY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Layer>> STREAM_CODEC = ByteBufCodecs.holderRegistry(LayerRegistries.LAYER_KEY);
 
     public int getOriginOptionCount(RegistryAccess access) {
@@ -62,6 +62,15 @@ public record Layer(int order, TagKey<Origin> origins, boolean enabled, Optional
 
     public Component getChooseOriginTitle() {
         return this.guiTitle.flatMap(x -> x.chooseOrigin).orElse(Component.empty());
+    }
+
+    public Component getViewOriginTitle() {
+        return this.guiTitle.flatMap(x -> x.viewOrigin).orElse(Component.empty());
+    }
+
+    @Override
+    public int compareTo(@NotNull Layer that) {
+        return Integer.compare(this.order, that.order);
     }
 
     public record GuiTitle(Optional<Component> chooseOrigin, Optional<Component> viewOrigin) {

@@ -16,17 +16,21 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+@OnlyIn(Dist.CLIENT)
 public class ChooseOriginScreen extends OriginDisplayScreen {
     private final List<Holder<Layer>> layerList;
     private final List<Holder<Origin>> originSelection;
@@ -50,6 +54,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
         this.layerList = layerList;
         this.currentLayerIndex = currentLayerIndex;
         this.originSelection = new ArrayList<>(layerList.size());
+        this.initRandomOrigin();
         Player player = Minecraft.getInstance().player;
         if (player != null) {
             Layer currentLayer = this.getCurrentLayer().value();
@@ -73,84 +78,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     }
 
     private void openNextLayerScreen() {
-        this.minecraft.setScreen(new WaitForNextLayerScreen(this.layerList, this.currentLayerIndex, this.showDirtBackground));
-    }
-
-    @Override
-    public boolean shouldCloseOnEsc() {
-        return false;
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-        this.calculatedTop = (this.height - 182) / 2;
-        this.calculatedLeft = (this.width - 405) / 2;
-        this.guiTop = (this.height - 182) / 2;
-        this.guiLeft = this.calculatedLeft + 219 + 10;
-        this.pages = (int) Math.ceil(this.maxSelection / 35.0);
-        int x = 0;
-        int y = 0;
-
-        for (int i = 0; i < Math.min(this.maxSelection, 35); ++i) {
-            if (x > 6) {
-                x = 0;
-                ++y;
-            }
-
-            int actualX = 12 + x * 28 + this.calculatedLeft;
-            int actualY = 10 + y * 30 + this.calculatedTop;
-            //TODO::Rewrite?
-            int finalI = i;
-            this.addRenderableWidget(Button.builder(Component.empty(), (b) -> {
-                int index = finalI + this.currentPage * 35;
-                if (index <= this.maxSelection - 1) {
-                    this.currentOriginIndex = index;
-                    Holder<Origin> newOrigin = this.getCurrentOrigin();
-                    this.showOrigin(newOrigin, this.layerList.get(this.currentLayerIndex), newOrigin == this.randomOrigin);
-                }
-            }).pos(actualX, actualY).size(26, 26).build());
-            ++x;
-        }
-        if (this.maxSelection > 35) {
-            this.addRenderableWidget(Button.builder(Component.literal("<"), (b) -> {
-                --this.currentPage;
-                if (this.currentPage < 0) this.currentPage = this.pages - 1;
-            }).pos(this.calculatedLeft, this.guiTop + 182 + 5).size(20, 20).build());
-            this.addRenderableWidget(Button.builder(Component.literal(">"), (b) -> this.currentPage = (this.currentPage + 1) % this.pages).pos(this.calculatedLeft + 219 - 20, this.guiTop + 182 + 5).size(20, 20).build());
-        }
-        if (this.maxSelection > 0) {
-            this.addRenderableWidget(Button.builder(Component.translatable("origins.gui.select"), (button) -> {
-                if (this.currentOriginIndex == this.originSelection.size())
-                    PacketDistributor.sendToServer(new ChooseOriginC2SPayload(this.getCurrentLayer(), Optional.empty()));
-                else
-                    PacketDistributor.sendToServer(new ChooseOriginC2SPayload(this.getCurrentLayer(), Optional.of(super.getCurrentOrigin())));
-                this.openNextLayerScreen();
-            }).bounds(this.guiLeft + 88 - 50, this.guiTop + 182 + 5, 100, 20).build());
-        }
-    }
-
-    @Override
-    public Holder<Layer> getCurrentLayer() {
-        return this.layerList.get(this.currentLayerIndex);
-    }
-
-    @Override
-    public Holder<Origin> getCurrentOrigin() {
-        if (this.currentOriginIndex == this.originSelection.size()) {
-            if (this.randomOrigin == null) {
-                this.initRandomOrigin();
-            }
-
-            return this.randomOrigin;
-        } else {
-            return this.originSelection.get(this.currentOriginIndex);
-        }
-    }
-
-    @Override
-    protected Component getTitleText() {
-        return super.getCurrentLayer().value().getChooseOriginTitle();
+        Minecraft.getInstance().setScreen(new WaitForNextLayerScreen(this.layerList, this.currentLayerIndex, this.showDirtBackground));
     }
 
     private void initRandomOrigin() {
@@ -161,11 +89,86 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
             Origin b = ib.value();
             int impactDelta = Integer.compare(a.impact().getImpactValue(), b.impact().getImpactValue());
             return impactDelta != 0 ? impactDelta : Integer.compare(a.order(), b.order());
-        }).forEach(id -> {
-            randomOriginText.append(id.value().name().orElse(Component.empty()));
+        }).forEach(origin -> {
+            randomOriginText.append(origin.unwrapKey().map(ResourceKey::location).map(Origin::getName).orElse(Component.empty()));
             randomOriginText.append(Component.literal("\n"));
         });
         this.setRandomOriginText(randomOriginText);
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return false;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        this.calculatedTop = (this.height - CHOICES_HEIGHT) / 2;
+        this.calculatedLeft = (this.width - 405) / 2;
+        this.guiTop = (this.height - CHOICES_HEIGHT) / 2;
+        this.guiLeft = this.calculatedLeft + CHOICES_WIDTH + 10;
+        this.pages = this.maxSelection / COUNT_PER_PAGE;
+        int x = 0;
+        int y = 0;
+
+        for (int i = 0; i < Math.min(this.maxSelection, COUNT_PER_PAGE); ++i) {
+            if (x > 6) {
+                x = 0;
+                ++y;
+            }
+
+            int actualX = 12 + x * 28 + this.calculatedLeft;
+            int actualY = 10 + y * 30 + this.calculatedTop;
+            //TODO::Rewrite?
+            int finalI = i;
+            this.addRenderableWidget(Button.builder(Component.empty(), (b) -> {
+                int index = finalI + this.currentPage * COUNT_PER_PAGE;
+                if (index <= this.maxSelection - 1) {
+                    this.currentOriginIndex = index;
+                    Holder<Origin> newOrigin = this.getCurrentOrigin();
+                    this.showOrigin(newOrigin, this.layerList.get(this.currentLayerIndex), newOrigin == this.randomOrigin);
+                }
+            }).pos(actualX, actualY).size(ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE).build());
+            ++x;
+        }
+        if (this.maxSelection > COUNT_PER_PAGE) {
+            this.addRenderableWidget(Button.builder(Component.literal("<"), (b) -> {
+                --this.currentPage;
+                if (this.currentPage < 0) this.currentPage = this.pages - 1;
+            }).pos(this.calculatedLeft, this.guiTop + CHOICES_HEIGHT + 5).size(20, 20).build());
+            this.addRenderableWidget(Button.builder(Component.literal(">"), (b) -> this.currentPage = (this.currentPage + 1) % this.pages).pos(this.calculatedLeft + CHOICES_WIDTH - 20, this.guiTop + CHOICES_HEIGHT + 5).size(20, 20).build());
+        }
+        if (this.maxSelection > 0) {
+            this.addRenderableWidget(Button.builder(Component.translatable("origins.gui.select"), (button) -> {
+                if (this.currentOriginIndex == this.originSelection.size())
+                    PacketDistributor.sendToServer(new ChooseOriginC2SPayload(this.getCurrentLayer(), Optional.empty()));
+                else
+                    PacketDistributor.sendToServer(new ChooseOriginC2SPayload(this.getCurrentLayer(), Optional.of(super.getCurrentOrigin())));
+                this.openNextLayerScreen();
+            }).bounds(this.guiLeft + 88 - 50, this.guiTop + CHOICES_HEIGHT + 5, 100, 20).build());
+        }
+    }
+
+    @Override
+    public Holder<Layer> getCurrentLayer() {
+        return this.layerList.get(this.currentLayerIndex);
+    }
+
+    @Override
+    public Holder<Origin> getCurrentOrigin() {
+        if (this.currentOriginIndex == this.originSelection.size()) return this.randomOrigin;
+        else return this.originSelection.get(this.currentOriginIndex);
+    }
+
+    @Override
+    public ResourceLocation getCurrentOriginId() {
+        return Objects.equals(this.getCurrentOrigin(), this.randomOrigin) ? ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "random") : super.getCurrentOriginId();
+    }
+
+    @Override
+    protected Component getTitleText() {
+        return super.getCurrentLayer().value().getChooseOriginTitle();
     }
 
     @Override
@@ -180,11 +183,11 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     }
 
     public void renderOriginChoicesBox(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        context.blit(ORIGINS_CHOICES, this.calculatedLeft, this.calculatedTop, 0, 0, 219, 182);
+        context.blit(ORIGINS_CHOICES, this.calculatedLeft, this.calculatedTop, 0, 0, CHOICES_WIDTH, CHOICES_HEIGHT);
         int x = 0;
         int y = 0;
 
-        for (int i = this.currentPage * 35; i < Math.min((this.currentPage + 1) * 35, this.maxSelection); ++i) {
+        for (int i = this.currentPage * COUNT_PER_PAGE; i < Math.min((this.currentPage + 1) * COUNT_PER_PAGE, this.maxSelection); ++i) {
             if (x > 6) {
                 x = 0;
                 ++y;
@@ -209,44 +212,19 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
         int var10002 = this.currentPage + 1;
         FormattedCharSequence var13 = Component.literal(var10002 + "/" + this.pages).getVisualOrderText();
         int var10003 = this.calculatedLeft + 109;
-        int var10004 = this.guiTop + 182 + 5;
+        int var10004 = this.guiTop + CHOICES_HEIGHT + 5;
         Objects.requireNonNull(this.font);
         context.drawCenteredString(var10001, var13, var10003, var10004 + 9 / 2, 16777215);
     }
 
     public void renderOriginWidget(GuiGraphics context, int mouseX, int mouseY, float delta, int x, int y, boolean selected, Holder<Origin> origin) {
-        int u;
-        boolean mouseHovering;
-        boolean var10000;
-        label95:
-        {
-            label94:
-            {
-                RenderSystem.setShaderTexture(0, ORIGINS_CHOICES);
-                u = selected ? 26 : 0;
-                mouseHovering = mouseX >= x && mouseY >= y && mouseX < x + 26 && mouseY < y + 26;
-                GuiEventListener var13 = this.getFocused();
-                if (var13 instanceof Button buttonWidget) {
-                    if (buttonWidget.getX() == x && buttonWidget.getY() == y) {
-                        break label94;
-                    }
-                }
+        RenderSystem.setShaderTexture(0, ORIGINS_CHOICES);
+        boolean mouseHovering = mouseX >= x && mouseY >= y && mouseX < x + ORIGIN_ICON_SIZE && mouseY < y + ORIGIN_ICON_SIZE;
+        GuiEventListener var13 = this.getFocused();
+        boolean guiSelected = var13 instanceof Button buttonWidget && buttonWidget.getX() == x && (buttonWidget.getY() == y || mouseHovering);
+        int u = (selected ? ORIGIN_ICON_SIZE : 0) + (guiSelected ? 52 : 0);
 
-                if (!mouseHovering) {
-                    var10000 = false;
-                    break label95;
-                }
-            }
-
-            var10000 = true;
-        }
-
-        boolean guiSelected = var10000;
-        if (guiSelected) {
-            u += 52;
-        }
-
-        context.blit(ORIGINS_CHOICES, x, y, 230, u, 26, 26);
+        context.blit(ORIGINS_CHOICES, x, y, 230, u, ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
         Impact impact = origin.value().impact();
         switch (impact.name()) {
             case "NONE" -> context.blit(ORIGINS_CHOICES, x, y, 224, guiSelected ? 112 : 104, 8, 8);
@@ -258,18 +236,17 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
         }
 
         if (mouseHovering) {
-            Component text = this.getCurrentLayer().value().name().orElse(Component.empty()).copy().append(": ").append(origin.value().name().orElse(Component.empty()));
+            Component text = this.getCurrentLayer().value().name().orElse(Component.empty()).copy().append(": ").append(origin.unwrapKey().map(ResourceKey::location).map(Origin::getName).orElse(Component.empty()));
             context.renderTooltip(this.font, text, mouseX, mouseY);
         }
-
     }
 
     public void renderRandomOrigin(GuiGraphics context, int mouseX, int mouseY, float delta, int x, int y, boolean selected) {
-        boolean mouseHovering = mouseX >= x && mouseY >= y && mouseX < x + 26 && mouseY < y + 26;
+        boolean mouseHovering = mouseX >= x && mouseY >= y && mouseX < x + ORIGIN_ICON_SIZE && mouseY < y + ORIGIN_ICON_SIZE;
         GuiEventListener var12 = this.getFocused();
         boolean guiSelected = var12 instanceof Button buttonWidget && buttonWidget.getX() == x && (buttonWidget.getY() == y || mouseHovering);
-        int u = (selected ? 26 : 0) + (guiSelected ? 52 : 0);
-        context.blit(ORIGINS_CHOICES, x, y, 230, u, 26, 26);
+        int u = (selected ? ORIGIN_ICON_SIZE : 0) + (guiSelected ? 52 : 0);
+        context.blit(ORIGINS_CHOICES, x, y, 230, u, ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
         context.blit(ORIGINS_CHOICES, x + 6, y + 5, 243, 120, 13, 16);
         int impact = (int) ((double) this.tickTime / (double) 15.0F) % 4;
         context.blit(ORIGINS_CHOICES, x, y, 224 + impact * 8, guiSelected ? 112 : 104, 8, 8);
