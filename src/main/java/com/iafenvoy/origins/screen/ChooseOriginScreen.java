@@ -32,8 +32,8 @@ import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 public class ChooseOriginScreen extends OriginDisplayScreen {
-    private final List<Holder<Layer>> layerList;
-    private final List<Holder<Origin>> originSelection;
+    private final List<Holder<Layer>> layers;
+    private final List<Holder<Origin>> origins;
     private final int currentLayerIndex;
     private Holder<Origin> randomOrigin;
     private int currentOriginIndex = 0;
@@ -49,11 +49,11 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     private int pages;
     private float tickTime = 0.0F;
 
-    public ChooseOriginScreen(List<Holder<Layer>> layerList, int currentLayerIndex, boolean showDirtBackground) {
+    public ChooseOriginScreen(List<Holder<Layer>> layers, int currentLayerIndex, boolean showDirtBackground) {
         super(Component.translatable("origins.gui.choose_origin.title"), showDirtBackground);
-        this.layerList = layerList;
+        this.layers = layers;
         this.currentLayerIndex = currentLayerIndex;
-        this.originSelection = new ArrayList<>(layerList.size());
+        this.origins = new ArrayList<>(layers.size());
         this.initRandomOrigin();
         Player player = Minecraft.getInstance().player;
         if (player != null) {
@@ -63,10 +63,10 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
                     ItemStack iconStack = holder.value().icon().orElse(ItemStack.EMPTY);
                     if (iconStack.is(Items.PLAYER_HEAD) && !iconStack.has(DataComponents.PROFILE))
                         iconStack.set(DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
-                    this.originSelection.add(holder);
+                    this.origins.add(holder);
                 }
             });
-            this.originSelection.sort(Comparator.<Holder<Origin>>comparingInt(o -> o.value().impact().getImpactValue()).thenComparingInt(x -> x.value().order()));
+            this.origins.sort(Comparator.<Holder<Origin>>comparingInt(o -> o.value().impact().getImpactValue()).thenComparingInt(x -> x.value().order()));
             this.maxSelection = currentLayer.getOriginOptionCount(player.registryAccess());
             if (this.maxSelection == 0) {
                 this.openNextLayerScreen();
@@ -78,13 +78,13 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     }
 
     private void openNextLayerScreen() {
-        Minecraft.getInstance().setScreen(new WaitForNextLayerScreen(this.layerList, this.currentLayerIndex, this.showDirtBackground));
+        Minecraft.getInstance().setScreen(new WaitForNextLayerScreen(this.layers, this.currentLayerIndex, this.showDirtBackground));
     }
 
     private void initRandomOrigin() {
         this.randomOrigin = Holder.direct(Origin.special(OriginsItems.ORB_OF_ORIGIN.toStack(), Impact.NONE, -1));
         MutableComponent randomOriginText = Component.empty();
-        this.layerList.get(this.currentLayerIndex).value().collectRandomizableOrigins(Minecraft.getInstance().player.registryAccess()).sorted((ia, ib) -> {
+        this.layers.get(this.currentLayerIndex).value().collectRandomizableOrigins(Minecraft.getInstance().player.registryAccess()).sorted((ia, ib) -> {
             Origin a = ia.value();
             Origin b = ib.value();
             int impactDelta = Integer.compare(a.impact().getImpactValue(), b.impact().getImpactValue());
@@ -127,7 +127,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
                 if (index <= this.maxSelection - 1) {
                     this.currentOriginIndex = index;
                     Holder<Origin> newOrigin = this.getCurrentOrigin();
-                    this.showOrigin(newOrigin, this.layerList.get(this.currentLayerIndex), newOrigin == this.randomOrigin);
+                    this.showOrigin(newOrigin, this.layers.get(this.currentLayerIndex), newOrigin == this.randomOrigin);
                 }
             }).pos(actualX, actualY).size(ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE).build());
             ++x;
@@ -141,7 +141,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
         }
         if (this.maxSelection > 0) {
             this.addRenderableWidget(Button.builder(Component.translatable("origins.gui.select"), (button) -> {
-                if (this.currentOriginIndex == this.originSelection.size())
+                if (this.currentOriginIndex == this.origins.size())
                     PacketDistributor.sendToServer(new ChooseOriginC2SPayload(this.getCurrentLayer(), Optional.empty()));
                 else
                     PacketDistributor.sendToServer(new ChooseOriginC2SPayload(this.getCurrentLayer(), Optional.of(super.getCurrentOrigin())));
@@ -152,13 +152,13 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
 
     @Override
     public Holder<Layer> getCurrentLayer() {
-        return this.layerList.get(this.currentLayerIndex);
+        return this.layers.get(this.currentLayerIndex);
     }
 
     @Override
     public Holder<Origin> getCurrentOrigin() {
-        if (this.currentOriginIndex == this.originSelection.size()) return this.randomOrigin;
-        else return this.originSelection.get(this.currentOriginIndex);
+        if (this.currentOriginIndex == this.origins.size()) return this.randomOrigin;
+        else return this.origins.get(this.currentOriginIndex);
     }
 
     @Override
@@ -172,18 +172,18 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         if (this.maxSelection == 0) {
             this.openNextLayerScreen();
         } else {
-            super.render(context, mouseX, mouseY, delta);
+            super.render(graphics, mouseX, mouseY, delta);
         }
-        this.renderOriginChoicesBox(context, mouseX, mouseY, delta);
+        this.renderOriginChoicesBox(graphics, mouseX, mouseY, delta);
         this.tickTime += delta;
     }
 
-    public void renderOriginChoicesBox(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        context.blit(ORIGINS_CHOICES, this.calculatedLeft, this.calculatedTop, 0, 0, CHOICES_WIDTH, CHOICES_HEIGHT);
+    public void renderOriginChoicesBox(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        graphics.blit(ORIGINS_CHOICES, this.calculatedLeft, this.calculatedTop, 0, 0, CHOICES_WIDTH, CHOICES_HEIGHT);
         int x = 0;
         int y = 0;
 
@@ -195,14 +195,14 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
 
             int actualX = 12 + x * 28 + this.calculatedLeft;
             int actualY = 10 + y * 30 + this.calculatedTop;
-            if (i >= this.originSelection.size()) {
+            if (i >= this.origins.size()) {
                 boolean selected = this.getCurrentOrigin().equals(this.randomOrigin);
-                this.renderRandomOrigin(context, mouseX, mouseY, delta, actualX, actualY, selected);
+                this.renderRandomOrigin(graphics, mouseX, mouseY, delta, actualX, actualY, selected);
             } else {
-                Holder<Origin> origin = this.originSelection.get(i);
+                Holder<Origin> origin = this.origins.get(i);
                 boolean selected = Objects.equals(origin.getKey(), this.getCurrentOrigin().getKey());
-                this.renderOriginWidget(context, mouseX, mouseY, delta, actualX, actualY, selected, origin);
-                context.renderItem(origin.value().icon().orElse(ItemStack.EMPTY), actualX + 5, actualY + 5);
+                this.renderOriginWidget(graphics, mouseX, mouseY, delta, actualX, actualY, selected, origin);
+                graphics.renderItem(origin.value().icon().orElse(ItemStack.EMPTY), actualX + 5, actualY + 5);
             }
 
             ++x;
@@ -214,41 +214,41 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
         int var10003 = this.calculatedLeft + 109;
         int var10004 = this.guiTop + CHOICES_HEIGHT + 5;
         Objects.requireNonNull(this.font);
-        context.drawCenteredString(var10001, var13, var10003, var10004 + 9 / 2, 16777215);
+        graphics.drawCenteredString(var10001, var13, var10003, var10004 + 9 / 2, 16777215);
     }
 
-    public void renderOriginWidget(GuiGraphics context, int mouseX, int mouseY, float delta, int x, int y, boolean selected, Holder<Origin> origin) {
+    public void renderOriginWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta, int x, int y, boolean selected, Holder<Origin> origin) {
         RenderSystem.setShaderTexture(0, ORIGINS_CHOICES);
         boolean mouseHovering = mouseX >= x && mouseY >= y && mouseX < x + ORIGIN_ICON_SIZE && mouseY < y + ORIGIN_ICON_SIZE;
         GuiEventListener var13 = this.getFocused();
         boolean guiSelected = var13 instanceof Button buttonWidget && buttonWidget.getX() == x && (buttonWidget.getY() == y || mouseHovering);
         int u = (selected ? ORIGIN_ICON_SIZE : 0) + (guiSelected ? 52 : 0);
 
-        context.blit(ORIGINS_CHOICES, x, y, 230, u, ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
+        graphics.blit(ORIGINS_CHOICES, x, y, 230, u, ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
         Impact impact = origin.value().impact();
         switch (impact.name()) {
-            case "NONE" -> context.blit(ORIGINS_CHOICES, x, y, 224, guiSelected ? 112 : 104, 8, 8);
-            case "LOW" -> context.blit(ORIGINS_CHOICES, x, y, 232, guiSelected ? 112 : 104, 8, 8);
-            case "MEDIUM" -> context.blit(ORIGINS_CHOICES, x, y, 240, guiSelected ? 112 : 104, 8, 8);
-            case "HIGH" -> context.blit(ORIGINS_CHOICES, x, y, 248, guiSelected ? 112 : 104, 8, 8);
-            case "VERY_HIGH" -> context.blit(ORIGINS_CHOICES, x, y, 248, guiSelected ? 144 : 136, 8, 8);
-            default -> context.blit(ORIGINS_CHOICES, x, y, 240, guiSelected ? 144 : 136, 8, 8);
+            case "NONE" -> graphics.blit(ORIGINS_CHOICES, x, y, 224, guiSelected ? 112 : 104, 8, 8);
+            case "LOW" -> graphics.blit(ORIGINS_CHOICES, x, y, 232, guiSelected ? 112 : 104, 8, 8);
+            case "MEDIUM" -> graphics.blit(ORIGINS_CHOICES, x, y, 240, guiSelected ? 112 : 104, 8, 8);
+            case "HIGH" -> graphics.blit(ORIGINS_CHOICES, x, y, 248, guiSelected ? 112 : 104, 8, 8);
+            case "VERY_HIGH" -> graphics.blit(ORIGINS_CHOICES, x, y, 248, guiSelected ? 144 : 136, 8, 8);
+            default -> graphics.blit(ORIGINS_CHOICES, x, y, 240, guiSelected ? 144 : 136, 8, 8);
         }
 
         if (mouseHovering) {
             Component text = this.getCurrentLayer().value().name().orElse(Component.empty()).copy().append(": ").append(origin.unwrapKey().map(ResourceKey::location).map(Origin::getName).orElse(Component.empty()));
-            context.renderTooltip(this.font, text, mouseX, mouseY);
+            graphics.renderTooltip(this.font, text, mouseX, mouseY);
         }
     }
 
-    public void renderRandomOrigin(GuiGraphics context, int mouseX, int mouseY, float delta, int x, int y, boolean selected) {
+    public void renderRandomOrigin(GuiGraphics graphics, int mouseX, int mouseY, float delta, int x, int y, boolean selected) {
         boolean mouseHovering = mouseX >= x && mouseY >= y && mouseX < x + ORIGIN_ICON_SIZE && mouseY < y + ORIGIN_ICON_SIZE;
         GuiEventListener var12 = this.getFocused();
         boolean guiSelected = var12 instanceof Button buttonWidget && buttonWidget.getX() == x && (buttonWidget.getY() == y || mouseHovering);
         int u = (selected ? ORIGIN_ICON_SIZE : 0) + (guiSelected ? 52 : 0);
-        context.blit(ORIGINS_CHOICES, x, y, 230, u, ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
-        context.blit(ORIGINS_CHOICES, x + 6, y + 5, 243, 120, 13, 16);
+        graphics.blit(ORIGINS_CHOICES, x, y, 230, u, ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
+        graphics.blit(ORIGINS_CHOICES, x + 6, y + 5, 243, 120, 13, 16);
         int impact = (int) ((double) this.tickTime / (double) 15.0F) % 4;
-        context.blit(ORIGINS_CHOICES, x, y, 224 + impact * 8, guiSelected ? 112 : 104, 8, 8);
+        graphics.blit(ORIGINS_CHOICES, x, y, 224 + impact * 8, guiSelected ? 112 : 104, 8, 8);
     }
 }

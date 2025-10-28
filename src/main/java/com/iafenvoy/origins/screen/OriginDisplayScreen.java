@@ -86,7 +86,6 @@ public class OriginDisplayScreen extends Screen {
 
     @Override
     protected void init() {
-
         super.init();
 
         this.guiLeft = (this.width - WINDOW_WIDTH) / 2;
@@ -98,27 +97,21 @@ public class OriginDisplayScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics context, int mouseX, int mouseY, float delta) {
-        if (this.showDirtBackground) {
-            super.renderBackground(context, mouseX, mouseY, delta);
-        } else {
-            this.renderTransparentBackground(context);
-        }
-
+    public void renderBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        if (this.showDirtBackground) super.renderBackground(graphics, mouseX, mouseY, delta);
+        else this.renderTransparentBackground(graphics);
     }
 
     @Override
-    public void renderTransparentBackground(GuiGraphics context) {
-        context.fillGradient(0, 0, this.width, this.height, -5, 1678774288, -2112876528);
+    public void renderTransparentBackground(GuiGraphics graphics) {
+        graphics.fillGradient(0, 0, this.width, this.height, -5, 1678774288, -2112876528);
     }
 
     @Override
-    public void render(@NotNull GuiGraphics context, int mouseX, int mouseY, float delta) {
-
+    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         this.renderedBadges.clear();
-
-        super.render(context, mouseX, mouseY, delta);
-        this.renderOriginWindow(context, mouseX, mouseY, delta);
+        super.render(graphics, mouseX, mouseY, delta);
+        this.renderOriginWindow(graphics, mouseX, mouseY, delta);
 
     }
 
@@ -130,11 +123,8 @@ public class OriginDisplayScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-
         boolean mouseClicked = super.mouseClicked(mouseX, mouseY, button);
-        if (this.cannotScroll()) {
-            return mouseClicked;
-        }
+        if (this.cannotScroll()) return mouseClicked;
 
         this.dragScrolling = false;
 
@@ -142,9 +132,7 @@ public class OriginDisplayScreen extends Screen {
         int maxScrollBarOffset = 141;
 
         scrollBarY += (int) ((maxScrollBarOffset - scrollBarY) * (this.scrollPos / (float) this.currentMaxScroll));
-        if (!this.canDragScroll(mouseX, mouseY, scrollBarY)) {
-            return mouseClicked;
-        }
+        if (!this.canDragScroll(mouseX, mouseY, scrollBarY)) return mouseClicked;
 
         this.dragScrolling = true;
         this.scrollDragStart = scrollBarY;
@@ -156,11 +144,8 @@ public class OriginDisplayScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-
         boolean mouseDragged = super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-        if (!this.dragScrolling) {
-            return mouseDragged;
-        }
+        if (!this.dragScrolling) return mouseDragged;
 
         int delta = (int) (mouseY - this.mouseDragStart);
         int newScrollPos = Math.max(36, Math.min(141, this.scrollDragStart + delta));
@@ -174,7 +159,6 @@ public class OriginDisplayScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double x, double y, double horizontal, double vertical) {
-
         int newScrollPos = this.scrollPos - (int) vertical * 4;
         this.scrollPos = Mth.clamp(newScrollPos, 0, this.currentMaxScroll);
 
@@ -194,13 +178,10 @@ public class OriginDisplayScreen extends Screen {
         return this.getCurrentOrigin().unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace(""));
     }
 
-    protected void renderScrollbar(GuiGraphics context, int mouseX, int mouseY) {
+    protected void renderScrollbar(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (this.cannotScroll()) return;
 
-        if (this.cannotScroll()) {
-            return;
-        }
-
-        context.blitSprite(WINDOW_SCROLL_BAR_SLOT, this.guiLeft + 155, this.guiTop + 35, 8, 134);
+        graphics.blitSprite(WINDOW_SCROLL_BAR_SLOT, this.guiLeft + 155, this.guiTop + 35, 8, 134);
 
         int scrollbarY = 36;
         int maxScrollbarOffset = 141;
@@ -208,7 +189,7 @@ public class OriginDisplayScreen extends Screen {
         scrollbarY += (int) ((maxScrollbarOffset - scrollbarY) * (this.scrollPos / (float) this.currentMaxScroll));
 
         ResourceLocation scrollBarTexture = this.dragScrolling || this.canDragScroll(mouseX, mouseY, scrollbarY) ? WINDOW_SCROLL_BAR_PRESSED : WINDOW_SCROLL_BAR;
-        context.blitSprite(scrollBarTexture, this.guiLeft + 156, this.guiTop + scrollbarY, 6, 27);
+        graphics.blitSprite(scrollBarTexture, this.guiLeft + 156, this.guiTop + scrollbarY, 6, 27);
 
     }
 
@@ -220,12 +201,10 @@ public class OriginDisplayScreen extends Screen {
         return (mouseX >= this.guiLeft + 156 && mouseX < this.guiLeft + 156 + 6) && (mouseY >= this.guiTop + scrollBarY && mouseY < this.guiTop + scrollBarY + 27);
     }
 
-    protected void renderBadgeTooltips(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    protected void renderBadgeTooltips(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         int widthLimit = this.width - mouseX - 24;
-        if (this.isWithinWindowBoundaries(mouseX, mouseY)) {
-            this.renderedBadges.stream().filter(RenderedBadge::hasTooltip).filter(renderedBadge -> this.isWithinBadgeBoundaries(renderedBadge, mouseX, mouseY)).map(renderedBadge -> renderedBadge.getTooltipComponents(this.font, widthLimit, delta)).forEach(tooltipComponents -> context.renderTooltipInternal(this.font, tooltipComponents, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE));
-        }
-
+        if (this.isWithinWindowBoundaries(mouseX, mouseY))
+            this.renderedBadges.stream().filter(RenderedBadge::hasTooltip).filter(renderedBadge -> this.isWithinBadgeBoundaries(renderedBadge, mouseX, mouseY)).map(renderedBadge -> renderedBadge.getTooltipComponents(this.font, widthLimit, delta)).forEach(tooltipComponents -> graphics.renderTooltipInternal(this.font, tooltipComponents, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE));
     }
 
     protected boolean isWithinWindowBoundaries(int mouseX, int mouseY) {
@@ -240,50 +219,47 @@ public class OriginDisplayScreen extends Screen {
         return Component.literal("Origins");
     }
 
-    protected void renderOriginWindow(GuiGraphics context, int mouseX, int mouseY, float delta) {
-
-        context.blitSprite(WINDOW_BACKGROUND, this.guiLeft, this.guiTop, -4, WINDOW_WIDTH, WINDOW_HEIGHT);
+    protected void renderOriginWindow(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        graphics.blitSprite(WINDOW_BACKGROUND, this.guiLeft, this.guiTop, -4, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         if (this.origin != null) {
-            context.enableScissor(this.guiLeft, this.guiTop, this.guiLeft + WINDOW_WIDTH, this.guiTop + WINDOW_HEIGHT);
-            this.renderOriginContent(context);
-            context.disableScissor();
+            graphics.enableScissor(this.guiLeft, this.guiTop, this.guiLeft + WINDOW_WIDTH, this.guiTop + WINDOW_HEIGHT);
+            this.renderOriginContent(graphics);
+            graphics.disableScissor();
         }
 
-        context.blitSprite(WINDOW_BORDER, this.guiLeft, this.guiTop, 2, WINDOW_WIDTH, WINDOW_HEIGHT);
-        context.blitSprite(WINDOW_NAME_PLATE, this.guiLeft + 10, this.guiTop + 10, 2, 150, 26);
+        graphics.blitSprite(WINDOW_BORDER, this.guiLeft, this.guiTop, 2, WINDOW_WIDTH, WINDOW_HEIGHT);
+        graphics.blitSprite(WINDOW_NAME_PLATE, this.guiLeft + 10, this.guiTop + 10, 2, 150, 26);
 
         if (this.origin != null) {
+            graphics.pose().pushPose();
+            graphics.pose().translate(0, 0, 5);
 
-            context.pose().pushPose();
-            context.pose().translate(0, 0, 5);
+            this.renderOriginName(graphics, mouseX, mouseY, delta);
+            this.renderOriginImpact(graphics, mouseX, mouseY);
 
-            this.renderOriginName(context, mouseX, mouseY, delta);
-            this.renderOriginImpact(context, mouseX, mouseY);
+            graphics.pose().popPose();
+            graphics.drawCenteredString(this.font, this.getTitleText(), this.width / 2, this.guiTop - 15, 0xFFFFFF);
 
-            context.pose().popPose();
-            context.drawCenteredString(this.font, this.getTitleText(), this.width / 2, this.guiTop - 15, 0xFFFFFF);
-
-            this.renderScrollbar(context, mouseX, mouseY);
-            this.renderBadgeTooltips(context, mouseX, mouseY, delta);
+            this.renderScrollbar(graphics, mouseX, mouseY);
+            this.renderBadgeTooltips(graphics, mouseX, mouseY, delta);
 
         }
 
     }
 
-    protected void renderOriginImpact(GuiGraphics context, int mouseX, int mouseY) {
+    protected void renderOriginImpact(GuiGraphics graphics, int mouseX, int mouseY) {
         Impact impact = this.origin.value().impact();
-        context.blitSprite(impact.getSpriteId(), this.guiLeft + 128, this.guiTop + 19, 2, 28, 8);
+        graphics.blitSprite(impact.getSpriteId(), this.guiLeft + 128, this.guiTop + 19, 2, 28, 8);
 
         if (this.isWithinWindowBoundaries(mouseX, mouseY) && this.isWithinImpactBoundaries(mouseX, mouseY)) {
             MutableComponent impactHoverTooltip = Component.translatable(Origins.MOD_ID + ".gui.impact.impact").append(": ").append(impact.getTextComponent());
-            context.renderTooltip(this.font, impactHoverTooltip, mouseX, mouseY);
+            graphics.renderTooltip(this.font, impactHoverTooltip, mouseX, mouseY);
         }
 
     }
 
     protected boolean isWithinImpactBoundaries(int mouseX, int mouseY) {
-
         int impactStartX = this.guiLeft + 128;
         int impactStartY = this.guiTop + 19;
 
@@ -291,7 +267,7 @@ public class OriginDisplayScreen extends Screen {
 
     }
 
-    protected void renderOriginName(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    protected void renderOriginName(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         if (this.refreshOriginNameWidget || (this.origin != this.prevOrigin || this.layer != this.prevLayer)) {
             this.originNameWidget = new ScrollingTextWidget(this.guiLeft + 38, this.guiTop + 18, WINDOW_WIDTH - (62 + 3 * 8), 9, Origin.getName(this.getCurrentOriginId()), true, this.font);
             this.originNameWidget.setAlignment(TextAlignment.LEFT);
@@ -300,63 +276,43 @@ public class OriginDisplayScreen extends Screen {
 
             this.prevOrigin = this.origin;
             this.prevLayer = this.layer;
-
         }
 
-        this.originNameWidget.render(context, mouseX, mouseY, delta);
+        this.originNameWidget.render(graphics, mouseX, mouseY, delta);
 
         ItemStack iconStack = this.getCurrentOrigin().value().icon().orElse(ItemStack.EMPTY);
-        context.renderItem(iconStack, this.guiLeft + 15, this.guiTop + 15);
+        graphics.renderItem(iconStack, this.guiLeft + 15, this.guiTop + 15);
 
     }
 
-    protected void renderOriginContent(GuiGraphics context) {
+    protected void renderOriginContent(GuiGraphics graphics) {
         RegistryAccess access = Minecraft.getInstance().level.registryAccess();
         int textWidthLimit = WINDOW_WIDTH - 48;
-
-        /*
-            Without this code, the text may not cover the whole width of the window if the scroll bar isn't shown. However, with this code,
-            you'll see 1 frame of misaligned text because the text length (and whether scrolling is enabled) is only evaluated on
-            first render :(
-         */
-
-//        if (cannotScroll()) {
-//            textWidth += 12;
-//        }
-
         int x = this.guiLeft + 18;
         int y = this.guiTop + 45;
 
         y -= this.scrollPos;
 
         for (FormattedCharSequence descriptionLine : this.font.split(Origin.getDescription(this.getCurrentOriginId()), textWidthLimit)) {
-            context.drawString(this.font, descriptionLine, x + 2, y, 0xCCCCCC);
+            graphics.drawString(this.font, descriptionLine, x + 2, y, 0xCCCCCC);
             y += 12;
         }
 
         y += 12;
         if (this.isOriginRandom) {
-
             for (FormattedCharSequence randomOriginLine : this.font.split(this.randomOriginText, textWidthLimit)) {
                 y += 12;
-                context.drawString(this.font, randomOriginLine, x + 2, y, 0xCCCCCC);
+                graphics.drawString(this.font, randomOriginLine, x + 2, y, 0xCCCCCC);
             }
-
             y += 14;
-
         } else {
-
             for (Holder<Power> power : this.origin.value().powers()) {
-
-                if (power.value().hidden()) {
-                    continue;
-                }
-
+                if (power.value().hidden()) continue;
                 LinkedList<FormattedCharSequence> powerName = new LinkedList<>(this.font.split(power.value().getName(access).withStyle(ChatFormatting.UNDERLINE), textWidthLimit));
                 int powerNameWidth = this.font.width(powerName.getLast());
 
                 for (FormattedCharSequence powerNameLine : powerName) {
-                    context.drawString(this.font, powerNameLine, x, y, 0xFFFFFF);
+                    graphics.drawString(this.font, powerNameLine, x, y, 0xFFFFFF);
                     y += 12;
                 }
 
@@ -370,7 +326,6 @@ public class OriginDisplayScreen extends Screen {
 
                 for (Power selfOrSubPower : this.getSelfOrSubPowers(power.value(), BadgeManager::has)) {
                     for (Badge badge : BadgeManager.get(selfOrSubPower.getId(access))) {
-
                         int badgeX = badgeStartX + 10 * badgeOffsetX;
                         int badgeY = (y - 1) + 10 * badgeOffsetY;
 
@@ -387,24 +342,20 @@ public class OriginDisplayScreen extends Screen {
                         RenderedBadge renderedBadge = new RenderedBadge(selfOrSubPower, badge, badgeX, badgeY);
                         this.renderedBadges.add(renderedBadge);
 
-                        context.blitSprite(badge.spriteId(), renderedBadge.x, renderedBadge.y, -2, 0, 0, 9, 9, 9, 9);
+                        graphics.blitSprite(badge.spriteId(), renderedBadge.x, renderedBadge.y, -2, 0, 0, 9, 9, 9, 9);
                         badgeOffsetX++;
-
                     }
-
                 }
 
                 y += badgeOffsetY * 10;
 
                 for (FormattedCharSequence powerDescriptionLine : this.font.split(power.value().getDescription(access), textWidthLimit)) {
                     y += 12;
-                    context.drawString(this.font, powerDescriptionLine, x + 2, y, 0xCCCCCC);
+                    graphics.drawString(this.font, powerDescriptionLine, x + 2, y, 0xCCCCCC);
                 }
 
                 y += 20;
-
             }
-
         }
 
         y += this.scrollPos;

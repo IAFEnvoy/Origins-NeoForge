@@ -28,7 +28,9 @@ public class LoginHelper {
                 component.setSelecting(true);
                 component.sync(player);
                 PacketDistributor.sendToPlayer(player, new OpenChooseOriginScreenS2CPayload(true));
-            } else component.sync(player);
+                return;
+            }
+        component.sync(player);
     }
 
     private static boolean isFakePlayer(ServerPlayer player) {

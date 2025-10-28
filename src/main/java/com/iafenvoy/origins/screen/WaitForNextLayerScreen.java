@@ -21,13 +21,14 @@ public class WaitForNextLayerScreen extends Screen {
     private final boolean showDirtBackground;
     private final int maxSelection;
 
-    public WaitForNextLayerScreen(List<Holder<Layer>> layerList, int currentLayerIndex, boolean showDirtBackground) {
+    public WaitForNextLayerScreen(List<Holder<Layer>> layers, int currentLayerIndex, boolean showDirtBackground) {
         super(Component.empty());
-        this.layerList = layerList;
+        this.layerList = layers;
         this.currentLayerIndex = currentLayerIndex;
         this.showDirtBackground = showDirtBackground;
         Player player = Minecraft.getInstance().player;
-        Holder<Layer> currentLayer = layerList.get(currentLayerIndex);
+        assert player != null;
+        Holder<Layer> currentLayer = layers.get(currentLayerIndex);
         this.maxSelection = currentLayer.value().getOriginOptionCount(player.registryAccess());
     }
 
@@ -45,19 +46,18 @@ public class WaitForNextLayerScreen extends Screen {
             }
         }
         client.setScreen(null);
-
     }
 
     @Override
-    public void render(@NotNull GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         if (this.maxSelection == 0) this.openSelection();
-        else this.renderBackground(context, mouseX, mouseY, delta);
+        else this.renderBackground(graphics, mouseX, mouseY, delta);
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics context, int mouseX, int mouseY, float delta) {
-        if (this.showDirtBackground) super.renderMenuBackground(context);
-        else super.renderBackground(context, mouseX, mouseY, delta);
+    public void renderBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        if (this.showDirtBackground) super.renderMenuBackground(graphics);
+        else super.renderBackground(graphics, mouseX, mouseY, delta);
     }
 
     @Override

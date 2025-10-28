@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("deprecation")
 public enum CreativeFlightPower implements Power {
     INSTANCE;
     public static final MapCodec<CreativeFlightPower> CODEC = MapCodec.unit(INSTANCE);
