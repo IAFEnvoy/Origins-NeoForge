@@ -16,6 +16,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
+//FIXME::Don't refresh when resource reloading
 public final class EntityOriginAttachment {
     public static final Codec<Map<Holder<Layer>, Holder<Origin>>> ORIGINS_CODEC = new AutoIgnoreMapCodec<>(Layer.CODEC, Origin.CODEC);
     public static final Codec<EntityOriginAttachment> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -57,6 +59,8 @@ public final class EntityOriginAttachment {
     public void setOrigin(@NotNull Holder<Layer> layer, @NotNull Holder<Origin> origin, @NotNull Entity entity) {
         this.clearOrigin(layer, entity);
         if (origin.value() == Origin.EMPTY) return;
+        if (entity.level().isClientSide)
+            entity.sendSystemMessage(Component.translatable("commands.origin.set.success.single", entity.getDisplayName(), Layer.getName(layer), Origin.getName(origin)));
         this.origins.put(layer, origin);
         this.refreshPowerMap();
         executeOnPowers(origin, p -> p.grant(entity));
@@ -105,18 +109,24 @@ public final class EntityOriginAttachment {
         entity.syncData(OriginsAttachments.ENTITY_ORIGIN);
     }
 
-    public void fillAutoChoosing(Entity entity) {
+    public boolean randomOrigin(Holder<Layer> layer, Entity entity) {
+        List<Holder<Origin>> available = layer.value().collectRandomizableOrigins(entity.registryAccess()).toList();
+        if (!available.isEmpty()) {
+            this.setOrigin(layer, RandomHelper.randomOne(available), entity);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean fillAutoChoosing(Entity entity) {
         boolean changed = false;
         List<Holder<Layer>> layers = LayerRegistries.streamAutoChooseLayers(entity.registryAccess()).toList();
         for (Holder<Layer> layer : layers) {
             if (this.origins.containsKey(layer)) continue;
-            List<Holder<Origin>> available = layer.value().collectRandomizableOrigins(entity.registryAccess()).toList();
-            if (!available.isEmpty()) {
-                this.setOrigin(layer, RandomHelper.randomOne(available), entity);
-                changed = true;
-            }
+            changed |= this.randomOrigin(layer, entity);
         }
         if (changed) this.sync(entity);
+        return changed;
     }
 
     public boolean hasAllOrigins(RegistryAccess access) {

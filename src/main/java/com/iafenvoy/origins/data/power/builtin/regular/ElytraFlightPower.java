@@ -10,32 +10,35 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+@EventBusSubscriber
 public record ElytraFlightPower(boolean renderElytra, Optional<ResourceLocation> textureLocation) implements Power {
     public static final MapCodec<ElytraFlightPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.BOOL.optionalFieldOf("render_elytra", true).forGetter(ElytraFlightPower::renderElytra),
             ResourceLocation.CODEC.optionalFieldOf("texture_location").forGetter(ElytraFlightPower::textureLocation)
     ).apply(i, ElytraFlightPower::new));
+    private static final ResourceLocation ELYTRA_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/elytra.png");
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
     }
 
-    @SubscribeEvent
+    @SubscribeEvent//FIXME::Cannot fall flying correctly
     public static void enableElytraFly(CanFlyWithoutElytraEvent event) {
         if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class).isEmpty())
-            event.deny();
+            event.allow();
     }
 
     @SubscribeEvent
     public static void enableElytraRender(ElytraTextureEvent event) {
         for (ElytraFlightPower power : EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class))
-            if (power.renderElytra && power.textureLocation.isPresent()) {
-                event.setTexture(power.textureLocation.get());
+            if (power.renderElytra) {
+                event.setTexture(power.textureLocation.orElse(ELYTRA_TEXTURE));
                 break;
             }
     }

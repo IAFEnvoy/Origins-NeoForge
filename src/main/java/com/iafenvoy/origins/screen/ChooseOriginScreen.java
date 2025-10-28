@@ -16,7 +16,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +49,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     private float tickTime = 0.0F;
 
     public ChooseOriginScreen(List<Holder<Layer>> layers, int currentLayerIndex, boolean showDirtBackground) {
-        super(Component.translatable("origins.gui.choose_origin.title"), showDirtBackground);
+        super(Component.empty(), showDirtBackground);
         this.layers = layers;
         this.currentLayerIndex = currentLayerIndex;
         this.origins = new ArrayList<>(layers.size());
@@ -90,10 +89,15 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
             int impactDelta = Integer.compare(a.impact().getImpactValue(), b.impact().getImpactValue());
             return impactDelta != 0 ? impactDelta : Integer.compare(a.order(), b.order());
         }).forEach(origin -> {
-            randomOriginText.append(origin.unwrapKey().map(ResourceKey::location).map(Origin::getName).orElse(Component.empty()));
+            randomOriginText.append(Origin.getName(origin));
             randomOriginText.append(Component.literal("\n"));
         });
         this.setRandomOriginText(randomOriginText);
+    }
+
+    @Override
+    public @NotNull Component getTitle() {
+        return Component.translatable("origins.gui.choose_origin.title", Layer.getName(this.getCurrentLayer()));
     }
 
     @Override
@@ -108,7 +112,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
         this.calculatedLeft = (this.width - 405) / 2;
         this.guiTop = (this.height - CHOICES_HEIGHT) / 2;
         this.guiLeft = this.calculatedLeft + CHOICES_WIDTH + 10;
-        this.pages = this.maxSelection / COUNT_PER_PAGE;
+        this.pages = (int) Math.ceil(1.0 * this.maxSelection / COUNT_PER_PAGE);
         int x = 0;
         int y = 0;
 
@@ -167,17 +171,9 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     }
 
     @Override
-    protected Component getTitleText() {
-        return super.getCurrentLayer().value().getChooseOriginTitle();
-    }
-
-    @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        if (this.maxSelection == 0) {
-            this.openNextLayerScreen();
-        } else {
-            super.render(graphics, mouseX, mouseY, delta);
-        }
+        if (this.maxSelection == 0) this.openNextLayerScreen();
+        else super.render(graphics, mouseX, mouseY, delta);
         this.renderOriginChoicesBox(graphics, mouseX, mouseY, delta);
         this.tickTime += delta;
     }
@@ -236,7 +232,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
         }
 
         if (mouseHovering) {
-            Component text = this.getCurrentLayer().value().name().orElse(Component.empty()).copy().append(": ").append(origin.unwrapKey().map(ResourceKey::location).map(Origin::getName).orElse(Component.empty()));
+            Component text = Layer.getName(this.getCurrentLayer()).copy().append(": ").append(Origin.getName(origin));
             graphics.renderTooltip(this.font, text, mouseX, mouseY);
         }
     }

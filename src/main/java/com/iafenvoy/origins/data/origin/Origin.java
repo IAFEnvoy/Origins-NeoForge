@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.origin;
 
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.RLHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -39,8 +40,16 @@ public record Origin(List<Holder<Power>> powers, Optional<ItemStack> icon, boole
         return !this.unchoosable;
     }
 
+    public static MutableComponent getName(Holder<Origin> origin) {
+        return getName(RLHelper.id(origin));
+    }
+
     public static MutableComponent getName(ResourceLocation id) {
         return Component.translatable(id.toLanguageKey("origin", "name"));
+    }
+
+    public static MutableComponent getDescription(Holder<Origin> origin) {
+        return getDescription(RLHelper.id(origin));
     }
 
     public static MutableComponent getDescription(ResourceLocation id) {

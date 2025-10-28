@@ -230,6 +230,7 @@
   "death.attack.genericDamageOverTime": "%1$s died to a damage over time effect",
   "death.attack.genericDamageOverTime.player": "%1$s died to a damage over time effect whilst fighting %2$s",
 
+  "commands.origin.get": "%s has the following Origin: %s (%s)",
   "commands.origin.origin_not_found": "Unknown origin: %s",
   "commands.origin.layer_not_found": "Unknown layer: %s",
   "commands.origin.unregistered_in_layer": "Origin %1$s is not registered in layer %2$s!",

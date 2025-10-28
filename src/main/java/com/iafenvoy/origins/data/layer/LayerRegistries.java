@@ -29,4 +29,8 @@ public final class LayerRegistries {
     public static Stream<Holder<Layer>> streamAutoChooseLayers(RegistryAccess access) {
         return streamAvailableLayers(access).filter(x -> x.value().autoChoose());
     }
+
+    public static Stream<Holder<Layer>> streamRandomizableLayers(RegistryAccess access) {
+        return streamAvailableLayers(access).filter(x -> x.value().allowRandom());
+    }
 }

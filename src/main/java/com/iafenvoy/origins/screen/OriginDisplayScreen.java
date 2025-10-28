@@ -215,10 +215,6 @@ public class OriginDisplayScreen extends Screen {
         return (mouseX >= renderedBadge.x && mouseX < renderedBadge.x + 9) && (mouseY >= renderedBadge.y && mouseY < renderedBadge.y + 9);
     }
 
-    protected Component getTitleText() {
-        return Component.literal("Origins");
-    }
-
     protected void renderOriginWindow(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         graphics.blitSprite(WINDOW_BACKGROUND, this.guiLeft, this.guiTop, -4, WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -239,7 +235,7 @@ public class OriginDisplayScreen extends Screen {
             this.renderOriginImpact(graphics, mouseX, mouseY);
 
             graphics.pose().popPose();
-            graphics.drawCenteredString(this.font, this.getTitleText(), this.width / 2, this.guiTop - 15, 0xFFFFFF);
+            graphics.drawCenteredString(this.font, this.getTitle(), this.width / 2, this.guiTop - 15, 0xFFFFFF);
 
             this.renderScrollbar(graphics, mouseX, mouseY);
             this.renderBadgeTooltips(graphics, mouseX, mouseY, delta);

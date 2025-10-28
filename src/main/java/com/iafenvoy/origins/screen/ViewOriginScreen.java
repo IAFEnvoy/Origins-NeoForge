@@ -33,7 +33,7 @@ public class ViewOriginScreen extends OriginDisplayScreen {
     private int currentLayerIndex = 0;
 
     public ViewOriginScreen() {
-        super(Component.translatable(Origins.MOD_ID + ".screen.view_origin"), false);
+        super(Component.empty(), false);
 
         Player player = Minecraft.getInstance().player;
         if (player == null) {
@@ -59,6 +59,11 @@ public class ViewOriginScreen extends OriginDisplayScreen {
             Pair<Holder<Layer>, Holder<Origin>> currentOriginAndLayer = this.originLayers.get(this.currentLayerIndex);
             this.showOrigin(currentOriginAndLayer.getSecond(), currentOriginAndLayer.getFirst(), false);
         }
+    }
+
+    @Override
+    public @NotNull Component getTitle() {
+        return Component.translatable("origins.gui.view_origin.title", Layer.getName(this.getCurrentLayer()));
     }
 
     @Override
@@ -124,11 +129,5 @@ public class ViewOriginScreen extends OriginDisplayScreen {
         //Sync Failure
         String translationKey = Origins.MOD_ID + ".gui.view_origin.empty";
         graphics.drawCenteredString(this.font, Component.translatable(translationKey), this.width / 2, this.guiTop + 48, 0xFFFFFF);
-
-    }
-
-    @Override
-    protected Component getTitleText() {
-        return super.getCurrentLayer().value().getViewOriginTitle();
     }
 }
