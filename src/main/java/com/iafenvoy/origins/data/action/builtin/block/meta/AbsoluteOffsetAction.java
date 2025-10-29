@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record AbsoluteOffsetAction(BlockAction action, int x, int y, int z) implements BlockAction {
     public static final MapCodec<AbsoluteOffsetAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BlockAction.CODEC.fieldOf("event").forGetter(AbsoluteOffsetAction::action),
+            BlockAction.CODEC.fieldOf("action").forGetter(AbsoluteOffsetAction::action),
             Codec.INT.optionalFieldOf("x", 0).forGetter(AbsoluteOffsetAction::x),
             Codec.INT.optionalFieldOf("y", 0).forGetter(AbsoluteOffsetAction::y),
             Codec.INT.optionalFieldOf("z", 0).forGetter(AbsoluteOffsetAction::z)

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record EmitGameEventAction(Holder<GameEvent> event) implements EntityAction {
     public static final MapCodec<EmitGameEventAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            GameEvent.CODEC.fieldOf("event").forGetter(EmitGameEventAction::event)
+            GameEvent.CODEC.fieldOf("action").forGetter(EmitGameEventAction::event)
     ).apply(i, EmitGameEventAction::new));
 
     @Override

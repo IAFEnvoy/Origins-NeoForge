@@ -21,7 +21,10 @@ public class LoginHelper {
     private static void forEachPlayer(@NotNull ServerPlayer player, boolean joined) {
         EntityOriginAttachment component = EntityOriginAttachment.get(player);
         component.sync(player);
-        if (component.hasAllOrigins(player.registryAccess())) return;
+        if (component.hasAllOrigins(player.registryAccess())) {
+            component.refreshPowerMap();
+            return;
+        }
         component.fillAutoChoosing(player);
         if (!component.hasAllOrigins(player.registryAccess()))
             if (!isFakePlayer(player)) {

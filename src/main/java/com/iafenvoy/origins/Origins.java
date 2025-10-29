@@ -4,6 +4,10 @@ import com.iafenvoy.origins.data.action.builtin.BiEntityActions;
 import com.iafenvoy.origins.data.action.builtin.BlockActions;
 import com.iafenvoy.origins.data.action.builtin.EntityActions;
 import com.iafenvoy.origins.data.action.builtin.ItemActions;
+import com.iafenvoy.origins.data.condition.builtin.BiEntityConditions;
+import com.iafenvoy.origins.data.condition.builtin.BiomeConditions;
+import com.iafenvoy.origins.data.condition.builtin.BlockConditions;
+import com.iafenvoy.origins.data.condition.builtin.DamageConditions;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.registry.OriginsItems;
@@ -26,6 +30,11 @@ public final class Origins {
         BlockActions.REGISTRY.register(bus);
         EntityActions.REGISTRY.register(bus);
         ItemActions.REGISTRY.register(bus);
+        //Condition
+        BiEntityConditions.REGISTRY.register(bus);
+        BiomeConditions.REGISTRY.register(bus);
+        BlockConditions.REGISTRY.register(bus);
+        DamageConditions.REGISTRY.register(bus);
         //Powers
         RegularPowers.REGISTRY.register(bus);
     }

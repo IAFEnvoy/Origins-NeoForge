@@ -25,7 +25,7 @@ different data structure.
 
 ## Credit
 
-Special thanks to the following develops for ideas and some code:
+Special thanks to the following developers for ideas and some code:
 
 - Apace: Author of the [`Origins Mod`](https://github.com/Apace100/origins-fabric), open source under `MIT` license.
 - EdwinMindcraft: Author of the [`Forge` port of `Origins Mod`](https://github.com/EdwinMindcraft/origins-forge), open
