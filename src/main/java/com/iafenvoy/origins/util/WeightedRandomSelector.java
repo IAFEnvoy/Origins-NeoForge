@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Random;
 
-public class WeightedRandomSelector {
+public final class WeightedRandomSelector {
     private static final Random RANDOM = new Random();
 
     @Nullable

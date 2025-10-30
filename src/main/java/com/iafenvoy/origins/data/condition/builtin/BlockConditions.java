@@ -1,9 +1,10 @@
 package com.iafenvoy.origins.data.condition.builtin;
 
+import com.iafenvoy.origins.Constants;
 import com.iafenvoy.origins.Origins;
+import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
-import com.iafenvoy.origins.data.condition.EmptyCondition;
 import com.iafenvoy.origins.data.condition.builtin.block.*;
 import com.iafenvoy.origins.data.condition.builtin.block.meta.BlockOffsetCondition;
 import com.mojang.serialization.MapCodec;
@@ -13,7 +14,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("unused")
 public final class BlockConditions {
     public static final DeferredRegister<MapCodec<? extends BlockCondition>> REGISTRY = DeferredRegister.create(ConditionRegistries.BLOCK_CONDITION, Origins.MOD_ID);
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<EmptyCondition>> EMPTY = REGISTRY.register("empty", () -> EmptyCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<AlwaysTrueCondition>> ALWAYS_TRUE = REGISTRY.register(Constants.ALWAYS_TRUE_KEY, () -> AlwaysTrueCondition.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<AttachableCondition>> ATTACHABLE = REGISTRY.register("attachable", () -> AttachableCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockEntityCondition>> BLOCK_ENTITY = REGISTRY.register("block_entity", () -> BlockEntityCondition.CODEC);

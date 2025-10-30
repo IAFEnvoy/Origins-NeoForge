@@ -3,7 +3,7 @@ package com.iafenvoy.origins.util;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
-public class LootHelper {
+public final class LootHelper {
     public static final LootContextParamSet ALL = LootContextParamSet.builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.LAST_DAMAGE_PLAYER)

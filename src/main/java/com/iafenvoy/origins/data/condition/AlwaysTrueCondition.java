@@ -11,12 +11,12 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
-public enum EmptyCondition implements BiEntityCondition, BiomeCondition, BlockCondition, DamageCondition, EntityCondition, FluidCondition, ItemCondition {
+public enum AlwaysTrueCondition implements BiEntityCondition, BiomeCondition, BlockCondition, DamageCondition, EntityCondition, FluidCondition, ItemCondition {
     INSTANCE;
-    public static final MapCodec<EmptyCondition> CODEC = MapCodec.unit(INSTANCE);
+    public static final MapCodec<AlwaysTrueCondition> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
-    public @NotNull MapCodec<EmptyCondition> codec() {
+    public @NotNull MapCodec<AlwaysTrueCondition> codec() {
         return CODEC;
     }
 

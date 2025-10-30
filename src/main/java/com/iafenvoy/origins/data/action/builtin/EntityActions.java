@@ -1,9 +1,10 @@
 package com.iafenvoy.origins.data.action.builtin;
 
+import com.iafenvoy.origins.Constants;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.ActionRegistries;
-import com.iafenvoy.origins.data.action.EmptyAction;
 import com.iafenvoy.origins.data.action.EntityAction;
+import com.iafenvoy.origins.data.action.NoOpAction;
 import com.iafenvoy.origins.data.action.builtin.entity.*;
 import com.iafenvoy.origins.data.action.builtin.entity.meta.*;
 import com.mojang.serialization.MapCodec;
@@ -13,7 +14,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("unused")
 public final class EntityActions {
     public static final DeferredRegister<MapCodec<? extends EntityAction>> REGISTRY = DeferredRegister.create(ActionRegistries.ENTITY_ACTION, Origins.MOD_ID);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EmptyAction>> EMPTY = REGISTRY.register("empty", () -> EmptyAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<NoOpAction>> NO_OP = REGISTRY.register(Constants.NO_OP_KEY, () -> NoOpAction.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddEffectAction>> ADD_EFFECT = REGISTRY.register("add_effect", () -> AddEffectAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddExperienceAction>> ADD_EXPERIENCE = REGISTRY.register("add_experience", () -> AddExperienceAction.CODEC);

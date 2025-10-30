@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 
 public interface BlockAction {
-    Codec<BlockAction> CODEC = DefaultedCodec.registryDispatch(ActionRegistries.BLOCK_ACTION, BlockAction::codec, Function.identity(), () -> EmptyAction.INSTANCE);
+    Codec<BlockAction> CODEC = DefaultedCodec.registryDispatch(ActionRegistries.BLOCK_ACTION, BlockAction::codec, Function.identity(), () -> NoOpAction.INSTANCE);
 
     static MapCodec<BlockAction> optionalCodec(String name) {
-        return CODEC.optionalFieldOf(name, EmptyAction.INSTANCE);
+        return CODEC.optionalFieldOf(name, NoOpAction.INSTANCE);
     }
 
     @NotNull

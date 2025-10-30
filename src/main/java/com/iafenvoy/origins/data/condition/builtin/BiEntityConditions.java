@@ -1,9 +1,10 @@
 package com.iafenvoy.origins.data.condition.builtin;
 
+import com.iafenvoy.origins.Constants;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
-import com.iafenvoy.origins.data.condition.EmptyCondition;
+import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.builtin.bientity.*;
 import com.iafenvoy.origins.data.condition.builtin.bientity.meta.*;
 import com.mojang.serialization.MapCodec;
@@ -13,7 +14,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("unused")
 public final class BiEntityConditions {
     public static final DeferredRegister<MapCodec<? extends BiEntityCondition>> REGISTRY = DeferredRegister.create(ConditionRegistries.BI_ENTITY_CONDITION, Origins.MOD_ID);
-    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<EmptyCondition>> EMPTY = REGISTRY.register("empty", () -> EmptyCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<AlwaysTrueCondition>> ALWAYS_TRUE = REGISTRY.register(Constants.ALWAYS_TRUE_KEY, () -> AlwaysTrueCondition.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<AttackerCondition>> ATTACKER = REGISTRY.register("attacker", () -> AttackerCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<AttackTargetCondition>> ATTACK_TARGET = REGISTRY.register("attack_target", () -> AttackTargetCondition.CODEC);

@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 
 public interface ItemCondition {
-    Codec<ItemCondition> CODEC = DefaultedCodec.registryDispatch(ConditionRegistries.ITEM_CONDITION, ItemCondition::codec, Function.identity(), () -> EmptyCondition.INSTANCE);
+    Codec<ItemCondition> CODEC = DefaultedCodec.registryDispatch(ConditionRegistries.ITEM_CONDITION, ItemCondition::codec, Function.identity(), () -> AlwaysTrueCondition.INSTANCE);
 
     static MapCodec<ItemCondition> optionalCodec(String name) {
-        return CODEC.optionalFieldOf(name, EmptyCondition.INSTANCE);
+        return CODEC.optionalFieldOf(name, AlwaysTrueCondition.INSTANCE);
     }
 
     @NotNull

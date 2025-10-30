@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class RandomHelper {
+public final class RandomHelper {
     public static int nextInt(int min, int max) {
         return nextInt(new Random(), min, max);
     }

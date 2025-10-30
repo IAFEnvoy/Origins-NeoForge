@@ -41,7 +41,7 @@ public class ViewOriginScreen extends OriginDisplayScreen {
             return;
         }
 
-        Map<Holder<Layer>, Holder<Origin>> origins = EntityOriginAttachment.get(player).getOrigins();
+        Map<Holder<Layer>, Holder<Origin>> origins = EntityOriginAttachment.get(player).getOriginsView();
         this.originLayers = new LinkedList<>();
 
         origins.forEach((layer, origin) -> {

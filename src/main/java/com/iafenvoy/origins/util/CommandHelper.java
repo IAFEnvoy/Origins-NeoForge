@@ -6,7 +6,7 @@ import net.minecraft.ReportedException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StringUtil;
 
-public class CommandHelper {
+public final class CommandHelper {
     public static void executeCommand(MinecraftServer server, String command) {
         if (server.isCommandBlockEnabled() && !StringUtil.isNullOrEmpty(command)) {
             try {
