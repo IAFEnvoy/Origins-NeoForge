@@ -21,6 +21,9 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-//FIXME::Don't refresh when resource reloading
+@EventBusSubscriber
 public final class EntityOriginAttachment {
     public static final Codec<Map<Holder<Layer>, Holder<Origin>>> ORIGINS_CODEC = new AutoIgnoreMapCodec<>(Layer.CODEC, Origin.CODEC);
     public static final Codec<EntityOriginAttachment> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -148,5 +151,10 @@ public final class EntityOriginAttachment {
 
     public static EntityOriginAttachment get(Entity entity) {
         return entity.getData(OriginsAttachments.ENTITY_ORIGIN);
+    }
+
+    @SubscribeEvent
+    public static void refreshPowersWhenReload(OnDatapackSyncEvent event) {
+        event.getRelevantPlayers().map(EntityOriginAttachment::get).forEach(EntityOriginAttachment::refreshPowerMap);
     }
 }

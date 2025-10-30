@@ -30,6 +30,6 @@ public record ComponentCondition(DataComponentType<?> component, CompoundTag nbt
     }
 
     public static <T> Tag getNbt(DataComponentType<T> type, ItemStack stack) {
-        return type.codec().encodeStart(NbtOps.INSTANCE, stack.get(type)).mapOrElse(x -> x, x -> new CompoundTag());
+        return type.codecOrThrow().encodeStart(NbtOps.INSTANCE, stack.get(type)).mapOrElse(x -> x, x -> new CompoundTag());
     }
 }

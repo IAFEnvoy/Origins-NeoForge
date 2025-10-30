@@ -1,10 +1,8 @@
 package com.iafenvoy.origins.data.condition.builtin.bientity.meta;
 
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
-import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 

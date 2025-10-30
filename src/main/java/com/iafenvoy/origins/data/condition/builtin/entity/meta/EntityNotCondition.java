@@ -1,11 +1,9 @@
 package com.iafenvoy.origins.data.condition.builtin.entity.meta;
 
 import com.iafenvoy.origins.data.condition.EntityCondition;
-import com.iafenvoy.origins.data.condition.FluidCondition;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
 public record EntityNotCondition(EntityCondition condition) implements EntityCondition {

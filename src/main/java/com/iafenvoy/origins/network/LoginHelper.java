@@ -1,9 +1,11 @@
 package com.iafenvoy.origins.network;
 
+import carpet.patches.EntityPlayerMPFake;
 import com.iafenvoy.origins.attachment.EntityOriginAttachment;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -11,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
 public class LoginHelper {
+    //FIXME::Merge with refreshing power maps
     @SubscribeEvent
     public static void onSyncDatapack(OnDatapackSyncEvent event) {
         if (event.getPlayer() != null) forEachPlayer(event.getPlayer(), false);
@@ -37,8 +40,6 @@ public class LoginHelper {
     }
 
     private static boolean isFakePlayer(ServerPlayer player) {
-        return false;
-        //TODO
-//        return FabricLoader.getInstance().isModLoaded("carpet") && player instanceof EntityPlayerMPFake;
+        return ModList.get().isLoaded("bedsheet") && player instanceof EntityPlayerMPFake;
     }
 }
