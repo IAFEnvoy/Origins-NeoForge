@@ -7,6 +7,7 @@ import com.iafenvoy.origins.data.action.builtin.ItemActions;
 import com.iafenvoy.origins.data.condition.builtin.*;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.registry.OriginsAttachments;
+import com.iafenvoy.origins.registry.OriginsDataComponents;
 import com.iafenvoy.origins.registry.OriginsItems;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
@@ -21,6 +22,7 @@ public final class Origins {
 
     public Origins(ModContainer container, IEventBus bus) {
         OriginsAttachments.REGISTRY.register(bus);
+        OriginsDataComponents.REGISTRY.register(bus);
         OriginsItems.REGISTRY.register(bus);
         //Action
         BiEntityActions.REGISTRY.register(bus);

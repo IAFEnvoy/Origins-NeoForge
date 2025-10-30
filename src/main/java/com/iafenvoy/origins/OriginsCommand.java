@@ -5,7 +5,7 @@ import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
-import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
+import com.iafenvoy.origins.network.LoginHelper;
 import com.iafenvoy.origins.util.RLHelper;
 import com.iafenvoy.origins.util.RandomHelper;
 import com.mojang.brigadier.context.CommandContext;
@@ -21,12 +21,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.commands.Commands.argument;
@@ -85,7 +82,7 @@ public class OriginsCommand {
                 source.sendSuccess(() -> Component.translatable("commands.origin.set.success.multiple", finalProcessedTargets, Layer.getName(layer), Origin.getName(origin)), true);
             }
         } else
-            source.sendFailure(Component.translatableEscape("commands.origin.unregistered_in_layer", id(origin), id(layer)));
+            source.sendFailure(Component.translatableEscape("commands.origin.unregistered_in_layer", RLHelper.string(origin), RLHelper.string(layer)));
         return processedTargets;
     }
 
@@ -97,7 +94,7 @@ public class OriginsCommand {
         EntityOriginAttachment originComponent = EntityOriginAttachment.get(target);
 
         Holder<Origin> origin = originComponent.getOrigin(layer);
-        source.sendSuccess(() -> Component.translatable("commands.origin.get.result", target.getName(), Layer.getName(layer), Origin.getName(origin), id(origin)), false);
+        source.sendSuccess(() -> Component.translatable("commands.origin.get.result", target.getName(), Layer.getName(layer), Origin.getName(origin), RLHelper.string(origin)), false);
 
         return 1;
     }
@@ -105,7 +102,7 @@ public class OriginsCommand {
     public static int openGuiAll(CommandContext<CommandSourceStack> context, boolean self) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
         Collection<ServerPlayer> targets = self ? List.of(source.getPlayerOrException()) : EntityArgument.getPlayers(context, "targets");
-        for (ServerPlayer target : targets) openGuiForLayer(target, null);
+        for (ServerPlayer target : targets) LoginHelper.openGuiForLayer(target, null);
         source.sendSuccess(() -> Component.translatable("commands.origin.gui.all", targets.size()), true);
         return targets.size();
     }
@@ -113,7 +110,7 @@ public class OriginsCommand {
     public static int openGuiSpecific(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
         Holder<Layer> layer = ResourceArgument.getResource(context, "layer", LayerRegistries.LAYER_KEY);
-        for (ServerPlayer target : targets) openGuiForLayer(target, layer);
+        for (ServerPlayer target : targets) LoginHelper.openGuiForLayer(target, layer);
         context.getSource().sendSuccess(() -> Component.translatable("commands.origin.gui.layer", targets.size(), Layer.getName(layer)), true);
         return targets.size();
 
@@ -160,31 +157,5 @@ public class OriginsCommand {
         originComponent.sync(target);
         Origins.LOGGER.info("Player {} was randomly assigned the origin {} for layer {}", target.getName().getString(), RLHelper.id(origin), RLHelper.id(layer));
         return origin;
-    }
-
-    private static void openGuiForLayer(ServerPlayer target, @Nullable Holder<Layer> targetLayer) {
-        EntityOriginAttachment originComponent = EntityOriginAttachment.get(target);
-        List<Holder<Layer>> layers = new ObjectArrayList<>();
-
-        Optional.ofNullable(targetLayer).ifPresentOrElse(layers::add, () -> layers.addAll(LayerRegistries.streamAvailableLayers(target.registryAccess()).toList()));
-
-        layers.stream()
-                .filter(x -> x.value().enabled())
-                .forEach(layer -> originComponent.clearOrigin(layer, target));
-
-        boolean automaticallyAssigned = originComponent.fillAutoChoosing(target);
-        int options = Optional.ofNullable(targetLayer)
-                .map(layer -> layer.value().getOriginOptionCount(target.registryAccess()))
-                .orElseGet(() -> OriginRegistries.streamAvailableOrigins(target.registryAccess()).toList().size());
-
-        originComponent.setSelecting(!automaticallyAssigned || options > 0);
-        originComponent.sync(target);
-
-        if (originComponent.isSelecting())
-            PacketDistributor.sendToPlayer(target, new OpenChooseOriginScreenS2CPayload(false));
-    }
-
-    public static String id(Holder<?> holder) {
-        return RLHelper.string(holder);
     }
 }

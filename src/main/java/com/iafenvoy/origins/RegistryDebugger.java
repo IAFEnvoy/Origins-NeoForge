@@ -25,12 +25,7 @@ public final class RegistryDebugger {
             ConditionRegistries.ENTITY_CONDITION, ConditionRegistries.FLUID_CONDITION, ConditionRegistries.ITEM_CONDITION,
             PowerRegistries.POWER_TYPE
     );
-    private static final List<ResourceKey<? extends Registry<?>>> DYNAMIC_REGISTRIES = List.of(
-            BadgeRegistries.BADGE_KEY,
-            LayerRegistries.LAYER_KEY,
-            OriginRegistries.ORIGIN_KEY,
-            PowerRegistries.POWER_KEY
-    );
+    private static final List<ResourceKey<? extends Registry<?>>> DYNAMIC_REGISTRIES = List.of(BadgeRegistries.BADGE_KEY, LayerRegistries.LAYER_KEY, OriginRegistries.ORIGIN_KEY, PowerRegistries.POWER_KEY);
 
     @SubscribeEvent
     public static void afterBuiltinLoaded(FMLLoadCompleteEvent event) {
