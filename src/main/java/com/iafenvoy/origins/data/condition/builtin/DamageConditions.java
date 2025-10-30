@@ -6,6 +6,7 @@ import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.condition.builtin.damage.*;
+import com.iafenvoy.origins.data.condition.builtin.damage.meta.*;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -20,4 +21,10 @@ public final class DamageConditions {
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<DamageNameCondition>> NAME = REGISTRY.register("name", () -> DamageNameCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<ProjectileCondition>> PROJECTILE = REGISTRY.register("projectile", () -> ProjectileCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<DamageTypeCondition>> TYPE = REGISTRY.register("type", () -> DamageTypeCondition.CODEC);
+    //Meta
+    public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<DamageAndCondition>> AND = REGISTRY.register("and", () -> DamageAndCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<DamageChanceCondition>> CHANCE = REGISTRY.register("chance", () -> DamageChanceCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<DamageConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> DamageConstantCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<DamageNotCondition>> NOT = REGISTRY.register("not", () -> DamageNotCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<DamageOrCondition>> OR = REGISTRY.register("or", () -> DamageOrCondition.CODEC);
 }

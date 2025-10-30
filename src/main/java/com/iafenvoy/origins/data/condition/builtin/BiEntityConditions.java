@@ -2,9 +2,9 @@ package com.iafenvoy.origins.data.condition.builtin;
 
 import com.iafenvoy.origins.Constants;
 import com.iafenvoy.origins.Origins;
+import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
-import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.builtin.bientity.*;
 import com.iafenvoy.origins.data.condition.builtin.bientity.meta.*;
 import com.mojang.serialization.MapCodec;
@@ -31,4 +31,10 @@ public final class BiEntityConditions {
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<InvertCondition>> INVERT = REGISTRY.register("invert", () -> InvertCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<TargetConditionCondition>> TARGET_CONDITION = REGISTRY.register("target_condition", () -> TargetConditionCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<UndirectedCondition>> UNDIRECTED = REGISTRY.register("undirected", () -> UndirectedCondition.CODEC);
+    //Meta
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BiEntityAndCondition>> AND = REGISTRY.register("and", () -> BiEntityAndCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BiEntityChanceCondition>> CHANCE = REGISTRY.register("chance", () -> BiEntityChanceCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BiEntityConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> BiEntityConstantCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BiEntityNotCondition>> NOT = REGISTRY.register("not", () -> BiEntityNotCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BiEntityOrCondition>> OR = REGISTRY.register("or", () -> BiEntityOrCondition.CODEC);
 }

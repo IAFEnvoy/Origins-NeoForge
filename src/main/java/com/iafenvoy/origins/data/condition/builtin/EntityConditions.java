@@ -2,10 +2,11 @@ package com.iafenvoy.origins.data.condition.builtin;
 
 import com.iafenvoy.origins.Constants;
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.data.condition.ConditionRegistries;
 import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
+import com.iafenvoy.origins.data.condition.ConditionRegistries;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.condition.builtin.entity.*;
+import com.iafenvoy.origins.data.condition.builtin.entity.meta.*;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -46,4 +47,10 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<TamedCondition>> TAMED = REGISTRY.register("tamed", () -> TamedCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<UsingEffectiveToolCondition>> USING_EFFECTIVE_TOOL = REGISTRY.register("using_effective_tool", () -> UsingEffectiveToolCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<UsingItemCondition>> USING_ITEM = REGISTRY.register("using_item", () -> UsingItemCondition.CODEC);
+    //Meta
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EntityAndCondition>> AND = REGISTRY.register("and", () -> EntityAndCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EntityChanceCondition>> CHANCE = REGISTRY.register("chance", () -> EntityChanceCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EntityConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> EntityConstantCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EntityNotCondition>> NOT = REGISTRY.register("not", () -> EntityNotCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EntityOrCondition>> OR = REGISTRY.register("or", () -> EntityOrCondition.CODEC);
 }

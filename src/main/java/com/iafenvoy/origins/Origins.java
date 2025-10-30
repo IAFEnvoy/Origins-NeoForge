@@ -34,6 +34,7 @@ public final class Origins {
         DamageConditions.REGISTRY.register(bus);
         EntityConditions.REGISTRY.register(bus);
         FluidConditions.REGISTRY.register(bus);
+        ItemConditions.REGISTRY.register(bus);
         //Powers
         RegularPowers.REGISTRY.register(bus);
     }

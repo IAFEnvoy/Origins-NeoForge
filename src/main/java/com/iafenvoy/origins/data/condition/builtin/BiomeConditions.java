@@ -6,6 +6,7 @@ import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.BiomeCondition;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
 import com.iafenvoy.origins.data.condition.builtin.biome.BiomeInTagCondition;
+import com.iafenvoy.origins.data.condition.builtin.biome.meta.*;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -16,4 +17,10 @@ public final class BiomeConditions {
     public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<AlwaysTrueCondition>> ALWAYS_TRUE = REGISTRY.register(Constants.ALWAYS_TRUE_KEY, () -> AlwaysTrueCondition.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeInTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> BiomeInTagCondition.CODEC);
+    //Meta
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeAndCondition>> AND = REGISTRY.register("and", () -> BiomeAndCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeChanceCondition>> CHANCE = REGISTRY.register("chance", () -> BiomeChanceCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> BiomeConstantCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeNotCondition>> NOT = REGISTRY.register("not", () -> BiomeNotCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeOrCondition>> OR = REGISTRY.register("or", () -> BiomeOrCondition.CODEC);
 }

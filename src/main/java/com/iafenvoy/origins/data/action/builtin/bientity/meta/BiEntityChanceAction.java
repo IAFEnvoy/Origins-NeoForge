@@ -7,13 +7,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record EntityChanceAction(BiEntityAction action, float chance,
-                                 BiEntityAction failAction) implements BiEntityAction {
-    public static final MapCodec<EntityChanceAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BiEntityAction.CODEC.fieldOf("action").forGetter(EntityChanceAction::action),
-            Codec.floatRange(0, 1).fieldOf("chance").forGetter(EntityChanceAction::chance),
-            BiEntityAction.optionalCodec("fail_action").forGetter(EntityChanceAction::failAction)
-    ).apply(i, EntityChanceAction::new));
+public record BiEntityChanceAction(BiEntityAction action, float chance,
+                                   BiEntityAction failAction) implements BiEntityAction {
+    public static final MapCodec<BiEntityChanceAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BiEntityAction.CODEC.fieldOf("action").forGetter(BiEntityChanceAction::action),
+            Codec.floatRange(0, 1).fieldOf("chance").forGetter(BiEntityChanceAction::chance),
+            BiEntityAction.optionalCodec("fail_action").forGetter(BiEntityChanceAction::failAction)
+    ).apply(i, BiEntityChanceAction::new));
 
     @Override
     public @NotNull MapCodec<? extends BiEntityAction> codec() {

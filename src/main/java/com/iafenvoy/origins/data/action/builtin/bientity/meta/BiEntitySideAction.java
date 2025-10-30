@@ -9,11 +9,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforgespi.Environment;
 import org.jetbrains.annotations.NotNull;
 
-public record EntitySideAction(BiEntityAction action, Dist side) implements BiEntityAction {
-    public static final MapCodec<EntitySideAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BiEntityAction.CODEC.fieldOf("action").forGetter(EntitySideAction::action),
-            ExtraEnumCodecs.DIST.fieldOf("side").forGetter(EntitySideAction::side)
-    ).apply(i, EntitySideAction::new));
+public record BiEntitySideAction(BiEntityAction action, Dist side) implements BiEntityAction {
+    public static final MapCodec<BiEntitySideAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BiEntityAction.CODEC.fieldOf("action").forGetter(BiEntitySideAction::action),
+            ExtraEnumCodecs.DIST.fieldOf("side").forGetter(BiEntitySideAction::side)
+    ).apply(i, BiEntitySideAction::new));
 
     @Override
     public @NotNull MapCodec<? extends BiEntityAction> codec() {

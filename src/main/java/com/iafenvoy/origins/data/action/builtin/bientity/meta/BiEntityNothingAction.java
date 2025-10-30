@@ -5,9 +5,9 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public enum EntityNothingAction implements BiEntityAction {
+public enum BiEntityNothingAction implements BiEntityAction {
     INSTANCE;
-    public static final MapCodec<EntityNothingAction> CODEC = MapCodec.unit(INSTANCE);
+    public static final MapCodec<BiEntityNothingAction> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
     public @NotNull MapCodec<? extends BiEntityAction> codec() {

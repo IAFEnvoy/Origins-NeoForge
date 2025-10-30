@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record EntityChoiceAction(List<WeightedActionHolder> actions) implements BiEntityAction {
-    public static final MapCodec<EntityChoiceAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            WeightedActionHolder.CODEC.listOf().fieldOf("actions").forGetter(EntityChoiceAction::actions)
-    ).apply(i, EntityChoiceAction::new));
+public record BiEntityChoiceAction(List<WeightedActionHolder> actions) implements BiEntityAction {
+    public static final MapCodec<BiEntityChoiceAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            WeightedActionHolder.CODEC.listOf().fieldOf("actions").forGetter(BiEntityChoiceAction::actions)
+    ).apply(i, BiEntityChoiceAction::new));
 
     @Override
     public @NotNull MapCodec<? extends BiEntityAction> codec() {

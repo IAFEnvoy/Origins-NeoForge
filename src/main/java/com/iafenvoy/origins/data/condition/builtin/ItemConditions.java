@@ -6,6 +6,7 @@ import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.condition.builtin.item.*;
+import com.iafenvoy.origins.data.condition.builtin.item.meta.*;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -22,4 +23,10 @@ public final class ItemConditions {
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<IsEquipableCondition>> IS_EQUIPABLE = REGISTRY.register("is_equipable", () -> IsEquipableCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<MeatCondition>> MEAT = REGISTRY.register("meat", () -> MeatCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<SmeltableCondition>> SMELTABLE = REGISTRY.register("smeltable", () -> SmeltableCondition.CODEC);
+    //Meta
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ItemAndCondition>> AND = REGISTRY.register("and", () -> ItemAndCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ItemChanceCondition>> CHANCE = REGISTRY.register("chance", () -> ItemChanceCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ItemConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> ItemConstantCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ItemNotCondition>> NOT = REGISTRY.register("not", () -> ItemNotCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ItemOrCondition>> OR = REGISTRY.register("or", () -> ItemOrCondition.CODEC);
 }

@@ -6,7 +6,7 @@ import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
 import com.iafenvoy.origins.data.condition.builtin.block.*;
-import com.iafenvoy.origins.data.condition.builtin.block.meta.BlockOffsetCondition;
+import com.iafenvoy.origins.data.condition.builtin.block.meta.*;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -28,5 +28,10 @@ public final class BlockConditions {
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<ReplaceableCondition>> REPLACEABLE = REGISTRY.register("replaceable", () -> ReplaceableCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<WaterLoggableCondition>> WATER_LOGGABLE = REGISTRY.register("water_loggable", () -> WaterLoggableCondition.CODEC);
     //Meta
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockAndCondition>> AND = REGISTRY.register("and", () -> BlockAndCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockChanceCondition>> CHANCE = REGISTRY.register("chance", () -> BlockChanceCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> BlockConstantCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockNotCondition>> NOT = REGISTRY.register("not", () -> BlockNotCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockOffsetCondition>> OFFSET = REGISTRY.register("offset", () -> BlockOffsetCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockOrCondition>> OR = REGISTRY.register("or", () -> BlockOrCondition.CODEC);
 }

@@ -1,0 +1,27 @@
+package com.iafenvoy.origins.data.condition.builtin.bientity.meta;
+
+import com.iafenvoy.origins.data.condition.BiEntityCondition;
+import com.iafenvoy.origins.data.condition.DamageCondition;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+public record BiEntityAndCondition(List<BiEntityCondition> conditions) implements BiEntityCondition {
+    public static final MapCodec<BiEntityAndCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BiEntityCondition.CODEC.listOf().fieldOf("conditions").forGetter(BiEntityAndCondition::conditions)
+    ).apply(i, BiEntityAndCondition::new));
+
+    @Override
+    public @NotNull MapCodec<? extends BiEntityCondition> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public boolean test(@NotNull Entity source, @NotNull Entity target) {
+        return this.conditions.stream().allMatch(x -> x.test(source, target));
+    }
+}

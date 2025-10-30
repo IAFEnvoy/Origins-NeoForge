@@ -8,11 +8,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record EntityDelayAction(BiEntityAction action, int ticks) implements BiEntityAction {
-    public static final MapCodec<EntityDelayAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BiEntityAction.CODEC.fieldOf("action").forGetter(EntityDelayAction::action),
-            Codec.INT.fieldOf("ticks").forGetter(EntityDelayAction::ticks)
-    ).apply(i, EntityDelayAction::new));
+public record BiEntityDelayAction(BiEntityAction action, int ticks) implements BiEntityAction {
+    public static final MapCodec<BiEntityDelayAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BiEntityAction.CODEC.fieldOf("action").forGetter(BiEntityDelayAction::action),
+            Codec.INT.fieldOf("ticks").forGetter(BiEntityDelayAction::ticks)
+    ).apply(i, BiEntityDelayAction::new));
 
     @Override
     public @NotNull MapCodec<? extends BiEntityAction> codec() {

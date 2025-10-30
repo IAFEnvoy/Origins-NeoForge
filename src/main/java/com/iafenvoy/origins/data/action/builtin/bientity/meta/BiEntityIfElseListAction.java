@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record EntityIfElseListAction(List<ConditionedActionHolder> actions) implements BiEntityAction {
-    public static final MapCodec<EntityIfElseListAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ConditionedActionHolder.CODEC.listOf().fieldOf("actions").forGetter(EntityIfElseListAction::actions)
-    ).apply(i, EntityIfElseListAction::new));
+public record BiEntityIfElseListAction(List<ConditionedActionHolder> actions) implements BiEntityAction {
+    public static final MapCodec<BiEntityIfElseListAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            ConditionedActionHolder.CODEC.listOf().fieldOf("actions").forGetter(BiEntityIfElseListAction::actions)
+    ).apply(i, BiEntityIfElseListAction::new));
 
     @Override
     public @NotNull MapCodec<? extends BiEntityAction> codec() {
