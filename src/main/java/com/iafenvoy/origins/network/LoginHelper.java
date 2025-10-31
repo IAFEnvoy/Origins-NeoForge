@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.network;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
@@ -31,21 +31,18 @@ public final class LoginHelper {
     }
 
     private static void forEachPlayer(@NotNull ServerPlayer player, boolean joined) {
-        EntityOriginAttachment component = EntityOriginAttachment.get(player);
-        component.sync(player);
-        if (component.hasAllOrigins(player.registryAccess())) {
-            component.refreshPowerMap();
-            return;
-        }
-        component.fillAutoChoosing(player);
-        if (!component.hasAllOrigins(player.registryAccess()))
+        OriginDataHolder component = OriginDataHolder.get(player);
+        component.sync();
+        if (component.hasAllOrigins()) return;
+        component.fillAutoChoosing();
+        if (!component.hasAllOrigins())
             if (!isFakePlayer(player)) {
-                component.setSelecting(true);
-                component.sync(player);
+                component.data().setSelecting(true);
+                component.sync();
                 PacketDistributor.sendToPlayer(player, new OpenChooseOriginScreenS2CPayload(true));
                 return;
             }
-        component.sync(player);
+        component.sync();
     }
 
     private static boolean isFakePlayer(ServerPlayer player) {
@@ -53,24 +50,24 @@ public final class LoginHelper {
     }
 
     public static void openGuiForLayer(ServerPlayer target, @Nullable Holder<Layer> layer) {
-        EntityOriginAttachment attachment = EntityOriginAttachment.get(target);
+        OriginDataHolder holder = OriginDataHolder.get(target);
         List<Holder<Layer>> layers = new ObjectArrayList<>();
 
         Optional.ofNullable(layer).ifPresentOrElse(layers::add, () -> layers.addAll(LayerRegistries.streamAvailableLayers(target.registryAccess()).toList()));
 
         layers.stream()
                 .filter(x -> x.value().enabled())
-                .forEach(l -> attachment.clearOrigin(l, target));
+                .forEach(holder::clearOrigin);
 
-        boolean automaticallyAssigned = attachment.fillAutoChoosing(target);
+        boolean automaticallyAssigned = holder.fillAutoChoosing();
         int options = Optional.ofNullable(layer)
                 .map(l -> l.value().getOriginOptionCount(target.registryAccess()))
                 .orElseGet(() -> OriginRegistries.streamAvailableOrigins(target.registryAccess()).toList().size());
 
-        attachment.setSelecting(!automaticallyAssigned || options > 0);
-        attachment.sync(target);
+        holder.data().setSelecting(!automaticallyAssigned || options > 0);
+        holder.sync();
 
-        if (attachment.isSelecting())
+        if (holder.data().isSelecting())
             PacketDistributor.sendToPlayer(target, new OpenChooseOriginScreenS2CPayload(false));
     }
 }

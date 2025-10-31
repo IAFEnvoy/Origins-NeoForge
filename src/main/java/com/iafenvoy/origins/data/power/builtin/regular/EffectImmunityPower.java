@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
@@ -39,7 +39,7 @@ public record EffectImmunityPower(List<Holder<MobEffect>> effect, boolean invert
 
     @SubscribeEvent
     public static void disableEffectApply(MobEffectEvent.Applicable event) {
-        for (EffectImmunityPower power : EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.EFFECT_IMMUNITY, EffectImmunityPower.class))
+        for (EffectImmunityPower power : OriginDataHolder.get(event.getEntity()).getPowers(RegularPowers.EFFECT_IMMUNITY, EffectImmunityPower.class))
             if (!power.canApply(event.getEffectInstance()))
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
     }

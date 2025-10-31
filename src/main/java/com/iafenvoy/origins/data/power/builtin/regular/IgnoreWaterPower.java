@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.event.common.IgnoreWaterEvent;
@@ -21,7 +21,7 @@ public enum IgnoreWaterPower implements Power {
 
     @SubscribeEvent
     public static void ignoreWater(IgnoreWaterEvent event) {
-        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.IGNORE_WATER, IgnoreWaterPower.class).isEmpty())
+        if (!OriginDataHolder.get(event.getEntity()).getPowers(RegularPowers.IGNORE_WATER, IgnoreWaterPower.class).isEmpty())
             event.allow();
     }
 }

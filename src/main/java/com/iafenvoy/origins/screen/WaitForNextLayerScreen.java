@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.screen;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,11 +35,11 @@ public class WaitForNextLayerScreen extends Screen {
     public void openSelection() {
         Minecraft client = Minecraft.getInstance();
         if (client.player != null) {
-            EntityOriginAttachment component = EntityOriginAttachment.get(client.player);
+            OriginDataHolder holder = OriginDataHolder.get(client.player);
             Holder<Layer> layer;
             for (int index = this.currentLayerIndex + 1; index < this.layerList.size(); index++) {
                 layer = this.layerList.get(index);
-                if (!component.hasOrigin(layer) && layer.value().collectOrigins(client.player.registryAccess()).findAny().isPresent()) {
+                if (!holder.hasOrigin(layer) && layer.value().collectOrigins(client.player.registryAccess()).findAny().isPresent()) {
                     client.setScreen(new ChooseOriginScreen(this.layerList, index, this.showDirtBackground));
                     return;
                 }

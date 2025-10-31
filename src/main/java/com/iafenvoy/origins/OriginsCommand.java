@@ -1,6 +1,6 @@
 package com.iafenvoy.origins;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
@@ -70,9 +70,9 @@ public class OriginsCommand {
 
         if (origin.value().equals(Origin.EMPTY) || origin.is(layer.value().origins())) {
             for (ServerPlayer target : targets) {
-                EntityOriginAttachment originComponent = EntityOriginAttachment.get(target);
-                originComponent.setOrigin(layer, origin, target);
-                originComponent.sync(target);
+                OriginDataHolder holder = OriginDataHolder.get(target);
+                holder.setOrigin(layer, origin);
+                holder.sync();
                 processedTargets++;
             }
             if (processedTargets == 1)
@@ -89,13 +89,10 @@ public class OriginsCommand {
     public static int get(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer target = EntityArgument.getPlayer(context, "target");
         Holder<Layer> layer = ResourceArgument.getResource(context, "layer", LayerRegistries.LAYER_KEY);
-
         CommandSourceStack source = context.getSource();
-        EntityOriginAttachment originComponent = EntityOriginAttachment.get(target);
-
-        Holder<Origin> origin = originComponent.getOrigin(layer);
+        OriginDataHolder holder = OriginDataHolder.get(target);
+        Holder<Origin> origin = holder.getOrigin(layer);
         source.sendSuccess(() -> Component.translatable("commands.origin.get.result", target.getName(), Layer.getName(layer), Origin.getName(origin), RLHelper.string(origin)), false);
-
         return 1;
     }
 
@@ -150,11 +147,11 @@ public class OriginsCommand {
 
     private static Holder<Origin> setAndGetRandomOrigin(ServerPlayer target, Holder<Layer> layer) {
         List<Holder<Origin>> origins = layer.value().collectRandomizableOrigins(target.registryAccess()).toList();
-        EntityOriginAttachment originComponent = EntityOriginAttachment.get(target);
+        OriginDataHolder holder = OriginDataHolder.get(target);
         Holder<Origin> origin = RandomHelper.randomOne(origins);
-        originComponent.setOrigin(layer, origin, target);
-        originComponent.fillAutoChoosing(target);
-        originComponent.sync(target);
+        holder.setOrigin(layer, origin);
+        holder.fillAutoChoosing();
+        holder.sync();
         Origins.LOGGER.info("Player {} was randomly assigned the origin {} for layer {}", target.getName().getString(), RLHelper.id(origin), RLHelper.id(layer));
         return origin;
     }

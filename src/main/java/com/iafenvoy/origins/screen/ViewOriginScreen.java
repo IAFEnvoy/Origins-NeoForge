@@ -2,7 +2,7 @@ package com.iafenvoy.origins.screen;
 
 import com.google.common.collect.Lists;
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.mojang.datafixers.util.Pair;
@@ -41,7 +41,7 @@ public class ViewOriginScreen extends OriginDisplayScreen {
             return;
         }
 
-        Map<Holder<Layer>, Holder<Origin>> origins = EntityOriginAttachment.get(player).getOriginsView();
+        Map<Holder<Layer>, Holder<Origin>> origins = OriginDataHolder.get(player).getOrigins();
         this.originLayers = new LinkedList<>();
 
         origins.forEach((layer, origin) -> {

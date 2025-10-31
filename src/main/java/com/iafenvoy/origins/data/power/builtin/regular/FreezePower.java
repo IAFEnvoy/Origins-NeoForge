@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
@@ -26,7 +26,7 @@ public record FreezePower(EntityCondition condition) implements Power {
     @SubscribeEvent
     public static void enableFrozen(EntityFrozenEvent event) {
         Entity entity = event.getEntity();
-        for (FreezePower power : EntityOriginAttachment.get(entity).getPowers(RegularPowers.FREEZE, FreezePower.class))
+        for (FreezePower power : OriginDataHolder.get(entity).getPowers(RegularPowers.FREEZE, FreezePower.class))
             if (power.condition.test(entity))
                 event.allow();
     }

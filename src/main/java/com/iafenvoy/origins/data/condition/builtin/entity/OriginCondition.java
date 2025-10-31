@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;
@@ -27,7 +27,7 @@ public record OriginCondition(Holder<Origin> origin, Optional<Holder<Layer>> lay
     @Override
     public boolean test(@NotNull Entity entity) {
         //TODO::More APIs in attachment?
-        Map<Holder<Layer>, Holder<Origin>> map = EntityOriginAttachment.get(entity).getOriginsView();
+        Map<Holder<Layer>, Holder<Origin>> map = OriginDataHolder.get(entity).getOrigins();
         return map.containsValue(this.origin) && this.layer.map(map::containsKey).orElse(true);
     }
 }

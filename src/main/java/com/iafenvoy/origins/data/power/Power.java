@@ -23,7 +23,7 @@ public interface Power {
     MapCodec<? extends Power> codec();
 
     //Power maps will use this method to collect
-    default List<Power> getSubPowers() {
+    default List<Power> getSelfOrSubPowers() {
         return List.of(this);
     }
 

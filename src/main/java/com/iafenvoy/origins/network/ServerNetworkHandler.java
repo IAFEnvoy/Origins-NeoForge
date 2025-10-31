@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.network;
 
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.network.payload.ChooseOriginC2SPayload;
@@ -19,10 +19,9 @@ public final class ServerNetworkHandler {
     public static void onChooseOrigin(ChooseOriginC2SPayload packet, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) return;
 
-        EntityOriginAttachment component = EntityOriginAttachment.get(player);
+        OriginDataHolder holder = OriginDataHolder.get(player);
         Holder<Layer> layer = packet.layer();
-
-        if (component.hasOrigin(layer)) {
+        if (holder.hasOrigin(layer)) {
             Origins.LOGGER.warn("Player {} tried to choose origin for layer \"{}\" while having one already.", player.getName().getString(), RLHelper.string(layer));
             return;
         }
@@ -32,9 +31,9 @@ public final class ServerNetworkHandler {
             Holder<Origin> origin = optional.get();
             if (origin.value().unchoosable() || !origin.is(layer.value().origins())) {
                 Origins.LOGGER.warn("Player {} tried to choose unchoosable origin \"{}\" from layer \"{}\"!", player.getName().getString(), RLHelper.string(origin), RLHelper.string(layer));
-                component.clearOrigin(layer, player);
+                holder.clearOrigin(layer);
             } else {
-                component.setOrigin(layer, origin, player);
+                holder.setOrigin(layer, origin);
                 Origins.LOGGER.info("Player {} chose origin \"{}\" for layer \"{}\"", player.getName().getString(), RLHelper.string(origin), RLHelper.string(layer));
 
             }
@@ -42,16 +41,16 @@ public final class ServerNetworkHandler {
             List<Holder<Origin>> randomOriginIds = layer.value().collectRandomizableOrigins(player.registryAccess()).toList();
             if (!layer.value().allowRandom() || randomOriginIds.isEmpty()) {
                 Origins.LOGGER.warn("Player {} tried to choose a random origin for layer \"{}\", which is not allowed!", player.getName().getString(), RLHelper.string(layer));
-                component.clearOrigin(layer, player);
+                holder.clearOrigin(layer);
             } else {
                 Holder<Origin> origin = randomOriginIds.get(player.getRandom().nextInt(randomOriginIds.size()));
-                component.setOrigin(layer, origin, player);
+                holder.setOrigin(layer, origin);
                 Origins.LOGGER.info("Player {} was randomly assigned the following origin: {}", player.getName().getString(), RLHelper.string(origin));
             }
         }
-        PacketDistributor.sendToPlayer(player, new ConfirmOriginS2CPayload(layer, component.getOrigin(layer)));
-        component.setSelecting(false);
-        component.sync(player);
+        PacketDistributor.sendToPlayer(player, new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
+        holder.data().setSelecting(false);
+        holder.sync();
     }
 
 }

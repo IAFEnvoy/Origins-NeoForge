@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.event.client.ElytraTextureEvent;
@@ -30,13 +30,13 @@ public record ElytraFlightPower(boolean renderElytra, Optional<ResourceLocation>
 
     @SubscribeEvent//FIXME::Cannot fall flying correctly
     public static void enableElytraFly(CanFlyWithoutElytraEvent event) {
-        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class).isEmpty())
+        if (!OriginDataHolder.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class).isEmpty())
             event.allow();
     }
 
     @SubscribeEvent
     public static void enableElytraRender(ElytraTextureEvent event) {
-        for (ElytraFlightPower power : EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class))
+        for (ElytraFlightPower power : OriginDataHolder.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class))
             if (power.renderElytra) {
                 event.setTexture(power.textureLocation.orElse(ELYTRA_TEXTURE));
                 break;

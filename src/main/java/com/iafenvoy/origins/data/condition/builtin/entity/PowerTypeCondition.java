@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.MapCodec;
@@ -21,6 +21,7 @@ public record PowerTypeCondition(ResourceLocation powerType) implements EntityCo
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return !EntityOriginAttachment.get(entity).getPowers(this.powerType, Power.class).isEmpty();
+        OriginDataHolder holder = OriginDataHolder.get(entity);
+        return !holder.getPowers(this.powerType, Power.class).isEmpty();
     }
 }

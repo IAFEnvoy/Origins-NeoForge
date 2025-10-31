@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
@@ -26,7 +26,7 @@ public record FireImmunityPower(EntityCondition condition) implements Power {
     @SubscribeEvent
     public static void enableFireImmune(EntityFireImmuneEvent event) {
         Entity entity = event.getEntity();
-        for (FireImmunityPower power : EntityOriginAttachment.get(entity).getPowers(RegularPowers.FIRE_IMMUNITY, FireImmunityPower.class))
+        for (FireImmunityPower power : OriginDataHolder.get(entity).getPowers(RegularPowers.FIRE_IMMUNITY, FireImmunityPower.class))
             if (power.condition.test(entity))
                 event.allow();
     }

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.network;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
@@ -18,15 +18,15 @@ import java.util.List;
 public final class ClientNetworkHandler {
     public static void onOriginConfirm(ConfirmOriginS2CPayload packet, IPayloadContext context) {
         Player player = context.player();
-        EntityOriginAttachment component = EntityOriginAttachment.get(player);
-        component.setOrigin(packet.layer(), packet.origin(), player);
+        OriginDataHolder holder = OriginDataHolder.get(player);
+        holder.setOrigin(packet.layer(), packet.origin());
         if (Minecraft.getInstance().screen instanceof WaitForNextLayerScreen nextLayerScreen)
             nextLayerScreen.openSelection();
     }
 
     public static void openOriginScreen(OpenChooseOriginScreenS2CPayload packet, IPayloadContext context) {
-        EntityOriginAttachment component = EntityOriginAttachment.get(context.player());
-        List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(context.player().registryAccess()).filter(x -> !component.hasOrigin(x)).sorted(Comparator.comparing(Holder::value)).toList();
+        OriginDataHolder holder = OriginDataHolder.get(context.player());
+        List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(context.player().registryAccess()).filter(x -> !holder.hasOrigin(x)).sorted(Comparator.comparing(Holder::value)).toList();
         Minecraft.getInstance().setScreen(new ChooseOriginScreen(layers, 0, packet.showBackground()));
     }
 }

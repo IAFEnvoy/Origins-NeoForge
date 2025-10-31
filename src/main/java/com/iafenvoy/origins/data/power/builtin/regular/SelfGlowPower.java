@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
@@ -38,7 +38,7 @@ public record SelfGlowPower(EntityCondition entityCondition, BiEntityCondition b
         Player player = Minecraft.getInstance().player;
         Entity entity = event.getEntity();
         if (player != null)
-            for (SelfGlowPower power : EntityOriginAttachment.get(entity).getPowers(RegularPowers.SELF_GLOW, SelfGlowPower.class))
+            for (SelfGlowPower power : OriginDataHolder.get(entity).getPowers(RegularPowers.SELF_GLOW, SelfGlowPower.class))
                 if (!power.useTeam && power.entityCondition.test(player) && power.biEntityCondition.test(entity, player))
                     event.setColor(power.color);
     }
@@ -48,7 +48,7 @@ public record SelfGlowPower(EntityCondition entityCondition, BiEntityCondition b
         Player player = Minecraft.getInstance().player;
         Entity entity = event.getEntity();
         if (player != null)
-            for (SelfGlowPower power : EntityOriginAttachment.get(entity).getPowers(RegularPowers.SELF_GLOW, SelfGlowPower.class))
+            for (SelfGlowPower power : OriginDataHolder.get(entity).getPowers(RegularPowers.SELF_GLOW, SelfGlowPower.class))
                 if (!power.useTeam && power.entityCondition.test(player) && power.biEntityCondition.test(entity, player))
                     event.allow();
     }

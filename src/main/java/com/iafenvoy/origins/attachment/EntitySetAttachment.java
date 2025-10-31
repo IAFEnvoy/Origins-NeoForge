@@ -3,6 +3,7 @@ package com.iafenvoy.origins.attachment;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
+import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -31,14 +32,13 @@ public final class EntitySetAttachment {
     public void addEntity(Entity self, ResourceLocation id, Entity target) {
         if (!this.storedEntities.get(id).contains(target.getUUID())) {
             this.storedEntities.put(id, target.getUUID());
-            //TODO::Post add event
+            EntityOriginAttachment.get(self).streamEntitySetPowers().filter(x -> x.getId(self.registryAccess()).equals(id)).forEach(x -> x.actionOnAdd().execute(self, target));
         }
     }
 
     public void removeEntity(Entity self, ResourceLocation id, Entity target) {
-        if (this.storedEntities.remove(id, target.getUUID())) {
-            //TODO::Post remove event
-        }
+        if (this.storedEntities.remove(id, target.getUUID()))
+            EntityOriginAttachment.get(self).streamEntitySetPowers().filter(x -> x.getId(self.registryAccess()).equals(id)).forEach(x -> x.actionOnRemove().execute(self, target));
     }
 
     private Map<ResourceLocation, List<UUID>> getStoredEntities() {
@@ -46,5 +46,9 @@ public final class EntitySetAttachment {
         for (ResourceLocation rl : this.storedEntities.keySet())
             builder.put(rl, List.copyOf(this.storedEntities.get(rl)));
         return builder.build();
+    }
+
+    public static EntitySetAttachment get(Entity entity) {
+        return entity.getData(OriginsAttachments.ENTITY_SET);
     }
 }

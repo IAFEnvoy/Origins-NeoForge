@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.event.common.CanNaturalRegenEvent;
@@ -21,7 +21,7 @@ public enum DisableRegenPower implements Power {
 
     @SubscribeEvent
     public static void disableNaturalRegen(CanNaturalRegenEvent event) {
-        if (!EntityOriginAttachment.get(event.getEntity()).getPowers(RegularPowers.DISABLE_REGEN, DisableRegenPower.class).isEmpty())
+        if (!OriginDataHolder.get(event.getEntity()).getPowers(RegularPowers.DISABLE_REGEN, DisableRegenPower.class).isEmpty())
             event.deny();
     }
 }

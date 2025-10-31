@@ -7,11 +7,11 @@ import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
+import com.iafenvoy.origins.data.power.builtin.regular.EntitySetPower;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.util.RandomHelper;
 import com.iafenvoy.origins.util.codec.AutoIgnoreMapCodec;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -24,12 +24,13 @@ import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 @EventBusSubscriber
 public final class EntityOriginAttachment {
@@ -41,6 +42,7 @@ public final class EntityOriginAttachment {
     private final Map<Holder<Layer>, Holder<Origin>> origins = new LinkedHashMap<>();
     //Will not save
     private final Multimap<ResourceLocation, Power> powerMap = HashMultimap.create();
+    private final List<EntitySetPower> entitySetPowers = new LinkedList<>();
     private boolean selecting = false;
 
     public EntityOriginAttachment() {
@@ -75,28 +77,27 @@ public final class EntityOriginAttachment {
 
     public void refreshPowerMap() {
         this.powerMap.clear();
-        this.origins.values().forEach(o -> o.value().powers().stream().map(Holder::value).map(Power::getSubPowers).flatMap(Collection::stream).forEach(p -> this.powerMap.put(PowerRegistries.POWER_TYPE.getKey(p.codec()), p)));
+        this.origins.values().forEach(o -> o.value().powers().stream().map(Holder::value).map(Power::getSelfOrSubPowers).flatMap(Collection::stream).forEach(p -> this.powerMap.put(PowerRegistries.POWER_TYPE.getKey(p.codec()), p)));
+        this.entitySetPowers.clear();
+        for (Power power : this.powerMap.values())
+            if (power instanceof EntitySetPower entitySetPower)
+                this.entitySetPowers.add(entitySetPower);
     }
 
     public void tick(@NotNull Entity entity) {
         this.origins.values().forEach(o -> executeOnPowers(o, p -> p.tick(entity)));
     }
 
-    private Map<Holder<Layer>, Holder<Origin>> getOrigins() {
+    Map<Holder<Layer>, Holder<Origin>> getOrigins() {
         return this.origins;
-    }
-
-    public Map<Holder<Layer>, Holder<Origin>> getOriginsView() {
-        return Map.copyOf(this.origins);
     }
 
     public Holder<Origin> getOrigin(Holder<Layer> layer) {
         return this.origins.get(layer);
     }
 
-    @NotNull
-    public <T extends Power> Collection<T> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder, Class<T> clazz) {
-        return this.getPowers(holder.getId(), clazz);
+    Stream<EntitySetPower> streamEntitySetPowers() {
+        return this.entitySetPowers.stream();
     }
 
     @NotNull
@@ -156,5 +157,10 @@ public final class EntityOriginAttachment {
     @SubscribeEvent
     public static void refreshPowersWhenReload(OnDatapackSyncEvent event) {
         event.getRelevantPlayers().map(EntityOriginAttachment::get).forEach(EntityOriginAttachment::refreshPowerMap);
+    }
+
+    @SubscribeEvent
+    public static void onEntityTick(EntityTickEvent.Post event) {
+        EntityOriginAttachment.get(event.getEntity()).tick(event.getEntity());
     }
 }
