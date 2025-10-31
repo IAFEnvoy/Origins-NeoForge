@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.Function;
 
 public interface Power {
@@ -20,6 +21,11 @@ public interface Power {
 
     @NotNull
     MapCodec<? extends Power> codec();
+
+    //Power maps will use this method to collect
+    default List<Power> getSubPowers() {
+        return List.of(this);
+    }
 
     default void grant(@NotNull Entity entity) {
     }

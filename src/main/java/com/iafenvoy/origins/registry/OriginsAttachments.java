@@ -2,6 +2,7 @@ package com.iafenvoy.origins.registry;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.EntitySetAttachment;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -16,6 +17,7 @@ public final class OriginsAttachments {
     public static final DeferredRegister<AttachmentType<?>> REGISTRY = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Origins.MOD_ID);
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EntityOriginAttachment>> ENTITY_ORIGIN = REGISTRY.register("entity_origin", () -> AttachmentType.builder(EntityOriginAttachment::new).serialize(EntityOriginAttachment.CODEC).sync(EntityOriginAttachment.STREAM_CODEC).copyOnDeath().build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<EntitySetAttachment>> ENTITY_SET = REGISTRY.register("entity_set", () -> AttachmentType.builder(EntitySetAttachment::new).serialize(EntitySetAttachment.CODEC).sync(EntitySetAttachment.STREAM_CODEC).copyOnDeath().build());
 
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
