@@ -41,6 +41,10 @@ public final class EntitySetAttachment {
             EntityOriginAttachment.get(self).streamEntitySetPowers().filter(x -> x.getId(self.registryAccess()).equals(id)).forEach(x -> x.actionOnRemove().execute(self, target));
     }
 
+    public boolean containEntity(ResourceLocation id, Entity target) {
+        return this.storedEntities.get(id).contains(target.getUUID());
+    }
+
     private Map<ResourceLocation, List<UUID>> getStoredEntities() {
         ImmutableMap.Builder<ResourceLocation, List<UUID>> builder = ImmutableMap.builder();
         for (ResourceLocation rl : this.storedEntities.keySet())

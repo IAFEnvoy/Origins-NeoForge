@@ -67,6 +67,10 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Entit
         this.entitySet.removeEntity(this.entity, id, target);
     }
 
+    public boolean containEntity(ResourceLocation id, Entity target) {
+        return this.entitySet().containEntity(id, target);
+    }
+
     public static OriginDataHolder get(Entity entity) {
         return new OriginDataHolder(entity, EntityOriginAttachment.get(entity), EntitySetAttachment.get(entity), entity.registryAccess());
     }

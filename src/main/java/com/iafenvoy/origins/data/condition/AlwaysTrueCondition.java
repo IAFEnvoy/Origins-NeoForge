@@ -46,7 +46,7 @@ public enum AlwaysTrueCondition implements BiEntityCondition, BiomeCondition, Bl
     }
 
     @Override
-    public boolean test(@NotNull Holder<Biome> biome) {
+    public boolean test(@NotNull Holder<Biome> biome, @NotNull BlockPos pos) {
         return true;
     }
 

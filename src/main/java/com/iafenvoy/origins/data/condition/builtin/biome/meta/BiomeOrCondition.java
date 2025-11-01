@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.condition.builtin.biome.meta;
 import com.iafenvoy.origins.data.condition.BiomeCondition;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ public record BiomeOrCondition(List<BiomeCondition> conditions) implements Biome
     }
 
     @Override
-    public boolean test(@NotNull Holder<Biome> biome) {
-        return this.conditions.stream().anyMatch(x -> x.test(biome));
+    public boolean test(@NotNull Holder<Biome> biome, @NotNull BlockPos pos) {
+        return this.conditions.stream().anyMatch(x -> x.test(biome, pos));
     }
 }

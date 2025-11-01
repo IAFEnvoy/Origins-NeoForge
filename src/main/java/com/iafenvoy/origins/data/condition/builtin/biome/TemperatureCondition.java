@@ -1,21 +1,20 @@
 package com.iafenvoy.origins.data.condition.builtin.biome;
 
 import com.iafenvoy.origins.data.condition.BiomeCondition;
+import com.iafenvoy.origins.util.math.Comparison;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.NotNull;
 
-public record BiomeInTagCondition(TagKey<Biome> tag, boolean inverted) implements BiomeCondition {
-    public static final MapCodec<BiomeInTagCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            TagKey.codec(Registries.BIOME).fieldOf("tag").forGetter(BiomeInTagCondition::tag),
-            Codec.BOOL.optionalFieldOf("inverted", false).forGetter(BiomeInTagCondition::inverted)
-    ).apply(i, BiomeInTagCondition::new));
+public record TemperatureCondition(Comparison comparison, double compareTo) implements BiomeCondition {
+    public static final MapCodec<TemperatureCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            Comparison.CODEC.fieldOf("comparison").forGetter(TemperatureCondition::comparison),
+            Codec.DOUBLE.fieldOf("compare_to").forGetter(TemperatureCondition::compareTo)
+    ).apply(i, TemperatureCondition::new));
 
     @Override
     public @NotNull MapCodec<? extends BiomeCondition> codec() {
@@ -24,6 +23,6 @@ public record BiomeInTagCondition(TagKey<Biome> tag, boolean inverted) implement
 
     @Override
     public boolean test(@NotNull Holder<Biome> biome, @NotNull BlockPos pos) {
-        return biome.is(this.tag) ^ this.inverted;
+        return this.comparison.compare(biome.value().getBaseTemperature(), this.compareTo);
     }
 }

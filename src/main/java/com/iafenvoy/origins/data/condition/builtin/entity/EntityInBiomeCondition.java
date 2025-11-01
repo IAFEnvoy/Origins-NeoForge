@@ -26,6 +26,6 @@ public record EntityInBiomeCondition(List<Holder<Biome>> biome, BiomeCondition c
     @Override
     public boolean test(@NotNull Entity entity) {
         Holder<Biome> biome = entity.level().getBiome(entity.blockPosition());
-        return (this.biome.isEmpty() || this.biome.contains(biome)) & this.condition.test(biome);
+        return (this.biome.isEmpty() || this.biome.contains(biome)) & this.condition.test(biome, entity.blockPosition());
     }
 }

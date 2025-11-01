@@ -5,10 +5,8 @@ import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.function.BiPredicate;
 
 public enum Comparison implements StringRepresentable {
-    //a=current value, b=given value
     LESS_THAN("<", (a, b) -> a < b),
     LESS_THAN_OR_EQUAL("<=", (a, b) -> a <= b),
     GREATER_THAN(">", (a, b) -> a > b),
@@ -17,19 +15,28 @@ public enum Comparison implements StringRepresentable {
     NOT_EQUAL("!=", (a, b) -> !Objects.equals(a, b));
     public static final Codec<Comparison> CODEC = StringRepresentable.fromValues(Comparison::values);
     private final String key;
-    private final BiPredicate<Double, Double> comparator;
+    private final Comparator comparator;
 
-    Comparison(String key, BiPredicate<Double, Double> comparator) {
+    Comparison(String key, Comparator comparator) {
         this.key = key;
         this.comparator = comparator;
     }
 
-    public boolean test(double current, double given) {
-        return this.comparator.test(current, given);
+    public boolean compare(double current, double given) {
+        return this.comparator.compare(current, given);
+    }
+
+    public boolean compare(double current, int given) {
+        return this.comparator.compare(current, given);
     }
 
     @Override
     public @NotNull String getSerializedName() {
         return this.key;
+    }
+
+    @FunctionalInterface
+    private interface Comparator {
+        boolean compare(double a, double b);
     }
 }

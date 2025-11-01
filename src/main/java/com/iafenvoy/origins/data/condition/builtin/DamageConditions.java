@@ -16,6 +16,7 @@ public final class DamageConditions {
     public static final DeferredRegister<MapCodec<? extends DamageCondition>> REGISTRY = DeferredRegister.create(ConditionRegistries.DAMAGE_CONDITION, Origins.MOD_ID);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<AlwaysTrueCondition>> ALWAYS_TRUE = REGISTRY.register(Constants.ALWAYS_TRUE_KEY, () -> AlwaysTrueCondition.CODEC);
     //List
+    public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<AmountCondition>> AMOUNT = REGISTRY.register("amount", () -> AmountCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<AttackerDamageCondition>> ATTACKER = REGISTRY.register("attacker", () -> AttackerDamageCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<DamageInTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> DamageInTagCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<DamageNameCondition>> NAME = REGISTRY.register("name", () -> DamageNameCondition.CODEC);
