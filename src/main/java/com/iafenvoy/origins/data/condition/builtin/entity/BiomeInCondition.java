@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
+import com.iafenvoy.origins.data.condition.BiomeCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.mojang.serialization.MapCodec;
@@ -11,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record BiomeCondition(List<Holder<Biome>> biome, com.iafenvoy.origins.data.condition.BiomeCondition condition) implements EntityCondition {
-    public static final MapCodec<BiomeCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            CombinedCodecs.BIOME.optionalFieldOf("biome", List.of()).forGetter(BiomeCondition::biome),
-            com.iafenvoy.origins.data.condition.BiomeCondition.optionalCodec("condition").forGetter(BiomeCondition::condition)
-    ).apply(i, BiomeCondition::new));
+public record BiomeInCondition(List<Holder<Biome>> biome, BiomeCondition condition) implements EntityCondition {
+    public static final MapCodec<BiomeInCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            CombinedCodecs.BIOME.optionalFieldOf("biome", List.of()).forGetter(BiomeInCondition::biome),
+            BiomeCondition.optionalCodec("condition").forGetter(BiomeInCondition::condition)
+    ).apply(i, BiomeInCondition::new));
 
     @Override
     public @NotNull MapCodec<? extends EntityCondition> codec() {

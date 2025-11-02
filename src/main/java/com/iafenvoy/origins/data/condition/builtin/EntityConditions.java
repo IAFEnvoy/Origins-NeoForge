@@ -17,7 +17,12 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AlwaysTrueCondition>> ALWAYS_TRUE = REGISTRY.register(Constants.ALWAYS_TRUE_KEY, () -> AlwaysTrueCondition.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AbilityCondition>> ABILITY = REGISTRY.register("ability", () -> AbilityCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BiomeCondition>> BIOME = REGISTRY.register("biome", () -> BiomeCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AdvancementCondition>> ADVANCEMENT = REGISTRY.register("advancement", () -> AdvancementCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AirCondition>> AIR = REGISTRY.register("air", () -> AirCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AttributeCondition>> ATTRIBUTE = REGISTRY.register("attribute", () -> AttributeCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BiomeInCondition>> BIOME = REGISTRY.register("biome", () -> BiomeInCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BlockInRadiusCondition>> BLOCK_IN_RADIUS = REGISTRY.register("block_in_radius", () -> BlockInRadiusCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BrightnessCondition>> BRIGHTNESS = REGISTRY.register("brightness", () -> BrightnessCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<CollidedHorizontallyCondition>> COLLIDED_HORIZONTALLY = REGISTRY.register("collided_horizontally", () -> CollidedHorizontallyCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<CreativeFlyingCondition>> CREATIVE_FLYING = REGISTRY.register("creative_flying", () -> CreativeFlyingCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<DaytimeCondition>> DAYTIME = REGISTRY.register("daytime", () -> DaytimeCondition.CODEC);
