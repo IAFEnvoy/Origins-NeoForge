@@ -24,5 +24,6 @@ public final class CommandHelper {
                 throw new ReportedException(crashreport);
             }
         }
+        return 0;
     }
 }

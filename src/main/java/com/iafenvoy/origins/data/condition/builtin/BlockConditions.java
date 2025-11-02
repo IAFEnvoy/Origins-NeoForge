@@ -22,22 +22,22 @@ public final class BlockConditions {
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockEntityCondition>> BLOCK_ENTITY = REGISTRY.register("block_entity", () -> BlockEntityCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockIdCondition>> BLOCK = REGISTRY.register("block", () -> BlockIdCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<ExposedToSkyCondition>> EXPOSED_TO_SKY = REGISTRY.register("exposed_to_sky", () -> ExposedToSkyCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockFluidIdCondition>> FLUID = REGISTRY.register("fluid", () -> BlockFluidIdCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<FluidIdCondition>> FLUID = REGISTRY.register("fluid", () -> FluidIdCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<HardnessCondition>> HARDNESS = REGISTRY.register("hardness", () -> HardnessCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<HeightCondition>> HEIGHT = REGISTRY.register("height", () -> HeightCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockInTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> BlockInTagCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<InTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> InTagCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<LightBlockingCondition>> LIGHT_BLOCKING = REGISTRY.register("light_blocking", () -> LightBlockingCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<LightLevelCondition>> LIGHT_LEVEL = REGISTRY.register("light_level", () -> LightLevelCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<MovementBlockingCondition>> MOVEMENT_BLOCKING = REGISTRY.register("movement_blocking", () -> MovementBlockingCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockEntityNbtCondition>> NBT = REGISTRY.register("nbt", () -> BlockEntityNbtCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<NbtCondition>> NBT = REGISTRY.register("nbt", () -> NbtCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<ReplaceableCondition>> REPLACEABLE = REGISTRY.register("replaceable", () -> ReplaceableCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<SlipperinessCondition>> SLIPPERINESS = REGISTRY.register("slipperiness", () -> SlipperinessCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<WaterLoggableCondition>> WATER_LOGGABLE = REGISTRY.register("water_loggable", () -> WaterLoggableCondition.CODEC);
     //Meta
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockAndCondition>> AND = REGISTRY.register("and", () -> BlockAndCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockChanceCondition>> CHANCE = REGISTRY.register("chance", () -> BlockChanceCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> BlockConstantCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockNotCondition>> NOT = REGISTRY.register("not", () -> BlockNotCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockOffsetCondition>> OFFSET = REGISTRY.register("offset", () -> BlockOffsetCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockOrCondition>> OR = REGISTRY.register("or", () -> BlockOrCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<AndCondition>> AND = REGISTRY.register("and", () -> AndCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<ChanceCondition>> CHANCE = REGISTRY.register("chance", () -> ChanceCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<ConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> ConstantCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<NotCondition>> NOT = REGISTRY.register("not", () -> NotCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<OffsetCondition>> OFFSET = REGISTRY.register("offset", () -> OffsetCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<OrCondition>> OR = REGISTRY.register("or", () -> OrCondition.CODEC);
 }

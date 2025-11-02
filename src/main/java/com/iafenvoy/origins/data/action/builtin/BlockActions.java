@@ -18,19 +18,18 @@ public final class BlockActions {
     //List
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BonemealAction>> BONEMEAL = REGISTRY.register("bonemeal", () -> BonemealAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<ExecuteCommandAction>> EXECUTE_COMMAND = REGISTRY.register("execute_command", () -> ExecuteCommandAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BlockExplodeAction>> EXPLODE = REGISTRY.register("explode", () -> BlockExplodeAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<ExplodeAction>> EXPLODE = REGISTRY.register("explode", () -> ExplodeAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<SetBlockAction>> SET_BLOCK = REGISTRY.register("set_block", () -> SetBlockAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<SpawnEntityAction>> SPAWN_ENTITY = REGISTRY.register("spawn_entity", () -> SpawnEntityAction.CODEC);
     //Meta
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<AbsoluteOffsetAction>> ABSOLUTE_OFFSET = REGISTRY.register("absolute_offset", () -> AbsoluteOffsetAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BlockAndAction>> AND = REGISTRY.register("and", () -> BlockAndAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BlockChanceAction>> CHANCE = REGISTRY.register("chance", () -> BlockChanceAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BlockChoiceAction>> CHOICE = REGISTRY.register("choice", () -> BlockChoiceAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BlockDelayAction>> DELAY = REGISTRY.register("delay", () -> BlockDelayAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BlockIfElseAction>> IF_ELSE = REGISTRY.register("if_else", () -> BlockIfElseAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BlockIfElseListAction>> IF_ELSE_LIST = REGISTRY.register("if_else_list", () -> BlockIfElseListAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BlockNothingAction>> NOTHING = REGISTRY.register("nothing", () -> BlockNothingAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BlockRegionApplyAction>> REGION_APPLY = REGISTRY.register("region_apply", () -> BlockRegionApplyAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BlockSideAction>> SIDE = REGISTRY.register("side", () -> BlockSideAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<AndAction>> AND = REGISTRY.register("and", () -> AndAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<ChanceAction>> CHANCE = REGISTRY.register("chance", () -> ChanceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<ChoiceAction>> CHOICE = REGISTRY.register("choice", () -> ChoiceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<DelayAction>> DELAY = REGISTRY.register("delay", () -> DelayAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<IfElseAction>> IF_ELSE = REGISTRY.register("if_else", () -> IfElseAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<IfElseListAction>> IF_ELSE_LIST = REGISTRY.register("if_else_list", () -> IfElseListAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<RegionApplyAction>> REGION_APPLY = REGISTRY.register("region_apply", () -> RegionApplyAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<RelativeOffsetAction>> RELATIVE_OFFSET = REGISTRY.register("relative_offset", () -> RelativeOffsetAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<SideAction>> SIDE = REGISTRY.register("side", () -> SideAction.CODEC);
 }

@@ -25,9 +25,9 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EmitGameEventAction>> EMIT_GAME_EVENT = REGISTRY.register("emit_game_event", () -> EmitGameEventAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EnderChestAction>> ENDER_CHEST = REGISTRY.register("ender_chest", () -> EnderChestAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EquippedItemActionAction>> EQUIPPED_ITEM_ACTION = REGISTRY.register("equipped_item_action", () -> EquippedItemActionAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityExecuteCommandAction>> EXECUTE_COMMAND = REGISTRY.register("execute_command", () -> EntityExecuteCommandAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ExecuteCommandAction>> EXECUTE_COMMAND = REGISTRY.register("execute_command", () -> ExecuteCommandAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ExhaustAction>> EXHAUST = REGISTRY.register("exhaust", () -> ExhaustAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityExplodeAction>> EXPLODE = REGISTRY.register("explode", () -> EntityExplodeAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ExplodeAction>> EXPLODE = REGISTRY.register("explode", () -> ExplodeAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ExtinguishAction>> EXTINGUISH = REGISTRY.register("extinguish", () -> ExtinguishAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<FeedAction>> FEED = REGISTRY.register("feed", () -> FeedAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<GainAirAction>> GAIN_AIR = REGISTRY.register("gain_air", () -> GainAirAction.CODEC);
@@ -43,14 +43,13 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnEntityAction>> SPAWN_ENTITY = REGISTRY.register("spawn_entity", () -> SpawnEntityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnParticlesAction>> SPAWN_PARTICLES = REGISTRY.register("spawn_particles", () -> SpawnParticlesAction.CODEC);
     //Meta
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityAndAction>> AND = REGISTRY.register("and", () -> EntityAndAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityChanceAction>> CHANCE = REGISTRY.register("chance", () -> EntityChanceAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityChoiceAction>> CHOICE = REGISTRY.register("choice", () -> EntityChoiceAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityDelayAction>> DELAY = REGISTRY.register("delay", () -> EntityDelayAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityIfElseAction>> IF_ELSE = REGISTRY.register("if_else", () -> EntityIfElseAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityIfElseListAction>> IF_ELSE_LIST = REGISTRY.register("if_else_list", () -> EntityIfElseListAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityNothingAction>> NOTHING = REGISTRY.register("nothing", () -> EntityNothingAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntityRegionApplyAction>> REGION_APPLY = REGISTRY.register("region_apply", () -> EntityRegionApplyAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntitySelectorApplyAction>> SELECTOR_APPLY = REGISTRY.register("selector_apply", () -> EntitySelectorApplyAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EntitySideAction>> SIDE = REGISTRY.register("side", () -> EntitySideAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AndAction>> AND = REGISTRY.register("and", () -> AndAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ChanceAction>> CHANCE = REGISTRY.register("chance", () -> ChanceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ChoiceAction>> CHOICE = REGISTRY.register("choice", () -> ChoiceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<DelayAction>> DELAY = REGISTRY.register("delay", () -> DelayAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<IfElseAction>> IF_ELSE = REGISTRY.register("if_else", () -> IfElseAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<IfElseListAction>> IF_ELSE_LIST = REGISTRY.register("if_else_list", () -> IfElseListAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RegionApplyAction>> REGION_APPLY = REGISTRY.register("region_apply", () -> RegionApplyAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SelectorApplyAction>> SELECTOR_APPLY = REGISTRY.register("selector_apply", () -> SelectorApplyAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SideAction>> SIDE = REGISTRY.register("side", () -> SideAction.CODEC);
 }

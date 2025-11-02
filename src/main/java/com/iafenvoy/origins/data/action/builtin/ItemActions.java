@@ -17,17 +17,16 @@ public final class ItemActions {
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<NoOpAction>> NO_OP = REGISTRY.register(Constants.NO_OP_KEY, () -> NoOpAction.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ConsumeAction>> CONSUME = REGISTRY.register("consume", () -> ConsumeAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ItemDamageAction>> DAMAGE = REGISTRY.register("damage", () -> ItemDamageAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<DamageAction>> DAMAGE = REGISTRY.register("damage", () -> DamageAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<HolderActionAction>> HOLDER_ACTION = REGISTRY.register("holder_action", () -> HolderActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<MergeComponentAction>> MERGE_COMPONENT = REGISTRY.register("merge_component", () -> MergeComponentAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<RemoveEnchantmentAction>> REMOVE_ENCHANTMENT = REGISTRY.register("remove_enchantment", () -> RemoveEnchantmentAction.CODEC);
     //Meta
-    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ItemAndAction>> AND = REGISTRY.register("and", () -> ItemAndAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ItemChanceAction>> CHANCE = REGISTRY.register("chance", () -> ItemChanceAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ItemChoiceAction>> CHOICE = REGISTRY.register("choice", () -> ItemChoiceAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ItemDelayAction>> DELAY = REGISTRY.register("delay", () -> ItemDelayAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ItemIfElseAction>> IF_ELSE = REGISTRY.register("if_else", () -> ItemIfElseAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ItemIfElseListAction>> IF_ELSE_LIST = REGISTRY.register("if_else_list", () -> ItemIfElseListAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ItemNothingAction>> NOTHING = REGISTRY.register("nothing", () -> ItemNothingAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ItemSideAction>> SIDE = REGISTRY.register("side", () -> ItemSideAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<AndAction>> AND = REGISTRY.register("and", () -> AndAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ChanceAction>> CHANCE = REGISTRY.register("chance", () -> ChanceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ChoiceAction>> CHOICE = REGISTRY.register("choice", () -> ChoiceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<DelayAction>> DELAY = REGISTRY.register("delay", () -> DelayAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<IfElseAction>> IF_ELSE = REGISTRY.register("if_else", () -> IfElseAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<IfElseListAction>> IF_ELSE_LIST = REGISTRY.register("if_else_list", () -> IfElseListAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<SideAction>> SIDE = REGISTRY.register("side", () -> SideAction.CODEC);
 }

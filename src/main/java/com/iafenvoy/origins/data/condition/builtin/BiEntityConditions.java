@@ -27,15 +27,15 @@ public final class BiEntityConditions {
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<RidingRootCondition>> RIDING_ROOT = REGISTRY.register("riding_root", () -> RidingRootCondition.CODEC);
     //Meta
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<ActorConditionCondition>> ACTOR_CONDITION = REGISTRY.register("actor_condition", () -> ActorConditionCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BiEntityAndCondition>> AND = REGISTRY.register("and", () -> BiEntityAndCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<AndCondition>> AND = REGISTRY.register("and", () -> AndCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BothCondition>> BOTH = REGISTRY.register("both", () -> BothCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BiEntityChanceCondition>> CHANCE = REGISTRY.register("chance", () -> BiEntityChanceCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BiEntityConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> BiEntityConstantCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<ChanceCondition>> CHANCE = REGISTRY.register("chance", () -> ChanceCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<ConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> ConstantCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<EitherCondition>> EITHER = REGISTRY.register("either", () -> EitherCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<EqualCondition>> EQUAL = REGISTRY.register("equal", () -> EqualCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<InvertCondition>> INVERT = REGISTRY.register("invert", () -> InvertCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BiEntityNotCondition>> NOT = REGISTRY.register("not", () -> BiEntityNotCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<BiEntityOrCondition>> OR = REGISTRY.register("or", () -> BiEntityOrCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<NotCondition>> NOT = REGISTRY.register("not", () -> NotCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<OrCondition>> OR = REGISTRY.register("or", () -> OrCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<TargetConditionCondition>> TARGET_CONDITION = REGISTRY.register("target_condition", () -> TargetConditionCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<UndirectedCondition>> UNDIRECTED = REGISTRY.register("undirected", () -> UndirectedCondition.CODEC);
 }

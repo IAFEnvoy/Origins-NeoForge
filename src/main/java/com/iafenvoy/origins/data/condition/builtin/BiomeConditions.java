@@ -5,7 +5,7 @@ import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.BiomeCondition;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
-import com.iafenvoy.origins.data.condition.builtin.biome.BiomeInTagCondition;
+import com.iafenvoy.origins.data.condition.builtin.biome.InTagCondition;
 import com.iafenvoy.origins.data.condition.builtin.biome.HighHumidityCondition;
 import com.iafenvoy.origins.data.condition.builtin.biome.PrecipitationCondition;
 import com.iafenvoy.origins.data.condition.builtin.biome.TemperatureCondition;
@@ -20,13 +20,13 @@ public final class BiomeConditions {
     public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<AlwaysTrueCondition>> ALWAYS_TRUE = REGISTRY.register(Constants.ALWAYS_TRUE_KEY, () -> AlwaysTrueCondition.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<HighHumidityCondition>> HIGH_HUMIDITY = REGISTRY.register("high_humidity", () -> HighHumidityCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeInTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> BiomeInTagCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<InTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> InTagCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<PrecipitationCondition>> PRECIPITATION = REGISTRY.register("precipitation", () -> PrecipitationCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<TemperatureCondition>> TEMPERATURE = REGISTRY.register("temperature", () -> TemperatureCondition.CODEC);
     //Meta
-    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeAndCondition>> AND = REGISTRY.register("and", () -> BiomeAndCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeChanceCondition>> CHANCE = REGISTRY.register("chance", () -> BiomeChanceCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> BiomeConstantCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeNotCondition>> NOT = REGISTRY.register("not", () -> BiomeNotCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<BiomeOrCondition>> OR = REGISTRY.register("or", () -> BiomeOrCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<AndCondition>> AND = REGISTRY.register("and", () -> AndCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<ChanceCondition>> CHANCE = REGISTRY.register("chance", () -> ChanceCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<ConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> ConstantCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<NotCondition>> NOT = REGISTRY.register("not", () -> NotCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiomeCondition>, MapCodec<OrCondition>> OR = REGISTRY.register("or", () -> OrCondition.CODEC);
 }

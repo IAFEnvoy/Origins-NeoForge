@@ -17,20 +17,19 @@ public final class BiEntityActions {
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<NoOpAction>> NO_OP = REGISTRY.register(Constants.NO_OP_KEY, () -> NoOpAction.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<AddVelocityAction>> ADD_VELOCITY = REGISTRY.register("add_velocity", () -> AddVelocityAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<DamageTargetAction>> DAMAGE = REGISTRY.register("damage_target", () -> DamageTargetAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<DamageTargetAction>> DAMAGE_TARGET = REGISTRY.register("damage_target", () -> DamageTargetAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<MountAction>> MOUNT = REGISTRY.register("mount", () -> MountAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<SetInLoveAction>> SET_IN_LOVE = REGISTRY.register("set_in_love", () -> SetInLoveAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<TameAction>> TAME = REGISTRY.register("tame", () -> TameAction.CODEC);
     //Meta
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<BiEntityAndAction>> AND = REGISTRY.register("and", () -> BiEntityAndAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<BiEntityChanceAction>> CHANCE = REGISTRY.register("chance", () -> BiEntityChanceAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<BiEntityChoiceAction>> CHOICE = REGISTRY.register("choice", () -> BiEntityChoiceAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<BiEntityDelayAction>> DELAY = REGISTRY.register("delay", () -> BiEntityDelayAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<BiEntityIfElseAction>> IF_ELSE = REGISTRY.register("if_else", () -> BiEntityIfElseAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<BiEntityIfElseListAction>> IF_ELSE_LIST = REGISTRY.register("if_else_list", () -> BiEntityIfElseListAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<BiEntityNothingAction>> NOTHING = REGISTRY.register("nothing", () -> BiEntityNothingAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<BiEntitySideAction>> SIDE = REGISTRY.register("side", () -> BiEntitySideAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<AndAction>> AND = REGISTRY.register("and", () -> AndAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<ChanceAction>> CHANCE = REGISTRY.register("chance", () -> ChanceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<ChoiceAction>> CHOICE = REGISTRY.register("choice", () -> ChoiceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<DelayAction>> DELAY = REGISTRY.register("delay", () -> DelayAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<IfElseAction>> IF_ELSE = REGISTRY.register("if_else", () -> IfElseAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<IfElseListAction>> IF_ELSE_LIST = REGISTRY.register("if_else_list", () -> IfElseListAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<SideAction>> SIDE = REGISTRY.register("side", () -> SideAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<InvertAction>> INVERT = REGISTRY.register("invert", () -> InvertAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<SourceActionAction>> ACTOR_ACTION = REGISTRY.register("source_action", () -> SourceActionAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<SourceActionAction>> SOURCE_ACTION = REGISTRY.register("source_action", () -> SourceActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<TargetActionAction>> TARGET_ACTION = REGISTRY.register("target_action", () -> TargetActionAction.CODEC);
 }
