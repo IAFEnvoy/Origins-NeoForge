@@ -45,6 +45,10 @@ public final class EntitySetAttachment {
         return this.storedEntities.get(id).contains(target.getUUID());
     }
 
+    public int getSize(ResourceLocation id) {
+        return this.storedEntities.get(id).size();
+    }
+
     private Map<ResourceLocation, List<UUID>> getStoredEntities() {
         ImmutableMap.Builder<ResourceLocation, List<UUID>> builder = ImmutableMap.builder();
         for (ResourceLocation rl : this.storedEntities.keySet())

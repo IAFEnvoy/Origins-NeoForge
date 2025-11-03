@@ -16,12 +16,19 @@ public final class ItemConditions {
     public static final DeferredRegister<MapCodec<? extends ItemCondition>> REGISTRY = DeferredRegister.create(ConditionRegistries.ITEM_CONDITION, Origins.MOD_ID);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<AlwaysTrueCondition>> ALWAYS_TRUE = REGISTRY.register(Constants.ALWAYS_TRUE_KEY, () -> AlwaysTrueCondition.CODEC);
     //List
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<AmountCondition>> AMOUNT = REGISTRY.register("amount", () -> AmountCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ArmorValueCondition>> ARMOR_VALUE = REGISTRY.register("armor_value", () -> ArmorValueCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ComponentCondition>> COMPONENT = REGISTRY.register("component", () -> ComponentCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<DurabilityCondition>> DURABILITY = REGISTRY.register("durability", () -> DurabilityCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<EmptyCondition>> EMPTY = REGISTRY.register("empty", () -> EmptyCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<EnchantableCondition>> ENCHANTABLE = REGISTRY.register("enchantable", () -> EnchantableCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<FuelCondition>> FUEL = REGISTRY.register("fuel", () -> FuelCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<HasComponentCondition>> HAS_COMPONENT = REGISTRY.register("has_component", () -> HasComponentCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<IngredientCondition>> INGREDIENT = REGISTRY.register("ingredient", () -> IngredientCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<IsDamageableCondition>> IS_DAMAGEABLE = REGISTRY.register("is_damageable", () -> IsDamageableCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<IsEquipableCondition>> IS_EQUIPABLE = REGISTRY.register("is_equipable", () -> IsEquipableCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<MeatCondition>> MEAT = REGISTRY.register("meat", () -> MeatCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<RelativeDurabilityCondition>> RELATIVE_DURABILITY = REGISTRY.register("relative_durability", () -> RelativeDurabilityCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<SmeltableCondition>> SMELTABLE = REGISTRY.register("smeltable", () -> SmeltableCondition.CODEC);
     //Meta
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<AndCondition>> AND = REGISTRY.register("and", () -> AndCondition.CODEC);
