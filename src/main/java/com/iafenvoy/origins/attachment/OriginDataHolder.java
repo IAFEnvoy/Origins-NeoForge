@@ -11,9 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public record OriginDataHolder(Entity entity, EntityOriginAttachment data, EntitySetAttachment entitySet,
                                RegistryAccess access) {
@@ -60,15 +58,15 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Entit
     }
 
     public void addEntity(ResourceLocation id, Entity target) {
-        this.entitySet.addEntity(this.entity, id, target);
+        this.addEntity(id, target, -1);
+    }
+
+    public void addEntity(ResourceLocation id, Entity target, int timeLimit) {
+        this.entitySet.addEntity(this.entity, id, target, timeLimit);
     }
 
     public void removeEntity(ResourceLocation id, Entity target) {
         this.entitySet.removeEntity(this.entity, id, target);
-    }
-
-    public boolean containEntity(ResourceLocation id, Entity target) {
-        return this.entitySet().containEntity(id, target);
     }
 
     public static OriginDataHolder get(Entity entity) {

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.condition.builtin.bientity;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.EntitySetAttachment;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -20,6 +20,6 @@ public record InSetCondition(ResourceLocation set) implements BiEntityCondition 
 
     @Override
     public boolean test(@NotNull Entity source, @NotNull Entity target) {
-        return OriginDataHolder.get(source).containEntity(this.set, target);
+        return EntitySetAttachment.get(source).containEntity(this.set, target);
     }
 }

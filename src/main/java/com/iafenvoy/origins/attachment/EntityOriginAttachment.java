@@ -92,12 +92,8 @@ public final class EntityOriginAttachment {
         return this.origins;
     }
 
-    public Holder<Origin> getOrigin(Holder<Layer> layer) {
-        return this.origins.get(layer);
-    }
-
-    Stream<EntitySetPower> streamEntitySetPowers() {
-        return this.entitySetPowers.stream();
+    Stream<EntitySetPower> streamEntitySetPowers(ResourceLocation id, RegistryAccess access) {
+        return this.entitySetPowers.stream().filter(x -> x.getId(access).equals(id));
     }
 
     @NotNull
