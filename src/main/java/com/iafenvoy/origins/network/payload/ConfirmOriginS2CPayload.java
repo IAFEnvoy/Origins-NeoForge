@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public record ConfirmOriginS2CPayload(Holder<Layer> layer, Holder<Origin> origin) implements CustomPacketPayload {
-    public static final Type<ConfirmOriginS2CPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "confirm_origin"));
+    public static final Type<ConfirmOriginS2CPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "confirm_origin_s2c"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ConfirmOriginS2CPayload> STREAM_CODEC = StreamCodec.composite(
             Layer.STREAM_CODEC, ConfirmOriginS2CPayload::layer,
             Origin.STREAM_CODEC, ConfirmOriginS2CPayload::origin,

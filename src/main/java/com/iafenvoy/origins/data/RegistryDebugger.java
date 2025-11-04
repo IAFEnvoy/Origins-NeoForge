@@ -1,5 +1,6 @@
-package com.iafenvoy.origins;
+package com.iafenvoy.origins.data;
 
+import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.ActionRegistries;
 import com.iafenvoy.origins.data.badge.BadgeRegistries;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
@@ -7,6 +8,7 @@ import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -35,9 +37,10 @@ public final class RegistryDebugger {
     }
 
     @SubscribeEvent
-    public static void afterDatapackReloaded(TagsUpdatedEvent event) {
+    public static void afterDynamicLoaded(TagsUpdatedEvent event) {
+        RegistryAccess access = event.getRegistryAccess();
         Origins.LOGGER.info("Origins dynamic registries loaded, print object counts.");
         for (ResourceKey<? extends Registry<?>> key : DYNAMIC_REGISTRIES)
-            Origins.LOGGER.info("Registry: {}, objects count: {}", key.location(), event.getRegistryAccess().registryOrThrow(key).stream().count());
+            Origins.LOGGER.info("Registry: {}, objects count: {}", key.location(), access.registryOrThrow(key).stream().count());
     }
 }

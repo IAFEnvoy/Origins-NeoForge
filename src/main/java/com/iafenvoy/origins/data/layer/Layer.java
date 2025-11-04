@@ -61,12 +61,12 @@ public record Layer(int order, TagKey<Origin> origins, boolean enabled, Optional
         return this.collectOrigins(access).filter(x -> !this.excludeRandom.contains(x));
     }
 
-    public Component getChooseOriginTitle() {
-        return this.guiTitle.flatMap(x -> x.chooseOrigin).orElse(Component.empty());
+    public Component getChooseOriginTitle(Component fallback) {
+        return this.guiTitle.flatMap(x -> x.chooseOrigin).orElse(fallback);
     }
 
-    public Component getViewOriginTitle() {
-        return this.guiTitle.flatMap(x -> x.viewOrigin).orElse(Component.empty());
+    public Component getViewOriginTitle(Component fallback) {
+        return this.guiTitle.flatMap(x -> x.viewOrigin).orElse(fallback);
     }
 
     @Override

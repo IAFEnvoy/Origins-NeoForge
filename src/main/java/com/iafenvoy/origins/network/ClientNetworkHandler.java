@@ -16,7 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public final class ClientNetworkHandler {
-    public static void onOriginConfirm(ConfirmOriginS2CPayload packet, IPayloadContext context) {
+    static void onOriginConfirm(ConfirmOriginS2CPayload packet, IPayloadContext context) {
         Player player = context.player();
         OriginDataHolder holder = OriginDataHolder.get(player);
         holder.setOrigin(packet.layer(), packet.origin());
@@ -24,7 +24,7 @@ public final class ClientNetworkHandler {
             nextLayerScreen.openSelection();
     }
 
-    public static void openOriginScreen(OpenChooseOriginScreenS2CPayload packet, IPayloadContext context) {
+    static void openOriginScreen(OpenChooseOriginScreenS2CPayload packet, IPayloadContext context) {
         OriginDataHolder holder = OriginDataHolder.get(context.player());
         List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(context.player().registryAccess()).filter(x -> !holder.hasOrigin(x)).sorted(Comparator.comparing(Holder::value)).toList();
         Minecraft.getInstance().setScreen(new ChooseOriginScreen(layers, 0, packet.showBackground()));

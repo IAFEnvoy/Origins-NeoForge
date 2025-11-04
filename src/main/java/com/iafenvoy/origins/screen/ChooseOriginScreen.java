@@ -97,7 +97,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("origins.gui.choose_origin.title", Layer.getName(this.getCurrentLayer()));
+        return this.getCurrentLayer().value().getChooseOriginTitle(Component.translatable("origins.gui.choose_origin.title", Layer.getName(this.getCurrentLayer())));
     }
 
     @Override

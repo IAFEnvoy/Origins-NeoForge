@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public final class ServerNetworkHandler {
-    public static void onChooseOrigin(ChooseOriginC2SPayload packet, IPayloadContext context) {
+    static void onChooseOrigin(ChooseOriginC2SPayload packet, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) return;
 
         OriginDataHolder holder = OriginDataHolder.get(player);
@@ -52,5 +52,4 @@ public final class ServerNetworkHandler {
         holder.data().setSelecting(false);
         holder.sync();
     }
-
 }
