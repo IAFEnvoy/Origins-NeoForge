@@ -1,6 +1,5 @@
 package com.iafenvoy.origins.data.action.builtin.block.meta;
 
-import com.google.common.collect.ImmutableList;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.util.Shape;
@@ -9,13 +8,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.function.BiFunction;
 
 public record RegionApplyAction(int radius, Shape shape, BlockAction blockAction,
                                 BlockCondition blockCondition) implements BlockAction {

@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -19,6 +20,7 @@ public final class CombinedCodecs {
     public static final Codec<List<Holder<Enchantment>>> ENCHANTMENT = combineCodec(Enchantment.CODEC);
     public static final Codec<List<Component>> TEXT = combineCodec(ComponentSerialization.CODEC);
     public static final Codec<List<Holder<Biome>>> BIOME = combineCodec(Biome.CODEC);
+    public static final Codec<List<InteractionHand>> HAND = combineCodec(ExtraEnumCodecs.HAND);
 
     public static <T> Codec<List<T>> combineCodec(Codec<T> codec) {
         return Codec.either(codec, codec.listOf()).xmap(x -> x.map(List::of, l -> l), l -> l.size() == 1 ? Either.left(l.getFirst()) : Either.right(l));

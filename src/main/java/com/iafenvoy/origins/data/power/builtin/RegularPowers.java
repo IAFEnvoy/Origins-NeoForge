@@ -16,6 +16,7 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<EmptyPower>> EMPTY = REGISTRY.register("empty", () -> EmptyPower.CODEC);
 
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<BurnPower>> BURN = REGISTRY.register("burn", () -> BurnPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ClimbingPower>> CLIMBING = REGISTRY.register("climbing", () -> ClimbingPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<CreativeFlightPower>> CREATIVE_FLIGHT = REGISTRY.register("creative_flight", () -> CreativeFlightPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<DamageOverTimePower>> DAMAGE_OVER_TIME = REGISTRY.register("damage_over_time", () -> DamageOverTimePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<DisableRegenPower>> DISABLE_REGEN = REGISTRY.register("disable_regen", () -> DisableRegenPower.CODEC);
@@ -29,6 +30,8 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<IgnoreWaterPower>> IGNORE_WATER = REGISTRY.register("ignore_water", () -> IgnoreWaterPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<InvulnerabilityPower>> INVULNERABILITY = REGISTRY.register("invulnerability", () -> InvulnerabilityPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<NightVisionPower>> NIGHT_VISION = REGISTRY.register("night_vision", () -> NightVisionPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<RestrictArmorPower>> RESTRICT_ARMOR = REGISTRY.register("restrict_armor", () -> RestrictArmorPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<SelfGlowPower>> SELF_GLOW = REGISTRY.register("self_glow", () -> SelfGlowPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<StandOnFluidPower>> STAND_ON_FLUID = REGISTRY.register("stand_on_fluid", () -> StandOnFluidPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<TooltipPower>> TOOLTIP = REGISTRY.register("tooltip", () -> TooltipPower.CODEC);
 }

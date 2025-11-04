@@ -11,7 +11,8 @@ import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public record OriginDataHolder(Entity entity, EntityOriginAttachment data, EntitySetAttachment entitySet,
                                RegistryAccess access) {
@@ -32,7 +33,7 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Entit
     }
 
     @NotNull
-    public <T extends Power> Collection<T> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder, Class<T> clazz) {
+    public <T extends Power> List<T> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder, Class<T> clazz) {
         return this.getPowers(holder.getId(), clazz);
     }
 

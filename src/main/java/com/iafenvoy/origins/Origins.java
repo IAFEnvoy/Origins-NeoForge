@@ -5,6 +5,7 @@ import com.iafenvoy.origins.data.action.builtin.BlockActions;
 import com.iafenvoy.origins.data.action.builtin.EntityActions;
 import com.iafenvoy.origins.data.action.builtin.ItemActions;
 import com.iafenvoy.origins.data.condition.builtin.*;
+import com.iafenvoy.origins.data.power.builtin.ActionPowers;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
@@ -38,6 +39,7 @@ public final class Origins {
         FluidConditions.REGISTRY.register(bus);
         ItemConditions.REGISTRY.register(bus);
         //Powers
+        ActionPowers.REGISTRY.register(bus);
         RegularPowers.REGISTRY.register(bus);
     }
 }
