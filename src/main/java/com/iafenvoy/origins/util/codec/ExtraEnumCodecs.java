@@ -1,11 +1,13 @@
 package com.iafenvoy.origins.util.codec;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.material.FogType;
 import net.neoforged.api.distmarker.Dist;
 
 import java.util.Locale;
@@ -19,6 +21,8 @@ public final class ExtraEnumCodecs {
     public static final Codec<LightLayer> LIGHT_LAYER = enumCodec(LightLayer::valueOf);
     public static final Codec<InteractionHand> HAND = enumCodec(InteractionHand::valueOf);
     public static final Codec<InteractionResult> INTERACTION_RESULT = enumCodec(InteractionResult::valueOf);
+    public static final Codec<FogType> FOG_TYPE = enumCodec(FogType::valueOf);
+    public static final Codec<Direction.AxisDirection> AXIS = enumCodec(Direction.AxisDirection::valueOf);
 
     public static <T extends Enum<T>> Codec<T> enumCodec(Function<String, T> stringSolver) {
         return Codec.stringResolver(x -> x.name().toLowerCase(Locale.ROOT), x -> stringSolver.apply(x.toUpperCase(Locale.ROOT)));
