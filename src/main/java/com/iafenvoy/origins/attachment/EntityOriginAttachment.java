@@ -7,6 +7,7 @@ import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
+import com.iafenvoy.origins.data.power.Prioritized;
 import com.iafenvoy.origins.data.power.builtin.regular.EntitySetPower;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.util.RandomHelper;
@@ -102,7 +103,7 @@ public final class EntityOriginAttachment {
         for (Power power : this.powerMap.get(id))
             if (power != null && clazz.isAssignableFrom(power.getClass()))
                 results.add(clazz.cast(power));
-        return results;
+        return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast).toList() : results;
     }
 
     public boolean hasOrigin(Holder<Layer> layer) {
