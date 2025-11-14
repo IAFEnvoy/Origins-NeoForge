@@ -19,6 +19,7 @@ group = mod_group_id
 
 repositories {
     maven { url = "https://api.modrinth.com/maven" }
+    maven { url = "https://jitpack.io" }
 }
 
 base {
@@ -111,6 +112,10 @@ configurations {
 }
 
 dependencies {
+    implementation "maven.modrinth:jupiter:I4i9vhEW"
+    implementation "com.github.IAFEnvoy.Integration:integration-neoforge:$integration_version"
+    jarJar "com.github.IAFEnvoy.Integration:integration-neoforge:$integration_version"
+
     compileOnly "maven.modrinth:bedsheet:HbBAModY"
 }
 

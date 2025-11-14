@@ -55,7 +55,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<OnFireCondition>> ON_FIRE = REGISTRY.register("on_fire", () -> OnFireCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<OriginCondition>> ORIGIN = REGISTRY.register("origin", () -> OriginCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<PassengerCondition>> PASSENGER = REGISTRY.register("passenger", () -> PassengerCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<RidingRecursiveCondition>> PASSENGER_RECURSIVE = REGISTRY.register("passenger_recursive", () -> RidingRecursiveCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<PassengerRecursiveCondition>> PASSENGER_RECURSIVE = REGISTRY.register("passenger_recursive", () -> PassengerRecursiveCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<PowerTypeCondition>> POWER_TYPE = REGISTRY.register("power_type", () -> PowerTypeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<RelativeHealthCondition>> RELATIVE_HEALTH = REGISTRY.register("relative_health", () -> RelativeHealthCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<RidingCondition>> RIDING = REGISTRY.register("riding", () -> RidingCondition.CODEC);

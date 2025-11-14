@@ -16,9 +16,9 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-@EventBusSubscriber(Dist.CLIENT)
 public record SelfGlowPower(EntityCondition entityCondition, BiEntityCondition biEntityCondition, boolean useTeam,
                             int color) implements Power {
     public static final MapCodec<SelfGlowPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -33,23 +33,27 @@ public record SelfGlowPower(EntityCondition entityCondition, BiEntityCondition b
         return CODEC;
     }
 
-    @SubscribeEvent
-    public static void handleGlowingColor(ClientGlowingColorEvent event) {
-        Player player = Minecraft.getInstance().player;
-        Entity entity = event.getEntity();
-        if (player != null)
-            for (SelfGlowPower power : OriginDataHolder.get(entity).getPowers(RegularPowers.SELF_GLOW, SelfGlowPower.class))
-                if (!power.useTeam && power.entityCondition.test(player) && power.biEntityCondition.test(entity, player))
-                    event.setColor(power.color);
-    }
+    @ApiStatus.Internal
+    @EventBusSubscriber(Dist.CLIENT)
+    public static final class ClientEvents {
+        @SubscribeEvent
+        public static void handleGlowingColor(ClientGlowingColorEvent event) {
+            Player player = Minecraft.getInstance().player;
+            Entity entity = event.getEntity();
+            if (player != null)
+                for (SelfGlowPower power : OriginDataHolder.get(entity).getPowers(RegularPowers.SELF_GLOW, SelfGlowPower.class))
+                    if (!power.useTeam && power.entityCondition.test(player) && power.biEntityCondition.test(entity, player))
+                        event.setColor(power.color);
+        }
 
-    @SubscribeEvent
-    public static void enableGlowing(ClientShouldGlowingEvent event) {
-        Player player = Minecraft.getInstance().player;
-        Entity entity = event.getEntity();
-        if (player != null)
-            for (SelfGlowPower power : OriginDataHolder.get(entity).getPowers(RegularPowers.SELF_GLOW, SelfGlowPower.class))
-                if (!power.useTeam && power.entityCondition.test(player) && power.biEntityCondition.test(entity, player))
-                    event.allow();
+        @SubscribeEvent
+        public static void enableGlowing(ClientShouldGlowingEvent event) {
+            Player player = Minecraft.getInstance().player;
+            Entity entity = event.getEntity();
+            if (player != null)
+                for (SelfGlowPower power : OriginDataHolder.get(entity).getPowers(RegularPowers.SELF_GLOW, SelfGlowPower.class))
+                    if (!power.useTeam && power.entityCondition.test(player) && power.biEntityCondition.test(entity, player))
+                        event.allow();
+        }
     }
 }

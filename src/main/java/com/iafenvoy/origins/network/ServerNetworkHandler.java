@@ -9,7 +9,6 @@ import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
 import com.iafenvoy.origins.util.RLHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
@@ -48,7 +47,7 @@ public final class ServerNetworkHandler {
                 Origins.LOGGER.info("Player {} was randomly assigned the following origin: {}", player.getName().getString(), RLHelper.string(origin));
             }
         }
-        PacketDistributor.sendToPlayer(player, new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
+        context.reply(new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
         holder.data().setSelecting(false);
         holder.sync();
     }
