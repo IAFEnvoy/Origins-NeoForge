@@ -20,6 +20,7 @@ public record BlastResistanceCondition(Comparison comparison, double compareTo) 
         return CODEC;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean test(@NotNull Level level, @NotNull BlockPos pos) {
         return this.comparison.compare(level.getBlockState(pos).getBlock().getExplosionResistance(), this.compareTo);

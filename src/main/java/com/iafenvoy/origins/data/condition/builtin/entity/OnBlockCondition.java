@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record OnBlockCondition(BlockCondition blockCondition) implements EntityCondition {
     public static final MapCodec<OnBlockCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BlockCondition.CODEC.fieldOf("block_condition").forGetter(OnBlockCondition::blockCondition)
+            BlockCondition.optionalCodec("block_condition").forGetter(OnBlockCondition::blockCondition)
     ).apply(i, OnBlockCondition::new));
 
     @Override

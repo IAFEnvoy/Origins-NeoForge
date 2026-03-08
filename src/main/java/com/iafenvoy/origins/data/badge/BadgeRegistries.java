@@ -19,6 +19,11 @@ public final class BadgeRegistries {
 
     public static final ResourceKey<Registry<Badge>> BADGE_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "badge"));
 
+    static {
+        Registry.register(BADGE_TYPE, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "sprite"), SpriteBadge.CODEC);
+        Registry.register(BADGE_TYPE, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "empty"), EmptyBadge.CODEC);
+    }
+
     @SubscribeEvent
     public static void newRegistries(NewRegistryEvent event) {
         event.register(BADGE_TYPE);

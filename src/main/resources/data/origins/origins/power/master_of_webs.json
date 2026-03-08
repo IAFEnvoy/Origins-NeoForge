@@ -47,7 +47,7 @@
 				},
 				{
 					"type": "origins:power_active",
-					"power": "*:climbing_toggle"
+					"power": "origins:climbing_toggle"
 				}
 			]
 		},

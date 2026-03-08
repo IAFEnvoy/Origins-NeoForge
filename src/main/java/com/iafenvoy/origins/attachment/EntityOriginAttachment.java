@@ -89,7 +89,7 @@ public final class EntityOriginAttachment {
         this.origins.values().forEach(o -> executeOnPowers(o, p -> p.tick(entity)));
     }
 
-    Map<Holder<Layer>, Holder<Origin>> getOrigins() {
+    public Map<Holder<Layer>, Holder<Origin>> getOrigins() {
         return this.origins;
     }
 

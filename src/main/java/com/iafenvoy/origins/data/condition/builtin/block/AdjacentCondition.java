@@ -7,6 +7,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +29,10 @@ public record AdjacentCondition(BlockCondition adjacentCondition, Comparison com
         int matches = 0;
         for (Direction direction : Direction.values()) {
             BlockPos offsetPos = pos.relative(direction);
-            if (level.hasChunkAt(offsetPos) && this.adjacentCondition.test(level, offsetPos)) matches++;
+            if (level.getChunkSource().hasChunk(
+                    SectionPos.blockToSectionCoord(offsetPos.getX()),
+                    SectionPos.blockToSectionCoord(offsetPos.getZ()))
+                    && this.adjacentCondition.test(level, offsetPos)) matches++;
         }
         return this.comparison.compare(matches, this.compareTo);
     }

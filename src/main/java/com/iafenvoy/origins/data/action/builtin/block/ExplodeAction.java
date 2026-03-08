@@ -1,8 +1,8 @@
 package com.iafenvoy.origins.data.action.builtin.block;
 
 import com.iafenvoy.origins.data.action.BlockAction;
-import com.iafenvoy.origins.data.action.builtin.DestructionType;
 import com.iafenvoy.origins.data.condition.BlockCondition;
+import com.iafenvoy.origins.util.DestructionType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -35,19 +35,19 @@ public record ExplodeAction(float power, DestructionType destructionType,
     @Override
     public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
         if (level.isClientSide()) return;
-        ExplosionDamageCalculator calculator = this.indestructible
-                .map(condition -> (ExplosionDamageCalculator) new ExplosionDamageCalculator() {
-                    @Override
-                    @NotNull
-                    public Optional<Float> getBlockExplosionResistance(@NotNull Explosion explosion, @NotNull BlockGetter world, @NotNull BlockPos blockPos, @NotNull BlockState state, @NotNull FluidState fluid) {
-                        Optional<Float> def = super.getBlockExplosionResistance(explosion, world, blockPos, state, fluid);
-                        if (condition.test(level, blockPos)) {
-                            return Optional.of(def.map(d -> Math.max(d, 100F)).orElse(100F));
-                        }
-                        return def;
-                    }
-                })
-                .orElseGet(ExplosionDamageCalculator::new);
-        level.explode(null, level.damageSources().explosion(null, null), calculator, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, this.power, this.createFire, this.destructionType.getInteraction());
+        ExplosionDamageCalculator calculator = this.indestructible().isEmpty()
+                ? new ExplosionDamageCalculator()
+                : new ExplosionDamageCalculator() {
+            @Override
+            @NotNull
+            public Optional<Float> getBlockExplosionResistance(@NotNull Explosion explosion, @NotNull BlockGetter world,
+                                                               @NotNull BlockPos blockPos, @NotNull BlockState state, @NotNull FluidState fluid) {
+                Optional<Float> def = super.getBlockExplosionResistance(explosion, world, blockPos, state, fluid);
+                Optional<Float> ovr = ExplodeAction.this.indestructible.map(x -> x.test(level, blockPos)).filter(x -> x).map(x -> 100F);
+                return ovr.isPresent() ? def.isPresent() ? def.get() > ovr.get() ? def : ovr : ovr : def;
+            }
+        };
+        level.explode(null, level.damageSources().explosion(null, null), calculator,
+                pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, this.power, this.createFire, Level.ExplosionInteraction.MOB);
     }
 }

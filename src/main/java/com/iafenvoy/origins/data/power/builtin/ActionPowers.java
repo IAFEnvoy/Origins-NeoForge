@@ -18,4 +18,6 @@ public final class ActionPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnWakeUpPower>> ACTION_ON_WAKE_UP = REGISTRY.register("action_on_wake_up", () -> ActionOnWakeUpPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOverTimePower>> ACTION_OVER_TIME = REGISTRY.register("action_over_time", () -> ActionOverTimePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionWhenHitPower>> ACTION_WHEN_HIT = REGISTRY.register("action_when_hit", () -> ActionWhenHitPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnCallbackPower>> ACTION_ON_CALLBACK = REGISTRY.register("action_on_callback", () -> ActionOnCallbackPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<TargetActionOnHitPower>> TARGET_ACTION_ON_HIT = REGISTRY.register("target_action_on_hit", () -> TargetActionOnHitPower.CODEC);
 }

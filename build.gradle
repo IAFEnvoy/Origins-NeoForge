@@ -113,8 +113,8 @@ configurations {
 
 dependencies {
     implementation "maven.modrinth:jupiter:I4i9vhEW"
-    implementation "com.github.IAFEnvoy.Integration:integration-neoforge:$integration_version"
-    jarJar "com.github.IAFEnvoy.Integration:integration-neoforge:$integration_version"
+    implementation "maven.modrinth:integration:$integration_version"
+    jarJar "maven.modrinth:integration:$integration_version"
 
     compileOnly "maven.modrinth:bedsheet:HbBAModY"
 }

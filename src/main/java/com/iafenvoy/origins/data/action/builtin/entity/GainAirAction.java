@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record GainAirAction(int amount) implements EntityAction {
     public static final MapCodec<GainAirAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.INT.fieldOf("amount").forGetter(GainAirAction::amount)
+            Codec.INT.fieldOf("value").forGetter(GainAirAction::amount)
     ).apply(i, GainAirAction::new));
 
     @Override

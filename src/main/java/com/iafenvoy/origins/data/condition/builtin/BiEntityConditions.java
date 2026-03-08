@@ -38,4 +38,7 @@ public final class BiEntityConditions {
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<OrCondition>> OR = REGISTRY.register("or", () -> OrCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<TargetConditionCondition>> TARGET_CONDITION = REGISTRY.register("target_condition", () -> TargetConditionCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<UndirectedCondition>> UNDIRECTED = REGISTRY.register("undirected", () -> UndirectedCondition.CODEC);
+
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<AndCondition>> ALL_OF = REGISTRY.register("all_of", () -> AndCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<OrCondition>> ANY_OF = REGISTRY.register("any_of", () -> OrCondition.CODEC);
 }

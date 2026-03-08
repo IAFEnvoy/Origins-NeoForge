@@ -1,4 +1,5 @@
 {
+	"type": "origins:sprite",
 	"sprite": "origins:textures/gui/badge/toggle.png",
 	"text": "origins.gui.badge.toggle"
 }

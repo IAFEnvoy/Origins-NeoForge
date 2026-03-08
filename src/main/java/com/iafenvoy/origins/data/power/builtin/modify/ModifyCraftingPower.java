@@ -44,18 +44,14 @@ public record ModifyCraftingPower(Optional<ResourceLocation> recipeLocation, Ite
     }
 
 
-    // TODO 并非同义行为
-//    public boolean doesApply(CraftingContainer container, Recipe<? super CraftingContainer> recipe, Level level) {
-//        return (this.recipeIdentifier() == null || Objects.equals(recipe.getId(), this.recipeIdentifier())) &&
-//                (!this.itemCondition().isBound() || ConfiguredItemCondition.check(this.itemCondition(), level, recipe.assemble(container, level.registryAccess())));
-//    }
+    // Recipe identification in 1.21.1 uses RecipeInput instead of CraftingContainer
 
     public boolean doesApply(RecipeInput container, Recipe<? super RecipeInput> recipe, Level level) {
-        return (this.recipeLocation().isEmpty()) &&
+        return (this.recipeLocation().isEmpty() || this.recipeLocation().get().equals(BuiltInRegistries.RECIPE_TYPE.getKey(recipe.getType()))) &&
                 (itemCondition().test(level, recipe.assemble(container, level.registryAccess())));
     }
 
-    public ItemStack createResult(RecipeInput container, Recipe<? super RecipeInput> recipe,Entity entity, Level level) {
+    public ItemStack createResult(RecipeInput container, Recipe<? super RecipeInput> recipe, Entity entity, Level level) {
         ItemStack stack;
         if (this.newStack().isPresent())
             stack = this.newStack().get().copy();
@@ -65,12 +61,6 @@ public record ModifyCraftingPower(Optional<ResourceLocation> recipeLocation, Ite
         return stack;
     }
 
-    // TODO 并非同义行为
-//    public void execute(Entity entity, @Nullable BlockPos pos) {
-//        if (pos != null && this.blockAction().isBound())
-//            ConfiguredBlockAction.execute(this.blockAction(), entity.level(), pos, Direction.UP);
-//        ConfiguredEntityAction.execute(this.entityAction(), entity);
-//    }
     public void execute(Entity entity, @Nullable BlockPos pos) {
         if (pos != null)
             blockAction().execute(entity.level(), pos, Direction.UP);

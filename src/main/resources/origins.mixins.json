@@ -3,15 +3,23 @@
   "package": "com.iafenvoy.origins.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "accessor.LivingEntityAccessor",
+    "accessor.MobAccessor",
+    "power.ConduitPowerOnLandMixin",
     "power.FoodDataMixin",
     "power.LivingEntityMixin",
-    "power.PlayerMixin"
+    "power.PlayerMixin",
+    "power.ScareCreepersMixin",
+    "power.SelectionInvulnerabilityMixin",
+    "power.WaterBreathingMixin$BreathingImpl",
+    "power.WaterBreathingMixin$TurtleHelmetProxy"
   ],
   "client": [
     "power.EntityMixin",
     "power.FogRendererMixin",
     "power.GameRendererMixin",
-    "power.PlayerRendererMixin"
+    "power.PlayerRendererMixin",
+    "power.WaterVisionMixin"
   ],
   "injectors": {
     "defaultRequire": 1

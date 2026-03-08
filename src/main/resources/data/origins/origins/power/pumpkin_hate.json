@@ -11,7 +11,7 @@
 				{
 					"type": "origins:ingredient",
 					"ingredient": {
-						"tag": "*:pumpkin_like/food"
+						"tag": "origins:pumpkin_like/food"
 					}
 				}
 			]
@@ -30,7 +30,7 @@
 			"item_condition": {
 				"type": "origins:ingredient",
 				"ingredient": {
-					"tag": "*:pumpkin_like/equipment"
+					"tag": "origins:pumpkin_like/equipment"
 				}
 			}
 		}

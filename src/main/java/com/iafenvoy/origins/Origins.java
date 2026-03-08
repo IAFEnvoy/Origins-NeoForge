@@ -6,9 +6,13 @@ import com.iafenvoy.origins.data.action.builtin.EntityActions;
 import com.iafenvoy.origins.data.action.builtin.ItemActions;
 import com.iafenvoy.origins.data.condition.builtin.*;
 import com.iafenvoy.origins.data.power.builtin.ActionPowers;
+import com.iafenvoy.origins.data.power.builtin.ApoliPowers;
+import com.iafenvoy.origins.data.power.builtin.ModifyPowers;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.registry.OriginsAttachments;
+import com.iafenvoy.origins.registry.OriginsBlocks;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
+import com.iafenvoy.origins.registry.OriginsEntities;
 import com.iafenvoy.origins.registry.OriginsItems;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
@@ -23,7 +27,9 @@ public final class Origins {
 
     public Origins(ModContainer container, IEventBus bus) {
         OriginsAttachments.REGISTRY.register(bus);
+        OriginsBlocks.REGISTRY.register(bus);
         OriginsDataComponents.REGISTRY.register(bus);
+        OriginsEntities.REGISTRY.register(bus);
         OriginsItems.REGISTRY.register(bus);
         //Action
         BiEntityActions.REGISTRY.register(bus);
@@ -40,6 +46,11 @@ public final class Origins {
         ItemConditions.REGISTRY.register(bus);
         //Powers
         ActionPowers.REGISTRY.register(bus);
+        ApoliPowers.REGISTRY.register(bus);
+        ModifyPowers.REGISTRY.register(bus);
         RegularPowers.REGISTRY.register(bus);
+        //Apoli Aliases
+        ApoliEntityConditions.REGISTRY.register(bus);
+        ApoliBiEntityConditions.REGISTRY.register(bus);
     }
 }

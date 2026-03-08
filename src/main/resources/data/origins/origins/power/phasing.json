@@ -20,6 +20,6 @@
 	},
 	"condition": {
 		"type": "origins:power_active",
-		"power": "*:phantomize"
+		"power": "origins:phantomize"
 	}
 }

@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,20 +28,20 @@ public record AbilityCondition(PlayerAbility ability) implements EntityCondition
     }
 
     public enum PlayerAbility implements StringRepresentable {
-        FLYING(a -> a.flying),
-        INSTABUILD(a -> a.instabuild),
-        INVULNERABLE(a -> a.invulnerable),
-        MAY_BUILD(a -> a.mayBuild),
-        MAYFLY(a -> a.mayfly);
+        FLYING(p -> p.getAbilities().flying),
+        INSTABUILD(p -> p.getAbilities().instabuild),
+        INVULNERABLE(p -> p.getAbilities().invulnerable),
+        MAY_BUILD(p -> p.getAbilities().mayBuild),
+        MAYFLY(Player::mayFly);
         public static final Codec<PlayerAbility> CODEC = StringRepresentable.fromValues(PlayerAbility::values);
-        private final Predicate<Abilities> getter;
+        private final Predicate<Player> getter;
 
-        PlayerAbility(Predicate<Abilities> getter) {
+        PlayerAbility(Predicate<Player> getter) {
             this.getter = getter;
         }
 
         public boolean get(Player player) {
-            return this.getter.test(player.getAbilities());
+            return this.getter.test(player);
         }
 
         @Override

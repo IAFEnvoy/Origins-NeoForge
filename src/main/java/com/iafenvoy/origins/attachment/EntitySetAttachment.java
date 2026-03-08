@@ -52,11 +52,13 @@ public final class EntitySetAttachment {
     }
 
     public void postRemove(Entity self, ResourceLocation id, Entity target) {
-        EntityOriginAttachment.get(self).streamEntitySetPowers(id, self.registryAccess()).forEach(x -> x.actionOnRemove().execute(self, target));
+        if (target != null)
+            EntityOriginAttachment.get(self).streamEntitySetPowers(id, self.registryAccess()).forEach(x -> x.actionOnRemove().execute(self, target));
     }
 
     public List<UUID> getEntityUuids(ResourceLocation id) {
-        return new LinkedList<>(this.storedEntities.get(id).keySet());
+        Map<UUID, Integer> map = this.storedEntities.get(id);
+        return map != null ? new LinkedList<>(map.keySet()) : new LinkedList<>();
     }
 
     public boolean containEntity(ResourceLocation id, Entity target) {
@@ -64,7 +66,8 @@ public final class EntitySetAttachment {
     }
 
     public int getSize(ResourceLocation id) {
-        return this.storedEntities.get(id).size();
+        Map<UUID, Integer> map = this.storedEntities.get(id);
+        return map != null ? map.size() : 0;
     }
 
     public void tick(@NotNull Entity entity) {
