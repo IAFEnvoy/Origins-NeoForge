@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
 import com.iafenvoy.origins.data.condition.EntityCondition;
-import com.iafenvoy.origins.util.MiscUtil;
 import com.iafenvoy.origins.util.math.Comparison;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -24,9 +23,10 @@ public record BrightnessCondition(Comparison comparison, double compareTo) imple
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        //FIXME::Is this right?
         Level world = entity.level();
-        return this.comparison.compare(world.getLightLevelDependentMagicValue(BlockPos.containing(MiscUtil.getPoseDependentEyePos(entity))), this.compareTo)
-                || this.comparison.compare(world.getLightLevelDependentMagicValue(entity.blockPosition()), this.compareTo);
+        float brightness = world.hasChunkAt(entity.blockPosition())
+                ? world.getLightLevelDependentMagicValue(BlockPos.containing(entity.getX(), entity.getEyeY(), entity.getZ()))
+                : 0.0f;
+        return this.comparison.compare(brightness, this.compareTo);
     }
 }
