@@ -24,7 +24,7 @@ public final class Origins {
     public static final String MOD_ID = "origins";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public Origins(ModContainer container, IEventBus bus) {
+    public Origins(IEventBus bus) {
         OriginsAttachments.REGISTRY.register(bus);
         OriginsBlocks.REGISTRY.register(bus);
         OriginsDataComponents.REGISTRY.register(bus);

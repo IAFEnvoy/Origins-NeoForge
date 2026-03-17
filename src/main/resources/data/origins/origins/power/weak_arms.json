@@ -23,7 +23,7 @@
 		]
 	},
 	"condition": {
-		"type": "origins:status_effect",
+		"type": "origins:mob_effect",
 		"effect": "minecraft:strength",
 		"inverted": true
 	}

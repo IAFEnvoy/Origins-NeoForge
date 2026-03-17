@@ -1,19 +1,23 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
 import com.iafenvoy.origins.data.condition.EntityCondition;
+import com.iafenvoy.origins.util.math.Comparison;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-public record FluidHeightCondition(ResourceLocation fluid, String comparison,
+public record FluidHeightCondition(FluidType fluid, Comparison comparison,
                                    double compareTo) implements EntityCondition {
     public static final MapCodec<FluidHeightCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ResourceLocation.CODEC.fieldOf("fluid").forGetter(FluidHeightCondition::fluid),
-            Codec.STRING.optionalFieldOf("comparison", ">").forGetter(FluidHeightCondition::comparison),
-            Codec.DOUBLE.optionalFieldOf("compare_to", 0.0).forGetter(FluidHeightCondition::compareTo)
+            NeoForgeRegistries.FLUID_TYPES.byNameCodec().fieldOf("fluid").forGetter(FluidHeightCondition::fluid),
+            Comparison.CODEC.fieldOf("comparison").forGetter(FluidHeightCondition::comparison),
+            Codec.DOUBLE.fieldOf("compare_to").forGetter(FluidHeightCondition::compareTo)
     ).apply(i, FluidHeightCondition::new));
 
     @Override
@@ -23,19 +27,6 @@ public record FluidHeightCondition(ResourceLocation fluid, String comparison,
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        double fluidHeight = entity.getFluidHeight(net.minecraft.tags.FluidTags.WATER);
-        return compare(fluidHeight, this.compareTo, this.comparison);
-    }
-
-    private static boolean compare(double a, double b, String op) {
-        return switch (op) {
-            case ">" -> a > b;
-            case ">=" -> a >= b;
-            case "<" -> a < b;
-            case "<=" -> a <= b;
-            case "==" -> a == b;
-            case "!=" -> a != b;
-            default -> false;
-        };
+        return this.comparison.compare(entity.getFluidTypeHeight(this.fluid), this.compareTo);
     }
 }
