@@ -40,7 +40,4 @@ public final class BlockConditions {
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<NotCondition>> NOT = REGISTRY.register("not", () -> NotCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<OffsetCondition>> OFFSET = REGISTRY.register("offset", () -> OffsetCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<OrCondition>> OR = REGISTRY.register("or", () -> OrCondition.CODEC);
-
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<AndCondition>> ALL_OF = REGISTRY.register("all_of", () -> AndCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<OrCondition>> ANY_OF = REGISTRY.register("any_of", () -> OrCondition.CODEC);
 }

@@ -1,7 +1,7 @@
 {
 	"type": "origins:prevent_item_use",
 	"item_condition": {
-		"type": "origins:all_of",
+		"type": "origins:and",
 		"conditions": [
 			{
 				"type": "origins:ingredient",

@@ -3,7 +3,7 @@
 	"interval": 20,
 	"burn_duration": 120,
 	"condition": {
-		"type": "origins:all_of",
+		"type": "origins:and",
 		"conditions": [
 			{
 				"type": "origins:exposed_to_sun"

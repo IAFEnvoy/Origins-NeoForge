@@ -37,8 +37,5 @@ public final class ItemConditions {
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<NotCondition>> NOT = REGISTRY.register("not", () -> NotCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<OrCondition>> OR = REGISTRY.register("or", () -> OrCondition.CODEC);
 
-    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<AndCondition>> ALL_OF = REGISTRY.register("all_of", () -> AndCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<OrCondition>> ANY_OF = REGISTRY.register("any_of", () -> OrCondition.CODEC);
-
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<FoodItemCondition>> FOOD = REGISTRY.register("food", () -> FoodItemCondition.CODEC);
 }

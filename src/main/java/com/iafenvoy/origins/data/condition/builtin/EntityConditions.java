@@ -82,11 +82,4 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<OrCondition>> OR = REGISTRY.register("or", () -> OrCondition.CODEC);
 
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<PowerActiveCondition>> POWER_ACTIVE = REGISTRY.register("power_active", () -> PowerActiveCondition.CODEC);
-
-    // Aliases for compatibility
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AndCondition>> ALL_OF = REGISTRY.register("all_of", () -> AndCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<OrCondition>> ANY_OF = REGISTRY.register("any_of", () -> OrCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<MobEffectCondition>> STATUS_EFFECT = REGISTRY.register("status_effect", () -> MobEffectCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<FluidHeightCondition>> FLUID_HEIGHT = REGISTRY.register("fluid_height", () -> FluidHeightCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BlockCollisionCondition>> BLOCK_COLLISION = REGISTRY.register("block_collision", () -> BlockCollisionCondition.CODEC);
 }
