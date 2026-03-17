@@ -24,7 +24,7 @@ public record ModifyBlockRenderPower(BlockCondition blockCondition,Block block) 
 
 
     public boolean test(Level world, BlockPos pos) {
-        return blockCondition().test(world, pos);
+        return this.blockCondition().test(world, pos);
     }
 
     @Override

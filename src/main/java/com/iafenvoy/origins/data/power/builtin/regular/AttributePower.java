@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -38,7 +39,7 @@ public record AttributePower(List<AttributeEntry> modifiers,
         @Override
         public <T> com.mojang.serialization.DataResult<AttributePower> decode(com.mojang.serialization.DynamicOps<T> ops, com.mojang.serialization.MapLike<T> input) {
             // Try "modifiers" list first
-            var result = CODEC.decode(ops, input);
+            DataResult<AttributePower> result = CODEC.decode(ops, input);
             if (result.result().isPresent() && !result.result().get().modifiers().isEmpty())
                 return result;
             // Try single "modifier"
@@ -65,9 +66,9 @@ public record AttributePower(List<AttributeEntry> modifiers,
     }
 
     @Override
-    public void grant(Entity entity) {
+    public void grant(@NotNull Entity entity) {
         if (entity instanceof LivingEntity living) {
-            for (AttributeEntry entry : modifiers) {
+            for (AttributeEntry entry : this.modifiers) {
                 entry.attribute().ifPresent(attr -> {
                     AttributeInstance instance = living.getAttribute(attr);
                     if (instance != null && !instance.hasModifier(entry.id())) {
@@ -79,9 +80,9 @@ public record AttributePower(List<AttributeEntry> modifiers,
     }
 
     @Override
-    public void revoke(Entity entity) {
+    public void revoke(@NotNull Entity entity) {
         if (entity instanceof LivingEntity living) {
-            for (AttributeEntry entry : modifiers) {
+            for (AttributeEntry entry : this.modifiers) {
                 entry.attribute().ifPresent(attr -> {
                     AttributeInstance instance = living.getAttribute(attr);
                     if (instance != null) {
@@ -96,10 +97,10 @@ public record AttributePower(List<AttributeEntry> modifiers,
                                  AttributeModifier.Operation operation) {
         public ResourceLocation id() {
             try {
-                return ResourceLocation.parse(rawId);
+                return ResourceLocation.parse(this.rawId);
             } catch (Exception e) {
                 // Wildcard like *:* - generate a unique ID
-                return ResourceLocation.fromNamespaceAndPath("origins", "generated_" + Math.abs(rawId.hashCode()));
+                return ResourceLocation.fromNamespaceAndPath("origins", "generated_" + Math.abs(this.rawId.hashCode()));
             }
         }
 

@@ -20,6 +20,6 @@ public record ModifyValuePower(List<Modifier> modifiers) implements Power {
     }
 
     public double apply(double baseValue) {
-        return ModifierUtil.applyModifiers(modifiers, baseValue);
+        return ModifierUtil.applyModifiers(this.modifiers, baseValue);
     }
 }

@@ -25,10 +25,10 @@ public record ModifyStatusEffectPower(List<Holder<MobEffect>> effects, List<Modi
     }
 
     public boolean doesApply(MobEffect effect) {
-        return effects.isEmpty() || effects.contains(Holder.direct(effect));
+        return this.effects.isEmpty() || this.effects.contains(Holder.direct(effect));
     }
 
     public double apply(double baseValue) {
-        return ModifierUtil.applyModifiers(modifiers, baseValue);
+        return ModifierUtil.applyModifiers(this.modifiers, baseValue);
     }
 }

@@ -19,10 +19,10 @@ public interface EntityAction {
             Codec.either(DISPATCH.listOf(), DISPATCH)
                     .xmap(
                             either -> either.map(
-                                    list -> (EntityAction) new AndAction(list),
+                                    AndAction::new,
                                     single -> single
                             ),
-                            action -> Either.right(action)
+                            Either::right
                     ),
             () -> NoOpAction.INSTANCE,
             ActionRegistries.ENTITY_ACTION.key().location().toString()

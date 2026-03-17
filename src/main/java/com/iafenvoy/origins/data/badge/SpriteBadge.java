@@ -26,6 +26,6 @@ public record SpriteBadge(ResourceLocation sprite, String text) implements Badge
 
     @Override
     public ResourceLocation spriteId() {
-        return sprite;
+        return this.sprite;
     }
 }

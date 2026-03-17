@@ -28,14 +28,14 @@ public record ModifyHarvestPower(List<Modifier> modifiers, BlockCondition blockC
     }
 
     public boolean doesApply(Level level, BlockPos pos) {
-        return blockCondition().test(level, pos);
+        return this.blockCondition().test(level, pos);
     }
 
     public boolean isHarvestAllowed() {
-        return allow();
+        return this.allow();
     }
 
     public double apply(double baseValue) {
-        return ModifierUtil.applyModifiers(modifiers, baseValue);
+        return ModifierUtil.applyModifiers(this.modifiers, baseValue);
     }
 }

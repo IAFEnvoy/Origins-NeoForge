@@ -2,7 +2,6 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.power.Power;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
@@ -54,27 +53,27 @@ public record MultiplePower(Map<String, Power> subPowers) implements Power {
     }
 
     @Override
-    public void grant(Entity entity) {
-        subPowers.values().forEach(p -> p.grant(entity));
+    public void grant(@NotNull Entity entity) {
+        this.subPowers.values().forEach(p -> p.grant(entity));
     }
 
     @Override
-    public void revoke(Entity entity) {
-        subPowers.values().forEach(p -> p.revoke(entity));
+    public void revoke(@NotNull Entity entity) {
+        this.subPowers.values().forEach(p -> p.revoke(entity));
     }
 
     @Override
-    public void tick(Entity entity) {
-        subPowers.values().forEach(p -> p.tick(entity));
+    public void tick(@NotNull Entity entity) {
+        this.subPowers.values().forEach(p -> p.tick(entity));
     }
 
     @Override
-    public void entityLoad(Entity entity) {
-        subPowers.values().forEach(p -> p.entityLoad(entity));
+    public void entityLoad(@NotNull Entity entity) {
+        this.subPowers.values().forEach(p -> p.entityLoad(entity));
     }
 
     @Override
-    public void entitySave(Entity entity) {
-        subPowers.values().forEach(p -> p.entitySave(entity));
+    public void entitySave(@NotNull Entity entity) {
+        this.subPowers.values().forEach(p -> p.entitySave(entity));
     }
 }

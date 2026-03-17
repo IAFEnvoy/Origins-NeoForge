@@ -26,9 +26,9 @@ public record ParticlePower(ParticleType<?> particle, int frequency,
     }
 
     @Override
-    public void tick(Entity entity) {
-        if (entity.level() instanceof ServerLevel serverLevel && entity.tickCount % frequency == 0) {
-            if (condition.test(entity) && particle instanceof ParticleOptions options) {
+    public void tick(@NotNull Entity entity) {
+        if (entity.level() instanceof ServerLevel serverLevel && entity.tickCount % this.frequency == 0) {
+            if (this.condition.test(entity) && this.particle instanceof ParticleOptions options) {
                 serverLevel.sendParticles(options, entity.getX(), entity.getY() + entity.getBbHeight() * 0.5, entity.getZ(),
                         1, entity.getBbWidth() * 0.3, entity.getBbHeight() * 0.3, entity.getBbWidth() * 0.3, 0.01);
             }

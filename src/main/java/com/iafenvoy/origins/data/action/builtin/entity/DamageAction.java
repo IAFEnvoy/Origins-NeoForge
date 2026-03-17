@@ -29,7 +29,7 @@ public record DamageAction(Holder<DamageType> damageType, float amount, List<Mod
 
     @Override
     public void execute(@NotNull Entity source) {
-        float finalAmount = (float) ModifierUtil.applyModifiers(modifiers, amount);
+        float finalAmount = (float) ModifierUtil.applyModifiers(this.modifiers, this.amount);
         source.hurt(new DamageSource(this.damageType), finalAmount);
     }
 }

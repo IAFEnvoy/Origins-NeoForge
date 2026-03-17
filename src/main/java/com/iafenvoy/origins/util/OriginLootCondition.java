@@ -12,6 +12,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class OriginLootCondition implements LootItemCondition {
     }
 
     @Override
-    public LootItemConditionType getType() {
+    public @NotNull LootItemConditionType getType() {
         return TYPE;
     }
 
@@ -50,7 +51,7 @@ public class OriginLootCondition implements LootItemCondition {
             ResourceLocation layerId = RLHelper.id(entry.getKey());
             ResourceLocation originId = RLHelper.id(entry.getValue());
 
-            if (layer.map(layerId::equals).orElse(true) && originId.equals(origin)) {
+            if (this.layer.map(layerId::equals).orElse(true) && originId.equals(this.origin)) {
                 return true;
             }
         }
@@ -59,10 +60,10 @@ public class OriginLootCondition implements LootItemCondition {
     }
 
     public ResourceLocation getOrigin() {
-        return origin;
+        return this.origin;
     }
 
     public Optional<ResourceLocation> getLayer() {
-        return layer;
+        return this.layer;
     }
 }

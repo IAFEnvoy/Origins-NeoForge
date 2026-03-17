@@ -28,8 +28,8 @@ public record ModifyFogTypePower(FogType to,Optional<FogType> from) implements P
 //    }
 
     public Optional<FogType> tryReplace(Entity entity, FogType original) {
-        if (from().isEmpty())
-            return Optional.of(to());
-        return from().filter(original::equals).map(k -> to());
+        if (this.from().isEmpty())
+            return Optional.of(this.to());
+        return this.from().filter(original::equals).map(k -> this.to());
     }
 }

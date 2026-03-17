@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
 public record FluidHeightCondition(ResourceLocation fluid, String comparison,
@@ -25,7 +24,7 @@ public record FluidHeightCondition(ResourceLocation fluid, String comparison,
     @Override
     public boolean test(@NotNull Entity entity) {
         double fluidHeight = entity.getFluidHeight(net.minecraft.tags.FluidTags.WATER);
-        return compare(fluidHeight, compareTo, comparison);
+        return compare(fluidHeight, this.compareTo, this.comparison);
     }
 
     private static boolean compare(double a, double b, String op) {

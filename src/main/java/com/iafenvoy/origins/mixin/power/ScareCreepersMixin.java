@@ -65,7 +65,7 @@ public abstract class ScareCreepersMixin extends LivingEntity {
             oldTargetGoals.remove();
         }
 
-        goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) (Object) creeper,
+        goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) creeper,
                 LivingEntity.class, hasScarePower, 6.0F, 1.0D, 1.2D,
                 EntitySelector.NO_CREATIVE_OR_SPECTATOR::test));
         newTargetGoals.forEach(pg -> targetSelector.addGoal(pg.getPriority(), pg.getGoal()));

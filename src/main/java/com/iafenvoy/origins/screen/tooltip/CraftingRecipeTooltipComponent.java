@@ -9,6 +9,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A {@link ClientTooltipComponent} used for crafting recipe badges.
@@ -35,25 +36,25 @@ public class CraftingRecipeTooltipComponent implements ClientTooltipComponent, T
     }
 
     @Override
-    public int getWidth(Font font) {
+    public int getWidth(@NotNull Font font) {
         return 130;
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
+    public void renderImage(@NotNull Font font, int x, int y, @NotNull GuiGraphics graphics) {
         this.drawBackground(graphics, x, y);
         for (int column = 0; column < 3; ++column) {
             for (int row = 0; row < 3; ++row) {
-                int index = column + row * recipeWidth;
+                int index = column + row * this.recipeWidth;
                 int slotX = x + 8 + column * 18;
                 int slotY = y + 8 + row * 18;
-                ItemStack stack = column >= recipeWidth ? ItemStack.EMPTY : inputs.get(index);
+                ItemStack stack = column >= this.recipeWidth ? ItemStack.EMPTY : this.inputs.get(index);
                 graphics.renderItem(stack, slotX, slotY);
                 graphics.renderItemDecorations(font, stack, slotX, slotY);
             }
         }
-        graphics.renderItem(output, x + 101, y + 25);
-        graphics.renderItemDecorations(font, output, x + 101, y + 25);
+        graphics.renderItem(this.output, x + 101, y + 25);
+        graphics.renderItemDecorations(font, this.output, x + 101, y + 25);
     }
 
     private void drawBackground(GuiGraphics graphics, int x, int y) {

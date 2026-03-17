@@ -33,11 +33,11 @@ public record StackingStatusEffectPower(int minStacks, int maxStacks, int durati
     }
 
     @Override
-    public void tick(Entity entity) {
-        if (entity instanceof LivingEntity living && condition.test(entity)) {
-            for (EffectEntry entry : effects) {
+    public void tick(@NotNull Entity entity) {
+        if (entity instanceof LivingEntity living && this.condition.test(entity)) {
+            for (EffectEntry entry : this.effects) {
                 entry.effect().ifPresent(effect -> {
-                    int duration = Math.max(durationPerStack * 2, 20);
+                    int duration = Math.max(this.durationPerStack * 2, 20);
                     living.addEffect(new MobEffectInstance(effect, duration,
                             entry.amplifier(), entry.ambient(), entry.showParticles(), entry.showIcon()));
                 });

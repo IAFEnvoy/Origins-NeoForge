@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.ListConfiguration;
 import com.iafenvoy.origins.util.Modifier;
@@ -26,10 +25,10 @@ public record ModifyJumpPower(List<Modifier> modifiers, EntityAction entityActio
     }
 
     public double apply(double baseValue) {
-        return ModifierUtil.applyModifiers(modifiers, baseValue);
+        return ModifierUtil.applyModifiers(this.modifiers, baseValue);
     }
 
     public void execute(Entity player) {
-        entityAction().execute(player);
+        this.entityAction().execute(player);
     }
 }

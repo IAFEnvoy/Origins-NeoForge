@@ -10,6 +10,7 @@ import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ public class ChoseOriginCriterion extends SimpleCriterionTrigger<ChoseOriginCrit
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "chose_origin");
 
     @Override
-    public Codec<TriggerInstance> codec() {
+    public @NotNull Codec<TriggerInstance> codec() {
         return TriggerInstance.CODEC;
     }
 
@@ -37,12 +38,12 @@ public class ChoseOriginCriterion extends SimpleCriterionTrigger<ChoseOriginCrit
         ).apply(i, TriggerInstance::new));
 
         @Override
-        public Optional<ContextAwarePredicate> player() {
-            return player;
+        public @NotNull Optional<ContextAwarePredicate> player() {
+            return this.player;
         }
 
         public boolean matches(ResourceLocation id) {
-            return originId.equals(id);
+            return this.originId.equals(id);
         }
     }
 }

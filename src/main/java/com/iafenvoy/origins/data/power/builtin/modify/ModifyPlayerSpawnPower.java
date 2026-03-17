@@ -47,11 +47,11 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
 
     public Optional<BlockPos> getBiomePos(ResourceLocation powerId, ServerLevel targetDimension, BlockPos originPos) {
 
-        if (biome().isEmpty()) return Optional.empty();
+        if (this.biome().isEmpty()) return Optional.empty();
 
-        Optional<Biome> targetBiome = targetDimension.registryAccess().registryOrThrow(Registries.BIOME).getOptional(biome().get());
+        Optional<Biome> targetBiome = targetDimension.registryAccess().registryOrThrow(Registries.BIOME).getOptional(this.biome().get());
         if (targetBiome.isEmpty()) {
-            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it's not registered in dimension \"{}\".", powerId, biome(), dimension());
+            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it's not registered in dimension \"{}\".", powerId, this.biome(), this.dimension());
             return Optional.empty();
         }
 
@@ -65,7 +65,7 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
 
         if (targetBiomePos != null) return Optional.of(targetBiomePos.getFirst());
         else {
-            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it couldn't be found in dimension \"{}\".", powerId, biome(), dimension());
+            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it couldn't be found in dimension \"{}\".", powerId, this.biome(), this.dimension());
             return Optional.empty();
         }
 
@@ -79,7 +79,7 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
 
         if (structure != null) {
 
-            var entry = structureRegistry.getHolder(structure);
+            Optional<Holder.Reference<Structure>> entry = structureRegistry.getHolder(structure);
             if (entry.isPresent()) structureRegistryEntryList = HolderSet.direct(entry.get());
 
             structureTagOrName = structure.location().toString();
@@ -88,10 +88,10 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
 
         if (structureRegistryEntryList == null) {
 
-            var entryList = structureRegistry.getTag(structureTag);
+            Optional<HolderSet.Named<Structure>> entryList = structureRegistry.getTag(structureTag);
             if (entryList.isPresent()) structureRegistryEntryList = entryList.get();
 
-            structureTagOrName = "#" + structureTag.location().toString();
+            structureTagOrName = "#" + structureTag.location();
 
         }
 
@@ -127,7 +127,7 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
 
         if (this.structure().isEmpty()) return getValidSpawn(originPos, range, targetDimension);
 
-        Optional<Pair<BlockPos, Structure>> targetStructure = getStructurePos(powerId, targetDimension, this.structure().get(), null, this.dimension());
+        Optional<Pair<BlockPos, Structure>> targetStructure = this.getStructurePos(powerId, targetDimension, this.structure().get(), null, this.dimension());
         if (targetStructure.isEmpty()) return Optional.empty();
 
         BlockPos targetStructurePos = targetStructure.get().getFirst();
@@ -234,7 +234,7 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
         }
 
         public BlockPos apply(BlockPos blockPos, int center, float multiplier) {
-            return strategyApplier.apply(blockPos, center, multiplier);
+            return this.strategyApplier.apply(blockPos, center, multiplier);
         }
 
     }

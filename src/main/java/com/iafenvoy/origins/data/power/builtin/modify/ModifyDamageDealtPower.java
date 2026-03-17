@@ -39,20 +39,20 @@ public record ModifyDamageDealtPower(List<Modifier> modifiers,
     }
 
     public boolean test(Entity entity, @Nullable Entity target, DamageSource source, float amount) {
-        return damageCondition().test(source, amount) &&
-                (target == null || targetCondition().test(target)) &&
-                (target == null || biEntityCondition().test(entity, target));
+        return this.damageCondition().test(source, amount) &&
+                (target == null || this.targetCondition().test(target)) &&
+                (target == null || this.biEntityCondition().test(entity, target));
     }
 
     public void execute(Entity entity, @Nullable Entity target) {
-        selfAction().execute(entity);
+        this.selfAction().execute(entity);
         if (target != null) {
-            targetAction().execute(target);
-            biEntityAction().execute(entity, target);
+            this.targetAction().execute(target);
+            this.biEntityAction().execute(entity, target);
         }
     }
 
     public double apply(double baseValue) {
-        return ModifierUtil.applyModifiers(modifiers, baseValue);
+        return ModifierUtil.applyModifiers(this.modifiers, baseValue);
     }
 }

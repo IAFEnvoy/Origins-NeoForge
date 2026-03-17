@@ -40,20 +40,20 @@ public record ModifyDamageTakenPower(List<Modifier> modifiers,
     }
 
     public boolean check(Entity entity, DamageSource source, float amount) {
-        if (!damageCondition().test(source, amount)) return false;
+        if (!this.damageCondition().test(source, amount)) return false;
         Entity attacker = source.getEntity();
-        return attacker != null && biEntityCondition().test(source.getEntity(), entity);
+        return attacker != null && this.biEntityCondition().test(source.getEntity(), entity);
     }
 
     public void execute(Entity entity, DamageSource source) {
-        selfAction().execute(entity);
+        this.selfAction().execute(entity);
         if (source.getEntity() != null) {
-            targetAction().execute(source.getEntity());
-            biEntityAction().execute(source.getEntity(), entity);
+            this.targetAction().execute(source.getEntity());
+            this.biEntityAction().execute(source.getEntity(), entity);
         }
     }
 
     public double apply(double baseValue) {
-        return ModifierUtil.applyModifiers(modifiers, baseValue);
+        return ModifierUtil.applyModifiers(this.modifiers, baseValue);
     }
 }

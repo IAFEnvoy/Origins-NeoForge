@@ -26,10 +26,10 @@ public record ModifyValueBlockPower(List<Modifier> modifiers, BlockCondition con
     }
 
     public boolean test(Level level, BlockPos pos) {
-        return condition.test(level, pos);
+        return this.condition.test(level, pos);
     }
 
     public double apply(double baseValue) {
-        return ModifierUtil.applyModifiers(modifiers, baseValue);
+        return ModifierUtil.applyModifiers(this.modifiers, baseValue);
     }
 }

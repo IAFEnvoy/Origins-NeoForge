@@ -40,18 +40,18 @@ public record ModifyFoodPower(List<Modifier> foodModifiers, List<Modifier> satur
     }
 
     public boolean test(Level level, ItemStack stack) {
-        return itemCondition().test(level, stack);
+        return this.itemCondition().test(level, stack);
     }
 
     public void execute(Entity player) {
-        entityAction().execute(player);
+        this.entityAction().execute(player);
     }
 
     public double applyFood(double baseValue) {
-        return ModifierUtil.applyModifiers(foodModifiers, baseValue);
+        return ModifierUtil.applyModifiers(this.foodModifiers, baseValue);
     }
 
     public double applySaturation(double baseValue) {
-        return ModifierUtil.applyModifiers(saturationModifiers, baseValue);
+        return ModifierUtil.applyModifiers(this.saturationModifiers, baseValue);
     }
 }

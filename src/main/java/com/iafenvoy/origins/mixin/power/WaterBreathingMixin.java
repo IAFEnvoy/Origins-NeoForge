@@ -43,7 +43,7 @@ public final class WaterBreathingMixin {
 
         @ModifyExpressionValue(method = "turtleHelmetTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isEyeInFluid(Lnet/minecraft/tags/TagKey;)Z"))
         private boolean origins$submergedProxy(boolean original) {
-            return !OriginDataHolder.get(this).getPowers(RegularPowers.WATER_BREATHING, WaterBreathingPower.class).isEmpty() != original;
+            return OriginDataHolder.get(this).getPowers(RegularPowers.WATER_BREATHING, WaterBreathingPower.class).isEmpty() == original;
         }
     }
 }

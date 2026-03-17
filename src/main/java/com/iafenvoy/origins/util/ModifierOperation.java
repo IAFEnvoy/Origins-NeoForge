@@ -25,6 +25,6 @@ public enum ModifierOperation implements StringRepresentable {
 
     @Override
     public @NotNull String getSerializedName() {
-        return name().toLowerCase(Locale.ROOT);
+        return this.name().toLowerCase(Locale.ROOT);
     }
 }
