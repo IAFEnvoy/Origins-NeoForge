@@ -24,19 +24,19 @@ public record ModifyBlockRenderPower(BlockCondition blockCondition,Block block) 
 
 
     public boolean test(Level world, BlockPos pos) {
-        return blockCondition().test(world, pos);
+        return this.blockCondition().test(world, pos);
     }
 
     @Override
     public void grant(@NotNull Entity entity) {
-        // TODO
-//        ApoliClient.shouldReloadWorldRenderer = true;
+        if (entity.level().isClientSide())
+            net.minecraft.client.Minecraft.getInstance().levelRenderer.allChanged();
     }
 
     @Override
     public void revoke(@NotNull Entity entity) {
-        // TODO
-//        ApoliClient.shouldReloadWorldRenderer = true;
+        if (entity.level().isClientSide())
+            net.minecraft.client.Minecraft.getInstance().levelRenderer.allChanged();
     }
 
 }

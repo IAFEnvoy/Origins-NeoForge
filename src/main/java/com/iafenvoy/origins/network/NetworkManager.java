@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.network;
 
 import com.iafenvoy.origins.network.payload.ChooseOriginC2SPayload;
+import com.iafenvoy.origins.network.payload.ChooseRandomOriginC2SPayload;
 import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -14,6 +15,7 @@ public final class NetworkManager {
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
         event.registrar("1")
                 .playToServer(ChooseOriginC2SPayload.TYPE, ChooseOriginC2SPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ServerNetworkHandler::onChooseOrigin))
+                .playToServer(ChooseRandomOriginC2SPayload.TYPE, ChooseRandomOriginC2SPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ServerNetworkHandler::onChooseRandomOrigin))
                 .playToClient(ConfirmOriginS2CPayload.TYPE, ConfirmOriginS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onOriginConfirm))
                 .playToClient(OpenChooseOriginScreenS2CPayload.TYPE, OpenChooseOriginScreenS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::openOriginScreen));
     }

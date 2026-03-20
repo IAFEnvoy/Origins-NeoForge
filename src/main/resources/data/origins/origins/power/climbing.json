@@ -10,17 +10,17 @@
 	"climbing": {
 		"type": "origins:climbing",
 		"condition": {
-			"type": "origins:all_of",
+			"type": "origins:and",
 			"conditions": [
 				{
 					"type": "origins:power_active",
 					"power": "*:*_toggle"
 				},
 				{
-					"type": "origins:any_of",
+					"type": "origins:or",
 					"conditions": [
 						{
-							"type": "origins:all_of",
+							"type": "origins:and",
 							"conditions": [
 								{
 									"type": "origins:sneaking",
@@ -32,13 +32,13 @@
 							]
 						},
 						{
-							"type": "origins:all_of",
+							"type": "origins:and",
 							"conditions": [
 								{
 									"type": "origins:sneaking"
 								},
 								{
-									"type": "origins:any_of",
+									"type": "origins:or",
 									"conditions": [
 										{
 											"type": "origins:block_collision",

@@ -1,5 +1,5 @@
 {
-	"type": "apoli:multiple",
+	"type": "origins:multiple",
 	"hidden": true,
 	"green": {
 		"type": "origins:overlay",
@@ -14,14 +14,14 @@
 		"visible_in_third_person": true,
 		"hide_with_hud": true,
 		"condition": {
-			"type": "origins:all_of",
+			"type": "origins:and",
 			"conditions": [
 				{
-					"type": "apoli:power_active",
+					"type": "origins:power_active",
 					"power": "origins:phantomize"
 				},
 				{
-					"type": "apoli:food_level",
+					"type": "origins:food_level",
 					"comparison": ">",
 					"compare_to": 10
 				}
@@ -41,19 +41,19 @@
 		"visible_in_third_person": true,
 		"hide_with_hud": true,
 		"condition": {
-			"type": "origins:all_of",
+			"type": "origins:and",
 			"conditions": [
 				{
-					"type": "apoli:power_active",
+					"type": "origins:power_active",
 					"power": "origins:phantomize"
 				},
 				{
-					"type": "apoli:food_level",
+					"type": "origins:food_level",
 					"comparison": "<=",
 					"compare_to": 10
 				},
 				{
-					"type": "apoli:food_level",
+					"type": "origins:food_level",
 					"comparison": ">",
 					"compare_to": 8
 				}
@@ -73,14 +73,14 @@
 		"visible_in_third_person": true,
 		"hide_with_hud": true,
 		"condition": {
-			"type": "origins:all_of",
+			"type": "origins:and",
 			"conditions": [
 				{
-					"type": "apoli:power_active",
+					"type": "origins:power_active",
 					"power": "origins:phantomize"
 				},
 				{
-					"type": "apoli:food_level",
+					"type": "origins:food_level",
 					"comparison": "<=",
 					"compare_to": 8
 				}

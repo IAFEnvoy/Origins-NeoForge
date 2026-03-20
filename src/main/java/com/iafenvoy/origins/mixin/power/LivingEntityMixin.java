@@ -3,6 +3,7 @@ package com.iafenvoy.origins.mixin.power;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.data.power.builtin.regular.ClimbingPower;
+import com.iafenvoy.origins.data.power.builtin.regular.LikeWaterPower;
 import com.iafenvoy.origins.event.client.ClientShouldGlowingEvent;
 import com.iafenvoy.origins.event.common.CanFlyWithoutElytraEvent;
 import com.iafenvoy.origins.event.common.CanStandOnFluidEvent;
@@ -10,6 +11,7 @@ import com.iafenvoy.origins.event.common.EntityFrozenEvent;
 import com.iafenvoy.origins.event.common.IgnoreWaterEvent;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -71,6 +74,16 @@ public abstract class LivingEntityMixin extends Entity {
     private void modifyWalkableFluids(FluidState fluidState, CallbackInfoReturnable<Boolean> cir) {
         if (NeoForge.EVENT_BUS.post(new CanStandOnFluidEvent(this.origins$self(), fluidState)).getResult().allow())
             cir.setReturnValue(true);
+    }
+
+    // LIKE WATER
+    @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getFluidFallingAdjustedMovement(DZLnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;"))
+    private Vec3 origins$modifyFluidMovement(Vec3 original, @Local(ordinal = 0) double fallVelocity) {
+        List<LikeWaterPower> powers = OriginDataHolder.get(this).getPowers(RegularPowers.LIKE_WATER, LikeWaterPower.class);
+        if (!powers.isEmpty() && Math.abs(original.y - fallVelocity / 16.0D) < 0.025D) {
+            return new Vec3(original.x, 0, original.z);
+        }
+        return original;
     }
 
     // CLIMBING

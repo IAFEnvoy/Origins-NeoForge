@@ -21,6 +21,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AirCondition>> AIR = REGISTRY.register("air", () -> AirCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AttributeCondition>> ATTRIBUTE = REGISTRY.register("attribute", () -> AttributeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BiomeInCondition>> BIOME = REGISTRY.register("biome", () -> BiomeInCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BlockCollisionCondition>> BLOCK_COLLISION = REGISTRY.register("block_collision", () -> BlockCollisionCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BlockInRadiusCondition>> BLOCK_IN_RADIUS = REGISTRY.register("block_in_radius", () -> BlockInRadiusCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BrightnessCondition>> BRIGHTNESS = REGISTRY.register("brightness", () -> BrightnessCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ClimbingCondition>> CLIMBING = REGISTRY.register("climbing", () -> ClimbingCondition.CODEC);
@@ -37,6 +38,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ExposedToSunCondition>> EXPOSED_TO_SUN = REGISTRY.register("exposed_to_sun", () -> ExposedToSunCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<FallDistanceCondition>> FALL_DISTANCE = REGISTRY.register("fall_distance", () -> FallDistanceCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<FallFlyingCondition>> FALL_FLYING = REGISTRY.register("fall_flying", () -> FallFlyingCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<FluidHeightCondition>> FLUID_HEIGHT = REGISTRY.register("fluid_height", () -> FluidHeightCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<FoodLevelCondition>> FOOD_LEVEL = REGISTRY.register("food_level", () -> FoodLevelCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<GamemodeCondition>> GAMEMODE = REGISTRY.register("gamemode", () -> GamemodeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<GlowingCondition>> GLOWING = REGISTRY.register("glowing", () -> GlowingCondition.CODEC);
@@ -56,6 +58,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<OriginCondition>> ORIGIN = REGISTRY.register("origin", () -> OriginCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<PassengerCondition>> PASSENGER = REGISTRY.register("passenger", () -> PassengerCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<PassengerRecursiveCondition>> PASSENGER_RECURSIVE = REGISTRY.register("passenger_recursive", () -> PassengerRecursiveCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<PowerActiveCondition>> POWER_ACTIVE = REGISTRY.register("power_active", () -> PowerActiveCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<PowerTypeCondition>> POWER_TYPE = REGISTRY.register("power_type", () -> PowerTypeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<RelativeHealthCondition>> RELATIVE_HEALTH = REGISTRY.register("relative_health", () -> RelativeHealthCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<RidingCondition>> RIDING = REGISTRY.register("riding", () -> RidingCondition.CODEC);

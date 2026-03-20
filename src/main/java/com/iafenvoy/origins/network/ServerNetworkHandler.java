@@ -5,6 +5,7 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.network.payload.ChooseOriginC2SPayload;
+import com.iafenvoy.origins.network.payload.ChooseRandomOriginC2SPayload;
 import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
 import com.iafenvoy.origins.util.RLHelper;
 import net.minecraft.core.Holder;
@@ -46,6 +47,30 @@ public final class ServerNetworkHandler {
                 holder.setOrigin(layer, origin);
                 Origins.LOGGER.info("Player {} was randomly assigned the following origin: {}", player.getName().getString(), RLHelper.string(origin));
             }
+        }
+        context.reply(new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
+        holder.data().setSelecting(false);
+        holder.sync();
+    }
+
+    static void onChooseRandomOrigin(ChooseRandomOriginC2SPayload packet, IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer player)) return;
+
+        OriginDataHolder holder = OriginDataHolder.get(player);
+        Holder<Layer> layer = packet.layer();
+        if (holder.hasOrigin(layer)) {
+            Origins.LOGGER.warn("Player {} tried to choose random origin for layer \"{}\" while having one already.", player.getName().getString(), RLHelper.string(layer));
+            return;
+        }
+
+        List<Holder<Origin>> randomOriginIds = layer.value().collectRandomizableOrigins(player.registryAccess()).toList();
+        if (!layer.value().allowRandom() || randomOriginIds.isEmpty()) {
+            Origins.LOGGER.warn("Player {} tried to choose a random origin for layer \"{}\", which is not allowed!", player.getName().getString(), RLHelper.string(layer));
+            holder.clearOrigin(layer);
+        } else {
+            Holder<Origin> origin = randomOriginIds.get(player.getRandom().nextInt(randomOriginIds.size()));
+            holder.setOrigin(layer, origin);
+            Origins.LOGGER.info("Player {} was randomly assigned the following origin: {}", player.getName().getString(), RLHelper.string(origin));
         }
         context.reply(new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
         holder.data().setSelecting(false);

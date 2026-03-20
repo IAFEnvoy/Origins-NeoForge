@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.data.origin;
 
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.data.layer.Layer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -22,8 +21,7 @@ public final class OriginRegistries {
         event.dataPackRegistry(ORIGIN_KEY, Origin.DIRECT_CODEC, Origin.DIRECT_CODEC);
     }
 
-    @SuppressWarnings("unchecked")
-    public static Stream<Holder<Layer>> streamAvailableOrigins(RegistryAccess access) {
-        return access.registryOrThrow(ORIGIN_KEY).holders().filter(x -> x.value().choosable()).map(Holder.class::cast);
+    public static Stream<Holder.Reference<Origin>> streamAvailableOrigins(RegistryAccess access) {
+        return access.registryOrThrow(ORIGIN_KEY).holders().filter(x -> x.value().choosable());
     }
 }

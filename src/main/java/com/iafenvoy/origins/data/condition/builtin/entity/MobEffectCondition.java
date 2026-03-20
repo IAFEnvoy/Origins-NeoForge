@@ -12,13 +12,14 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 public record MobEffectCondition(Holder<MobEffect> effect, int minAmplifier, int maxAmplifier, int minDuration,
-                                 int maxDuration) implements EntityCondition {
+                                 int maxDuration, boolean inverted) implements EntityCondition {
     public static final MapCodec<MobEffectCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             MobEffect.CODEC.fieldOf("effect").forGetter(MobEffectCondition::effect),
             Codec.INT.optionalFieldOf("min_amplifier", 0).forGetter(MobEffectCondition::minAmplifier),
             Codec.INT.optionalFieldOf("max_amplifier", Integer.MAX_VALUE).forGetter(MobEffectCondition::maxAmplifier),
             Codec.INT.optionalFieldOf("min_duration", -1).forGetter(MobEffectCondition::minDuration),
-            Codec.INT.optionalFieldOf("max_duration", Integer.MAX_VALUE).forGetter(MobEffectCondition::maxDuration)
+            Codec.INT.optionalFieldOf("max_duration", Integer.MAX_VALUE).forGetter(MobEffectCondition::maxDuration),
+            Codec.BOOL.optionalFieldOf("inverted", false).forGetter(MobEffectCondition::inverted)
     ).apply(i, MobEffectCondition::new));
 
     @Override
@@ -30,8 +31,8 @@ public record MobEffectCondition(Holder<MobEffect> effect, int minAmplifier, int
     public boolean test(@NotNull Entity entity) {
         if (!(entity instanceof LivingEntity living)) return false;
         MobEffectInstance instance = living.getEffect(this.effect);
-        return instance != null
+        return this.inverted ^ (instance != null
                 && this.minAmplifier <= instance.getAmplifier() && instance.getAmplifier() <= this.maxAmplifier
-                && this.minDuration <= instance.getDuration() && instance.getDuration() <= this.maxDuration;
+                && this.minDuration <= instance.getDuration() && instance.getDuration() <= this.maxDuration);
     }
 }

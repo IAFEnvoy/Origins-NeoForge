@@ -1,7 +1,9 @@
 package com.iafenvoy.origins.network;
 
 import carpet.patches.EntityPlayerMPFake;
+import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.badge.BadgeManager;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
@@ -25,6 +27,11 @@ public final class LoginHelper {
     //FIXME::Merge with refreshing power maps
     @SubscribeEvent
     public static void onSyncDatapack(OnDatapackSyncEvent event) {
+        // Clear stale badge cache on datapack reload so badges are refreshed from the registry
+        if (event.getPlayer() == null) {
+            BadgeManager.clear();
+            Origins.LOGGER.debug("Datapack reload: cleared badge cache, layers/origins/badges will be re-synced");
+        }
         if (event.getPlayer() != null) forEachPlayer(event.getPlayer(), false);
         else for (ServerPlayer player : event.getPlayerList().getPlayers())
             forEachPlayer(player, true);

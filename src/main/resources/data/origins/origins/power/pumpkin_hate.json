@@ -3,7 +3,7 @@
 	"prevent_eating": {
 		"type": "origins:prevent_item_use",
 		"item_condition": {
-			"type": "origins:all_of",
+			"type": "origins:and",
 			"conditions": [
 				{
 					"type": "origins:food"
@@ -11,7 +11,7 @@
 				{
 					"type": "origins:ingredient",
 					"ingredient": {
-						"tag": "*:pumpkin_like/food"
+						"tag": "origins:pumpkin_like/food"
 					}
 				}
 			]
@@ -21,7 +21,7 @@
 	"prevent_seeing": {
 		"type": "origins:prevent_entity_render",
 		"bientity_condition": {
-			"type": "apoli:equal",
+			"type": "origins:equal",
 			"inverted": true
 		},
 		"entity_condition": {
@@ -30,7 +30,7 @@
 			"item_condition": {
 				"type": "origins:ingredient",
 				"ingredient": {
-					"tag": "*:pumpkin_like/equipment"
+					"tag": "origins:pumpkin_like/equipment"
 				}
 			}
 		}

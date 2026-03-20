@@ -16,6 +16,7 @@ public enum MovementBlockingCondition implements BlockCondition {
         return CODEC;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean test(@NotNull Level level, @NotNull BlockPos pos) {
         BlockState state = level.getBlockState(pos);

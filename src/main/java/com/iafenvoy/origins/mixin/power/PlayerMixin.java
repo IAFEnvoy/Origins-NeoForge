@@ -4,12 +4,12 @@ import com.iafenvoy.origins.event.common.CanFlyWithoutElytraEvent;
 import com.iafenvoy.origins.event.common.CanNaturalRegenEvent;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
 public class PlayerMixin {
@@ -23,8 +23,14 @@ public class PlayerMixin {
         return original && NeoForge.EVENT_BUS.post(new CanNaturalRegenEvent(this.origins$self())).getResult().allow();
     }
 
-    @ModifyExpressionValue(method = "tryToStartFallFlying", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;getItemBySlot(Lnet/minecraft/world/entity/EquipmentSlot;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack handleElytra(ItemStack original) {
-        return NeoForge.EVENT_BUS.post(new CanFlyWithoutElytraEvent(this.origins$self())).getResult().allow() ? Items.ELYTRA.getDefaultInstance() : original;
+    @Inject(method = "tryToStartFallFlying", at = @At("HEAD"), cancellable = true)
+    private void handleElytra(CallbackInfoReturnable<Boolean> cir) {
+        Player player = this.origins$self();
+        if (!player.onGround() && !player.isFallFlying() && !player.isInWater()) {
+            if (NeoForge.EVENT_BUS.post(new CanFlyWithoutElytraEvent(player)).getResult().allow()) {
+                player.startFallFlying();
+                cir.setReturnValue(true);
+            }
+        }
     }
 }

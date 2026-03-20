@@ -34,10 +34,10 @@ public record AddVelocityAction(float x, float y, float z, Reference reference, 
 
     @Override
     public void execute(@NotNull Entity source, @NotNull Entity target) {
-        //FIXME::May not work properly
+        boolean isClient = target.level().isClientSide;
+        if ((isClient && !this.client) || (!isClient && !this.server)) return;
         Vector3f velocity = new Vector3f(this.x, this.y, this.z);
         Vec3 refVec = this.reference.apply(source, target);
-        //FIXME::Re-implement this method in a simple way.
         Space.transformVectorToBase(refVec, velocity, source.getYRot(), true);
         if (this.set) target.setDeltaMovement(new Vec3(velocity));
         else target.addDeltaMovement(new Vec3(velocity));

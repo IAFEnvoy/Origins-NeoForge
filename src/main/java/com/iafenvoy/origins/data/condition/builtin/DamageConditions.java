@@ -28,4 +28,6 @@ public final class DamageConditions {
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<ConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> ConstantCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<NotCondition>> NOT = REGISTRY.register("not", () -> NotCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<OrCondition>> OR = REGISTRY.register("or", () -> OrCondition.CODEC);
+
+    public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<FireDamageCondition>> FIRE = REGISTRY.register("fire", () -> FireDamageCondition.CODEC);
 }

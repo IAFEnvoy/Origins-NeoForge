@@ -55,4 +55,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RegionApplyAction>> REGION_APPLY = REGISTRY.register("region_apply", () -> RegionApplyAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SelectorApplyAction>> SELECTOR_APPLY = REGISTRY.register("selector_apply", () -> SelectorApplyAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SideAction>> SIDE = REGISTRY.register("side", () -> SideAction.CODEC);
+
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ToggleAction>> TOGGLE = REGISTRY.register("toggle", () -> ToggleAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<BlockActionAtAction>> BLOCK_ACTION_AT = REGISTRY.register("block_action_at", () -> BlockActionAtAction.CODEC);
 }

@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
+import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.mojang.serialization.Codec;
@@ -39,12 +40,17 @@ public record SpawnParticlesAction(ParticleType<?> particle, BiEntityCondition b
         if (source.level() instanceof ServerLevel serverLevel) {
             Vec3 delta = this.spread.multiply(source.getBbWidth(), source.getEyeHeight(source.getPose()), source.getBbWidth());
             Vec3 pos = source.position().add(this.offsetX, this.offsetY, this.offsetZ);
-            //FIXME::Not get options in this way
-            if (this.particle instanceof ParticleOptions options)
+            // SimpleParticleType implements both ParticleType and ParticleOptions.
+            // Complex particle types (dust, block, item) do NOT implement ParticleOptions directly.
+            if (this.particle instanceof ParticleOptions options) {
                 for (ServerPlayer player : serverLevel.players()) {
                     if (this.biEntityCondition.test(source, player))
                         serverLevel.sendParticles(player, options, this.force, pos.x, pos.y, pos.z, this.count, delta.x, delta.y, delta.z, this.speed);
                 }
+            } else {
+                Origins.LOGGER.warn("Particle type {} does not implement ParticleOptions directly; complex particle types are not yet supported.",
+                        BuiltInRegistries.PARTICLE_TYPE.getKey(this.particle));
+            }
         }
     }
 }

@@ -1,12 +1,12 @@
 {
-	"type": "apoli:modify_falling",
+	"type": "origins:modify_falling",
 	"velocity": 0.01,
 	"take_fall_damage": false,
 	"condition": {
-		"type": "origins:any_of",
+		"type": "origins:or",
 		"conditions": [
 			{
-				"type": "origins:all_of",
+				"type": "origins:and",
 				"conditions": [
 					{
 						"type": "origins:sneaking"
@@ -17,7 +17,7 @@
 				]
 			},
 			{
-				"type": "origins:all_of",
+				"type": "origins:and",
 				"conditions": [
 					{
 						"type": "origins:sneaking",

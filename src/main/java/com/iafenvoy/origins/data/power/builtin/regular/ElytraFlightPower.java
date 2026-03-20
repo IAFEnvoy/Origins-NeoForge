@@ -28,7 +28,7 @@ public record ElytraFlightPower(boolean renderElytra, Optional<ResourceLocation>
         return CODEC;
     }
 
-    @SubscribeEvent//FIXME::Cannot fall flying correctly
+    @SubscribeEvent
     public static void enableElytraFly(CanFlyWithoutElytraEvent event) {
         if (!OriginDataHolder.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class).isEmpty())
             event.allow();

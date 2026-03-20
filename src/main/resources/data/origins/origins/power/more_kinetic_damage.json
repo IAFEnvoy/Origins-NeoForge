@@ -6,6 +6,6 @@
 	},
 	"damage_condition": {
 		"type": "origins:in_tag",
-		"tag": "*:kinetic"
+		"tag": "origins:kinetic"
 	}
 }

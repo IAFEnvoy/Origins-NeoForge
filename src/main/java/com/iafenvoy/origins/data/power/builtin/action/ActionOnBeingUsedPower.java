@@ -61,7 +61,18 @@ public record ActionOnBeingUsedPower(BiEntityAction biEntityAction, ItemAction h
             if (power.hands.contains(hand) && power.biEntityCondition.test(player, entity) && power.itemCondition.test(level, stack)) {
                 power.biEntityAction.execute(player, entity);
                 power.heldItemAction.execute(level, player, stack);
-                //TODO::Incomplete
+                if (power.resultStack.isPresent()) {
+                    ItemStack result = power.resultStack.get().copy();
+                    power.resultItemAction.execute(level, player, result);
+                    if (stack.isEmpty()) {
+                        player.setItemInHand(hand, result);
+                    } else if (!player.getInventory().add(result)) {
+                        player.drop(result, false);
+                    }
+                }
+                event.setCancellationResult(power.interactionResult);
+                event.setCanceled(true);
+                return;
             }
         }
     }

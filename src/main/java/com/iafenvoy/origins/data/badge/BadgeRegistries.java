@@ -1,6 +1,8 @@
 package com.iafenvoy.origins.data.badge;
 
 import com.iafenvoy.origins.Origins;
+import com.iafenvoy.origins.data.badge.builtin.EmptyBadge;
+import com.iafenvoy.origins.data.badge.builtin.SpriteBadge;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.MappedRegistry;
@@ -18,6 +20,11 @@ public final class BadgeRegistries {
     public static final Registry<MapCodec<? extends Badge>> BADGE_TYPE = new MappedRegistry<>(BADGE_TYPE_KEY, Lifecycle.stable());
 
     public static final ResourceKey<Registry<Badge>> BADGE_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "badge"));
+
+    static {//FIXME::Standalone registry file
+        Registry.register(BADGE_TYPE, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "sprite"), SpriteBadge.CODEC);
+        Registry.register(BADGE_TYPE, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "empty"), EmptyBadge.CODEC);
+    }
 
     @SubscribeEvent
     public static void newRegistries(NewRegistryEvent event) {

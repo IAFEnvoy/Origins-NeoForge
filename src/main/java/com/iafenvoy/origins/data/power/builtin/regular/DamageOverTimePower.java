@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.IntervalPower;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.Codec;
@@ -21,21 +22,24 @@ public class DamageOverTimePower extends IntervalPower {
             Codec.INT.optionalFieldOf("onset_delay").forGetter(DamageOverTimePower::getOnSetDelay),
             Codec.FLOAT.fieldOf("damage").forGetter(DamageOverTimePower::getDamage),
             Codec.FLOAT.optionalFieldOf("damage_easy").forGetter(DamageOverTimePower::getDamageEasy),
-            DamageType.CODEC.fieldOf("damage_type").forGetter(DamageOverTimePower::getDamageType)
+            DamageType.CODEC.fieldOf("damage_type").forGetter(DamageOverTimePower::getDamageType),
+            EntityCondition.CODEC.fieldOf("condition").forGetter(DamageOverTimePower::getCondition)
     ).apply(i, DamageOverTimePower::new));
 
     private final int interval;
     private final Optional<Integer> onSetDelay;
     private final float damage, damageEasy;
     private final Holder<DamageType> damageType;
+    private final EntityCondition condition;
 
-    public DamageOverTimePower(int interval, Optional<Integer> onSetDelay, float damage, Optional<Float> damageEasy, Holder<DamageType> damageType) {
+    public DamageOverTimePower(int interval, Optional<Integer> onSetDelay, float damage, Optional<Float> damageEasy, Holder<DamageType> damageType, EntityCondition condition) {
         super(onSetDelay.orElse(0));
         this.interval = interval;
         this.onSetDelay = onSetDelay;
         this.damage = damage;
         this.damageEasy = damageEasy.orElse(this.damage);
         this.damageType = damageType;
+        this.condition = condition;
     }
 
     @Override
@@ -45,7 +49,8 @@ public class DamageOverTimePower extends IntervalPower {
 
     @Override
     public void intervalTick(@NotNull Entity entity) {
-        entity.hurt(new DamageSource(this.damageType), entity.level().getDifficulty() == Difficulty.EASY ? this.damageEasy : this.damage);
+        if (this.condition.test(entity))
+            entity.hurt(new DamageSource(this.damageType), entity.level().getDifficulty() == Difficulty.EASY ? this.damageEasy : this.damage);
     }
 
     @Override
@@ -67,5 +72,9 @@ public class DamageOverTimePower extends IntervalPower {
 
     public Holder<DamageType> getDamageType() {
         return this.damageType;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
     }
 }

@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.badge;
 
+import com.iafenvoy.origins.data.badge.builtin.EmptyBadge;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.codec.DefaultedCodec;
 import com.mojang.serialization.Codec;
