@@ -10,7 +10,7 @@ public enum ExposedToSunCondition implements EntityCondition {
     INSTANCE;
     public static final MapCodec<ExposedToSunCondition> CODEC = MapCodec.unit(INSTANCE);
     private static final InRainCondition IN_RAIN = InRainCondition.INSTANCE;
-    private static final BrightnessCondition BRIGHTNESS = new BrightnessCondition(Comparison.GREATER_THAN, 0.5F);
+    private static final BrightnessCondition BRIGHTNESS = new BrightnessCondition(new Comparison(Comparison.CompareOperation.GREATER_THAN, 0.5F));
     private static final ExposedToSkyCondition EXPOSED_TO_SKY = ExposedToSkyCondition.INSTANCE;
 
     @Override

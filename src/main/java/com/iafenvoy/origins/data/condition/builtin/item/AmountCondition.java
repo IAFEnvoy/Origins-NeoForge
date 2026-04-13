@@ -9,10 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record AmountCondition(Comparison comparison, int compareTo) implements ItemCondition {
+public record AmountCondition(Comparison comparison) implements ItemCondition {
     public static final MapCodec<AmountCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(AmountCondition::comparison),
-            Codec.INT.fieldOf("compare_to").forGetter(AmountCondition::compareTo)
+            Comparison.CODEC.forGetter(AmountCondition::comparison)
     ).apply(i, AmountCondition::new));
 
     @Override
@@ -22,6 +21,6 @@ public record AmountCondition(Comparison comparison, int compareTo) implements I
 
     @Override
     public boolean test(@NotNull Level level, @NotNull ItemStack stack) {
-        return this.comparison.compare(stack.getCount(), this.compareTo);
+        return this.comparison.compare(stack.getCount());
     }
 }

@@ -9,10 +9,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
-public record RelativeHealthCondition(Comparison comparison, double compareTo) implements EntityCondition {
+public record RelativeHealthCondition(Comparison comparison) implements EntityCondition {
     public static final MapCodec<RelativeHealthCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(RelativeHealthCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(RelativeHealthCondition::compareTo)
+            Comparison.CODEC.forGetter(RelativeHealthCondition::comparison)
     ).apply(i, RelativeHealthCondition::new));
 
     @Override
@@ -22,6 +21,6 @@ public record RelativeHealthCondition(Comparison comparison, double compareTo) i
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return entity instanceof LivingEntity living && this.comparison.compare(living.getHealth() / living.getMaxHealth(), this.compareTo);
+        return entity instanceof LivingEntity living && this.comparison.compare(living.getHealth() / living.getMaxHealth());
     }
 }

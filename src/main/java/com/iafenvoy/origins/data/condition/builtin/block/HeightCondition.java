@@ -9,10 +9,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record HeightCondition(Comparison comparison, double compareTo) implements BlockCondition {
+public record HeightCondition(Comparison comparison) implements BlockCondition {
     public static final MapCodec<HeightCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(HeightCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(HeightCondition::compareTo)
+            Comparison.CODEC.forGetter(HeightCondition::comparison)
     ).apply(i, HeightCondition::new));
 
     @Override
@@ -22,6 +21,6 @@ public record HeightCondition(Comparison comparison, double compareTo) implement
 
     @Override
     public boolean test(@NotNull Level level, @NotNull BlockPos pos) {
-        return this.comparison.compare(pos.getY(), this.compareTo);
+        return this.comparison.compare(pos.getY());
     }
 }

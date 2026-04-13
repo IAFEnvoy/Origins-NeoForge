@@ -11,14 +11,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record BlockInRadiusCondition(BlockCondition blockCondition, int radius, Shape shape, Comparison comparison,
-                                     int compareTo) implements EntityCondition {
+public record BlockInRadiusCondition(BlockCondition blockCondition, int radius, Shape shape,
+                                     Comparison comparison) implements EntityCondition {
     public static final MapCodec<BlockInRadiusCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BlockCondition.CODEC.fieldOf("block_condition").forGetter(BlockInRadiusCondition::blockCondition),
             Codec.INT.fieldOf("radius").forGetter(BlockInRadiusCondition::radius),
             Shape.CODEC.optionalFieldOf("shape", Shape.CUBE).forGetter(BlockInRadiusCondition::shape),
-            Comparison.CODEC.optionalFieldOf("comparison", Comparison.GREATER_THAN_OR_EQUAL).forGetter(BlockInRadiusCondition::comparison),
-            Codec.INT.optionalFieldOf("compare_to", 1).forGetter(BlockInRadiusCondition::compareTo)
+            Comparison.optionalCodec(Comparison.CompareOperation.GREATER_THAN_OR_EQUAL, 1).forGetter(BlockInRadiusCondition::comparison)
     ).apply(i, BlockInRadiusCondition::new));
 
     @Override
@@ -32,6 +31,6 @@ public record BlockInRadiusCondition(BlockCondition blockCondition, int radius, 
         for (BlockPos pos : this.shape.getBlocks(entity.blockPosition(), this.radius))
             if (this.blockCondition.test(entity.level(), pos))
                 ++matches;
-        return this.comparison.compare(matches, this.compareTo);
+        return this.comparison.compare(matches);
     }
 }

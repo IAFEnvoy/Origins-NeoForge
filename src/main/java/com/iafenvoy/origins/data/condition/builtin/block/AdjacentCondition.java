@@ -11,12 +11,10 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record AdjacentCondition(BlockCondition adjacentCondition, Comparison comparison,
-                                double compareTo) implements BlockCondition {
+public record AdjacentCondition(BlockCondition adjacentCondition, Comparison comparison) implements BlockCondition {
     public static final MapCodec<AdjacentCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BlockCondition.CODEC.fieldOf("adjacent_condition").forGetter(AdjacentCondition::adjacentCondition),
-            Comparison.CODEC.fieldOf("comparison").forGetter(AdjacentCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(AdjacentCondition::compareTo)
+            Comparison.CODEC.forGetter(AdjacentCondition::comparison)
     ).apply(i, AdjacentCondition::new));
 
     @Override
@@ -34,6 +32,6 @@ public record AdjacentCondition(BlockCondition adjacentCondition, Comparison com
                     SectionPos.blockToSectionCoord(offsetPos.getZ()))
                     && this.adjacentCondition.test(level, offsetPos)) matches++;
         }
-        return this.comparison.compare(matches, this.compareTo);
+        return this.comparison.compare(matches);
     }
 }

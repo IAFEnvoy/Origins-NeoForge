@@ -9,10 +9,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record BlastResistanceCondition(Comparison comparison, double compareTo) implements BlockCondition {
+public record BlastResistanceCondition(Comparison comparison) implements BlockCondition {
     public static final MapCodec<BlastResistanceCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(BlastResistanceCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(BlastResistanceCondition::compareTo)
+            Comparison.CODEC.forGetter(BlastResistanceCondition::comparison)
     ).apply(i, BlastResistanceCondition::new));
 
     @Override
@@ -23,6 +22,6 @@ public record BlastResistanceCondition(Comparison comparison, double compareTo) 
     @SuppressWarnings("deprecation")
     @Override
     public boolean test(@NotNull Level level, @NotNull BlockPos pos) {
-        return this.comparison.compare(level.getBlockState(pos).getBlock().getExplosionResistance(), this.compareTo);
+        return this.comparison.compare(level.getBlockState(pos).getBlock().getExplosionResistance());
     }
 }

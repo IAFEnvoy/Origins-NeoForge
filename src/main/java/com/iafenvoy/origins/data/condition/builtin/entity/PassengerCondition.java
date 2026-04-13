@@ -9,12 +9,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record PassengerCondition(BiEntityCondition biEntityCondition, Comparison comparison,
-                                 int compareTo) implements EntityCondition {
+public record PassengerCondition(BiEntityCondition biEntityCondition,
+                                 Comparison comparison) implements EntityCondition {
     public static final MapCodec<PassengerCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BiEntityCondition.optionalCodec("bientity_condition").forGetter(PassengerCondition::biEntityCondition),
-            Comparison.CODEC.fieldOf("comparison").forGetter(PassengerCondition::comparison),
-            Codec.INT.fieldOf("compare_to").forGetter(PassengerCondition::compareTo)
+            Comparison.CODEC.forGetter(PassengerCondition::comparison)
     ).apply(i, PassengerCondition::new));
 
     @Override
@@ -28,6 +27,6 @@ public record PassengerCondition(BiEntityCondition biEntityCondition, Comparison
                 .stream()
                 .filter(passenger -> this.biEntityCondition.test(passenger, entity))
                 .count();
-        return this.comparison.compare(matches, this.compareTo);
+        return this.comparison.compare(matches);
     }
 }

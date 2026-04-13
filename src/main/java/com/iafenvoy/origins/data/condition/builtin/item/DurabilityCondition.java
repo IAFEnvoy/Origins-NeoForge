@@ -9,10 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record DurabilityCondition(Comparison comparison, int compareTo) implements ItemCondition {
+public record DurabilityCondition(Comparison comparison) implements ItemCondition {
     public static final MapCodec<DurabilityCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(DurabilityCondition::comparison),
-            Codec.INT.fieldOf("compare_to").forGetter(DurabilityCondition::compareTo)
+            Comparison.CODEC.forGetter(DurabilityCondition::comparison)
     ).apply(i, DurabilityCondition::new));
 
     @Override
@@ -22,6 +21,6 @@ public record DurabilityCondition(Comparison comparison, int compareTo) implemen
 
     @Override
     public boolean test(@NotNull Level level, @NotNull ItemStack stack) {
-        return stack.isDamageableItem() && this.comparison.compare(Math.abs(stack.getMaxDamage() - stack.getDamageValue()), this.compareTo);
+        return stack.isDamageableItem() && this.comparison.compare(Math.abs(stack.getMaxDamage() - stack.getDamageValue()));
     }
 }

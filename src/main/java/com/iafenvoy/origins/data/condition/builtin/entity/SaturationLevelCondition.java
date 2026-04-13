@@ -9,10 +9,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-public record SaturationLevelCondition(Comparison comparison, double compareTo) implements EntityCondition {
+public record SaturationLevelCondition(Comparison comparison) implements EntityCondition {
     public static final MapCodec<SaturationLevelCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(SaturationLevelCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(SaturationLevelCondition::compareTo)
+            Comparison.CODEC.forGetter(SaturationLevelCondition::comparison)
     ).apply(i, SaturationLevelCondition::new));
 
     @Override
@@ -22,6 +21,6 @@ public record SaturationLevelCondition(Comparison comparison, double compareTo) 
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return entity instanceof Player player && this.comparison.compare(player.getFoodData().getSaturationLevel(), this.compareTo);
+        return entity instanceof Player player && this.comparison.compare(player.getFoodData().getSaturationLevel());
     }
 }

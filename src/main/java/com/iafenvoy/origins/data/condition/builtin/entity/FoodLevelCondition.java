@@ -9,10 +9,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-public record FoodLevelCondition(Comparison comparison, int compareTo) implements EntityCondition {
+public record FoodLevelCondition(Comparison comparison) implements EntityCondition {
     public static final MapCodec<FoodLevelCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(FoodLevelCondition::comparison),
-            Codec.INT.fieldOf("compare_to").forGetter(FoodLevelCondition::compareTo)
+            Comparison.CODEC.forGetter(FoodLevelCondition::comparison)
     ).apply(i, FoodLevelCondition::new));
 
     @Override
@@ -22,6 +21,6 @@ public record FoodLevelCondition(Comparison comparison, int compareTo) implement
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return entity instanceof Player player && this.comparison.compare(player.getFoodData().getFoodLevel(), this.compareTo);
+        return entity instanceof Player player && this.comparison.compare(player.getFoodData().getFoodLevel());
     }
 }

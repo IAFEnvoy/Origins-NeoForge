@@ -9,10 +9,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-public record XpLevelsCondition(Comparison comparison, double compareTo) implements EntityCondition {
+public record XpLevelsCondition(Comparison comparison) implements EntityCondition {
     public static final MapCodec<XpLevelsCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(XpLevelsCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(XpLevelsCondition::compareTo)
+            Comparison.CODEC.forGetter(XpLevelsCondition::comparison)
     ).apply(i, XpLevelsCondition::new));
 
     @Override
@@ -22,6 +21,6 @@ public record XpLevelsCondition(Comparison comparison, double compareTo) impleme
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return entity instanceof Player player && this.comparison.compare(player.experienceLevel, this.compareTo);
+        return entity instanceof Player player && this.comparison.compare(player.experienceLevel);
     }
 }

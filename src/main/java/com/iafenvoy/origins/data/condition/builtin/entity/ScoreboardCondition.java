@@ -13,13 +13,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record ScoreboardCondition(Optional<String> name, String objective, Comparison comparison,
-                                  double compareTo) implements EntityCondition {
+public record ScoreboardCondition(Optional<String> name, String objective, Comparison comparison) implements EntityCondition {
     public static final MapCodec<ScoreboardCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.STRING.optionalFieldOf("name").forGetter(ScoreboardCondition::name),
             Codec.STRING.fieldOf("objective").forGetter(ScoreboardCondition::objective),
-            Comparison.CODEC.fieldOf("comparison").forGetter(ScoreboardCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(ScoreboardCondition::compareTo)
+            Comparison.CODEC.forGetter(ScoreboardCondition::comparison)
     ).apply(i, ScoreboardCondition::new));
 
     @Override
@@ -34,7 +32,7 @@ public record ScoreboardCondition(Optional<String> name, String objective, Compa
         return Optional.ofNullable(scoreboard.getObjective(this.objective))
                 .flatMap(objective -> Optional.ofNullable(scoreboard.getPlayerScoreInfo(holder, objective)))
                 .map(ReadOnlyScoreInfo::value)
-                .map(score -> this.comparison.compare(score, this.compareTo))
+                .map(this.comparison::compare)
                 .orElse(false);
     }
 }

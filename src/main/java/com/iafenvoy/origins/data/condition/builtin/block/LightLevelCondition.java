@@ -13,12 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record LightLevelCondition(Optional<LightLayer> lightType, Comparison comparison,
-                                  double compareTo) implements BlockCondition {
+public record LightLevelCondition(Optional<LightLayer> lightType, Comparison comparison) implements BlockCondition {
     public static final MapCodec<LightLevelCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             ExtraEnumCodecs.LIGHT_LAYER.optionalFieldOf("light_type").forGetter(LightLevelCondition::lightType),
-            Comparison.CODEC.fieldOf("comparison").forGetter(LightLevelCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(LightLevelCondition::compareTo)
+            Comparison.CODEC.forGetter(LightLevelCondition::comparison)
     ).apply(i, LightLevelCondition::new));
 
     @Override
@@ -31,6 +29,6 @@ public record LightLevelCondition(Optional<LightLayer> lightType, Comparison com
         int lightLevel = this.lightType
                 .map(lt -> level.getBrightness(lt, pos))
                 .orElseGet(() -> level.getMaxLocalRawBrightness(pos));
-        return this.comparison.compare(lightLevel, this.compareTo);
+        return this.comparison.compare(lightLevel);
     }
 }

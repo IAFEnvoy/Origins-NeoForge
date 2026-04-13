@@ -9,10 +9,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record SlipperinessCondition(Comparison comparison, double compareTo) implements BlockCondition {
+public record SlipperinessCondition(Comparison comparison) implements BlockCondition {
     public static final MapCodec<SlipperinessCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(SlipperinessCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(SlipperinessCondition::compareTo)
+            Comparison.CODEC.forGetter(SlipperinessCondition::comparison)
     ).apply(i, SlipperinessCondition::new));
 
     @Override
@@ -22,6 +21,6 @@ public record SlipperinessCondition(Comparison comparison, double compareTo) imp
 
     @Override
     public boolean test(@NotNull Level level, @NotNull BlockPos pos) {
-        return this.comparison.compare(level.getBlockState(pos).getBlock().getFriction(), this.compareTo);
+        return this.comparison.compare(level.getBlockState(pos).getBlock().getFriction());
     }
 }

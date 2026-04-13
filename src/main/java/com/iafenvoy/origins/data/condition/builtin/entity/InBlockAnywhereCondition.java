@@ -11,12 +11,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
-public record InBlockAnywhereCondition(BlockCondition blockCondition, Comparison comparison,
-                                       int compareTo) implements EntityCondition {
+public record InBlockAnywhereCondition(BlockCondition blockCondition,
+                                       Comparison comparison) implements EntityCondition {
     public static final MapCodec<InBlockAnywhereCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BlockCondition.CODEC.fieldOf("block_condition").forGetter(InBlockAnywhereCondition::blockCondition),
-            Comparison.CODEC.optionalFieldOf("comparison", Comparison.GREATER_THAN_OR_EQUAL).forGetter(InBlockAnywhereCondition::comparison),
-            Codec.INT.optionalFieldOf("compare_to", 1).forGetter(InBlockAnywhereCondition::compareTo)
+            Comparison.optionalCodec(Comparison.CompareOperation.GREATER_THAN_OR_EQUAL, 1).forGetter(InBlockAnywhereCondition::comparison)
     ).apply(i, InBlockAnywhereCondition::new));
 
     @Override
@@ -37,6 +36,6 @@ public record InBlockAnywhereCondition(BlockCondition blockCondition, Comparison
                     mutablePos.set(x, y, z);
                     if (this.blockCondition.test(entity.level(), mutablePos)) matches++;
                 }
-        return this.comparison.compare(matches, this.compareTo);
+        return this.comparison.compare(matches);
     }
 }

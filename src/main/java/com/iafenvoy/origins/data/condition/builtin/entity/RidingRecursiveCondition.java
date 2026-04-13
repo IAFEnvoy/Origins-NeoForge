@@ -9,12 +9,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record RidingRecursiveCondition(BiEntityCondition biEntityCondition, Comparison comparison,
-                                       int compareTo) implements EntityCondition {
+public record RidingRecursiveCondition(BiEntityCondition biEntityCondition, Comparison comparison) implements EntityCondition {
     public static final MapCodec<RidingRecursiveCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BiEntityCondition.optionalCodec("bientity_condition").forGetter(RidingRecursiveCondition::biEntityCondition),
-            Comparison.CODEC.fieldOf("comparison").forGetter(RidingRecursiveCondition::comparison),
-            Codec.INT.fieldOf("compare_to").forGetter(RidingRecursiveCondition::compareTo)
+            Comparison.CODEC.forGetter(RidingRecursiveCondition::comparison)
     ).apply(i, RidingRecursiveCondition::new));
 
     @Override
@@ -31,6 +29,6 @@ public record RidingRecursiveCondition(BiEntityCondition biEntityCondition, Comp
             if (this.biEntityCondition.test(entity, finalVehicle)) ++matches;
             vehicle = vehicle.getVehicle();
         }
-        return this.comparison.compare(matches, this.compareTo);
+        return this.comparison.compare(matches);
     }
 }

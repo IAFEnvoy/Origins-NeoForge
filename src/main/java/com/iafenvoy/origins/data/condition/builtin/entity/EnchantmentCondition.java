@@ -16,13 +16,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
-public record EnchantmentCondition(Holder<Enchantment> enchantment, Calculation calculation, Comparison comparison,
-                                   int compareTo) implements EntityCondition {
+public record EnchantmentCondition(Holder<Enchantment> enchantment, Calculation calculation, Comparison comparison) implements EntityCondition {
     public static final MapCodec<EnchantmentCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Enchantment.CODEC.fieldOf("enchantment").forGetter(EnchantmentCondition::enchantment),
             Calculation.CODEC.optionalFieldOf("calculation", Calculation.SUM).forGetter(EnchantmentCondition::calculation),
-            Comparison.CODEC.fieldOf("comparison").forGetter(EnchantmentCondition::comparison),
-            Codec.INT.fieldOf("compare_to").forGetter(EnchantmentCondition::compareTo)
+            Comparison.CODEC.forGetter(EnchantmentCondition::comparison)
     ).apply(i, EnchantmentCondition::new));
 
     @Override
@@ -36,7 +34,7 @@ public record EnchantmentCondition(Holder<Enchantment> enchantment, Calculation 
         int level = 0;
         for (EquipmentSlot slot : EquipmentSlot.values())
             level = this.calculation.process(level, living.getItemBySlot(slot).getEnchantmentLevel(this.enchantment));
-        return this.comparison.compare(level, this.compareTo);
+        return this.comparison.compare(level);
     }
 
     public enum Calculation implements StringRepresentable {

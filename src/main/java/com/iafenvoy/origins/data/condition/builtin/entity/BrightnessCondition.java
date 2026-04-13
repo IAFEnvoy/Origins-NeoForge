@@ -12,10 +12,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record BrightnessCondition(Comparison comparison, double compareTo) implements EntityCondition {
+public record BrightnessCondition(Comparison comparison) implements EntityCondition {
     public static final MapCodec<BrightnessCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(BrightnessCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(BrightnessCondition::compareTo)
+            Comparison.CODEC.forGetter(BrightnessCondition::comparison)
     ).apply(i, BrightnessCondition::new));
 
     @Override
@@ -38,6 +37,6 @@ public record BrightnessCondition(Comparison comparison, double compareTo) imple
         } else {
             brightness = 0.0f;
         }
-        return this.comparison.compare(brightness, this.compareTo);
+        return this.comparison.compare(brightness);
     }
 }

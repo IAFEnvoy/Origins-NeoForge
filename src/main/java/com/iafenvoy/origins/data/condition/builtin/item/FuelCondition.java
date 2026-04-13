@@ -9,10 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record FuelCondition(Comparison comparison, int compareTo) implements ItemCondition {
+public record FuelCondition(Comparison comparison) implements ItemCondition {
     public static final MapCodec<FuelCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(FuelCondition::comparison),
-            Codec.INT.fieldOf("compare_to").forGetter(FuelCondition::compareTo)
+            Comparison.CODEC.forGetter(FuelCondition::comparison)
     ).apply(i, FuelCondition::new));
 
     @Override
@@ -22,6 +21,6 @@ public record FuelCondition(Comparison comparison, int compareTo) implements Ite
 
     @Override
     public boolean test(@NotNull Level level, @NotNull ItemStack stack) {
-        return this.comparison.compare(stack.getBurnTime(null), this.compareTo);
+        return this.comparison.compare(stack.getBurnTime(null));
     }
 }

@@ -8,10 +8,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record AirCondition(Comparison comparison, int compareTo) implements EntityCondition {
+public record AirCondition(Comparison comparison) implements EntityCondition {
     public static final MapCodec<AirCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(AirCondition::comparison),
-            Codec.INT.fieldOf("compare_to").forGetter(AirCondition::compareTo)
+            Comparison.CODEC.forGetter(AirCondition::comparison)
     ).apply(i, AirCondition::new));
 
     @Override
@@ -21,6 +20,6 @@ public record AirCondition(Comparison comparison, int compareTo) implements Enti
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return this.comparison.compare(entity.getAirSupply(), this.compareTo);
+        return this.comparison.compare(entity.getAirSupply());
     }
 }

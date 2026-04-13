@@ -10,10 +10,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record ArmorValueCondition(Comparison comparison, int compareTo) implements ItemCondition {
+public record ArmorValueCondition(Comparison comparison) implements ItemCondition {
     public static final MapCodec<ArmorValueCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(ArmorValueCondition::comparison),
-            Codec.INT.fieldOf("compare_to").forGetter(ArmorValueCondition::compareTo)
+            Comparison.CODEC.forGetter(ArmorValueCondition::comparison)
     ).apply(i, ArmorValueCondition::new));
 
     @Override
@@ -23,6 +22,6 @@ public record ArmorValueCondition(Comparison comparison, int compareTo) implemen
 
     @Override
     public boolean test(@NotNull Level level, @NotNull ItemStack stack) {
-        return stack.getItem() instanceof ArmorItem armorItem && this.comparison.compare(armorItem.getDefense(), this.compareTo);
+        return stack.getItem() instanceof ArmorItem armorItem && this.comparison.compare(armorItem.getDefense());
     }
 }

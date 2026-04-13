@@ -9,10 +9,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record HardnessCondition(Comparison comparison, double compareTo) implements BlockCondition {
+public record HardnessCondition(Comparison comparison) implements BlockCondition {
     public static final MapCodec<HardnessCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.fieldOf("comparison").forGetter(HardnessCondition::comparison),
-            Codec.DOUBLE.fieldOf("compare_to").forGetter(HardnessCondition::compareTo)
+            Comparison.CODEC.forGetter(HardnessCondition::comparison)
     ).apply(i, HardnessCondition::new));
 
     @Override
@@ -22,6 +21,6 @@ public record HardnessCondition(Comparison comparison, double compareTo) impleme
 
     @Override
     public boolean test(@NotNull Level level, @NotNull BlockPos pos) {
-        return this.comparison.compare(level.getBlockState(pos).getDestroySpeed(level, pos), this.compareTo);
+        return this.comparison.compare(level.getBlockState(pos).getDestroySpeed(level, pos));
     }
 }
