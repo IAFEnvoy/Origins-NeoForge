@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
-import com.iafenvoy.origins.attachment.EntitySetAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
@@ -35,7 +35,7 @@ public record ActionOnSetAction(ResourceLocation set, BiEntityAction biEntityAct
     @Override
     public void execute(@NotNull Entity source) {
         if (!(source.level() instanceof ServerLevel serverLevel)) return;
-        List<UUID> uuids = EntitySetAttachment.get(source).getEntityUuids(this.set);
+        List<UUID> uuids = OriginDataHolder.get(source).getEntityUuids(this.set);
         if (this.reverse) Collections.reverse(uuids);
         int remain = this.limit;
         for (UUID uuid : uuids) {

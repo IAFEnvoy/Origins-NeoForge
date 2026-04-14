@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.util;
 
 import com.iafenvoy.origins.attachment.EntityOriginAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.mojang.serialization.MapCodec;
@@ -46,7 +47,7 @@ public class OriginLootCondition implements LootItemCondition {
             return false;
         }
 
-        EntityOriginAttachment attachment = EntityOriginAttachment.get(entity);
+        OriginDataHolder attachment = OriginDataHolder.get(entity);
         for (Map.Entry<Holder<Layer>, Holder<Origin>> entry : attachment.getOrigins().entrySet()) {
             ResourceLocation layerId = RLHelper.id(entry.getKey());
             ResourceLocation originId = RLHelper.id(entry.getValue());

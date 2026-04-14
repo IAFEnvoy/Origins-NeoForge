@@ -3,62 +3,66 @@ package com.iafenvoy.origins.attachment;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.iafenvoy.origins.data.layer.Layer;
-import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.PowerRegistries;
-import com.iafenvoy.origins.data.power.Prioritized;
-import com.iafenvoy.origins.data.power.builtin.regular.EntitySetPower;
-import com.iafenvoy.origins.data.power.builtin.regular.ResourcePower;
-import com.iafenvoy.origins.registry.OriginsAttachments;
-import com.iafenvoy.origins.util.RandomHelper;
 import com.iafenvoy.origins.util.codec.AutoIgnoreMapCodec;
+import com.iafenvoy.origins.util.codec.CollectionCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 
-@EventBusSubscriber
 public final class EntityOriginAttachment {
     private static final Codec<Map<Holder<Layer>, Holder<Origin>>> ORIGINS_CODEC = new AutoIgnoreMapCodec<>(Layer.CODEC, Origin.CODEC);
     private static final Codec<Map<ResourceLocation, Integer>> RESOURCES_CODEC = new AutoIgnoreMapCodec<>(ResourceLocation.CODEC, Codec.INT);
     public static final Codec<EntityOriginAttachment> CODEC = RecordCodecBuilder.create(i -> i.group(
             ORIGINS_CODEC.fieldOf("origin").forGetter(EntityOriginAttachment::getOrigins),
+            CollectionCodecs.multiMapCodec(ResourceLocation.CODEC, Power.CODEC).fieldOf("sources").forGetter(EntityOriginAttachment::getSources),
+            Codec.unboundedMap(ResourceLocation.CODEC, Codec.unboundedMap(UUIDUtil.CODEC, Codec.INT)).fieldOf("entity_sets").forGetter(EntityOriginAttachment::getEntitySets),
             RESOURCES_CODEC.fieldOf("resources").forGetter(EntityOriginAttachment::getResources)
     ).apply(i, EntityOriginAttachment::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityOriginAttachment> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
     private final Map<Holder<Layer>, Holder<Origin>> origins = new LinkedHashMap<>();
+    private final Multimap<ResourceLocation, Holder<Power>> sources = HashMultimap.create();
+    private final Map<ResourceLocation, Map<UUID, Integer>> entitySets = new HashMap<>();
     private final Object2IntMap<ResourceLocation> resources = new Object2IntOpenHashMap<>();
-    //Will not save
-    private final Multimap<ResourceLocation, Power> powerMap = HashMultimap.create();
-    private final List<EntitySetPower> entitySetPowers = new LinkedList<>();
     private boolean selecting = false;
 
     public EntityOriginAttachment() {
     }
 
-    private EntityOriginAttachment(Map<Holder<Layer>, Holder<Origin>> origins, Map<ResourceLocation, Integer> resources) {
+    private EntityOriginAttachment(Map<Holder<Layer>, Holder<Origin>> origins, Multimap<ResourceLocation, Holder<Power>> sources, Map<ResourceLocation, Map<UUID, Integer>> entitySets, Map<ResourceLocation, Integer> resources) {
         this.origins.putAll(origins);
+        this.sources.putAll(sources);
+        this.entitySets.putAll(entitySets);
         this.resources.putAll(resources);
-        this.refreshPowerMap();
+    }
+
+    public Map<Holder<Layer>, Holder<Origin>> getOrigins() {
+        return this.origins;
+    }
+
+    public Multimap<ResourceLocation, Holder<Power>> getSources() {
+        return this.sources;
+    }
+
+    public Map<ResourceLocation, Map<UUID, Integer>> getEntitySets() {
+        return this.entitySets;
+    }
+
+    public Object2IntMap<ResourceLocation> getResources() {
+        return this.resources;
     }
 
     public boolean isSelecting() {
@@ -67,117 +71,5 @@ public final class EntityOriginAttachment {
 
     public void setSelecting(boolean selecting) {
         this.selecting = selecting;
-    }
-
-    public void setOrigin(@NotNull Holder<Layer> layer, @NotNull Holder<Origin> origin, @NotNull Entity entity) {
-        this.clearOrigin(layer, entity);
-        if (origin.value() == Origin.EMPTY) return;
-        if (entity.level().isClientSide)
-            entity.sendSystemMessage(Component.translatable("commands.origin.set.success.single", entity.getDisplayName(), Layer.getName(layer), Origin.getName(origin)));
-        this.origins.put(layer, origin);
-        this.refreshPowerMap();
-        executeOnPowers(origin, p -> p.grant(entity));
-    }
-
-    public void clearOrigin(@NotNull Holder<Layer> layer, @NotNull Entity entity) {
-        executeOnPowers(this.origins.remove(layer), p -> p.revoke(entity));
-    }
-
-    public void refreshPowerMap() {
-        this.powerMap.clear();
-        this.origins.values().forEach(o -> o.value().powers().stream().map(Holder::value).map(Power::getSelfOrSubPowers).flatMap(Collection::stream).forEach(p -> this.powerMap.put(PowerRegistries.POWER_TYPE.getKey(p.codec()), p)));
-        //Post process
-        this.entitySetPowers.clear();
-        Object2IntMap<ResourceLocation> oldData = new Object2IntOpenHashMap<>(this.resources);
-        this.resources.clear();
-        for (Map.Entry<ResourceLocation, Power> entry : this.powerMap.entries()) {
-            Power power = entry.getValue();
-            if (power instanceof EntitySetPower entitySetPower)
-                this.entitySetPowers.add(entitySetPower);
-            if (power instanceof ResourcePower resourcePower) {
-                ResourceLocation id = entry.getKey();
-                this.resources.put(id, oldData.containsKey(id) ? oldData.getInt(id) : resourcePower.startValue().orElse(resourcePower.min()));
-            }
-        }
-    }
-
-    public void tick(@NotNull Entity entity) {
-        this.origins.values().forEach(o -> executeOnPowers(o, p -> p.tick(entity)));
-    }
-
-    public Map<Holder<Layer>, Holder<Origin>> getOrigins() {
-        return this.origins;
-    }
-
-    public Object2IntMap<ResourceLocation> getResources() {
-        return this.resources;
-    }
-
-    Stream<EntitySetPower> streamEntitySetPowers(ResourceLocation id, RegistryAccess access) {
-        return this.entitySetPowers.stream().filter(x -> x.getId(access).equals(id));
-    }
-
-    @NotNull
-    public <T extends Power> List<T> getPowers(ResourceLocation id, Class<T> clazz) {
-        List<T> results = new LinkedList<>();
-        for (Power power : this.powerMap.get(id))
-            if (power != null && clazz.isAssignableFrom(power.getClass()))
-                results.add(clazz.cast(power));
-        return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast).toList() : results;
-    }
-
-    public boolean hasOrigin(Holder<Layer> layer) {
-        return this.origins.containsKey(layer) && this.origins.get(layer).value() != Origin.EMPTY;
-    }
-
-    public void sync(Entity entity) {
-        entity.syncData(OriginsAttachments.ENTITY_ORIGIN);
-    }
-
-    public boolean randomOrigin(Holder<Layer> layer, Entity entity) {
-        List<Holder<Origin>> available = layer.value().collectRandomizableOrigins(entity.registryAccess()).toList();
-        if (!available.isEmpty()) {
-            this.setOrigin(layer, RandomHelper.randomOne(available), entity);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean fillAutoChoosing(Entity entity) {
-        boolean changed = false;
-        List<Holder<Layer>> layers = LayerRegistries.streamAutoChooseLayers(entity.registryAccess()).toList();
-        for (Holder<Layer> layer : layers) {
-            if (this.origins.containsKey(layer)) continue;
-            changed |= this.randomOrigin(layer, entity);
-        }
-        if (changed) this.sync(entity);
-        return changed;
-    }
-
-    public boolean hasAllOrigins(RegistryAccess access) {
-        List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(access).toList();
-        for (Holder<Layer> layer : layers) {
-            if (this.origins.containsKey(layer)) continue;
-            return false;
-        }
-        return true;
-    }
-
-    private static void executeOnPowers(@Nullable Holder<Origin> origin, Consumer<Power> consumer) {
-        if (origin != null) origin.value().powers().stream().map(Holder::value).forEach(consumer);
-    }
-
-    public static EntityOriginAttachment get(Entity entity) {
-        return entity.getData(OriginsAttachments.ENTITY_ORIGIN);
-    }
-
-    @SubscribeEvent
-    public static void refreshPowersWhenReload(OnDatapackSyncEvent event) {
-        event.getRelevantPlayers().map(EntityOriginAttachment::get).forEach(EntityOriginAttachment::refreshPowerMap);
-    }
-
-    @SubscribeEvent
-    public static void onEntityTick(EntityTickEvent.Post event) {
-        EntityOriginAttachment.get(event.getEntity()).tick(event.getEntity());
     }
 }

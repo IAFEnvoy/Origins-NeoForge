@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
-import com.iafenvoy.origins.attachment.EntitySetAttachment;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.util.math.Comparison;
 import com.mojang.serialization.MapCodec;
@@ -22,6 +22,6 @@ public record SetSizeCondition(ResourceLocation set, Comparison comparison) impl
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return this.comparison.compare(EntitySetAttachment.get(entity).getSize(this.set));
+        return this.comparison.compare(OriginDataHolder.get(entity).getSize(this.set));
     }
 }
