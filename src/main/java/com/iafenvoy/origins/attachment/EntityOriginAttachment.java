@@ -28,13 +28,13 @@ public final class EntityOriginAttachment {
     private static final Codec<Map<ResourceLocation, Integer>> RESOURCES_CODEC = new AutoIgnoreMapCodec<>(ResourceLocation.CODEC, Codec.INT);
     public static final Codec<EntityOriginAttachment> CODEC = RecordCodecBuilder.create(i -> i.group(
             ORIGINS_CODEC.fieldOf("origin").forGetter(EntityOriginAttachment::getOrigins),
-            CollectionCodecs.multiMapCodec(ResourceLocation.CODEC, Power.CODEC).fieldOf("sources").forGetter(EntityOriginAttachment::getSources),
+            CollectionCodecs.multiMapCodec(ResourceLocation.CODEC, Power.CODEC).fieldOf("sources").forGetter(EntityOriginAttachment::getPowers),
             Codec.unboundedMap(ResourceLocation.CODEC, Codec.unboundedMap(UUIDUtil.CODEC, Codec.INT)).fieldOf("entity_sets").forGetter(EntityOriginAttachment::getEntitySets),
             RESOURCES_CODEC.fieldOf("resources").forGetter(EntityOriginAttachment::getResources)
     ).apply(i, EntityOriginAttachment::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityOriginAttachment> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
     private final Map<Holder<Layer>, Holder<Origin>> origins = new LinkedHashMap<>();
-    private final Multimap<ResourceLocation, Holder<Power>> sources = HashMultimap.create();
+    private final Multimap<ResourceLocation, Holder<Power>> powers = HashMultimap.create();
     private final Map<ResourceLocation, Map<UUID, Integer>> entitySets = new HashMap<>();
     private final Object2IntMap<ResourceLocation> resources = new Object2IntOpenHashMap<>();
     private boolean selecting = false;
@@ -42,9 +42,9 @@ public final class EntityOriginAttachment {
     public EntityOriginAttachment() {
     }
 
-    private EntityOriginAttachment(Map<Holder<Layer>, Holder<Origin>> origins, Multimap<ResourceLocation, Holder<Power>> sources, Map<ResourceLocation, Map<UUID, Integer>> entitySets, Map<ResourceLocation, Integer> resources) {
+    private EntityOriginAttachment(Map<Holder<Layer>, Holder<Origin>> origins, Multimap<ResourceLocation, Holder<Power>> powers, Map<ResourceLocation, Map<UUID, Integer>> entitySets, Map<ResourceLocation, Integer> resources) {
         this.origins.putAll(origins);
-        this.sources.putAll(sources);
+        this.powers.putAll(powers);
         this.entitySets.putAll(entitySets);
         this.resources.putAll(resources);
     }
@@ -53,8 +53,8 @@ public final class EntityOriginAttachment {
         return this.origins;
     }
 
-    public Multimap<ResourceLocation, Holder<Power>> getSources() {
-        return this.sources;
+    public Multimap<ResourceLocation, Holder<Power>> getPowers() {
+        return this.powers;
     }
 
     public Map<ResourceLocation, Map<UUID, Integer>> getEntitySets() {

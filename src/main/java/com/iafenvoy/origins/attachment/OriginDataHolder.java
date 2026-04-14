@@ -43,22 +43,30 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
     }
 
     //Power Related
-    public void addPower(Holder<Power> power) {
-        this.addPower(DEFAULT_SOURCE, power);
+    public void grantPower(Holder<Power> power) {
+        this.grantPower(DEFAULT_SOURCE, power);
     }
 
-    public void addPower(ResourceLocation source, Holder<Power> power) {
-        this.data.getSources().put(source, power);
+    public void grantPower(ResourceLocation source, Holder<Power> power) {
+        this.data.getPowers().put(source, power);
         power.value().grant(this.entity);
     }
 
-    public void removePower(Holder<Power> power) {
-        this.removePower(DEFAULT_SOURCE, power);
+    public void revokePower(Holder<Power> power) {
+        this.revokePower(DEFAULT_SOURCE, power);
     }
 
-    public void removePower(ResourceLocation source, Holder<Power> power) {
-        this.data.getSources().remove(source, power);
+    public void revokePower(ResourceLocation source, Holder<Power> power) {
+        this.data.getPowers().remove(source, power);
         power.value().revoke(this.entity);
+    }
+
+    public void revokeAllPowers(ResourceLocation source) {
+        this.data.getPowers().entries().stream().filter(x -> x.getKey().equals(source)).map(Map.Entry::getValue).toList().forEach(p -> this.revokePower(source, p));
+    }
+
+    public void revokeAllPowers(Holder<Power> power) {
+        this.data.getPowers().values().remove(power);
     }
 
     @NotNull
@@ -68,13 +76,13 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
 
     @NotNull
     public <T extends Power> List<T> getPowers(ResourceLocation id, Class<T> clazz) {
-        List<T> results = this.data.getSources().values().stream().filter(x -> x.unwrapKey().map(ResourceKey::location).map(id::equals).orElse(false)).map(Holder::value).toList().stream().filter(power -> power != null && clazz.isAssignableFrom(power.getClass())).map(clazz::cast).collect(Collectors.toCollection(LinkedList::new));
+        List<T> results = this.data.getPowers().values().stream().filter(x -> x.unwrapKey().map(ResourceKey::location).map(id::equals).orElse(false)).map(Holder::value).toList().stream().filter(power -> power != null && clazz.isAssignableFrom(power.getClass())).map(clazz::cast).collect(Collectors.toCollection(LinkedList::new));
         return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast).toList() : results;
     }
 
     @NotNull
     public <T extends Power> Stream<T> streamPowers(Class<T> clazz) {
-        Stream<T> results = this.data.getSources().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
+        Stream<T> results = this.data.getPowers().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast) : results;
     }
 
@@ -87,14 +95,14 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
             this.entity.sendSystemMessage(Component.translatable("commands.origin.set.success.single", this.entity.getDisplayName(), Layer.getName(layer), Origin.getName(origin)));
         this.data.getOrigins().put(layer, origin);
         ResourceLocation id = origin.getKey().location();
-        origin.value().powers().forEach(x -> this.addPower(id, x));
+        origin.value().powers().forEach(x -> this.grantPower(id, x));
     }
 
     public void clearOrigin(@NotNull Holder<Layer> layer) {
         Holder<Origin> origin = this.data.getOrigins().remove(layer);
         if (origin == null) return;
         ResourceLocation id = origin.getKey().location();
-        origin.value().powers().forEach(x -> this.removePower(id, x));
+        origin.value().powers().forEach(x -> this.revokePower(id, x));
     }
 
     public boolean hasOrigin(Holder<Layer> layer) {
