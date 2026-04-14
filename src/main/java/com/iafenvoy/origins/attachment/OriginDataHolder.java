@@ -3,6 +3,7 @@ package com.iafenvoy.origins.attachment;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.math.ResourceOperation;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.IntBinaryOperator;
 
 public record OriginDataHolder(Entity entity, EntityOriginAttachment data, EntitySetAttachment entitySet,
                                RegistryAccess access) {
@@ -68,6 +70,14 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Entit
 
     public void removeEntity(ResourceLocation id, Entity target) {
         this.entitySet.removeEntity(this.entity, id, target);
+    }
+
+    public void updateResource(ResourceLocation id, IntBinaryOperator operation, int value) {
+        this.data.getResources().computeInt(id, (i, cur) -> operation.applyAsInt(cur, value));
+    }
+
+    public int getResource(ResourceLocation id) {
+        return this.data.getResources().getOrDefault(id, 0);
     }
 
     public static OriginDataHolder get(Entity entity) {

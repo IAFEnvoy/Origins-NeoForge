@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.util;
+package com.iafenvoy.origins.util.math;
 
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;

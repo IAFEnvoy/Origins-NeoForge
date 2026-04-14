@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.bientity;
 
 import com.iafenvoy.origins.data.action.BiEntityAction;
-import com.iafenvoy.origins.util.Space;
+import com.iafenvoy.origins.util.math.Space;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

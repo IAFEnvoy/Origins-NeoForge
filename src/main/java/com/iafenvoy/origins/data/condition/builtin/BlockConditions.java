@@ -21,6 +21,8 @@ public final class BlockConditions {
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlastResistanceCondition>> BLAST_RESISTANCE = REGISTRY.register("blast_resistance", () -> BlastResistanceCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockEntityCondition>> BLOCK_ENTITY = REGISTRY.register("block_entity", () -> BlockEntityCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockIdCondition>> BLOCK = REGISTRY.register("block", () -> BlockIdCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<BlockStateCondition>> BLOCK_STATE = REGISTRY.register("block_state", () -> BlockStateCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<DistanceFromCoordinatesCondition>> DISTANCE_FROM_COORDINATES = REGISTRY.register("distance_from_coordinates", () -> DistanceFromCoordinatesCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<ExposedToSkyCondition>> EXPOSED_TO_SKY = REGISTRY.register("exposed_to_sky", () -> ExposedToSkyCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<FluidIdCondition>> FLUID = REGISTRY.register("fluid", () -> FluidIdCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockCondition>, MapCodec<HardnessCondition>> HARDNESS = REGISTRY.register("hardness", () -> HardnessCondition.CODEC);

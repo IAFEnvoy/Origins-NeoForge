@@ -3,7 +3,7 @@ package com.iafenvoy.origins.data.action.builtin.entity.meta;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
-import com.iafenvoy.origins.util.Shape;
+import com.iafenvoy.origins.util.math.Shape;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

@@ -17,7 +17,7 @@ public record ModifyVelocityPower(List<Modifier> modifiers, Set<Direction.AxisDi
 
     public static final MapCodec<ModifyVelocityPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             ListConfiguration.MODIFIER_CODEC.forGetter(ModifyVelocityPower::modifiers),
-            ExtraEnumCodecs.AXIS.listOf().fieldOf("axes").forGetter(e -> new ArrayList<>(e.axes()))
+            ExtraEnumCodecs.AXIS.listOf().fieldOf("axis").forGetter(e -> new ArrayList<>(e.axes()))
     ).apply(i, (m, e) -> new ModifyVelocityPower(m, Set.copyOf(e))));
 
     @Override

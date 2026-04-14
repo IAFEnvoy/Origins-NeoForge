@@ -15,6 +15,8 @@ import java.util.List;
 
 //These codec can recognize both singleton and array
 public final class CombinedCodecs {
+    public static final Codec<List<Integer>> INT = combineCodec(Codec.INT);
+    public static final Codec<List<String>> STRING = combineCodec(Codec.STRING);
     public static final Codec<List<Holder<MobEffect>>> MOB_EFFECT = combineCodec(MobEffect.CODEC);
     public static final Codec<List<MobEffectInstance>> MOB_EFFECT_INSTANCE = combineCodec(MobEffectInstance.CODEC);
     public static final Codec<List<Holder<Enchantment>>> ENCHANTMENT = combineCodec(Enchantment.CODEC);

@@ -2,7 +2,7 @@ package com.iafenvoy.origins.data.action.builtin.block.meta;
 
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.condition.BlockCondition;
-import com.iafenvoy.origins.util.Shape;
+import com.iafenvoy.origins.util.math.Shape;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

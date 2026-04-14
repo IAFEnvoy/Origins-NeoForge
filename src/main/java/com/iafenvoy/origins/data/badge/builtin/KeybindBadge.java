@@ -10,10 +10,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record SpriteBadge(ResourceLocation sprite) implements Badge {
-    public static final MapCodec<SpriteBadge> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ResourceLocation.CODEC.fieldOf("sprite").forGetter(SpriteBadge::sprite)
-    ).apply(i, SpriteBadge::new));
+public record KeybindBadge(ResourceLocation sprite, String text) implements Badge {
+    public static final MapCodec<KeybindBadge> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            ResourceLocation.CODEC.fieldOf("sprite").forGetter(KeybindBadge::sprite),
+            Codec.STRING.optionalFieldOf("text", "").forGetter(KeybindBadge::text)
+    ).apply(i, KeybindBadge::new));
 
     @Override
     public @NotNull MapCodec<? extends Badge> codec() {

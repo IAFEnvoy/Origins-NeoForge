@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.IntervalPower;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.codec.OptionalCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,12 +15,13 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class DamageOverTimePower extends IntervalPower {
     public static final MapCodec<DamageOverTimePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.INT.optionalFieldOf("interval", 20).forGetter(DamageOverTimePower::getInterval),
-            Codec.INT.optionalFieldOf("onset_delay").forGetter(DamageOverTimePower::getOnSetDelay),
+            OptionalCodecs.integer("onset_delay").forGetter(DamageOverTimePower::getOnSetDelay),
             Codec.FLOAT.fieldOf("damage").forGetter(DamageOverTimePower::getDamage),
             Codec.FLOAT.optionalFieldOf("damage_easy").forGetter(DamageOverTimePower::getDamageEasy),
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageOverTimePower::getDamageType),
@@ -27,12 +29,12 @@ public class DamageOverTimePower extends IntervalPower {
     ).apply(i, DamageOverTimePower::new));
 
     private final int interval;
-    private final Optional<Integer> onSetDelay;
+    private final OptionalInt onSetDelay;
     private final float damage, damageEasy;
     private final Holder<DamageType> damageType;
     private final EntityCondition condition;
 
-    public DamageOverTimePower(int interval, Optional<Integer> onSetDelay, float damage, Optional<Float> damageEasy, Holder<DamageType> damageType, EntityCondition condition) {
+    public DamageOverTimePower(int interval, OptionalInt onSetDelay, float damage, Optional<Float> damageEasy, Holder<DamageType> damageType, EntityCondition condition) {
         super(onSetDelay.orElse(0));
         this.interval = interval;
         this.onSetDelay = onSetDelay;
@@ -58,7 +60,7 @@ public class DamageOverTimePower extends IntervalPower {
         return this.interval;
     }
 
-    public Optional<Integer> getOnSetDelay() {
+    public OptionalInt getOnSetDelay() {
         return this.onSetDelay;
     }
 

@@ -9,11 +9,14 @@ import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.Prioritized;
 import com.iafenvoy.origins.data.power.builtin.regular.EntitySetPower;
+import com.iafenvoy.origins.data.power.builtin.regular.ResourcePower;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.util.RandomHelper;
 import com.iafenvoy.origins.util.codec.AutoIgnoreMapCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -35,12 +38,15 @@ import java.util.stream.Stream;
 
 @EventBusSubscriber
 public final class EntityOriginAttachment {
-    public static final Codec<Map<Holder<Layer>, Holder<Origin>>> ORIGINS_CODEC = new AutoIgnoreMapCodec<>(Layer.CODEC, Origin.CODEC);
+    private static final Codec<Map<Holder<Layer>, Holder<Origin>>> ORIGINS_CODEC = new AutoIgnoreMapCodec<>(Layer.CODEC, Origin.CODEC);
+    private static final Codec<Map<ResourceLocation, Integer>> RESOURCES_CODEC = new AutoIgnoreMapCodec<>(ResourceLocation.CODEC, Codec.INT);
     public static final Codec<EntityOriginAttachment> CODEC = RecordCodecBuilder.create(i -> i.group(
-            ORIGINS_CODEC.fieldOf("origin").forGetter(EntityOriginAttachment::getOrigins)
+            ORIGINS_CODEC.fieldOf("origin").forGetter(EntityOriginAttachment::getOrigins),
+            RESOURCES_CODEC.fieldOf("resources").forGetter(EntityOriginAttachment::getResources)
     ).apply(i, EntityOriginAttachment::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityOriginAttachment> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
     private final Map<Holder<Layer>, Holder<Origin>> origins = new LinkedHashMap<>();
+    private final Object2IntMap<ResourceLocation> resources = new Object2IntOpenHashMap<>();
     //Will not save
     private final Multimap<ResourceLocation, Power> powerMap = HashMultimap.create();
     private final List<EntitySetPower> entitySetPowers = new LinkedList<>();
@@ -49,8 +55,9 @@ public final class EntityOriginAttachment {
     public EntityOriginAttachment() {
     }
 
-    private EntityOriginAttachment(Map<Holder<Layer>, Holder<Origin>> origins) {
+    private EntityOriginAttachment(Map<Holder<Layer>, Holder<Origin>> origins, Map<ResourceLocation, Integer> resources) {
         this.origins.putAll(origins);
+        this.resources.putAll(resources);
         this.refreshPowerMap();
     }
 
@@ -79,10 +86,19 @@ public final class EntityOriginAttachment {
     public void refreshPowerMap() {
         this.powerMap.clear();
         this.origins.values().forEach(o -> o.value().powers().stream().map(Holder::value).map(Power::getSelfOrSubPowers).flatMap(Collection::stream).forEach(p -> this.powerMap.put(PowerRegistries.POWER_TYPE.getKey(p.codec()), p)));
+        //Post process
         this.entitySetPowers.clear();
-        for (Power power : this.powerMap.values())
+        Object2IntMap<ResourceLocation> oldData = new Object2IntOpenHashMap<>(this.resources);
+        this.resources.clear();
+        for (Map.Entry<ResourceLocation, Power> entry : this.powerMap.entries()) {
+            Power power = entry.getValue();
             if (power instanceof EntitySetPower entitySetPower)
                 this.entitySetPowers.add(entitySetPower);
+            if (power instanceof ResourcePower resourcePower) {
+                ResourceLocation id = entry.getKey();
+                this.resources.put(id, oldData.containsKey(id) ? oldData.getInt(id) : resourcePower.startValue().orElse(resourcePower.min()));
+            }
+        }
     }
 
     public void tick(@NotNull Entity entity) {
@@ -91,6 +107,10 @@ public final class EntityOriginAttachment {
 
     public Map<Holder<Layer>, Holder<Origin>> getOrigins() {
         return this.origins;
+    }
+
+    public Object2IntMap<ResourceLocation> getResources() {
+        return this.resources;
     }
 
     Stream<EntitySetPower> streamEntitySetPowers(ResourceLocation id, RegistryAccess access) {

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.screen;
 
-import com.iafenvoy.origins.util.TextAlignment;
+import com.iafenvoy.origins.util.math.TextAlignment;
 import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;

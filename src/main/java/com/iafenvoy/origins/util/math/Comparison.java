@@ -7,12 +7,14 @@ import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public record Comparison(CompareOperation comparison, double compareTo) {
     public static final MapCodec<Comparison> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             CompareOperation.CODEC.fieldOf("comparison").forGetter(Comparison::comparison),
             Codec.DOUBLE.fieldOf("compare_to").forGetter(Comparison::compareTo)
     ).apply(i, Comparison::new));
+    public static final MapCodec<Optional<Comparison>> OPTIONAL_CODEC = CODEC.xmap(Optional::of, Optional::orElseThrow);
 
     public static MapCodec<Comparison> optionalCodec(CompareOperation operation, double compareTo) {
         return RecordCodecBuilder.mapCodec(i -> i.group(
