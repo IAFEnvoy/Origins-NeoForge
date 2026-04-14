@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.data.badge.builtin;
 
 import com.iafenvoy.origins.data.badge.Badge;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.RegistryAccess;

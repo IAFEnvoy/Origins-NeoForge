@@ -11,8 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public record ModifyFogTypePower(FogType to,Optional<FogType> from) implements Power {
-
-
     public static final MapCodec<ModifyFogTypePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             ExtraEnumCodecs.FOG_TYPE.fieldOf("to").forGetter(ModifyFogTypePower::to),
             ExtraEnumCodecs.FOG_TYPE.optionalFieldOf("from").forGetter(ModifyFogTypePower::from)

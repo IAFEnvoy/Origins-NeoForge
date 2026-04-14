@@ -3,7 +3,6 @@ package com.iafenvoy.origins.attachment;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.math.ResourceOperation;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;

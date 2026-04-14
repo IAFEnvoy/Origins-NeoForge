@@ -2,7 +2,6 @@ package com.iafenvoy.origins.util.codec;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Direction;
-import net.minecraft.server.commands.AdvancementCommands;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

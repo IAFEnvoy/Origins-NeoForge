@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public record ModifyFallingPower(double velocity, boolean takeFallDamage, List<Modifier> modifiers) implements Power {
-
     public static final MapCodec<ModifyFallingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.DOUBLE.optionalFieldOf("velocity", 0.0).forGetter(ModifyFallingPower::velocity),
             Codec.BOOL.optionalFieldOf("take_fall_damage", true).forGetter(ModifyFallingPower::takeFallDamage),
@@ -27,6 +26,7 @@ public record ModifyFallingPower(double velocity, boolean takeFallDamage, List<M
         return CODEC;
     }
 
+    //FIXME::No effect?
     public static double apply(Entity entity, double originalValue) {
         if (!(entity instanceof LivingEntity living))
             return originalValue;

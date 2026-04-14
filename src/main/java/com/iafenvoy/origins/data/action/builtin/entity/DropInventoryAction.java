@@ -3,31 +3,23 @@ package com.iafenvoy.origins.data.action.builtin.entity;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
-import com.iafenvoy.origins.data.power.builtin.regular.InventoryPower;
-import com.iafenvoy.origins.util.ListConfiguration;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.mutable.Mutable;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 
 public record DropInventoryAction(EntityAction entityAction, ItemAction itemAction, ItemCondition itemCondition,
                                   List<Integer> slots, Optional<ResourceLocation> power, boolean throwRandomly,

@@ -1,6 +1,5 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
-import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.util.LevelUtil;
 import com.iafenvoy.origins.util.codec.OptionalCodecs;
@@ -10,14 +9,10 @@ import com.iafenvoy.origins.util.math.Shape;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Optional;
 import java.util.OptionalInt;
 

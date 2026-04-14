@@ -16,7 +16,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalInt;
 
 public record RemoveEnchantmentAction(List<Holder<Enchantment>> enchantment, OptionalInt level,

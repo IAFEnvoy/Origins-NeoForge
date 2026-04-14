@@ -2,14 +2,12 @@ package com.iafenvoy.origins.data.action.builtin.entity;
 
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.util.codec.OptionalCodecs;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
 import java.util.OptionalInt;
 
 public record AddExperienceAction(OptionalInt points, OptionalInt levels) implements EntityAction {

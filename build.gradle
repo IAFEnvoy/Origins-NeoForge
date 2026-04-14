@@ -112,7 +112,7 @@ configurations {
 }
 
 dependencies {
-    implementation "maven.modrinth:jupiter:I4i9vhEW"
+    implementation "maven.modrinth:jupiter:Jpcw76rq"
     implementation "maven.modrinth:integration:$integration_version"
     jarJar "maven.modrinth:integration:$integration_version"
 
