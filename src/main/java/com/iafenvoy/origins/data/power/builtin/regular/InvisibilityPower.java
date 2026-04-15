@@ -7,12 +7,28 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record InvisibilityPower(boolean renderArmor,
-                                EntityCondition condition) implements Power {
+public class InvisibilityPower extends Power {
     public static final MapCodec<InvisibilityPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.BOOL.optionalFieldOf("render_armor", true).forGetter(InvisibilityPower::renderArmor),
-            EntityCondition.optionalCodec("condition").forGetter(InvisibilityPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Codec.BOOL.optionalFieldOf("render_armor", true).forGetter(InvisibilityPower::isRenderArmor),
+            EntityCondition.optionalCodec("condition").forGetter(InvisibilityPower::getCondition)
     ).apply(i, InvisibilityPower::new));
+    private final boolean renderArmor;
+    private final EntityCondition condition;
+
+    public InvisibilityPower(BaseSettings settings, boolean renderArmor, EntityCondition condition) {
+        super(settings);
+        this.renderArmor = renderArmor;
+        this.condition = condition;
+    }
+
+    public boolean isRenderArmor() {
+        return this.renderArmor;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

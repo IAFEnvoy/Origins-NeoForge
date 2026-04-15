@@ -5,14 +5,20 @@ import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.event.common.CanNaturalRegenEvent;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
-public enum DisableRegenPower implements Power {
-    INSTANCE;
-    public static final MapCodec<DisableRegenPower> CODEC = MapCodec.unit(INSTANCE);
+public class DisableRegenPower extends Power {
+    public static final MapCodec<DisableRegenPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BaseSettings.CODEC.forGetter(Power::getSettings)
+    ).apply(i, DisableRegenPower::new));
+
+    public DisableRegenPower(BaseSettings settings) {
+        super(settings);
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

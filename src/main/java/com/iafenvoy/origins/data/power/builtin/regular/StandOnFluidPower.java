@@ -17,11 +17,28 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
-public record StandOnFluidPower(TagKey<Fluid> fluid, EntityCondition condition) implements Power {
+public class StandOnFluidPower extends Power {
     public static final MapCodec<StandOnFluidPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            TagKey.codec(Registries.FLUID).fieldOf("fluid").forGetter(StandOnFluidPower::fluid),
-            EntityCondition.optionalCodec("condition").forGetter(StandOnFluidPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            TagKey.codec(Registries.FLUID).fieldOf("fluid").forGetter(StandOnFluidPower::getFluid),
+            EntityCondition.optionalCodec("condition").forGetter(StandOnFluidPower::getCondition)
     ).apply(i, StandOnFluidPower::new));
+    private final TagKey<Fluid> fluid;
+    private final EntityCondition condition;
+
+    public StandOnFluidPower(BaseSettings settings, TagKey<Fluid> fluid, EntityCondition condition) {
+        super(settings);
+        this.fluid = fluid;
+        this.condition = condition;
+    }
+
+    public TagKey<Fluid> getFluid() {
+        return this.fluid;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
@@ -32,10 +49,11 @@ public record StandOnFluidPower(TagKey<Fluid> fluid, EntityCondition condition) 
     public static void handleStandOnFluid(CanStandOnFluidEvent event) {
         LivingEntity living = event.getEntity();
         FluidState fluid = event.getFluid();
-        for (StandOnFluidPower power : OriginDataHolder.get(living).getPowers(RegularPowers.STAND_ON_FLUID, StandOnFluidPower.class))
-            if (fluid.is(power.fluid()) && power.condition().test(living)) {
+        for (StandOnFluidPower power : OriginDataHolder.get(living).getPowers(RegularPowers.STAND_ON_FLUID, StandOnFluidPower.class)) {
+            if (fluid.is(power.getFluid()) && power.getCondition().test(living)) {
                 event.allow();
                 return;
             }
+        }
     }
 }

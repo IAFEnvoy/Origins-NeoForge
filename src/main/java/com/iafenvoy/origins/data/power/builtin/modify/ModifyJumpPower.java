@@ -11,12 +11,28 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record ModifyJumpPower(List<Modifier> modifiers, EntityAction entityAction) implements Power {
-
+public class ModifyJumpPower extends Power {
     public static final MapCodec<ModifyJumpPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyJumpPower::modifiers),
-            EntityAction.optionalCodec("entity_action").forGetter(ModifyJumpPower::entityAction)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyJumpPower::getModifiers),
+            EntityAction.optionalCodec("entity_action").forGetter(ModifyJumpPower::getEntityAction)
     ).apply(i, ModifyJumpPower::new));
+    private final List<Modifier> modifiers;
+    private final EntityAction entityAction;
+
+    public ModifyJumpPower(BaseSettings settings, List<Modifier> modifiers, EntityAction entityAction) {
+        super(settings);
+        this.modifiers = modifiers;
+        this.entityAction = entityAction;
+    }
+
+    public List<Modifier> getModifiers() {
+        return this.modifiers;
+    }
+
+    public EntityAction getEntityAction() {
+        return this.entityAction;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
@@ -24,10 +40,10 @@ public record ModifyJumpPower(List<Modifier> modifiers, EntityAction entityActio
     }
 
     public double apply(double baseValue) {
-        return Modifier.applyModifiers(this.modifiers, baseValue);
+        return Modifier.applyModifiers(this.getModifiers(), baseValue);
     }
 
     public void execute(Entity player) {
-        this.entityAction().execute(player);
+        this.getEntityAction().execute(player);
     }
 }

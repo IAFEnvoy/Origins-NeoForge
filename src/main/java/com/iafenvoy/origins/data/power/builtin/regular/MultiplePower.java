@@ -7,6 +7,11 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
+import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
+
+import java.util.Optional;
+import java.util.List;
+
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,9 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public record MultiplePower(Map<String, Power> subPowers) implements Power {
-    private static final java.util.Set<String> RESERVED_KEYS = java.util.Set.of("type", "hidden", "condition", "name");
-
+public class MultiplePower extends Power {
     public static final MapCodec<MultiplePower> CODEC = new MapCodec<>() {
         @Override
         public <T> Stream<T> keys(DynamicOps<T> ops) {
@@ -34,18 +37,32 @@ public record MultiplePower(Map<String, Power> subPowers) implements Power {
                     ).ifPresent(power -> subPowers.put(key, power));
                 }
             });
-            return DataResult.success(new MultiplePower(subPowers));
+            // Try to parse BaseSettings from the same map if present; otherwise use defaults
+            BaseSettings settings = BaseSettings.CODEC.decode(ops, input).result().orElse(new BaseSettings(Optional.empty(), Optional.empty(), false, AlwaysTrueCondition.INSTANCE, 0, List.of()));
+            return DataResult.success(new MultiplePower(settings, subPowers));
         }
 
         @Override
         public <T> RecordBuilder<T> encode(MultiplePower input, DynamicOps<T> ops, RecordBuilder<T> prefix) {
-            for (Map.Entry<String, Power> entry : input.subPowers().entrySet()) {
+            for (Map.Entry<String, Power> entry : input.getSubPowers().entrySet()) {
                 Power.DIRECT_CODEC.encodeStart(ops, entry.getValue()).result()
                         .ifPresent(v -> prefix.add(entry.getKey(), v));
             }
             return prefix;
         }
     };
+    private final Map<String, Power> subPowers;
+
+    private static final java.util.Set<String> RESERVED_KEYS = java.util.Set.of("type", "hidden", "condition", "name");
+
+    public MultiplePower(BaseSettings settings, Map<String, Power> subPowers) {
+        super(settings);
+        this.subPowers = subPowers;
+    }
+
+    public Map<String, Power> getSubPowers() {
+        return this.subPowers;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

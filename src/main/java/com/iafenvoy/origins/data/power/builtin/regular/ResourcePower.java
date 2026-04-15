@@ -15,16 +15,56 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-public record ResourcePower(int min, int max, Optional<HudRender> hudRender, OptionalInt startValue,
-                            EntityAction minAction, EntityAction maxAction) implements Power {
+public class ResourcePower extends Power {
     public static final MapCodec<ResourcePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.INT.fieldOf("min").forGetter(ResourcePower::min),
-            Codec.INT.fieldOf("max").forGetter(ResourcePower::max),
-            HudRender.CODEC.optionalFieldOf("hud_render").forGetter(ResourcePower::hudRender),
-            OptionalCodecs.integer("start_value").forGetter(ResourcePower::startValue),
-            EntityAction.optionalCodec("min_action").forGetter(ResourcePower::minAction),
-            EntityAction.optionalCodec("max_action").forGetter(ResourcePower::maxAction)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Codec.INT.fieldOf("min").forGetter(ResourcePower::getMin),
+            Codec.INT.fieldOf("max").forGetter(ResourcePower::getMax),
+            HudRender.CODEC.optionalFieldOf("hud_render").forGetter(ResourcePower::getHudRender),
+            OptionalCodecs.integer("start_value").forGetter(ResourcePower::getStartValue),
+            EntityAction.optionalCodec("min_action").forGetter(ResourcePower::getMinAction),
+            EntityAction.optionalCodec("max_action").forGetter(ResourcePower::getMaxAction)
     ).apply(i, ResourcePower::new));
+    private final int min;
+    private final int max;
+    private final Optional<HudRender> hudRender;
+    private final OptionalInt startValue;
+    private final EntityAction minAction;
+    private final EntityAction maxAction;
+
+    public ResourcePower(BaseSettings settings, int min, int max, Optional<HudRender> hudRender, OptionalInt startValue, EntityAction minAction, EntityAction maxAction) {
+        super(settings);
+        this.min = min;
+        this.max = max;
+        this.hudRender = hudRender;
+        this.startValue = startValue;
+        this.minAction = minAction;
+        this.maxAction = maxAction;
+    }
+
+    public int getMin() {
+        return this.min;
+    }
+
+    public int getMax() {
+        return this.max;
+    }
+
+    public Optional<HudRender> getHudRender() {
+        return this.hudRender;
+    }
+
+    public OptionalInt getStartValue() {
+        return this.startValue;
+    }
+
+    public EntityAction getMinAction() {
+        return this.minAction;
+    }
+
+    public EntityAction getMaxAction() {
+        return this.maxAction;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
@@ -33,6 +73,6 @@ public record ResourcePower(int min, int max, Optional<HudRender> hudRender, Opt
 
     @Override
     public List<PowerComponent> createComponents() {
-        return List.of(new ResourceComponent(this.startValue.orElse(this.min)));
+        return List.of(new ResourceComponent(this.getStartValue().orElse(this.getMin())));
     }
 }

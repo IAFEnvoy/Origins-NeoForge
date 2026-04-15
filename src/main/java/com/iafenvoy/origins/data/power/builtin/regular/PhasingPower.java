@@ -8,17 +8,56 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record PhasingPower(boolean blacklist, String renderType, float viewDistance,
-                           BlockCondition blockCondition, EntityCondition phaseDownCondition,
-                           EntityCondition condition) implements Power {
+public class PhasingPower extends Power {
     public static final MapCodec<PhasingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.BOOL.optionalFieldOf("blacklist", false).forGetter(PhasingPower::blacklist),
-            Codec.STRING.optionalFieldOf("render_type", "none").forGetter(PhasingPower::renderType),
-            Codec.FLOAT.optionalFieldOf("view_distance", 10F).forGetter(PhasingPower::viewDistance),
-            BlockCondition.optionalCodec("block_condition").forGetter(PhasingPower::blockCondition),
-            EntityCondition.optionalCodec("phase_down_condition").forGetter(PhasingPower::phaseDownCondition),
-            EntityCondition.optionalCodec("condition").forGetter(PhasingPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Codec.BOOL.optionalFieldOf("blacklist", false).forGetter(PhasingPower::isBlacklist),
+            Codec.STRING.optionalFieldOf("render_type", "none").forGetter(PhasingPower::getRenderType),
+            Codec.FLOAT.optionalFieldOf("view_distance", 10F).forGetter(PhasingPower::getViewDistance),
+            BlockCondition.optionalCodec("block_condition").forGetter(PhasingPower::getBlockCondition),
+            EntityCondition.optionalCodec("phase_down_condition").forGetter(PhasingPower::getPhaseDownCondition),
+            EntityCondition.optionalCodec("condition").forGetter(PhasingPower::getCondition)
     ).apply(i, PhasingPower::new));
+    private final boolean blacklist;
+    private final String renderType;
+    private final float viewDistance;
+    private final BlockCondition blockCondition;
+    private final EntityCondition phaseDownCondition;
+    private final EntityCondition condition;
+
+    public PhasingPower(BaseSettings settings, boolean blacklist, String renderType, float viewDistance, BlockCondition blockCondition, EntityCondition phaseDownCondition, EntityCondition condition) {
+        super(settings);
+        this.blacklist = blacklist;
+        this.renderType = renderType;
+        this.viewDistance = viewDistance;
+        this.blockCondition = blockCondition;
+        this.phaseDownCondition = phaseDownCondition;
+        this.condition = condition;
+    }
+
+    public boolean isBlacklist() {
+        return this.blacklist;
+    }
+
+    public String getRenderType() {
+        return this.renderType;
+    }
+
+    public float getViewDistance() {
+        return this.viewDistance;
+    }
+
+    public BlockCondition getBlockCondition() {
+        return this.blockCondition;
+    }
+
+    public EntityCondition getPhaseDownCondition() {
+        return this.phaseDownCondition;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

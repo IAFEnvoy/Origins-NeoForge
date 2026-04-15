@@ -6,10 +6,21 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record ModifyTypeTagPower(String tag) implements Power {
+public class ModifyTypeTagPower extends Power {
     public static final MapCodec<ModifyTypeTagPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.STRING.fieldOf("tag").forGetter(ModifyTypeTagPower::tag)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Codec.STRING.fieldOf("tag").forGetter(ModifyTypeTagPower::getTag)
     ).apply(i, ModifyTypeTagPower::new));
+    private final String tag;
+
+    public ModifyTypeTagPower(BaseSettings settings, String tag) {
+        super(settings);
+        this.tag = tag;
+    }
+
+    public String getTag() {
+        return this.tag;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

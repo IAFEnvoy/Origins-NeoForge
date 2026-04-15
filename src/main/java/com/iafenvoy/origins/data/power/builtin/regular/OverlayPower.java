@@ -9,22 +9,85 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record OverlayPower(Optional<String> sprite, float red, float green, float blue,
-                           float strength, String drawMode, String drawPhase,
-                           boolean visibleInThirdPerson, boolean hideWithHud,
-                           EntityCondition condition) implements Power {
+public class OverlayPower extends Power {
     public static final MapCodec<OverlayPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.STRING.optionalFieldOf("sprite").forGetter(OverlayPower::sprite),
-            Codec.FLOAT.optionalFieldOf("red", 1F).forGetter(OverlayPower::red),
-            Codec.FLOAT.optionalFieldOf("green", 1F).forGetter(OverlayPower::green),
-            Codec.FLOAT.optionalFieldOf("blue", 1F).forGetter(OverlayPower::blue),
-            Codec.FLOAT.optionalFieldOf("strength", 1F).forGetter(OverlayPower::strength),
-            Codec.STRING.optionalFieldOf("draw_mode", "texture").forGetter(OverlayPower::drawMode),
-            Codec.STRING.optionalFieldOf("draw_phase", "below_hud").forGetter(OverlayPower::drawPhase),
-            Codec.BOOL.optionalFieldOf("visible_in_third_person", false).forGetter(OverlayPower::visibleInThirdPerson),
-            Codec.BOOL.optionalFieldOf("hide_with_hud", true).forGetter(OverlayPower::hideWithHud),
-            EntityCondition.optionalCodec("condition").forGetter(OverlayPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Codec.STRING.optionalFieldOf("sprite").forGetter(overlayPower -> overlayPower.getSprite()),
+            Codec.FLOAT.optionalFieldOf("red", 1F).forGetter(overlayPower -> overlayPower.getRed()),
+            Codec.FLOAT.optionalFieldOf("green", 1F).forGetter(overlayPower -> overlayPower.getGreen()),
+            Codec.FLOAT.optionalFieldOf("blue", 1F).forGetter(overlayPower -> overlayPower.getBlue()),
+            Codec.FLOAT.optionalFieldOf("strength", 1F).forGetter(overlayPower -> overlayPower.getStrength()),
+            Codec.STRING.optionalFieldOf("draw_mode", "texture").forGetter(overlayPower -> overlayPower.getDrawMode()),
+            Codec.STRING.optionalFieldOf("draw_phase", "below_hud").forGetter(overlayPower -> overlayPower.getDrawPhase()),
+            Codec.BOOL.optionalFieldOf("visible_in_third_person", false).forGetter(overlayPower -> overlayPower.isVisibleInThirdPerson()),
+            Codec.BOOL.optionalFieldOf("hide_with_hud", true).forGetter(overlayPower -> overlayPower.isHideWithHud()),
+            EntityCondition.optionalCodec("condition").forGetter(overlayPower -> overlayPower.getCondition())
     ).apply(i, OverlayPower::new));
+    private final Optional<String> sprite;
+    private final float red;
+    private final float green;
+    private final float blue;
+    private final float strength;
+    private final String drawMode;
+    private final String drawPhase;
+    private final boolean visibleInThirdPerson;
+    private final boolean hideWithHud;
+    private final EntityCondition condition;
+
+    public OverlayPower(BaseSettings settings, Optional<String> sprite, float red, float green, float blue, float strength, String drawMode, String drawPhase, boolean visibleInThirdPerson, boolean hideWithHud, EntityCondition condition) {
+        super(settings);
+        this.sprite = sprite;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.strength = strength;
+        this.drawMode = drawMode;
+        this.drawPhase = drawPhase;
+        this.visibleInThirdPerson = visibleInThirdPerson;
+        this.hideWithHud = hideWithHud;
+        this.condition = condition;
+    }
+
+
+    public Optional<String> getSprite() {
+        return this.sprite;
+    }
+
+    public float getRed() {
+        return this.red;
+    }
+
+    public float getGreen() {
+        return this.green;
+    }
+
+    public float getBlue() {
+        return this.blue;
+    }
+
+    public float getStrength() {
+        return this.strength;
+    }
+
+    public String getDrawMode() {
+        return this.drawMode;
+    }
+
+    public String getDrawPhase() {
+        return this.drawPhase;
+    }
+
+    public boolean isVisibleInThirdPerson() {
+        return this.visibleInThirdPerson;
+    }
+
+    public boolean isHideWithHud() {
+        return this.hideWithHud;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

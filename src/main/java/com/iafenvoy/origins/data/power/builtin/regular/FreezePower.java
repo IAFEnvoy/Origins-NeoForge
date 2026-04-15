@@ -13,10 +13,21 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
-public record FreezePower(EntityCondition condition) implements Power {
+public class FreezePower extends Power {
     public static final MapCodec<FreezePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityCondition.optionalCodec("condition").forGetter(FreezePower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            EntityCondition.optionalCodec("condition").forGetter(FreezePower::getCondition)
     ).apply(i, FreezePower::new));
+    private final EntityCondition condition;
+
+    public FreezePower(BaseSettings settings, EntityCondition condition) {
+        super(settings);
+        this.condition = condition;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

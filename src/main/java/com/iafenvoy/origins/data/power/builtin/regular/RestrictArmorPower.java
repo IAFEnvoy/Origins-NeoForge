@@ -13,12 +13,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-public final class RestrictArmorPower extends IntervalPower {
+public class RestrictArmorPower extends IntervalPower {
     public static final MapCodec<RestrictArmorPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ItemCondition.optionalCodec("head").forGetter(RestrictArmorPower::headCondition),
-            ItemCondition.optionalCodec("chest").forGetter(RestrictArmorPower::chestCondition),
-            ItemCondition.optionalCodec("legs").forGetter(RestrictArmorPower::legsCondition),
-            ItemCondition.optionalCodec("feet").forGetter(RestrictArmorPower::feetCondition),
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            ItemCondition.optionalCodec("head").forGetter(RestrictArmorPower::getHeadCondition),
+            ItemCondition.optionalCodec("chest").forGetter(RestrictArmorPower::getChestCondition),
+            ItemCondition.optionalCodec("legs").forGetter(RestrictArmorPower::getLegsCondition),
+            ItemCondition.optionalCodec("feet").forGetter(RestrictArmorPower::getFeetCondition),
             Codec.INT.optionalFieldOf("tick_rate", 20).forGetter(RestrictArmorPower::getInterval)
     ).apply(i, RestrictArmorPower::new));
     private final ItemCondition head;
@@ -27,7 +28,8 @@ public final class RestrictArmorPower extends IntervalPower {
     private final ItemCondition feet;
     private final int tickRate;
 
-    public RestrictArmorPower(ItemCondition head, ItemCondition chest, ItemCondition legs, ItemCondition feet, int tickRate) {
+    public RestrictArmorPower(BaseSettings settings, ItemCondition head, ItemCondition chest, ItemCondition legs, ItemCondition feet, int tickRate) {
+        super(settings, tickRate);
         this.head = head;
         this.chest = chest;
         this.legs = legs;
@@ -60,19 +62,19 @@ public final class RestrictArmorPower extends IntervalPower {
         return CODEC;
     }
 
-    public ItemCondition headCondition() {
+    public ItemCondition getHeadCondition() {
         return this.head;
     }
 
-    public ItemCondition chestCondition() {
+    public ItemCondition getChestCondition() {
         return this.chest;
     }
 
-    public ItemCondition legsCondition() {
+    public ItemCondition getLegsCondition() {
         return this.legs;
     }
 
-    public ItemCondition feetCondition() {
+    public ItemCondition getFeetCondition() {
         return this.feet;
     }
 }

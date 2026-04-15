@@ -7,14 +7,35 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record PreventEntityRenderPower(BiEntityCondition bientityCondition,
-                                        EntityCondition entityCondition,
-                                        EntityCondition condition) implements Power {
+public class PreventEntityRenderPower extends Power {
     public static final MapCodec<PreventEntityRenderPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BiEntityCondition.optionalCodec("bientity_condition").forGetter(PreventEntityRenderPower::bientityCondition),
-            EntityCondition.optionalCodec("entity_condition").forGetter(PreventEntityRenderPower::entityCondition),
-            EntityCondition.optionalCodec("condition").forGetter(PreventEntityRenderPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            BiEntityCondition.optionalCodec("bientity_condition").forGetter(PreventEntityRenderPower::getBientityCondition),
+            EntityCondition.optionalCodec("entity_condition").forGetter(PreventEntityRenderPower::getEntityCondition),
+            EntityCondition.optionalCodec("condition").forGetter(PreventEntityRenderPower::getCondition)
     ).apply(i, PreventEntityRenderPower::new));
+    private final BiEntityCondition bientityCondition;
+    private final EntityCondition entityCondition;
+    private final EntityCondition condition;
+
+    public PreventEntityRenderPower(BaseSettings settings, BiEntityCondition bientityCondition, EntityCondition entityCondition, EntityCondition condition) {
+        super(settings);
+        this.bientityCondition = bientityCondition;
+        this.entityCondition = entityCondition;
+        this.condition = condition;
+    }
+
+    public BiEntityCondition getBientityCondition() {
+        return this.bientityCondition;
+    }
+
+    public EntityCondition getEntityCondition() {
+        return this.entityCondition;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

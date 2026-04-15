@@ -18,11 +18,28 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @EventBusSubscriber
-public record EffectImmunityPower(List<Holder<MobEffect>> effect, boolean inverted) implements Power {
+public class EffectImmunityPower extends Power {
     public static final MapCodec<EffectImmunityPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            CombinedCodecs.MOB_EFFECT.fieldOf("effect").forGetter(EffectImmunityPower::effect),
-            Codec.BOOL.optionalFieldOf("inverted", false).forGetter(EffectImmunityPower::inverted)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            CombinedCodecs.MOB_EFFECT.fieldOf("effect").forGetter(EffectImmunityPower::getEffect),
+            Codec.BOOL.optionalFieldOf("inverted", false).forGetter(EffectImmunityPower::getInverted)
     ).apply(i, EffectImmunityPower::new));
+    private final List<Holder<MobEffect>> effect;
+    private final boolean inverted;
+
+    public EffectImmunityPower(BaseSettings settings, List<Holder<MobEffect>> effect, boolean inverted) {
+        super(settings);
+        this.effect = effect;
+        this.inverted = inverted;
+    }
+
+    public List<Holder<MobEffect>> getEffect() {
+        return this.effect;
+    }
+
+    public boolean getInverted() {
+        return this.inverted;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

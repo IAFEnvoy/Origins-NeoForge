@@ -12,13 +12,35 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record ParticlePower(ParticleType<?> particle, int frequency,
-                            EntityCondition condition) implements Power {
+public class ParticlePower extends Power {
     public static final MapCodec<ParticlePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BuiltInRegistries.PARTICLE_TYPE.byNameCodec().fieldOf("particle").forGetter(ParticlePower::particle),
-            Codec.INT.optionalFieldOf("frequency", 4).forGetter(ParticlePower::frequency),
-            EntityCondition.optionalCodec("condition").forGetter(ParticlePower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            BuiltInRegistries.PARTICLE_TYPE.byNameCodec().fieldOf("particle").forGetter(ParticlePower::getParticle),
+            Codec.INT.optionalFieldOf("frequency", 4).forGetter(ParticlePower::getFrequency),
+            EntityCondition.optionalCodec("condition").forGetter(ParticlePower::getCondition)
     ).apply(i, ParticlePower::new));
+    private final ParticleType<?> particle;
+    private final int frequency;
+    private final EntityCondition condition;
+
+    public ParticlePower(BaseSettings settings, ParticleType<?> particle, int frequency, EntityCondition condition) {
+        super(settings);
+        this.particle = particle;
+        this.frequency = frequency;
+        this.condition = condition;
+    }
+
+    public ParticleType<?> getParticle() {
+        return this.particle;
+    }
+
+    public int getFrequency() {
+        return this.frequency;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
@@ -27,8 +49,8 @@ public record ParticlePower(ParticleType<?> particle, int frequency,
 
     @Override
     public void tick(@NotNull Entity entity) {
-        if (entity.level() instanceof ServerLevel serverLevel && entity.tickCount % this.frequency == 0) {
-            if (this.condition.test(entity) && this.particle instanceof ParticleOptions options) {
+        if (entity.level() instanceof ServerLevel serverLevel && entity.tickCount % this.getFrequency() == 0) {
+            if (this.getCondition().test(entity) && this.getParticle() instanceof ParticleOptions options) {
                 serverLevel.sendParticles(options, entity.getX(), entity.getY() + entity.getBbHeight() * 0.5, entity.getZ(),
                         1, entity.getBbWidth() * 0.3, entity.getBbHeight() * 0.3, entity.getBbWidth() * 0.3, 0.01);
             }

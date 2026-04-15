@@ -7,31 +7,48 @@ import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record ModifyHarvestPower(List<Modifier> modifiers, BlockCondition blockCondition, boolean allow) implements Power {
-
+public class ModifyHarvestPower extends Power {
     public static final MapCodec<ModifyHarvestPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyHarvestPower::modifiers),
-            BlockCondition.optionalCodec("block_condition").forGetter(ModifyHarvestPower::blockCondition),
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyHarvestPower::getModifiers),
+            BlockCondition.optionalCodec("block_condition").forGetter(ModifyHarvestPower::getBlockCondition),
             Codec.BOOL.fieldOf("allow").forGetter(ModifyHarvestPower::allow)
     ).apply(i, ModifyHarvestPower::new));
+    private final List<Modifier> modifiers;
+    private final BlockCondition blockCondition;
+    private final boolean allow;
+
+    public ModifyHarvestPower(BaseSettings settings, List<Modifier> modifiers, BlockCondition blockCondition, boolean allow) {
+        super(settings);
+        this.modifiers = modifiers;
+        this.blockCondition = blockCondition;
+        this.allow = allow;
+    }
+
+    public List<Modifier> getModifiers() {
+        return this.modifiers;
+    }
+
+    public BlockCondition getBlockCondition() {
+        return this.blockCondition;
+    }
+
+    public boolean isAllow() {
+        return this.allow;
+    }
+
+    @Deprecated
+    public boolean allow() {
+        return this.isAllow();
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
-    }
-
-    public boolean doesApply(Level level, BlockPos pos) {
-        return this.blockCondition().test(level, pos);
-    }
-
-    public boolean isHarvestAllowed() {
-        return this.allow();
     }
 
     public double apply(double baseValue) {

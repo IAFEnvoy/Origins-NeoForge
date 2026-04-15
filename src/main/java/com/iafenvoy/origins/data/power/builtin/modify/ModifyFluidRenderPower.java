@@ -13,14 +13,36 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record ModifyFluidRenderPower(BlockCondition blockCondition, FluidCondition fluidCondition, Optional<FluidState> fluid) implements Power {
-
+public class ModifyFluidRenderPower extends Power {
     public static final MapCodec<ModifyFluidRenderPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BlockCondition.optionalCodec("block_condition").forGetter(ModifyFluidRenderPower::blockCondition),
-            FluidCondition.optionalCodec("fluid_condition").forGetter(ModifyFluidRenderPower::fluidCondition),
-            FluidState.CODEC.optionalFieldOf("fluid").forGetter( p -> p.fluid)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            BlockCondition.optionalCodec("block_condition").forGetter(ModifyFluidRenderPower::getBlockCondition),
+            FluidCondition.optionalCodec("fluid_condition").forGetter(ModifyFluidRenderPower::getFluidCondition),
+            FluidState.CODEC.optionalFieldOf("fluid").forGetter(ModifyFluidRenderPower::getFluid)
     ).apply(i, ModifyFluidRenderPower::new));
-    
+    private final BlockCondition blockCondition;
+    private final FluidCondition fluidCondition;
+    private final Optional<FluidState> fluid;
+
+    public ModifyFluidRenderPower(BaseSettings settings, BlockCondition blockCondition, FluidCondition fluidCondition, Optional<FluidState> fluid) {
+        super(settings);
+        this.blockCondition = blockCondition;
+        this.fluidCondition = fluidCondition;
+        this.fluid = fluid;
+    }
+
+    public BlockCondition getBlockCondition() {
+        return this.blockCondition;
+    }
+
+    public FluidCondition getFluidCondition() {
+        return this.fluidCondition;
+    }
+
+    public Optional<FluidState> getFluid() {
+        return this.fluid;
+    }
+
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
@@ -28,7 +50,7 @@ public record ModifyFluidRenderPower(BlockCondition blockCondition, FluidConditi
 
 
     public boolean test(Level world, BlockPos pos, FluidState fluid) {
-        return this.blockCondition().test( world, pos) && this.fluidCondition().test(fluid);
+        return this.getBlockCondition().test(world, pos) && this.getFluidCondition().test(fluid);
     }
 
     @Override

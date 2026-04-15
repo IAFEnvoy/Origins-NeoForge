@@ -19,14 +19,44 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-public record EntityGlowPower(EntityCondition entityCondition, BiEntityCondition biEntityCondition, boolean useTeam,
-                              int color) implements Power {
+public class EntityGlowPower extends Power {
     public static final MapCodec<EntityGlowPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityCondition.optionalCodec("entity_condition").forGetter(EntityGlowPower::entityCondition),
-            BiEntityCondition.optionalCodec("bientity_condition").forGetter(EntityGlowPower::biEntityCondition),
-            Codec.BOOL.optionalFieldOf("use_teams", true).forGetter(EntityGlowPower::useTeam),
-            Codec.INT.optionalFieldOf("color", 0xFFFFFFFF).forGetter(EntityGlowPower::color)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            EntityCondition.optionalCodec("entity_condition").forGetter(EntityGlowPower::getEntityCondition),
+            BiEntityCondition.optionalCodec("bientity_condition").forGetter(EntityGlowPower::getBiEntityCondition),
+            Codec.BOOL.optionalFieldOf("use_teams", true).forGetter(EntityGlowPower::isUseTeam),
+            Codec.INT.optionalFieldOf("color", 0xFFFFFFFF).forGetter(EntityGlowPower::getColor)
     ).apply(i, EntityGlowPower::new));
+    private final EntityCondition entityCondition;
+    private final BiEntityCondition biEntityCondition;
+    private final boolean useTeam;
+    private final int color;
+
+    public EntityGlowPower(BaseSettings settings, EntityCondition entityCondition, BiEntityCondition biEntityCondition, boolean useTeam, int color) {
+        super(settings);
+        this.entityCondition = entityCondition;
+        this.biEntityCondition = biEntityCondition;
+        this.useTeam = useTeam;
+        this.color = color;
+    }
+
+
+    /** Standard getters following Java convention. */
+    public EntityCondition getEntityCondition() {
+        return this.entityCondition;
+    }
+
+    public BiEntityCondition getBiEntityCondition() {
+        return this.biEntityCondition;
+    }
+
+    public boolean isUseTeam() {
+        return this.useTeam;
+    }
+
+    public int getColor() {
+        return this.color;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

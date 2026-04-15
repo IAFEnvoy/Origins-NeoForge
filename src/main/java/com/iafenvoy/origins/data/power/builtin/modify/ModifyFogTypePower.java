@@ -10,24 +10,38 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record ModifyFogTypePower(FogType to,Optional<FogType> from) implements Power {
+public class ModifyFogTypePower extends Power {
     public static final MapCodec<ModifyFogTypePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ExtraEnumCodecs.FOG_TYPE.fieldOf("to").forGetter(ModifyFogTypePower::to),
-            ExtraEnumCodecs.FOG_TYPE.optionalFieldOf("from").forGetter(ModifyFogTypePower::from)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            ExtraEnumCodecs.FOG_TYPE.fieldOf("to").forGetter(ModifyFogTypePower::getTo),
+            ExtraEnumCodecs.FOG_TYPE.optionalFieldOf("from").forGetter(ModifyFogTypePower::getFrom)
     ).apply(i, ModifyFogTypePower::new));
+
+    private final FogType to;
+    private final Optional<FogType> from;
+
+    public ModifyFogTypePower(BaseSettings settings, FogType to, Optional<FogType> from) {
+        super(settings);
+        this.to = to;
+        this.from = from;
+    }
+
+    public FogType getTo() {
+        return this.to;
+    }
+
+    public Optional<FogType> getFrom() {
+        return this.from;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
     }
 
-//    public static Optional<FogType> tryReplace(Entity entity, FogType original) {
-//        return PowerContainer.getPowers(entity, MODIFY_CAMERA_SUBMERSION.get()).stream().flatMap(x -> x.value().getFactory().tryReplace(x.value(), entity, original).stream()).findFirst();
-//    }
-
     public Optional<FogType> tryReplace(Entity entity, FogType original) {
-        if (this.from().isEmpty())
-            return Optional.of(this.to());
-        return this.from().filter(original::equals).map(k -> this.to());
+        if (this.getFrom().isEmpty())
+            return Optional.of(this.getTo());
+        return this.getFrom().filter(original::equals).map(k -> this.getTo());
     }
 }

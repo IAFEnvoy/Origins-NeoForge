@@ -11,13 +11,35 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record PreventSleepPower(BlockCondition blockCondition, Optional<Component> message,
-                                EntityCondition condition) implements Power {
+public class PreventSleepPower extends Power {
     public static final MapCodec<PreventSleepPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BlockCondition.optionalCodec("block_condition").forGetter(PreventSleepPower::blockCondition),
-            ComponentSerialization.CODEC.optionalFieldOf("message").forGetter(PreventSleepPower::message),
-            EntityCondition.optionalCodec("condition").forGetter(PreventSleepPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            BlockCondition.optionalCodec("block_condition").forGetter(preventSleepPower -> preventSleepPower.getBlockCondition()),
+            ComponentSerialization.CODEC.optionalFieldOf("message").forGetter(preventSleepPower -> preventSleepPower.getMessage()),
+            EntityCondition.optionalCodec("condition").forGetter(preventSleepPower -> preventSleepPower.getCondition())
     ).apply(i, PreventSleepPower::new));
+    private final BlockCondition blockCondition;
+    private final Optional<Component> message;
+    private final EntityCondition condition;
+
+    public PreventSleepPower(BaseSettings settings, BlockCondition blockCondition, Optional<Component> message, EntityCondition condition) {
+        super(settings);
+        this.blockCondition = blockCondition;
+        this.message = message;
+        this.condition = condition;
+    }
+
+    public BlockCondition getBlockCondition() {
+        return this.blockCondition;
+    }
+
+    public Optional<Component> getMessage() {
+        return this.message;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

@@ -10,11 +10,28 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record EntitySetPower(BiEntityAction actionOnAdd, BiEntityAction actionOnRemove) implements Power {
+public class EntitySetPower extends Power {
     public static final MapCodec<EntitySetPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BiEntityAction.optionalCodec("action_on_add").forGetter(EntitySetPower::actionOnAdd),
-            BiEntityAction.optionalCodec("action_on_remove").forGetter(EntitySetPower::actionOnRemove)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            BiEntityAction.optionalCodec("action_on_add").forGetter(EntitySetPower::getActionOnAdd),
+            BiEntityAction.optionalCodec("action_on_remove").forGetter(EntitySetPower::getActionOnRemove)
     ).apply(i, EntitySetPower::new));
+    private final BiEntityAction actionOnAdd;
+    private final BiEntityAction actionOnRemove;
+
+    public EntitySetPower(BaseSettings settings, BiEntityAction actionOnAdd, BiEntityAction actionOnRemove) {
+        super(settings);
+        this.actionOnAdd = actionOnAdd;
+        this.actionOnRemove = actionOnRemove;
+    }
+
+    public BiEntityAction getActionOnAdd() {
+        return this.actionOnAdd;
+    }
+
+    public BiEntityAction getActionOnRemove() {
+        return this.actionOnRemove;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

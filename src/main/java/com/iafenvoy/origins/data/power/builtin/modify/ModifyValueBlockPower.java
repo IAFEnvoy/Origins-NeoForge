@@ -12,12 +12,28 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record ModifyValueBlockPower(List<Modifier> modifiers, BlockCondition condition) implements Power {
-
+public class ModifyValueBlockPower extends Power {
     public static final MapCodec<ModifyValueBlockPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyValueBlockPower::modifiers),
-            BlockCondition.optionalCodec("block_condition").forGetter(ModifyValueBlockPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyValueBlockPower::getModifiers),
+            BlockCondition.optionalCodec("block_condition").forGetter(ModifyValueBlockPower::getCondition)
     ).apply(i, ModifyValueBlockPower::new));
+    private final List<Modifier> modifiers;
+    private final BlockCondition condition;
+
+    public ModifyValueBlockPower(BaseSettings settings, List<Modifier> modifiers, BlockCondition condition) {
+        super(settings);
+        this.modifiers = modifiers;
+        this.condition = condition;
+    }
+
+    public List<Modifier> getModifiers() {
+        return this.modifiers;
+    }
+
+    public BlockCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

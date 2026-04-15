@@ -13,12 +13,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public record ModifyVelocityPower(List<Modifier> modifiers, Set<Direction.AxisDirection> axes) implements Power {
-
+public class ModifyVelocityPower extends Power {
     public static final MapCodec<ModifyVelocityPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyVelocityPower::modifiers),
-            ExtraEnumCodecs.AXIS.listOf().fieldOf("axis").forGetter(e -> new ArrayList<>(e.axes()))
-    ).apply(i, (m, e) -> new ModifyVelocityPower(m, Set.copyOf(e))));
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyVelocityPower::getModifiers),
+            ExtraEnumCodecs.AXIS.listOf().fieldOf("axis").forGetter(e -> new ArrayList<>(e.getAxes()))
+    ).apply(i, (s, m, e) -> new ModifyVelocityPower(s, m, Set.copyOf(e))));
+    private final List<Modifier> modifiers;
+    private final Set<Direction.AxisDirection> axes;
+
+    public ModifyVelocityPower(BaseSettings settings, List<Modifier> modifiers, Set<Direction.AxisDirection> axes) {
+        super(settings);
+        this.modifiers = modifiers;
+        this.axes = axes;
+    }
+
+    public List<Modifier> getModifiers() {
+        return this.modifiers;
+    }
+
+    public Set<Direction.AxisDirection> getAxes() {
+        return this.axes;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

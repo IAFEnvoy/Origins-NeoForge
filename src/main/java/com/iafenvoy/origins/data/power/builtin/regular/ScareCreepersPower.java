@@ -6,10 +6,21 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record ScareCreepersPower(EntityCondition condition) implements Power {
+public class ScareCreepersPower extends Power {
     public static final MapCodec<ScareCreepersPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityCondition.optionalCodec("condition").forGetter(ScareCreepersPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            EntityCondition.optionalCodec("condition").forGetter(scareCreepersPower -> scareCreepersPower.getCondition())
     ).apply(i, ScareCreepersPower::new));
+    private final EntityCondition condition;
+
+    public ScareCreepersPower(BaseSettings settings, EntityCondition condition) {
+        super(settings);
+        this.condition = condition;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

@@ -16,16 +16,49 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-public record StackingStatusEffectPower(int minStacks, int maxStacks, int durationPerStack,
-                                        List<EffectEntry> effects,
-                                        EntityCondition condition) implements Power {
+public class StackingStatusEffectPower extends Power {
     public static final MapCodec<StackingStatusEffectPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.INT.optionalFieldOf("min_stacks", 0).forGetter(StackingStatusEffectPower::minStacks),
-            Codec.INT.optionalFieldOf("max_stacks", 10).forGetter(StackingStatusEffectPower::maxStacks),
-            Codec.INT.optionalFieldOf("duration_per_stack", 10).forGetter(StackingStatusEffectPower::durationPerStack),
-            EffectEntry.CODEC.listOf().optionalFieldOf("effect", List.of()).forGetter(StackingStatusEffectPower::effects),
-            EntityCondition.optionalCodec("condition").forGetter(StackingStatusEffectPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Codec.INT.optionalFieldOf("min_stacks", 0).forGetter(stackingStatusEffectPower -> stackingStatusEffectPower.getMinStacks()),
+            Codec.INT.optionalFieldOf("max_stacks", 10).forGetter(stackingStatusEffectPower -> stackingStatusEffectPower.getMaxStacks()),
+            Codec.INT.optionalFieldOf("duration_per_stack", 10).forGetter(stackingStatusEffectPower -> stackingStatusEffectPower.getDurationPerStack()),
+            EffectEntry.CODEC.listOf().optionalFieldOf("effect", List.of()).forGetter(stackingStatusEffectPower -> stackingStatusEffectPower.getEffects()),
+            EntityCondition.optionalCodec("condition").forGetter(stackingStatusEffectPower -> stackingStatusEffectPower.getCondition())
     ).apply(i, StackingStatusEffectPower::new));
+    private final int minStacks;
+    private final int maxStacks;
+    private final int durationPerStack;
+    private final List<EffectEntry> effects;
+    private final EntityCondition condition;
+
+    public StackingStatusEffectPower(BaseSettings settings, int minStacks, int maxStacks, int durationPerStack, List<EffectEntry> effects, EntityCondition condition) {
+        super(settings);
+        this.minStacks = minStacks;
+        this.maxStacks = maxStacks;
+        this.durationPerStack = durationPerStack;
+        this.effects = effects;
+        this.condition = condition;
+    }
+
+    public int getMinStacks() {
+        return this.minStacks;
+    }
+
+    public int getMaxStacks() {
+        return this.maxStacks;
+    }
+
+    public int getDurationPerStack() {
+        return this.durationPerStack;
+    }
+
+    public List<EffectEntry> getEffects() {
+        return this.effects;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

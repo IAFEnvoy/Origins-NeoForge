@@ -16,12 +16,29 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 @EventBusSubscriber
-public record ElytraFlightPower(boolean renderElytra, Optional<ResourceLocation> textureLocation) implements Power {
+public class ElytraFlightPower extends Power {
     public static final MapCodec<ElytraFlightPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.BOOL.optionalFieldOf("render_elytra", true).forGetter(ElytraFlightPower::renderElytra),
-            ResourceLocation.CODEC.optionalFieldOf("texture_location").forGetter(ElytraFlightPower::textureLocation)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Codec.BOOL.optionalFieldOf("render_elytra", true).forGetter(ElytraFlightPower::isRenderElytra),
+            ResourceLocation.CODEC.optionalFieldOf("texture_location").forGetter(ElytraFlightPower::getTextureLocation)
     ).apply(i, ElytraFlightPower::new));
+    private final boolean renderElytra;
+    private final Optional<ResourceLocation> textureLocation;
     private static final ResourceLocation ELYTRA_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/elytra.png");
+
+    public ElytraFlightPower(BaseSettings settings, boolean renderElytra, Optional<ResourceLocation> textureLocation) {
+        super(settings);
+        this.renderElytra = renderElytra;
+        this.textureLocation = textureLocation;
+    }
+
+    public boolean isRenderElytra() {
+        return this.renderElytra;
+    }
+
+    public Optional<ResourceLocation> getTextureLocation() {
+        return this.textureLocation;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
@@ -37,8 +54,8 @@ public record ElytraFlightPower(boolean renderElytra, Optional<ResourceLocation>
     @SubscribeEvent
     public static void enableElytraRender(ElytraTextureEvent event) {
         for (ElytraFlightPower power : OriginDataHolder.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class))
-            if (power.renderElytra) {
-                event.setTexture(power.textureLocation.orElse(ELYTRA_TEXTURE));
+            if (power.isRenderElytra()) {
+                event.setTexture(power.getTextureLocation().orElse(ELYTRA_TEXTURE));
                 break;
             }
     }

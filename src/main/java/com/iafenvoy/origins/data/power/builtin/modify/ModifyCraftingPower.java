@@ -21,18 +21,64 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public record ModifyCraftingPower(Optional<ResourceLocation> recipeLocation, ItemCondition itemCondition, Optional<ItemStack> newStack,
-                                  ItemAction itemAction, EntityAction entityAction, BlockAction blockAction,ItemAction afterCraftingItemAction) implements Power {
-
+public class ModifyCraftingPower extends Power {
     public static final MapCodec<ModifyCraftingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ResourceLocation.CODEC.optionalFieldOf("recipe").forGetter(ModifyCraftingPower::recipeLocation),
-            ItemCondition.optionalCodec("item_condition").forGetter(ModifyCraftingPower::itemCondition),
-            ItemStack.CODEC.optionalFieldOf("result").forGetter(ModifyCraftingPower::newStack),
-            ItemAction.optionalCodec("item_action").forGetter(ModifyCraftingPower::itemAction),
-            EntityAction.optionalCodec("entity_action").forGetter(ModifyCraftingPower::entityAction),
-            BlockAction.optionalCodec("block_action").forGetter(ModifyCraftingPower::blockAction),
-            ItemAction.optionalCodec("item_action_after_crafting").forGetter(ModifyCraftingPower::afterCraftingItemAction)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            ResourceLocation.CODEC.optionalFieldOf("recipe").forGetter(ModifyCraftingPower::getRecipeLocation),
+            ItemCondition.optionalCodec("item_condition").forGetter(ModifyCraftingPower::getItemCondition),
+            ItemStack.CODEC.optionalFieldOf("result").forGetter(ModifyCraftingPower::getNewStack),
+            ItemAction.optionalCodec("item_action").forGetter(ModifyCraftingPower::getItemAction),
+            EntityAction.optionalCodec("entity_action").forGetter(ModifyCraftingPower::getEntityAction),
+            BlockAction.optionalCodec("block_action").forGetter(ModifyCraftingPower::getBlockAction),
+            ItemAction.optionalCodec("item_action_after_crafting").forGetter(ModifyCraftingPower::getAfterCraftingItemAction)
     ).apply(i, ModifyCraftingPower::new));
+
+    private final Optional<ResourceLocation> recipeLocation;
+    private final ItemCondition itemCondition;
+    private final Optional<ItemStack> newStack;
+    private final ItemAction itemAction;
+    private final EntityAction entityAction;
+    private final BlockAction blockAction;
+    private final ItemAction afterCraftingItemAction;
+
+    public ModifyCraftingPower(BaseSettings settings, Optional<ResourceLocation> recipeLocation, ItemCondition itemCondition, Optional<ItemStack> newStack, ItemAction itemAction, EntityAction entityAction, BlockAction blockAction, ItemAction afterCraftingItemAction) {
+        super(settings);
+        this.recipeLocation = recipeLocation;
+        this.itemCondition = itemCondition;
+        this.newStack = newStack;
+        this.itemAction = itemAction;
+        this.entityAction = entityAction;
+        this.blockAction = blockAction;
+        this.afterCraftingItemAction = afterCraftingItemAction;
+    }
+
+    public Optional<ResourceLocation> getRecipeLocation() {
+        return this.recipeLocation;
+    }
+
+    public ItemCondition getItemCondition() {
+        return this.itemCondition;
+    }
+
+    public Optional<ItemStack> getNewStack() {
+        return this.newStack;
+    }
+
+    public ItemAction getItemAction() {
+        return this.itemAction;
+    }
+
+    public EntityAction getEntityAction() {
+        return this.entityAction;
+    }
+
+    public BlockAction getBlockAction() {
+        return this.blockAction;
+    }
+
+    public ItemAction getAfterCraftingItemAction() {
+        return this.afterCraftingItemAction;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
@@ -43,27 +89,27 @@ public record ModifyCraftingPower(Optional<ResourceLocation> recipeLocation, Ite
     // Recipe identification in 1.21.1 uses RecipeInput instead of CraftingContainer
 
     public boolean doesApply(RecipeInput container, Recipe<? super RecipeInput> recipe, Level level) {
-        return (this.recipeLocation().isEmpty() || this.recipeLocation().get().equals(BuiltInRegistries.RECIPE_TYPE.getKey(recipe.getType()))) &&
-                (this.itemCondition().test(level, recipe.assemble(container, level.registryAccess())));
+        return (this.getRecipeLocation().isEmpty() || this.getRecipeLocation().get().equals(BuiltInRegistries.RECIPE_TYPE.getKey(recipe.getType()))) &&
+                (this.getItemCondition().test(level, recipe.assemble(container, level.registryAccess())));
     }
 
     public ItemStack createResult(RecipeInput container, Recipe<? super RecipeInput> recipe, Entity entity, Level level) {
         ItemStack stack;
-        if (this.newStack().isPresent())
-            stack = this.newStack().get().copy();
+        if (this.getNewStack().isPresent())
+            stack = this.getNewStack().get().copy();
         else
             stack = recipe.assemble(container, level.registryAccess());
-        this.itemAction().execute(level,entity, stack);
+        this.getItemAction().execute(level, entity, stack);
         return stack;
     }
 
     public void execute(Entity entity, @Nullable BlockPos pos) {
         if (pos != null)
-            this.blockAction().execute(entity.level(), pos, Direction.UP);
-        this.entityAction().execute(entity);
+            this.getBlockAction().execute(entity.level(), pos, Direction.UP);
+        this.getEntityAction().execute(entity);
     }
 
-    public void executeAfterCraftingAction(Level level,Entity entity, ItemStack stack) {
-        this.afterCraftingItemAction().execute(level,entity, stack);
+    public void executeAfterCraftingAction(Level level, Entity entity, ItemStack stack) {
+        this.getAfterCraftingItemAction().execute(level, entity, stack);
     }
 }

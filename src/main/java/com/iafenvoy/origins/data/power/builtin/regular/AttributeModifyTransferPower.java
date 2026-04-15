@@ -8,16 +8,39 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @NotImplementedYet
-public record AttributeModifyTransferPower(String modifyClass, Optional<ResourceLocation> attribute,
-                                           double multiplier) implements Power {
+public class AttributeModifyTransferPower extends Power {
     public static final MapCodec<AttributeModifyTransferPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.STRING.optionalFieldOf("class", "").forGetter(AttributeModifyTransferPower::modifyClass),
-            ResourceLocation.CODEC.optionalFieldOf("attribute").forGetter(AttributeModifyTransferPower::attribute),
-            Codec.DOUBLE.optionalFieldOf("multiplier", 1.0).forGetter(AttributeModifyTransferPower::multiplier)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Codec.STRING.optionalFieldOf("class", "").forGetter(AttributeModifyTransferPower::getModifyClass),
+            ResourceLocation.CODEC.optionalFieldOf("attribute").forGetter(AttributeModifyTransferPower::getAttribute),
+            Codec.DOUBLE.optionalFieldOf("multiplier", 1.0).forGetter(AttributeModifyTransferPower::getMultiplier)
     ).apply(i, AttributeModifyTransferPower::new));
+    private final String modifyClass;
+    private final Optional<ResourceLocation> attribute;
+    private final double multiplier;
+
+    public AttributeModifyTransferPower(BaseSettings settings, String modifyClass, Optional<ResourceLocation> attribute, double multiplier) {
+        super(settings);
+        this.modifyClass = modifyClass;
+        this.attribute = attribute;
+        this.multiplier = multiplier;
+    }
+
+    public String getModifyClass() {
+        return this.modifyClass;
+    }
+
+    public Optional<ResourceLocation> getAttribute() {
+        return this.attribute;
+    }
+
+    public double getMultiplier() {
+        return this.multiplier;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

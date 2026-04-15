@@ -8,13 +8,36 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record ActionOnItemUsePower(ItemCondition itemCondition, EntityAction entityAction, ItemAction itemAction) implements Power {
-
+public class ActionOnItemUsePower extends Power {
     public static final MapCodec<ActionOnItemUsePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ItemCondition.optionalCodec("item_condition").forGetter(ActionOnItemUsePower::itemCondition),
-            EntityAction.optionalCodec("entity_action").forGetter(ActionOnItemUsePower::entityAction),
-            ItemAction.optionalCodec("item_action").forGetter(ActionOnItemUsePower::itemAction)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            ItemCondition.optionalCodec("item_condition").forGetter(ActionOnItemUsePower::getItemCondition),
+            EntityAction.optionalCodec("entity_action").forGetter(ActionOnItemUsePower::getEntityAction),
+            ItemAction.optionalCodec("item_action").forGetter(ActionOnItemUsePower::getItemAction)
     ).apply(i, ActionOnItemUsePower::new));
+    private final ItemCondition itemCondition;
+    private final EntityAction entityAction;
+    private final ItemAction itemAction;
+
+    public ActionOnItemUsePower(BaseSettings settings, ItemCondition itemCondition, EntityAction entityAction, ItemAction itemAction) {
+        super(settings);
+        this.itemCondition = itemCondition;
+        this.entityAction = entityAction;
+        this.itemAction = itemAction;
+    }
+
+    public ItemCondition getItemCondition() {
+        return this.itemCondition;
+    }
+
+    public EntityAction getEntityAction() {
+        return this.entityAction;
+    }
+
+    public ItemAction getItemAction() {
+        return this.itemAction;
+    }
+
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

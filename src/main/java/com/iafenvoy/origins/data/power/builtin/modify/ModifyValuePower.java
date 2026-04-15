@@ -4,14 +4,26 @@ import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record ModifyValuePower(List<Modifier> modifiers) implements Power {
+public class ModifyValuePower extends Power {
+    public static final MapCodec<ModifyValuePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyValuePower::getModifiers)
+    ).apply(i, ModifyValuePower::new));
+    private final List<Modifier> modifiers;
 
-    public static final MapCodec<ModifyValuePower> CODEC =
-            CombinedCodecs.MODIFIER.fieldOf("modifier").xmap(ModifyValuePower::new, ModifyValuePower::modifiers);
+    public ModifyValuePower(BaseSettings settings, List<Modifier> modifiers) {
+        super(settings);
+        this.modifiers = modifiers;
+    }
+
+    public List<Modifier> getModifiers() {
+        return this.modifiers;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

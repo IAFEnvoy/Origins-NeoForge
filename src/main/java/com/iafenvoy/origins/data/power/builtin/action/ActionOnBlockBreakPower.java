@@ -9,14 +9,42 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record ActionOnBlockBreakPower(BlockCondition blockCondition,EntityAction entityAction,BlockAction blockAction,boolean onlyWhenHarvested)implements Power {
-
+public class ActionOnBlockBreakPower extends Power {
     public static final MapCodec<ActionOnBlockBreakPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BlockCondition.optionalCodec("block_condition").forGetter(ActionOnBlockBreakPower::blockCondition),
-            EntityAction.optionalCodec("entity_action").forGetter(ActionOnBlockBreakPower::entityAction),
-            BlockAction.optionalCodec("block_action").forGetter(ActionOnBlockBreakPower::blockAction),
-            Codec.BOOL.optionalFieldOf("only_when_harvested", true).forGetter(ActionOnBlockBreakPower::onlyWhenHarvested)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            BlockCondition.optionalCodec("block_condition").forGetter(ActionOnBlockBreakPower::getBlockCondition),
+            EntityAction.optionalCodec("entity_action").forGetter(ActionOnBlockBreakPower::getEntityAction),
+            BlockAction.optionalCodec("block_action").forGetter(ActionOnBlockBreakPower::getBlockAction),
+            Codec.BOOL.optionalFieldOf("only_when_harvested", true).forGetter(ActionOnBlockBreakPower::isOnlyWhenHarvested)
     ).apply(i, ActionOnBlockBreakPower::new));
+    private final BlockCondition blockCondition;
+    private final EntityAction entityAction;
+    private final BlockAction blockAction;
+    private final boolean onlyWhenHarvested;
+
+    public ActionOnBlockBreakPower(BaseSettings settings, BlockCondition blockCondition, EntityAction entityAction, BlockAction blockAction, boolean onlyWhenHarvested) {
+        super(settings);
+        this.blockCondition = blockCondition;
+        this.entityAction = entityAction;
+        this.blockAction = blockAction;
+        this.onlyWhenHarvested = onlyWhenHarvested;
+    }
+
+    public BlockCondition getBlockCondition() {
+        return this.blockCondition;
+    }
+
+    public EntityAction getEntityAction() {
+        return this.entityAction;
+    }
+
+    public BlockAction getBlockAction() {
+        return this.blockAction;
+    }
+
+    public boolean isOnlyWhenHarvested() {
+        return this.onlyWhenHarvested;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

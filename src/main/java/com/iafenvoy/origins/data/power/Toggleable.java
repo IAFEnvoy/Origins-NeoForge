@@ -1,8 +1,9 @@
 package com.iafenvoy.origins.data.power;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import org.jetbrains.annotations.NotNull;
 
-public interface Toggleable extends Power {
+public interface Toggleable {
     //Server side call!!!
-    void toggle(OriginDataHolder holder, int index);
+    void toggle(@NotNull OriginDataHolder holder, int index);
 }

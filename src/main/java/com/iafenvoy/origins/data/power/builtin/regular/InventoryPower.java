@@ -24,14 +24,42 @@ import java.util.List;
 import java.util.Locale;
 
 //FIXME::Back to vanilla screens or use custom screen?
-public record InventoryPower(Component title, boolean dropOnDeath, ContainerType containerType,
-                             EntityCondition condition) implements Power, Toggleable, MenuProvider {
+public class InventoryPower extends Power implements Toggleable, MenuProvider {
     public static final MapCodec<InventoryPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ComponentSerialization.CODEC.optionalFieldOf("title", Component.translatable("container.inventory")).forGetter(InventoryPower::title),
-            Codec.BOOL.optionalFieldOf("drop_on_death", false).forGetter(InventoryPower::dropOnDeath),
-            ContainerType.CODEC.optionalFieldOf("container_type", ContainerType.DISPENSER).forGetter(InventoryPower::containerType),
-            EntityCondition.optionalCodec("condition").forGetter(InventoryPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            ComponentSerialization.CODEC.optionalFieldOf("title", Component.translatable("container.inventory")).forGetter(inventoryPower -> inventoryPower.getTitle()),
+            Codec.BOOL.optionalFieldOf("drop_on_death", false).forGetter(inventoryPower -> inventoryPower.isDropOnDeath()),
+            ContainerType.CODEC.optionalFieldOf("container_type", ContainerType.DISPENSER).forGetter(inventoryPower -> inventoryPower.getContainerType()),
+            EntityCondition.optionalCodec("condition").forGetter(inventoryPower -> inventoryPower.getCondition())
     ).apply(i, InventoryPower::new));
+    private final Component title;
+    private final boolean dropOnDeath;
+    private final ContainerType containerType;
+    private final EntityCondition condition;
+
+    public InventoryPower(BaseSettings settings, Component title, boolean dropOnDeath, ContainerType containerType, EntityCondition condition) {
+        super(settings);
+        this.title = title;
+        this.dropOnDeath = dropOnDeath;
+        this.containerType = containerType;
+        this.condition = condition;
+    }
+
+    public Component getTitle() {
+        return this.title;
+    }
+
+    public boolean isDropOnDeath() {
+        return this.dropOnDeath;
+    }
+
+    public ContainerType getContainerType() {
+        return this.containerType;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
@@ -44,7 +72,7 @@ public record InventoryPower(Component title, boolean dropOnDeath, ContainerType
     }
 
     @Override
-    public void toggle(OriginDataHolder holder, int index) {
+    public void toggle(@NotNull OriginDataHolder holder, int index) {
         if (holder.entity() instanceof Player player)
             player.openMenu(this);
     }

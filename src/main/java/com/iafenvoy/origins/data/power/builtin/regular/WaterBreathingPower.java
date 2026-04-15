@@ -6,10 +6,21 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record WaterBreathingPower(EntityCondition condition) implements Power {
+public class WaterBreathingPower extends Power {
     public static final MapCodec<WaterBreathingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityCondition.optionalCodec("condition").forGetter(WaterBreathingPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            EntityCondition.optionalCodec("condition").forGetter(waterBreathingPower -> waterBreathingPower.getCondition())
     ).apply(i, WaterBreathingPower::new));
+    private final EntityCondition condition;
+
+    public WaterBreathingPower(BaseSettings settings, EntityCondition condition) {
+        super(settings);
+        this.condition = condition;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

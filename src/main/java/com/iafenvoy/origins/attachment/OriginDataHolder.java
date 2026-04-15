@@ -87,7 +87,7 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
     }
 
     @NotNull
-    public <T extends Power> Stream<T> streamPowers(Class<T> clazz) {
+    public <T> Stream<T> streamPowers(Class<T> clazz) {
         Stream<T> results = this.data.getPowers().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast) : results;
     }

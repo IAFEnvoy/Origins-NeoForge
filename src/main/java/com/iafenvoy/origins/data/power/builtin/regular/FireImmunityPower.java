@@ -13,10 +13,21 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
-public record FireImmunityPower(EntityCondition condition) implements Power {
+public class FireImmunityPower extends Power {
     public static final MapCodec<FireImmunityPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityCondition.optionalCodec("condition").forGetter(FireImmunityPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            EntityCondition.optionalCodec("condition").forGetter(FireImmunityPower::getCondition)
     ).apply(i, FireImmunityPower::new));
+    private final EntityCondition condition;
+
+    public FireImmunityPower(BaseSettings settings, EntityCondition condition) {
+        super(settings);
+        this.condition = condition;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

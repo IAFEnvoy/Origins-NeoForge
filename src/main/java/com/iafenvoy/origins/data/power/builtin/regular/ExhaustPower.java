@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExhaustPower extends IntervalPower {
     public static final MapCodec<ExhaustPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BaseSettings.CODEC.forGetter(Power::getSettings),
             Codec.INT.optionalFieldOf("interval", 20).forGetter(ExhaustPower::getInterval),
             Codec.FLOAT.fieldOf("exhaustion").forGetter(ExhaustPower::getExhaustion),
             EntityCondition.optionalCodec("condition").forGetter(ExhaustPower::getCondition)
@@ -20,7 +21,8 @@ public class ExhaustPower extends IntervalPower {
     private final float exhaustion;
     private final EntityCondition condition;
 
-    public ExhaustPower(int interval, float exhaustion, EntityCondition condition) {
+    public ExhaustPower(BaseSettings settings, int interval, float exhaustion, EntityCondition condition) {
+        super(settings);
         this.interval = interval;
         this.exhaustion = exhaustion;
         this.condition = condition;

@@ -1,8 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
-import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -18,49 +17,27 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-public record AttributePower(List<AttributeEntry> modifiers, EntityCondition condition) implements Power {
+//FIXME::Rewrite
+@NotImplementedYet
+public class AttributePower extends Power {
     public static final MapCodec<AttributePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            AttributeEntry.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(AttributePower::modifiers),
-            EntityCondition.optionalCodec("condition").forGetter(AttributePower::condition)
-    ).apply(i, (modifiers, condition) -> {
-        if (modifiers.isEmpty()) return new AttributePower(modifiers, condition);
-        return new AttributePower(modifiers, condition);
-    }));
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            AttributeEntry.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(AttributePower::getModifiers)
+    ).apply(i, AttributePower::new));
+    private final List<AttributeEntry> modifiers;
 
-    // Also accept a single "modifier" field
-    public static final MapCodec<AttributePower> SINGLE_OR_LIST_CODEC = new MapCodec<>() {
-        @Override
-        public <T> java.util.stream.Stream<T> keys(DynamicOps<T> ops) {
-            return CODEC.keys(ops);
-        }
+    public AttributePower(BaseSettings settings, List<AttributeEntry> modifiers) {
+        super(settings);
+        this.modifiers = modifiers;
+    }
 
-        @Override
-        public <T> DataResult<AttributePower> decode(DynamicOps<T> ops, MapLike<T> input) {
-            // Try "modifiers" list first
-            DataResult<AttributePower> result = CODEC.decode(ops, input);
-            if (result.result().isPresent() && !result.result().get().modifiers().isEmpty())
-                return result;
-            // Try single "modifier"
-            T modifierField = input.get("modifier");
-            if (modifierField != null) {
-                return AttributeEntry.CODEC.parse(ops, modifierField).map(entry -> {
-                    EntityCondition cond = EntityCondition.optionalCodec("condition")
-                            .decode(ops, input).result().orElse(null);
-                    return new AttributePower(List.of(entry), cond != null ? cond : AlwaysTrueCondition.INSTANCE);
-                });
-            }
-            return result;
-        }
-
-        @Override
-        public <T> RecordBuilder<T> encode(AttributePower input, DynamicOps<T> ops, RecordBuilder<T> prefix) {
-            return CODEC.encode(input, ops, prefix);
-        }
-    };
+    public List<AttributeEntry> getModifiers() {
+        return this.modifiers;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
-        return SINGLE_OR_LIST_CODEC;
+        return CODEC;
     }
 
     @Override

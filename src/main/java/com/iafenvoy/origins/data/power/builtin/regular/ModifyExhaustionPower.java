@@ -10,12 +10,28 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record ModifyExhaustionPower(List<Modifier> modifiers,
-                                    EntityCondition condition) implements Power {
+public class ModifyExhaustionPower extends Power {
     public static final MapCodec<ModifyExhaustionPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyExhaustionPower::modifiers),
-            EntityCondition.optionalCodec("condition").forGetter(ModifyExhaustionPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyExhaustionPower::getModifiers),
+            EntityCondition.optionalCodec("condition").forGetter(ModifyExhaustionPower::getCondition)
     ).apply(i, ModifyExhaustionPower::new));
+    private final List<Modifier> modifiers;
+    private final EntityCondition condition;
+
+    public ModifyExhaustionPower(BaseSettings settings, List<Modifier> modifiers, EntityCondition condition) {
+        super(settings);
+        this.modifiers = modifiers;
+        this.condition = condition;
+    }
+
+    public List<Modifier> getModifiers() {
+        return this.modifiers;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

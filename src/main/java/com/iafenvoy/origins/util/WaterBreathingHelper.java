@@ -1,8 +1,9 @@
-package com.iafenvoy.origins.data.power.builtin.regular;
+package com.iafenvoy.origins.util;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
+import com.iafenvoy.origins.data.power.builtin.regular.WaterBreathingPower;
 import com.iafenvoy.origins.mixin.accessor.LivingEntityAccessor;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -19,7 +20,8 @@ import java.util.List;
 public final class WaterBreathingHelper {
     private static final ResourceKey<DamageType> NO_WATER_FOR_GILLS = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "no_water_for_gills"));
 
-    private WaterBreathingHelper() {}
+    private WaterBreathingHelper() {
+    }
 
     public static boolean shouldDrown(LivingEntity entity) {
         return !entity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value())

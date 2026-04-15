@@ -50,7 +50,7 @@ public record EntitySetComponent(
                 if (entity.level() instanceof ServerLevel serverLevel) {
                     Entity l = serverLevel.getEntity(e.getKey());
                     if (l != null)
-                        holder.getPowers(id, EntitySetPower.class).forEach(x -> x.actionOnRemove().execute(entity, l));
+                        holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(entity, l));
                 }
             } else if (value > 0) this.set.computeIfPresent(e.getKey(), (u, i) -> i - 1);
         }
@@ -78,12 +78,12 @@ public record EntitySetComponent(
         }
 
         public void postAdd(ResourceLocation id, Entity target) {
-            this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.actionOnAdd().execute(this.holder.entity(), target));
+            this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnAdd().execute(this.holder.entity(), target));
         }
 
         public void postRemove(ResourceLocation id, Entity target) {
             if (target != null)
-                this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.actionOnRemove().execute(this.holder.entity(), target));
+                this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(this.holder.entity(), target));
         }
 
         public List<UUID> getEntityUuids() {

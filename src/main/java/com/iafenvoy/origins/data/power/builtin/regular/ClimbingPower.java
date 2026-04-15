@@ -3,8 +3,6 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.Toggleable;
-import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.data.power.component.builtin.ToggleComponent;
 import com.iafenvoy.origins.event.common.CanClimbEvent;
 import com.mojang.serialization.Codec;
@@ -16,28 +14,33 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 @EventBusSubscriber
-public record ClimbingPower(boolean allowHolding, EntityCondition holdCondition) implements Power, Toggleable {
+public class ClimbingPower extends Power {
     public static final MapCodec<ClimbingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.BOOL.optionalFieldOf("allow_holding", true).forGetter(ClimbingPower::allowHolding),
-            EntityCondition.optionalCodec("hold_condition").forGetter(ClimbingPower::holdCondition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Codec.BOOL.optionalFieldOf("allow_holding", true).forGetter(ClimbingPower::isAllowHolding),
+            EntityCondition.optionalCodec("hold_condition").forGetter(ClimbingPower::getHoldCondition)
     ).apply(i, ClimbingPower::new));
+    private final boolean allowHolding;
+    private final EntityCondition holdCondition;
+
+    public ClimbingPower(BaseSettings settings, boolean allowHolding, EntityCondition holdCondition) {
+        super(settings);
+        this.allowHolding = allowHolding;
+        this.holdCondition = holdCondition;
+    }
+
+    public boolean isAllowHolding() {
+        return this.allowHolding;
+    }
+
+    public EntityCondition getHoldCondition() {
+        return this.holdCondition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
-    }
-
-    @Override
-    public List<PowerComponent> createComponents() {
-        return List.of(new ToggleComponent());
-    }
-
-    @Override
-    public void toggle(OriginDataHolder holder, int index) {
-        holder.getComponentFor(this, ToggleComponent.class).ifPresent(ToggleComponent::toggle);
     }
 
     public boolean canHold(Entity entity) {

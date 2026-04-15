@@ -33,25 +33,65 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanceMultiplier, Optional<ResourceKey<Biome>> biome, SpawnStrategy spawnStrategy,
-                                     Optional<ResourceKey<Structure>> structure, Optional<SoundEvent> sound) implements Power {
-
+public class ModifyPlayerSpawnPower extends Power {
     public static final MapCodec<ModifyPlayerSpawnPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(ModifyPlayerSpawnPower::dimension),
-            Codec.FLOAT.optionalFieldOf("dimension_distance_multiplier", 0F).forGetter( ModifyPlayerSpawnPower::distanceMultiplier),
-            ResourceKey.codec(Registries.BIOME).optionalFieldOf("biome").forGetter( ModifyPlayerSpawnPower::biome),
-            ExtraEnumCodecs.enumCodec(SpawnStrategy::valueOf).optionalFieldOf( "spawn_strategy", SpawnStrategy.DEFAULT).forGetter( ModifyPlayerSpawnPower::spawnStrategy),
-            ResourceKey.codec(Registries.STRUCTURE).optionalFieldOf("structure").forGetter(ModifyPlayerSpawnPower::structure),
-            SoundEvent.DIRECT_CODEC.optionalFieldOf("respawn_sound").forGetter( ModifyPlayerSpawnPower::sound)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(ModifyPlayerSpawnPower::getDimension),
+            Codec.FLOAT.optionalFieldOf("dimension_distance_multiplier", 0F).forGetter(ModifyPlayerSpawnPower::getDistanceMultiplier),
+            ResourceKey.codec(Registries.BIOME).optionalFieldOf("biome").forGetter(ModifyPlayerSpawnPower::getBiome),
+            ExtraEnumCodecs.enumCodec(SpawnStrategy::valueOf).optionalFieldOf("spawn_strategy", SpawnStrategy.DEFAULT).forGetter(ModifyPlayerSpawnPower::getSpawnStrategy),
+            ResourceKey.codec(Registries.STRUCTURE).optionalFieldOf("structure").forGetter(ModifyPlayerSpawnPower::getStructure),
+            SoundEvent.DIRECT_CODEC.optionalFieldOf("respawn_sound").forGetter(ModifyPlayerSpawnPower::getSound)
     ).apply(i, ModifyPlayerSpawnPower::new));
+    private final ResourceKey<Level> dimension;
+    private final float distanceMultiplier;
+    private final Optional<ResourceKey<Biome>> biome;
+    private final SpawnStrategy spawnStrategy;
+    private final Optional<ResourceKey<Structure>> structure;
+    private final Optional<SoundEvent> sound;
+
+    public ModifyPlayerSpawnPower(BaseSettings settings, ResourceKey<Level> dimension, float distanceMultiplier, Optional<ResourceKey<Biome>> biome, SpawnStrategy spawnStrategy,
+                                  Optional<ResourceKey<Structure>> structure, Optional<SoundEvent> sound) {
+        super(settings);
+        this.dimension = dimension;
+        this.distanceMultiplier = distanceMultiplier;
+        this.biome = biome;
+        this.spawnStrategy = spawnStrategy;
+        this.structure = structure;
+        this.sound = sound;
+    }
+
+    public ResourceKey<Level> getDimension() {
+        return this.dimension;
+    }
+
+    public float getDistanceMultiplier() {
+        return this.distanceMultiplier;
+    }
+
+    public Optional<ResourceKey<Biome>> getBiome() {
+        return this.biome;
+    }
+
+    public SpawnStrategy getSpawnStrategy() {
+        return this.spawnStrategy;
+    }
+
+    public Optional<ResourceKey<Structure>> getStructure() {
+        return this.structure;
+    }
+
+    public Optional<SoundEvent> getSound() {
+        return this.sound;
+    }
 
     public Optional<BlockPos> getBiomePos(ResourceLocation powerId, ServerLevel targetDimension, BlockPos originPos) {
 
-        if (this.biome().isEmpty()) return Optional.empty();
+        if (this.getBiome().isEmpty()) return Optional.empty();
 
-        Optional<Biome> targetBiome = targetDimension.registryAccess().registryOrThrow(Registries.BIOME).getOptional(this.biome().get());
+        Optional<Biome> targetBiome = targetDimension.registryAccess().registryOrThrow(Registries.BIOME).getOptional(this.getBiome().get());
         if (targetBiome.isEmpty()) {
-            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it's not registered in dimension \"{}\".", powerId, this.biome(), this.dimension());
+            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it's not registered in dimension \"{}\".", powerId, this.getBiome(), this.getDimension());
             return Optional.empty();
         }
 
@@ -65,7 +105,7 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
 
         if (targetBiomePos != null) return Optional.of(targetBiomePos.getFirst());
         else {
-            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it couldn't be found in dimension \"{}\".", powerId, this.biome(), this.dimension());
+            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it couldn't be found in dimension \"{}\".", powerId, this.getBiome(), this.getDimension());
             return Optional.empty();
         }
 
@@ -116,18 +156,16 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
         if (structurePos == null) {
             Origins.LOGGER.warn("Power {} could not set spawnpoint at structure \"{}\" as it couldn't be found in dimension \"{}\".", powerId, structureTagOrName, dimension.location());
             return Optional.empty();
-        }
-
-        else return Optional.of(new Pair<>(structurePos.getFirst(), structurePos.getSecond().value()));
+        } else return Optional.of(new Pair<>(structurePos.getFirst(), structurePos.getSecond().value()));
 
     }
 
 
     public Optional<Vec3> getSpawnPos(ResourceLocation powerId, ServerLevel targetDimension, BlockPos originPos, int range) {
 
-        if (this.structure().isEmpty()) return getValidSpawn(originPos, range, targetDimension);
+        if (this.getStructure().isEmpty()) return getValidSpawn(originPos, range, targetDimension);
 
-        Optional<Pair<BlockPos, Structure>> targetStructure = this.getStructurePos(powerId, targetDimension, this.structure().get(), null, this.dimension());
+        Optional<Pair<BlockPos, Structure>> targetStructure = this.getStructurePos(powerId, targetDimension, this.getStructure().get(), null, this.getDimension());
         if (targetStructure.isEmpty()) return Optional.empty();
 
         BlockPos targetStructurePos = targetStructure.get().getFirst();
@@ -220,7 +258,8 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
 
                     BlockPos.MutableBlockPos mut = new BlockPos.MutableBlockPos();
 
-                    if (multiplier != 0) mut.set(blockPos.getX() * multiplier, blockPos.getY(), blockPos.getZ() * multiplier);
+                    if (multiplier != 0)
+                        mut.set(blockPos.getX() * multiplier, blockPos.getY(), blockPos.getZ() * multiplier);
                     else mut.set(blockPos);
 
                     return mut;
@@ -229,6 +268,7 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
         );
 
         final TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier;
+
         SpawnStrategy(TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier) {
             this.strategyApplier = strategyApplier;
         }
@@ -238,6 +278,7 @@ public record ModifyPlayerSpawnPower(ResourceKey<Level> dimension, float distanc
         }
 
     }
+
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;

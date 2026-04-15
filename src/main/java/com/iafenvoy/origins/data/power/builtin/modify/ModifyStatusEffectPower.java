@@ -11,12 +11,28 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record ModifyStatusEffectPower(List<Holder<MobEffect>> effects, List<Modifier> modifiers) implements Power {
-
+public class ModifyStatusEffectPower extends Power {
     public static final MapCodec<ModifyStatusEffectPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            MobEffect.CODEC.listOf().optionalFieldOf("status_effects", List.of()).forGetter(ModifyStatusEffectPower::effects),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyStatusEffectPower::modifiers)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            MobEffect.CODEC.listOf().optionalFieldOf("status_effects", List.of()).forGetter(ModifyStatusEffectPower::getEffects),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyStatusEffectPower::getModifiers)
     ).apply(i, ModifyStatusEffectPower::new));
+    private final List<Holder<MobEffect>> effects;
+    private final List<Modifier> modifiers;
+
+    public ModifyStatusEffectPower(BaseSettings settings, List<Holder<MobEffect>> effects, List<Modifier> modifiers) {
+        super(settings);
+        this.effects = effects;
+        this.modifiers = modifiers;
+    }
+
+    public List<Holder<MobEffect>> getEffects() {
+        return this.effects;
+    }
+
+    public List<Modifier> getModifiers() {
+        return this.modifiers;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

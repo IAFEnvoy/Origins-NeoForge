@@ -15,7 +15,7 @@ public final class RegularPowers {
 
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<EmptyPower>> EMPTY = REGISTRY.register("empty", () -> EmptyPower.CODEC);
 
-    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<AttributePower>> ATTRIBUTE = REGISTRY.register("attribute", () -> AttributePower.SINGLE_OR_LIST_CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<AttributePower>> ATTRIBUTE = REGISTRY.register("attribute", () -> AttributePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<AttributeModifyTransferPower>> ATTRIBUTE_MODIFY_TRANSFER = REGISTRY.register("attribute_modify_transfer", () -> AttributeModifyTransferPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<BurnPower>> BURN = REGISTRY.register("burn", () -> BurnPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ClimbingPower>> CLIMBING = REGISTRY.register("climbing", () -> ClimbingPower.CODEC);

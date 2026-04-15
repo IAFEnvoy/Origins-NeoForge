@@ -11,14 +11,35 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record ModifyBreakSpeedPower(List<Modifier> modifiers,
-                                    BlockCondition blockCondition,
-                                    EntityCondition condition) implements Power {
+public class ModifyBreakSpeedPower extends Power {
     public static final MapCodec<ModifyBreakSpeedPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyBreakSpeedPower::modifiers),
-            BlockCondition.optionalCodec("block_condition").forGetter(ModifyBreakSpeedPower::blockCondition),
-            EntityCondition.optionalCodec("condition").forGetter(ModifyBreakSpeedPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(modifyBreakSpeedPower -> modifyBreakSpeedPower.getModifiers()),
+            BlockCondition.optionalCodec("block_condition").forGetter(modifyBreakSpeedPower -> modifyBreakSpeedPower.getBlockCondition()),
+            EntityCondition.optionalCodec("condition").forGetter(modifyBreakSpeedPower -> modifyBreakSpeedPower.getCondition())
     ).apply(i, ModifyBreakSpeedPower::new));
+    private final List<Modifier> modifiers;
+    private final BlockCondition blockCondition;
+    private final EntityCondition condition;
+
+    public ModifyBreakSpeedPower(BaseSettings settings, List<Modifier> modifiers, BlockCondition blockCondition, EntityCondition condition) {
+        super(settings);
+        this.modifiers = modifiers;
+        this.blockCondition = blockCondition;
+        this.condition = condition;
+    }
+
+    public List<Modifier> getModifiers() {
+        return this.modifiers;
+    }
+
+    public BlockCondition getBlockCondition() {
+        return this.blockCondition;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

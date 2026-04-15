@@ -3,13 +3,16 @@ package com.iafenvoy.origins.data.power;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class IntervalPower implements Power {
+//FIXME::Map Codec
+public abstract class IntervalPower extends Power {
     protected int remainTicks = 0;
 
-    public IntervalPower() {
+    public IntervalPower(BaseSettings settings) {
+        super(settings);
     }
 
-    public IntervalPower(int delay) {
+    public IntervalPower(BaseSettings settings, int delay) {
+        this(settings);
         this.remainTicks = delay;
     }
 

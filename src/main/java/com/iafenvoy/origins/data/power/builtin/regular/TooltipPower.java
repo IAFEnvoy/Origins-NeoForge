@@ -19,12 +19,35 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @EventBusSubscriber(Dist.CLIENT)
-public record TooltipPower(ItemCondition itemCondition, List<Component> text, int order) implements Power {
+public class TooltipPower extends Power {
     public static final MapCodec<TooltipPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ItemCondition.optionalCodec("item_condition").forGetter(TooltipPower::itemCondition),
-            CombinedCodecs.TEXT.fieldOf("text").forGetter(TooltipPower::text),
-            Codec.INT.optionalFieldOf("order", 0).forGetter(TooltipPower::order)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            ItemCondition.optionalCodec("item_condition").forGetter(TooltipPower::getItemCondition),
+            CombinedCodecs.TEXT.fieldOf("text").forGetter(TooltipPower::getText),
+            Codec.INT.optionalFieldOf("order", 0).forGetter(TooltipPower::getOrder)
     ).apply(i, TooltipPower::new));
+    private final ItemCondition itemCondition;
+    private final List<Component> text;
+    private final int order;
+
+    public TooltipPower(BaseSettings settings, ItemCondition itemCondition, List<Component> text, int order) {
+        super(settings);
+        this.itemCondition = itemCondition;
+        this.text = text;
+        this.order = order;
+    }
+
+    public ItemCondition getItemCondition() {
+        return this.itemCondition;
+    }
+
+    public List<Component> getText() {
+        return this.text;
+    }
+
+    public int getOrder() {
+        return this.order;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {

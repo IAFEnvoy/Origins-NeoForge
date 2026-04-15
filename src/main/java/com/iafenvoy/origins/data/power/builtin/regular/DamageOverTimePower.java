@@ -20,6 +20,7 @@ import java.util.OptionalInt;
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class DamageOverTimePower extends IntervalPower {
     public static final MapCodec<DamageOverTimePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BaseSettings.CODEC.forGetter(Power::getSettings),
             Codec.INT.optionalFieldOf("interval", 20).forGetter(DamageOverTimePower::getInterval),
             OptionalCodecs.integer("onset_delay").forGetter(DamageOverTimePower::getOnSetDelay),
             Codec.FLOAT.fieldOf("damage").forGetter(DamageOverTimePower::getDamage),
@@ -34,8 +35,8 @@ public class DamageOverTimePower extends IntervalPower {
     private final Holder<DamageType> damageType;
     private final EntityCondition condition;
 
-    public DamageOverTimePower(int interval, OptionalInt onSetDelay, float damage, Optional<Float> damageEasy, Holder<DamageType> damageType, EntityCondition condition) {
-        super(onSetDelay.orElse(0));
+    public DamageOverTimePower(BaseSettings settings, int interval, OptionalInt onSetDelay, float damage, Optional<Float> damageEasy, Holder<DamageType> damageType, EntityCondition condition) {
+        super(settings, onSetDelay.orElse(0));
         this.interval = interval;
         this.onSetDelay = onSetDelay;
         this.damage = damage;

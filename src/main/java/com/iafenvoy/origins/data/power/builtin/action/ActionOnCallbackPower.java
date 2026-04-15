@@ -8,26 +8,70 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record ActionOnCallbackPower(
-        EntityAction entityActionChosen,
-        boolean executeChosenWhenOrb,
-        EntityAction entityActionRespawned,
-        EntityAction entityActionRemoved,
-        EntityAction entityActionGained,
-        EntityAction entityActionLost,
-        EntityAction entityActionAdded,
-        EntityCondition condition
-) implements Power {
+public class ActionOnCallbackPower extends Power {
     public static final MapCodec<ActionOnCallbackPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityAction.optionalCodec("entity_action_chosen").forGetter(ActionOnCallbackPower::entityActionChosen),
-            Codec.BOOL.optionalFieldOf("execute_chosen_when_orb", true).forGetter(ActionOnCallbackPower::executeChosenWhenOrb),
-            EntityAction.optionalCodec("entity_action_respawned").forGetter(ActionOnCallbackPower::entityActionRespawned),
-            EntityAction.optionalCodec("entity_action_removed").forGetter(ActionOnCallbackPower::entityActionRemoved),
-            EntityAction.optionalCodec("entity_action_gained").forGetter(ActionOnCallbackPower::entityActionGained),
-            EntityAction.optionalCodec("entity_action_lost").forGetter(ActionOnCallbackPower::entityActionLost),
-            EntityAction.optionalCodec("entity_action_added").forGetter(ActionOnCallbackPower::entityActionAdded),
-            EntityCondition.optionalCodec("condition").forGetter(ActionOnCallbackPower::condition)
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            EntityAction.optionalCodec("entity_action_chosen").forGetter(ActionOnCallbackPower::getEntityActionChosen),
+            Codec.BOOL.optionalFieldOf("execute_chosen_when_orb", true).forGetter(ActionOnCallbackPower::isExecuteChosenWhenOrb),
+            EntityAction.optionalCodec("entity_action_respawned").forGetter(ActionOnCallbackPower::getEntityActionRespawned),
+            EntityAction.optionalCodec("entity_action_removed").forGetter(ActionOnCallbackPower::getEntityActionRemoved),
+            EntityAction.optionalCodec("entity_action_gained").forGetter(ActionOnCallbackPower::getEntityActionGained),
+            EntityAction.optionalCodec("entity_action_lost").forGetter(ActionOnCallbackPower::getEntityActionLost),
+            EntityAction.optionalCodec("entity_action_added").forGetter(ActionOnCallbackPower::getEntityActionAdded),
+            EntityCondition.optionalCodec("condition").forGetter(ActionOnCallbackPower::getCondition)
     ).apply(i, ActionOnCallbackPower::new));
+    private final EntityAction entityActionChosen;
+    private final boolean executeChosenWhenOrb;
+    private final EntityAction entityActionRespawned;
+    private final EntityAction entityActionRemoved;
+    private final EntityAction entityActionGained;
+    private final EntityAction entityActionLost;
+    private final EntityAction entityActionAdded;
+    private final EntityCondition condition;
+
+    public ActionOnCallbackPower(BaseSettings settings, EntityAction entityActionChosen, boolean executeChosenWhenOrb, EntityAction entityActionRespawned, EntityAction entityActionRemoved, EntityAction entityActionGained, EntityAction entityActionLost, EntityAction entityActionAdded, EntityCondition condition) {
+        super(settings);
+        this.entityActionChosen = entityActionChosen;
+        this.executeChosenWhenOrb = executeChosenWhenOrb;
+        this.entityActionRespawned = entityActionRespawned;
+        this.entityActionRemoved = entityActionRemoved;
+        this.entityActionGained = entityActionGained;
+        this.entityActionLost = entityActionLost;
+        this.entityActionAdded = entityActionAdded;
+        this.condition = condition;
+    }
+
+    public EntityAction getEntityActionChosen() {
+        return this.entityActionChosen;
+    }
+
+    public boolean isExecuteChosenWhenOrb() {
+        return this.executeChosenWhenOrb;
+    }
+
+    public EntityAction getEntityActionRespawned() {
+        return this.entityActionRespawned;
+    }
+
+    public EntityAction getEntityActionRemoved() {
+        return this.entityActionRemoved;
+    }
+
+    public EntityAction getEntityActionGained() {
+        return this.entityActionGained;
+    }
+
+    public EntityAction getEntityActionLost() {
+        return this.entityActionLost;
+    }
+
+    public EntityAction getEntityActionAdded() {
+        return this.entityActionAdded;
+    }
+
+    public EntityCondition getCondition() {
+        return this.condition;
+    }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
