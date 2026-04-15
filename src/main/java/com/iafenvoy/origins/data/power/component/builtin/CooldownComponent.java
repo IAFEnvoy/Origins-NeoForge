@@ -6,10 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public final class CooldownComponent implements PowerComponent {
     public static final MapCodec<CooldownComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(

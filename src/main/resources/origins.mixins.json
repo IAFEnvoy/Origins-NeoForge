@@ -5,6 +5,7 @@
   "mixins": [
     "accessor.LivingEntityAccessor",
     "accessor.MobAccessor",
+    "power.CommonHooksMixin",
     "power.ConduitPowerOnLandMixin",
     "power.FoodDataMixin",
     "power.LivingEntityMixin",

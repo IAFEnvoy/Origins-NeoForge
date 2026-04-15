@@ -1,10 +1,9 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,8 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-public record AttributePower(List<AttributeEntry> modifiers,
-                             EntityCondition condition) implements Power {
+public record AttributePower(List<AttributeEntry> modifiers, EntityCondition condition) implements Power {
     public static final MapCodec<AttributePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             AttributeEntry.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(AttributePower::modifiers),
             EntityCondition.optionalCodec("condition").forGetter(AttributePower::condition)
@@ -32,12 +30,12 @@ public record AttributePower(List<AttributeEntry> modifiers,
     // Also accept a single "modifier" field
     public static final MapCodec<AttributePower> SINGLE_OR_LIST_CODEC = new MapCodec<>() {
         @Override
-        public <T> java.util.stream.Stream<T> keys(com.mojang.serialization.DynamicOps<T> ops) {
+        public <T> java.util.stream.Stream<T> keys(DynamicOps<T> ops) {
             return CODEC.keys(ops);
         }
 
         @Override
-        public <T> com.mojang.serialization.DataResult<AttributePower> decode(com.mojang.serialization.DynamicOps<T> ops, com.mojang.serialization.MapLike<T> input) {
+        public <T> DataResult<AttributePower> decode(DynamicOps<T> ops, MapLike<T> input) {
             // Try "modifiers" list first
             DataResult<AttributePower> result = CODEC.decode(ops, input);
             if (result.result().isPresent() && !result.result().get().modifiers().isEmpty())
@@ -48,14 +46,14 @@ public record AttributePower(List<AttributeEntry> modifiers,
                 return AttributeEntry.CODEC.parse(ops, modifierField).map(entry -> {
                     EntityCondition cond = EntityCondition.optionalCodec("condition")
                             .decode(ops, input).result().orElse(null);
-                    return new AttributePower(List.of(entry), cond != null ? cond : com.iafenvoy.origins.data.condition.AlwaysTrueCondition.INSTANCE);
+                    return new AttributePower(List.of(entry), cond != null ? cond : AlwaysTrueCondition.INSTANCE);
                 });
             }
             return result;
         }
 
         @Override
-        public <T> com.mojang.serialization.RecordBuilder<T> encode(AttributePower input, com.mojang.serialization.DynamicOps<T> ops, com.mojang.serialization.RecordBuilder<T> prefix) {
+        public <T> RecordBuilder<T> encode(AttributePower input, DynamicOps<T> ops, RecordBuilder<T> prefix) {
             return CODEC.encode(input, ops, prefix);
         }
     };

@@ -2,6 +2,7 @@ package com.iafenvoy.origins.event;
 
 import net.neoforged.bus.api.Event;
 
+//TODO::No longer use this
 public class ResultedEvent extends Event {
     private Result result;
 

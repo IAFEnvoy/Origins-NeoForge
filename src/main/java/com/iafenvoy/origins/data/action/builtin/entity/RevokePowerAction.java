@@ -9,7 +9,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
-import org.openjdk.nashorn.internal.runtime.options.Option;
 
 import java.util.Optional;
 

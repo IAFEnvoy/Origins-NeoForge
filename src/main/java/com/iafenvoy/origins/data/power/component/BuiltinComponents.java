@@ -16,4 +16,5 @@ public final class BuiltinComponents {
     public static final DeferredHolder<MapCodec<? extends PowerComponent>, MapCodec<EntitySetComponent>> ENTITY_SET = REGISTRY.register("entity_set", () -> EntitySetComponent.CODEC);
     public static final DeferredHolder<MapCodec<? extends PowerComponent>, MapCodec<InventoryComponent>> INVENTORY = REGISTRY.register("inventory", () -> InventoryComponent.CODEC);
     public static final DeferredHolder<MapCodec<? extends PowerComponent>, MapCodec<ResourceComponent>> RESOURCE = REGISTRY.register("resource", () -> ResourceComponent.CODEC);
+    public static final DeferredHolder<MapCodec<? extends PowerComponent>, MapCodec<ToggleComponent>> TOGGLE = REGISTRY.register("toggle", () -> ToggleComponent.CODEC);
 }

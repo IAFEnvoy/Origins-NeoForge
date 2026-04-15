@@ -10,19 +10,14 @@ import com.iafenvoy.origins.util.codec.AutoIgnoreMapCodec;
 import com.iafenvoy.origins.util.codec.CollectionCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.Holder;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public final class EntityOriginAttachment {
     private static final Codec<Map<Holder<Layer>, Holder<Origin>>> ORIGINS_CODEC = new AutoIgnoreMapCodec<>(Layer.CODEC, Origin.CODEC);

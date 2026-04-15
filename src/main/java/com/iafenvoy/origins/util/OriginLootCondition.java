@@ -1,6 +1,5 @@
 package com.iafenvoy.origins.util;
 
-import com.iafenvoy.origins.attachment.EntityOriginAttachment;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;

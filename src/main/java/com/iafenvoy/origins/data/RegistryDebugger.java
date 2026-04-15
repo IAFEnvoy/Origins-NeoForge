@@ -7,7 +7,6 @@ import com.iafenvoy.origins.data.condition.ConditionRegistries;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
 import com.iafenvoy.origins.data.power.PowerRegistries;
-import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.data.power.component.PowerComponentRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
