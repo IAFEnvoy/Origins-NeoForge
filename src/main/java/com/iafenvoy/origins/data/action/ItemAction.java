@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.action;
 
 import com.iafenvoy.origins.data.action.builtin.item.meta.AndAction;
+import com.iafenvoy.origins.util.Mutable;
 import com.iafenvoy.origins.util.codec.DefaultedCodec;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -23,5 +24,9 @@ public interface ItemAction {
     @NotNull
     MapCodec<? extends ItemAction> codec();
 
-    void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack);
+    void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack);
+
+    default void execute(@NotNull Level level, @NotNull Entity source, ItemStack stack) {
+        this.execute(level, source, new Mutable<>(stack));
+    }
 }

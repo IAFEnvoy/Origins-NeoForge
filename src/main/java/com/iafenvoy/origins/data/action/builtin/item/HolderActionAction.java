@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.action.builtin.item;
 
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.util.Mutable;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
@@ -20,7 +21,7 @@ public record HolderActionAction(EntityAction action) implements ItemAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
         this.action.execute(source);
     }
 }

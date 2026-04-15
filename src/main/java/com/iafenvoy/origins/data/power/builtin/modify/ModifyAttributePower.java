@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.ListConfiguration;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,7 +15,7 @@ public record ModifyAttributePower(Holder<Attribute> attribute, List<Modifier> m
 
     public static final MapCodec<ModifyAttributePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Attribute.CODEC.fieldOf("attribute").forGetter(ModifyAttributePower::attribute),
-            ListConfiguration.MODIFIER_CODEC.forGetter(ModifyAttributePower::modifiers)
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyAttributePower::modifiers)
     ).apply(i, ModifyAttributePower::new));
 
     @Override

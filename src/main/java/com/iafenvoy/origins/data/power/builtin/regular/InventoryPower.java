@@ -56,7 +56,7 @@ public record InventoryPower(Component title, boolean dropOnDeath, ContainerType
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
-        return OriginDataHolder.get(player).getComponents(InventoryComponent.class).stream().findFirst().map(InventoryComponent::container).map(container -> this.containerType.getFactory().createMenu(id, inventory, container)).orElse(null);
+        return OriginDataHolder.get(player).getComponentFor(this, InventoryComponent.class).map(InventoryComponent::container).map(container -> this.containerType.getFactory().createMenu(id, inventory, container)).orElse(null);
     }
 
     public enum ContainerType implements StringRepresentable {

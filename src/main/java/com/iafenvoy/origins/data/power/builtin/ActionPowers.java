@@ -14,10 +14,11 @@ public final class ActionPowers {
 
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnBeingUsedPower>> ACTION_ON_BEING_USED = REGISTRY.register("action_on_being_used", () -> ActionOnBeingUsedPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnBlockBreakPower>> ACTION_ON_BLOCK_BREAK = REGISTRY.register("action_on_block_break", () -> ActionOnBlockBreakPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnCallbackPower>> ACTION_ON_CALLBACK = REGISTRY.register("action_on_callback", () -> ActionOnCallbackPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnHitPower>> ACTION_ON_HIT = REGISTRY.register("action_on_hit", () -> ActionOnHitPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnItemUsePower>> ACTION_ON_ITEM_USE = REGISTRY.register("action_on_item_use", () -> ActionOnItemUsePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnWakeUpPower>> ACTION_ON_WAKE_UP = REGISTRY.register("action_on_wake_up", () -> ActionOnWakeUpPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOverTimePower>> ACTION_OVER_TIME = REGISTRY.register("action_over_time", () -> ActionOverTimePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionWhenHitPower>> ACTION_WHEN_HIT = REGISTRY.register("action_when_hit", () -> ActionWhenHitPower.CODEC);
-    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnCallbackPower>> ACTION_ON_CALLBACK = REGISTRY.register("action_on_callback", () -> ActionOnCallbackPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<TargetActionOnHitPower>> TARGET_ACTION_ON_HIT = REGISTRY.register("target_action_on_hit", () -> TargetActionOnHitPower.CODEC);
 }

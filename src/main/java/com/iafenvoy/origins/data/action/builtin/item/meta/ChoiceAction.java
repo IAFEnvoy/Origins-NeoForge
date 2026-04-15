@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.util.Mutable;
 import com.iafenvoy.origins.util.WeightedRandomSelector;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -23,7 +24,7 @@ public record ChoiceAction(List<WeightedActionHolder> actions) implements ItemAc
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
         WeightedActionHolder holder = WeightedRandomSelector.selectRandomByWeight(this.actions);
         if (holder != null) holder.element.execute(level, source, stack);
     }

@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.util.Mutable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -22,7 +23,7 @@ public record ChanceAction(ItemAction action, float chance, ItemAction failActio
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
         if (Math.random() < this.chance) this.action.execute(level, source, stack);
         else this.failAction.execute(level, source, stack);
     }

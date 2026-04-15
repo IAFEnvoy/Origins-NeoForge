@@ -2,7 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.ListConfiguration;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -16,7 +16,7 @@ import java.util.List;
 public record ModifyHarvestPower(List<Modifier> modifiers, BlockCondition blockCondition, boolean allow) implements Power {
 
     public static final MapCodec<ModifyHarvestPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ListConfiguration.MODIFIER_CODEC.forGetter(ModifyHarvestPower::modifiers),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyHarvestPower::modifiers),
             BlockCondition.optionalCodec("block_condition").forGetter(ModifyHarvestPower::blockCondition),
             Codec.BOOL.fieldOf("allow").forGetter(ModifyHarvestPower::allow)
     ).apply(i, ModifyHarvestPower::new));

@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.item;
 
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.util.Mutable;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.codec.OptionalCodecs;
 import com.mojang.serialization.Codec;
@@ -14,6 +15,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 import java.util.OptionalInt;
@@ -32,12 +34,13 @@ public record RemoveEnchantmentAction(List<Holder<Enchantment>> enchantment, Opt
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
-        ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(stack.getTagEnchantments());
+    public void execute(@NotNull Level level, @NotNull Entity source, @UnknownNullability Mutable<ItemStack> stack) {
+        ItemStack s = stack.get();
+        ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(s.getTagEnchantments());
         for (Holder<Enchantment> enchantment : this.enchantment)
             if (this.level.isEmpty() || mutable.getLevel(enchantment) == this.level.getAsInt())
                 mutable.set(enchantment, 0);
-        stack.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
-        if (this.resetRepairCost) stack.set(DataComponents.REPAIR_COST, 0);
+        s.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
+        if (this.resetRepairCost) s.set(DataComponents.REPAIR_COST, 0);
     }
 }

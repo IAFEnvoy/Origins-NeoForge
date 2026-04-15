@@ -4,7 +4,7 @@ import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.ListConfiguration;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -23,8 +23,8 @@ public record ModifyFoodPower(List<Modifier> foodModifiers, List<Modifier> satur
                                boolean alwaysEdible, boolean preventEffects) implements Power {
 
     public static final MapCodec<ModifyFoodPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ListConfiguration.modifierCodec("food_modifier").forGetter(ModifyFoodPower::foodModifiers),
-            ListConfiguration.modifierCodec("saturation_modifier").forGetter(ModifyFoodPower::saturationModifiers),
+            CombinedCodecs.MODIFIER.fieldOf("food_modifier").forGetter(ModifyFoodPower::foodModifiers),
+            CombinedCodecs.MODIFIER.fieldOf("saturation_modifier").forGetter(ModifyFoodPower::saturationModifiers),
             ItemCondition.optionalCodec("item_condition").forGetter(ModifyFoodPower::itemCondition),
             EntityAction.optionalCodec("entity_action").forGetter(ModifyFoodPower::entityAction),
             ItemStack.CODEC.optionalFieldOf("replace_stack").forGetter(ModifyFoodPower::replaceStack),

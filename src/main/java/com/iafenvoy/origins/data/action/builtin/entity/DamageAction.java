@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.util.ListConfiguration;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -18,7 +18,7 @@ public record DamageAction(Holder<DamageType> damageType, float amount, List<Mod
     public static final MapCodec<DamageAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageAction::damageType),
             Codec.FLOAT.fieldOf("amount").forGetter(DamageAction::amount),
-            ListConfiguration.MODIFIER_CODEC.forGetter(DamageAction::modifiers)
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(DamageAction::modifiers)
     ).apply(i, DamageAction::new));
 
     @Override

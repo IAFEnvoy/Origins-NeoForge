@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.util.Mutable;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
@@ -21,7 +22,7 @@ public record AndAction(List<ItemAction> actions) implements ItemAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
         this.actions.forEach(x -> x.execute(level, source, stack));
     }
 }

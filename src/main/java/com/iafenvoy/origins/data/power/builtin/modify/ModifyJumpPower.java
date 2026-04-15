@@ -2,7 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.ListConfiguration;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,7 +14,7 @@ import java.util.List;
 public record ModifyJumpPower(List<Modifier> modifiers, EntityAction entityAction) implements Power {
 
     public static final MapCodec<ModifyJumpPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ListConfiguration.MODIFIER_CODEC.forGetter(ModifyJumpPower::modifiers),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyJumpPower::modifiers),
             EntityAction.optionalCodec("entity_action").forGetter(ModifyJumpPower::entityAction)
     ).apply(i, ModifyJumpPower::new));
 

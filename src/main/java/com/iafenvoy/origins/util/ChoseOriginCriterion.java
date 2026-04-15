@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class ChoseOriginCriterion extends SimpleCriterionTrigger<ChoseOriginCriterion.TriggerInstance> {
-
     public static final ChoseOriginCriterion INSTANCE = new ChoseOriginCriterion();
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "chose_origin");
 

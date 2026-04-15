@@ -57,6 +57,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnParticlesAction>> SPAWN_PARTICLES = REGISTRY.register("spawn_particles", () -> SpawnParticlesAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SwingHandAction>> SWING_HAND = REGISTRY.register("swing_hand", () -> SwingHandAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ToggleAction>> TOGGLE = REGISTRY.register("toggle", () -> ToggleAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<TriggerCooldownAction>> TRIGGER_COOLDOWN = REGISTRY.register("trigger_cooldown", () -> TriggerCooldownAction.CODEC);
     //Meta
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AndAction>> AND = REGISTRY.register("and", () -> AndAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ChanceAction>> CHANCE = REGISTRY.register("chance", () -> ChanceAction.CODEC);

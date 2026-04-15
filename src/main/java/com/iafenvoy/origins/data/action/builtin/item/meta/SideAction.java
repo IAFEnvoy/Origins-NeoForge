@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.util.Mutable;
 import com.iafenvoy.origins.util.codec.ExtraEnumCodecs;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -23,7 +24,7 @@ public record SideAction(ItemAction action, Dist side) implements ItemAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
         if (Environment.get().getDist() == this.side) this.action.execute(level, source, stack);
     }
 }

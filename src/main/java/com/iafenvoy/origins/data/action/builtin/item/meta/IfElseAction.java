@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
+import com.iafenvoy.origins.util.Mutable;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
@@ -23,8 +24,8 @@ public record IfElseAction(ItemCondition condition, ItemAction ifAction,
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
-        if (this.condition.test(level, stack)) this.ifAction.execute(level, source, stack);
+    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
+        if (this.condition.test(level, stack.get())) this.ifAction.execute(level, source, stack);
         else this.elseAction.execute(level, source, stack);
     }
 }

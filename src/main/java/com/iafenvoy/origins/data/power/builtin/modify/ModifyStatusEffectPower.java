@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.ListConfiguration;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,7 +15,7 @@ public record ModifyStatusEffectPower(List<Holder<MobEffect>> effects, List<Modi
 
     public static final MapCodec<ModifyStatusEffectPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             MobEffect.CODEC.listOf().optionalFieldOf("status_effects", List.of()).forGetter(ModifyStatusEffectPower::effects),
-            ListConfiguration.MODIFIER_CODEC.forGetter(ModifyStatusEffectPower::modifiers)
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyStatusEffectPower::modifiers)
     ).apply(i, ModifyStatusEffectPower::new));
 
     @Override

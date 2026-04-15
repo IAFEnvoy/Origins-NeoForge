@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.item;
 
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.util.Mutable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -22,9 +23,10 @@ public record DamageAction(int amount, boolean ignoreUnbreaking) implements Item
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
-        if (this.ignoreUnbreaking) stack.setDamageValue(stack.getDamageValue() - this.amount);
-        else if (level instanceof ServerLevel serverLevel) stack.hurtAndBreak(this.amount, serverLevel, null, item -> {
+    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
+        ItemStack s = stack.get();
+        if (this.ignoreUnbreaking) s.setDamageValue(s.getDamageValue() - this.amount);
+        else if (level instanceof ServerLevel serverLevel) s.hurtAndBreak(this.amount, serverLevel, null, item -> {
         });
     }
 }

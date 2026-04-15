@@ -13,11 +13,18 @@ import java.util.Objects;
 
 public final class CooldownComponent implements PowerComponent {
     public static final MapCodec<CooldownComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.INT.fieldOf("value").forGetter(CooldownComponent::value)
+            Codec.INT.fieldOf("defaultValue").forGetter(CooldownComponent::getDefaultValue),
+            Codec.INT.fieldOf("value").forGetter(CooldownComponent::getValue)
     ).apply(i, CooldownComponent::new));
+    private final int defaultValue;
     private int value;
 
-    public CooldownComponent(int value) {
+    public CooldownComponent(int defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public CooldownComponent(int defaultValue, int value) {
+        this(defaultValue);
         this.value = value;
     }
 
@@ -26,12 +33,24 @@ public final class CooldownComponent implements PowerComponent {
         return CODEC;
     }
 
-    public int value() {
+    public int getDefaultValue() {
+        return this.defaultValue;
+    }
+
+    public int getValue() {
         return this.value;
+    }
+
+    public void startCooldown() {
+        this.value = this.defaultValue;
+    }
+
+    public boolean canUse() {
+        return this.value <= 0;
     }
 
     @Override
     public void tick(OriginDataHolder holder, ResourceLocation id) {
-        if (this.value > 0) this.value--;
+        if (!this.canUse()) this.value--;
     }
 }

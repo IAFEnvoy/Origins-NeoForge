@@ -4,6 +4,7 @@ import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.Prioritized;
 import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
@@ -160,6 +161,14 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
 
     public <T> Optional<T> getComponent(ResourceLocation id, Class<T> clazz) {
         return Optional.ofNullable(this.data.getComponents().get(id).get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast);
+    }
+
+    public <T> Optional<T> getComponentFor(Power power, Class<T> clazz) {
+        return this.getComponentFor(this.access.registryOrThrow(PowerRegistries.POWER_KEY).wrapAsHolder(power), clazz);
+    }
+
+    public <T> Optional<T> getComponentFor(Holder<Power> power, Class<T> clazz) {
+        return Optional.ofNullable(this.data.getComponents().get(RLHelper.id(power)).get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast);
     }
 
     public <H, T extends ComponentHolderProvider<H>> List<H> getComponentHolders(Class<T> clazz) {

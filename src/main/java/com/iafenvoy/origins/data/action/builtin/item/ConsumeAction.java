@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.item;
 
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.util.Mutable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -8,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 public record ConsumeAction(int amount) implements ItemAction {
     public static final MapCodec<ConsumeAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -20,7 +22,7 @@ public record ConsumeAction(int amount) implements ItemAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
-        stack.shrink(this.amount);
+    public void execute(@NotNull Level level, @NotNull Entity source, @UnknownNullability Mutable<ItemStack> stack) {
+        stack.get().shrink(this.amount);
     }
 }

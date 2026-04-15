@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.util.Mutable;
 import com.iafenvoy.origins.util.Timeout;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -22,7 +23,7 @@ public record DelayAction(ItemAction action, int ticks) implements ItemAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
         Timeout.create(this.ticks, () -> this.action.execute(level, source, stack));
     }
 }

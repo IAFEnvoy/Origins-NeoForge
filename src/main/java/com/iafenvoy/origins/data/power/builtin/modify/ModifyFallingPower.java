@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.ListConfiguration;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -18,7 +18,7 @@ public record ModifyFallingPower(double velocity, boolean takeFallDamage, List<M
     public static final MapCodec<ModifyFallingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.DOUBLE.optionalFieldOf("velocity", 0.0).forGetter(ModifyFallingPower::velocity),
             Codec.BOOL.optionalFieldOf("take_fall_damage", true).forGetter(ModifyFallingPower::takeFallDamage),
-            ListConfiguration.MODIFIER_CODEC.forGetter(ModifyFallingPower::modifiers)
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyFallingPower::modifiers)
     ).apply(i, ModifyFallingPower::new));
 
     @Override

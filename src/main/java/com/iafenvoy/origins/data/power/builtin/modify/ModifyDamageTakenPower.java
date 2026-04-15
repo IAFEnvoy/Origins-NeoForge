@@ -6,7 +6,7 @@ import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.ListConfiguration;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -23,7 +23,7 @@ public record ModifyDamageTakenPower(List<Modifier> modifiers,
                                      EntityCondition damageArmorCondition) implements Power {
 
     public static final MapCodec<ModifyDamageTakenPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ListConfiguration.MODIFIER_CODEC.forGetter(ModifyDamageTakenPower::modifiers),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyDamageTakenPower::modifiers),
             DamageCondition.optionalCodec("damage_condition").forGetter(ModifyDamageTakenPower::damageCondition),
             BiEntityCondition.optionalCodec("bientity_condition").forGetter(ModifyDamageTakenPower::biEntityCondition),
             EntityAction.optionalCodec("self_action").forGetter(ModifyDamageTakenPower::selfAction),

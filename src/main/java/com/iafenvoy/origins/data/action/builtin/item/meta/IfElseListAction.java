@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
+import com.iafenvoy.origins.util.Mutable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -23,9 +24,9 @@ public record IfElseListAction(List<ConditionedActionHolder> actions) implements
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull ItemStack stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
         for (ConditionedActionHolder holder : this.actions)
-            if (holder.condition.test(level, stack)) {
+            if (holder.condition.test(level, stack.get())) {
                 holder.action.execute(level, source, stack);
                 break;
             }
