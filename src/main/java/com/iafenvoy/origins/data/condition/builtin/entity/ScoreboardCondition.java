@@ -13,7 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record ScoreboardCondition(Optional<String> name, String objective, Comparison comparison) implements EntityCondition {
+public record ScoreboardCondition(Optional<String> name, String objective,
+                                  Comparison comparison) implements EntityCondition {
     public static final MapCodec<ScoreboardCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.STRING.optionalFieldOf("name").forGetter(ScoreboardCondition::name),
             Codec.STRING.fieldOf("objective").forGetter(ScoreboardCondition::objective),

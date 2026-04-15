@@ -41,7 +41,9 @@ public class EntityGlowPower extends Power {
     }
 
 
-    /** Standard getters following Java convention. */
+    /**
+     * Standard getters following Java convention.
+     */
     public EntityCondition getEntityCondition() {
         return this.entityCondition;
     }

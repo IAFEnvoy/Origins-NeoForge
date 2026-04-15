@@ -92,8 +92,8 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast) : results;
     }
 
-    public void onPowerToggle(int index) {
-        this.streamPowers(Toggleable.class).forEach(x -> x.toggle(this, index));
+    public void onPowerToggle(String key) {
+        this.streamPowers(Toggleable.class).forEach(x -> x.toggle(this, key));
     }
 
     //Origin Related

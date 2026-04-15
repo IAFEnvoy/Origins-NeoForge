@@ -74,6 +74,6 @@ public final class ServerNetworkHandler {
 
     public static void onPowerToggle(PowerToggleC2SPayload payload, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) return;
-        OriginDataHolder.get(player).onPowerToggle(payload.index());
+        OriginDataHolder.get(player).onPowerToggle(payload.key());
     }
 }

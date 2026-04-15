@@ -8,7 +8,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record RidingRecursiveCondition(BiEntityCondition biEntityCondition, Comparison comparison) implements EntityCondition {
+public record RidingRecursiveCondition(BiEntityCondition biEntityCondition,
+                                       Comparison comparison) implements EntityCondition {
     public static final MapCodec<RidingRecursiveCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BiEntityCondition.optionalCodec("bientity_condition").forGetter(RidingRecursiveCondition::biEntityCondition),
             Comparison.CODEC.forGetter(RidingRecursiveCondition::comparison)

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record TemperatureCondition(Comparison comparison) implements BiomeCondition {
     public static final MapCodec<TemperatureCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-           Comparison.CODEC.forGetter(TemperatureCondition::comparison)
+            Comparison.CODEC.forGetter(TemperatureCondition::comparison)
     ).apply(i, TemperatureCondition::new));
 
     @Override

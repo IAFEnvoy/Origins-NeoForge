@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public class WaterBreathingPower extends Power {
     public static final MapCodec<WaterBreathingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            EntityCondition.optionalCodec("condition").forGetter(waterBreathingPower -> waterBreathingPower.getCondition())
+            EntityCondition.optionalCodec("condition").forGetter(WaterBreathingPower::getCondition)
     ).apply(i, WaterBreathingPower::new));
     private final EntityCondition condition;
 

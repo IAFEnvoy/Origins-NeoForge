@@ -14,7 +14,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record DamageTargetAction(Holder<DamageType> damageType, float amount, List<Modifier> modifiers) implements BiEntityAction {
+public record DamageTargetAction(Holder<DamageType> damageType, float amount,
+                                 List<Modifier> modifiers) implements BiEntityAction {
     public static final MapCodec<DamageTargetAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageTargetAction::damageType),
             Codec.FLOAT.fieldOf("amount").forGetter(DamageTargetAction::amount),

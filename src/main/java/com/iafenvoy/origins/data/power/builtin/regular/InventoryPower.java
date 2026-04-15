@@ -1,11 +1,14 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.Constants;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.common.KeySettings;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
+import com.iafenvoy.origins.registry.OriginsKeyMappings;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -22,27 +25,31 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 //FIXME::Back to vanilla screens or use custom screen?
 public class InventoryPower extends Power implements Toggleable, MenuProvider {
     public static final MapCodec<InventoryPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            ComponentSerialization.CODEC.optionalFieldOf("title", Component.translatable("container.inventory")).forGetter(inventoryPower -> inventoryPower.getTitle()),
-            Codec.BOOL.optionalFieldOf("drop_on_death", false).forGetter(inventoryPower -> inventoryPower.isDropOnDeath()),
-            ContainerType.CODEC.optionalFieldOf("container_type", ContainerType.DISPENSER).forGetter(inventoryPower -> inventoryPower.getContainerType()),
-            EntityCondition.optionalCodec("condition").forGetter(inventoryPower -> inventoryPower.getCondition())
+            ComponentSerialization.CODEC.optionalFieldOf("title", Component.translatable("container.inventory")).forGetter(InventoryPower::getTitle),
+            Codec.BOOL.optionalFieldOf("drop_on_death", false).forGetter(InventoryPower::isDropOnDeath),
+            ContainerType.CODEC.optionalFieldOf("container_type", ContainerType.DISPENSER).forGetter(InventoryPower::getContainerType),
+            EntityCondition.optionalCodec("condition").forGetter(InventoryPower::getCondition),
+            KeySettings.CODEC.forGetter(InventoryPower::getKey)
     ).apply(i, InventoryPower::new));
     private final Component title;
     private final boolean dropOnDeath;
     private final ContainerType containerType;
     private final EntityCondition condition;
+    private final KeySettings key;
 
-    public InventoryPower(BaseSettings settings, Component title, boolean dropOnDeath, ContainerType containerType, EntityCondition condition) {
+    public InventoryPower(BaseSettings settings, Component title, boolean dropOnDeath, ContainerType containerType, EntityCondition condition, KeySettings key) {
         super(settings);
         this.title = title;
         this.dropOnDeath = dropOnDeath;
         this.containerType = containerType;
         this.condition = condition;
+        this.key = key;
     }
 
     public Component getTitle() {
@@ -61,6 +68,10 @@ public class InventoryPower extends Power implements Toggleable, MenuProvider {
         return this.condition;
     }
 
+    public KeySettings getKey() {
+        return this.key;
+    }
+
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
@@ -72,8 +83,8 @@ public class InventoryPower extends Power implements Toggleable, MenuProvider {
     }
 
     @Override
-    public void toggle(@NotNull OriginDataHolder holder, int index) {
-        if (holder.entity() instanceof Player player)
+    public void toggle(@NotNull OriginDataHolder holder, String key) {
+        if (holder.entity() instanceof Player player && Objects.equals(this.key.key(), key))
             player.openMenu(this);
     }
 

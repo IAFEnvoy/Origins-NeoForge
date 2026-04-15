@@ -14,7 +14,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record DamageAction(Holder<DamageType> damageType, float amount, List<Modifier> modifiers) implements EntityAction {
+public record DamageAction(Holder<DamageType> damageType, float amount,
+                           List<Modifier> modifiers) implements EntityAction {
     public static final MapCodec<DamageAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageAction::damageType),
             Codec.FLOAT.fieldOf("amount").forGetter(DamageAction::amount),

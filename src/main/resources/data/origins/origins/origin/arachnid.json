@@ -1,5 +1,6 @@
 {
 	"powers": [
+		"origins:primary_key",
 		"origins:climbing",
 		"origins:master_of_webs",
 		"origins:carnivore",

@@ -42,7 +42,6 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyBreakSpeedPower>> MODIFY_BREAK_SPEED = REGISTRY.register("modify_break_speed", () -> ModifyBreakSpeedPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyExhaustionPower>> MODIFY_EXHAUSTION = REGISTRY.register("modify_exhaustion", () -> ModifyExhaustionPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyTypeTagPower>> MODIFY_TYPE_TAG = REGISTRY.register("modify_type_tag", () -> ModifyTypeTagPower.CODEC);
-    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<MultiplePower>> MULTIPLE = REGISTRY.register("multiple", () -> MultiplePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<NightVisionPower>> NIGHT_VISION = REGISTRY.register("night_vision", () -> NightVisionPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<OverlayPower>> OVERLAY = REGISTRY.register("overlay", () -> OverlayPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ParticlePower>> PARTICLE = REGISTRY.register("particle", () -> ParticlePower.CODEC);

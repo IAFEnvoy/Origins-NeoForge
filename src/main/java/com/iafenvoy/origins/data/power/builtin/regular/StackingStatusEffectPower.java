@@ -19,11 +19,11 @@ import java.util.Optional;
 public class StackingStatusEffectPower extends Power {
     public static final MapCodec<StackingStatusEffectPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.INT.optionalFieldOf("min_stacks", 0).forGetter(stackingStatusEffectPower -> stackingStatusEffectPower.getMinStacks()),
-            Codec.INT.optionalFieldOf("max_stacks", 10).forGetter(stackingStatusEffectPower -> stackingStatusEffectPower.getMaxStacks()),
-            Codec.INT.optionalFieldOf("duration_per_stack", 10).forGetter(stackingStatusEffectPower -> stackingStatusEffectPower.getDurationPerStack()),
-            EffectEntry.CODEC.listOf().optionalFieldOf("effect", List.of()).forGetter(stackingStatusEffectPower -> stackingStatusEffectPower.getEffects()),
-            EntityCondition.optionalCodec("condition").forGetter(stackingStatusEffectPower -> stackingStatusEffectPower.getCondition())
+            Codec.INT.optionalFieldOf("min_stacks", 0).forGetter(StackingStatusEffectPower::getMinStacks),
+            Codec.INT.optionalFieldOf("max_stacks", 10).forGetter(StackingStatusEffectPower::getMaxStacks),
+            Codec.INT.optionalFieldOf("duration_per_stack", 10).forGetter(StackingStatusEffectPower::getDurationPerStack),
+            EffectEntry.CODEC.listOf().optionalFieldOf("effect", List.of()).forGetter(StackingStatusEffectPower::getEffects),
+            EntityCondition.optionalCodec("condition").forGetter(StackingStatusEffectPower::getCondition)
     ).apply(i, StackingStatusEffectPower::new));
     private final int minStacks;
     private final int maxStacks;

@@ -20,8 +20,7 @@ public record ModifyDeathTicksAction(Modifier modifier) implements EntityAction 
 
     @Override
     public void execute(@NotNull Entity source) {
-        if (source instanceof LivingEntity living) {
-            living.deathTime = (int) this.modifier.apply(living.deathTime);
-        }
+        if (source instanceof LivingEntity living)
+            living.deathTime = this.modifier.apply(living.deathTime);
     }
 }

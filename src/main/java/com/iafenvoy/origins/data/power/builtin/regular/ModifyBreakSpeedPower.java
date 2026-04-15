@@ -14,9 +14,9 @@ import java.util.List;
 public class ModifyBreakSpeedPower extends Power {
     public static final MapCodec<ModifyBreakSpeedPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(modifyBreakSpeedPower -> modifyBreakSpeedPower.getModifiers()),
-            BlockCondition.optionalCodec("block_condition").forGetter(modifyBreakSpeedPower -> modifyBreakSpeedPower.getBlockCondition()),
-            EntityCondition.optionalCodec("condition").forGetter(modifyBreakSpeedPower -> modifyBreakSpeedPower.getCondition())
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyBreakSpeedPower::getModifiers),
+            BlockCondition.optionalCodec("block_condition").forGetter(ModifyBreakSpeedPower::getBlockCondition),
+            EntityCondition.optionalCodec("condition").forGetter(ModifyBreakSpeedPower::getCondition)
     ).apply(i, ModifyBreakSpeedPower::new));
     private final List<Modifier> modifiers;
     private final BlockCondition blockCondition;

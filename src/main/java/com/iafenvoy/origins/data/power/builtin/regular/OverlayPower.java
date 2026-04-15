@@ -12,16 +12,16 @@ import java.util.Optional;
 public class OverlayPower extends Power {
     public static final MapCodec<OverlayPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.STRING.optionalFieldOf("sprite").forGetter(overlayPower -> overlayPower.getSprite()),
-            Codec.FLOAT.optionalFieldOf("red", 1F).forGetter(overlayPower -> overlayPower.getRed()),
-            Codec.FLOAT.optionalFieldOf("green", 1F).forGetter(overlayPower -> overlayPower.getGreen()),
-            Codec.FLOAT.optionalFieldOf("blue", 1F).forGetter(overlayPower -> overlayPower.getBlue()),
-            Codec.FLOAT.optionalFieldOf("strength", 1F).forGetter(overlayPower -> overlayPower.getStrength()),
-            Codec.STRING.optionalFieldOf("draw_mode", "texture").forGetter(overlayPower -> overlayPower.getDrawMode()),
-            Codec.STRING.optionalFieldOf("draw_phase", "below_hud").forGetter(overlayPower -> overlayPower.getDrawPhase()),
-            Codec.BOOL.optionalFieldOf("visible_in_third_person", false).forGetter(overlayPower -> overlayPower.isVisibleInThirdPerson()),
-            Codec.BOOL.optionalFieldOf("hide_with_hud", true).forGetter(overlayPower -> overlayPower.isHideWithHud()),
-            EntityCondition.optionalCodec("condition").forGetter(overlayPower -> overlayPower.getCondition())
+            Codec.STRING.optionalFieldOf("sprite").forGetter(OverlayPower::getSprite),
+            Codec.FLOAT.optionalFieldOf("red", 1F).forGetter(OverlayPower::getRed),
+            Codec.FLOAT.optionalFieldOf("green", 1F).forGetter(OverlayPower::getGreen),
+            Codec.FLOAT.optionalFieldOf("blue", 1F).forGetter(OverlayPower::getBlue),
+            Codec.FLOAT.optionalFieldOf("strength", 1F).forGetter(OverlayPower::getStrength),
+            Codec.STRING.optionalFieldOf("draw_mode", "texture").forGetter(OverlayPower::getDrawMode),
+            Codec.STRING.optionalFieldOf("draw_phase", "below_hud").forGetter(OverlayPower::getDrawPhase),
+            Codec.BOOL.optionalFieldOf("visible_in_third_person", false).forGetter(OverlayPower::isVisibleInThirdPerson),
+            Codec.BOOL.optionalFieldOf("hide_with_hud", true).forGetter(OverlayPower::isHideWithHud),
+            EntityCondition.optionalCodec("condition").forGetter(OverlayPower::getCondition)
     ).apply(i, OverlayPower::new));
     private final Optional<String> sprite;
     private final float red;

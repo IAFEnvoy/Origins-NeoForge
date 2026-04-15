@@ -16,7 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
-public record EnchantmentCondition(Holder<Enchantment> enchantment, Calculation calculation, Comparison comparison) implements EntityCondition {
+public record EnchantmentCondition(Holder<Enchantment> enchantment, Calculation calculation,
+                                   Comparison comparison) implements EntityCondition {
     public static final MapCodec<EnchantmentCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Enchantment.CODEC.fieldOf("enchantment").forGetter(EnchantmentCondition::enchantment),
             Calculation.CODEC.optionalFieldOf("calculation", Calculation.SUM).forGetter(EnchantmentCondition::calculation),

@@ -57,11 +57,6 @@ public class ClimbingPower extends Power {
     }
 
     public boolean canClimb(LivingEntity player) {
-        OriginDataHolder holder = OriginDataHolder.get(player);
-        if (holder.getComponentFor(this, ToggleComponent.class).map(ToggleComponent::isActive).orElse(false)) {
-//            climbingPosSetter.accept(player.blockPosition());
-            return true;
-        }
-        return player.isSuppressingSlidingDownLadder() && this.allowHolding && this.holdCondition.test(player);
+        return this.getSettings().condition().test(player);
     }
 }

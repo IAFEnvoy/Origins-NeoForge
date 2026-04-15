@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public class ScareCreepersPower extends Power {
     public static final MapCodec<ScareCreepersPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            EntityCondition.optionalCodec("condition").forGetter(scareCreepersPower -> scareCreepersPower.getCondition())
+            EntityCondition.optionalCodec("condition").forGetter(ScareCreepersPower::getCondition)
     ).apply(i, ScareCreepersPower::new));
     private final EntityCondition condition;
 

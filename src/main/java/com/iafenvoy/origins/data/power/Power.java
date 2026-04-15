@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.badge.Badge;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
@@ -40,9 +41,13 @@ public abstract class Power {
         return this.settings;
     }
 
-    //FIXME::Power maps will use this method to collect
-    public List<Power> getSelfOrSubPowers() {
-        return List.of(this);
+    //Only one class each is allowed
+    public List<PowerComponent> createComponents() {
+        return List.of();
+    }
+
+    public boolean isActive(OriginDataHolder holder) {
+        return true;
     }
 
     public void grant(@NotNull Entity entity) {
@@ -51,18 +56,7 @@ public abstract class Power {
     public void revoke(@NotNull Entity entity) {
     }
 
-    public void entityLoad(@NotNull Entity entity) {
-    }
-
-    public void entitySave(@NotNull Entity entity) {
-    }
-
     public void tick(@NotNull Entity entity) {
-    }
-
-    //Only one class each is allowed
-    public List<PowerComponent> createComponents() {
-        return List.of();
     }
 
     public ResourceLocation getId(RegistryAccess access) {

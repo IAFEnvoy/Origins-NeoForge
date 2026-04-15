@@ -14,9 +14,9 @@ import java.util.Optional;
 public class PreventSleepPower extends Power {
     public static final MapCodec<PreventSleepPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            BlockCondition.optionalCodec("block_condition").forGetter(preventSleepPower -> preventSleepPower.getBlockCondition()),
-            ComponentSerialization.CODEC.optionalFieldOf("message").forGetter(preventSleepPower -> preventSleepPower.getMessage()),
-            EntityCondition.optionalCodec("condition").forGetter(preventSleepPower -> preventSleepPower.getCondition())
+            BlockCondition.optionalCodec("block_condition").forGetter(PreventSleepPower::getBlockCondition),
+            ComponentSerialization.CODEC.optionalFieldOf("message").forGetter(PreventSleepPower::getMessage),
+            EntityCondition.optionalCodec("condition").forGetter(PreventSleepPower::getCondition)
     ).apply(i, PreventSleepPower::new));
     private final BlockCondition blockCondition;
     private final Optional<Component> message;

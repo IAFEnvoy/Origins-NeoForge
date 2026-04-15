@@ -12,7 +12,7 @@ import java.util.Optional;
  * See also {@link Origin.Upgrade} for the inline version used by {@link Origin}.
  */
 public record OriginUpgrade(ResourceLocation advancementCondition, ResourceLocation upgradeToOrigin,
-                             @Nullable String announcement) {
+                            @Nullable String announcement) {
     public static final Codec<OriginUpgrade> CODEC = RecordCodecBuilder.create(i -> i.group(
             ResourceLocation.CODEC.fieldOf("condition").forGetter(OriginUpgrade::advancementCondition),
             ResourceLocation.CODEC.fieldOf("origin").forGetter(OriginUpgrade::upgradeToOrigin),

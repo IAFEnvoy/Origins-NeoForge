@@ -5,5 +5,5 @@ import org.jetbrains.annotations.NotNull;
 
 public interface Toggleable {
     //Server side call!!!
-    void toggle(@NotNull OriginDataHolder holder, int index);
+    void toggle(@NotNull OriginDataHolder holder, String key);
 }
