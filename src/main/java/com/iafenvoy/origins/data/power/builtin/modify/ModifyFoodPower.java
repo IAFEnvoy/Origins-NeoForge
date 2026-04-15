@@ -5,8 +5,7 @@ import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.ListConfiguration;
-import com.iafenvoy.origins.util.Modifier;
-import com.iafenvoy.origins.util.ModifierUtil;
+import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -48,10 +47,10 @@ public record ModifyFoodPower(List<Modifier> foodModifiers, List<Modifier> satur
     }
 
     public double applyFood(double baseValue) {
-        return ModifierUtil.applyModifiers(this.foodModifiers, baseValue);
+        return Modifier.applyModifiers(this.foodModifiers, baseValue);
     }
 
     public double applySaturation(double baseValue) {
-        return ModifierUtil.applyModifiers(this.saturationModifiers, baseValue);
+        return Modifier.applyModifiers(this.saturationModifiers, baseValue);
     }
 }

@@ -1,13 +1,11 @@
 package com.iafenvoy.origins.data.badge;
 
+import com.iafenvoy.origins.Constants;
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.data.badge.builtin.EmptyBadge;
-import com.iafenvoy.origins.data.badge.builtin.KeybindBadge;
-import com.iafenvoy.origins.data.badge.builtin.SpriteBadge;
-import com.iafenvoy.origins.data.badge.builtin.TooltipBadge;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.DefaultedMappedRegistry;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -19,16 +17,9 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 @EventBusSubscriber
 public final class BadgeRegistries {
     public static final ResourceKey<Registry<MapCodec<? extends Badge>>> BADGE_TYPE_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "badge_type"));
-    public static final Registry<MapCodec<? extends Badge>> BADGE_TYPE = new MappedRegistry<>(BADGE_TYPE_KEY, Lifecycle.stable());
+    public static final DefaultedRegistry<MapCodec<? extends Badge>> BADGE_TYPE = new DefaultedMappedRegistry<>(Constants.EMPTY_KEY, BADGE_TYPE_KEY, Lifecycle.stable(), false);
 
     public static final ResourceKey<Registry<Badge>> BADGE_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "badge"));
-
-    static {//FIXME::Standalone registry file
-        Registry.register(BADGE_TYPE, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "empty"), EmptyBadge.CODEC);
-        Registry.register(BADGE_TYPE, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "keybind"), KeybindBadge.CODEC);
-        Registry.register(BADGE_TYPE, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "sprite"), SpriteBadge.CODEC);
-        Registry.register(BADGE_TYPE, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "tooltip"), TooltipBadge.CODEC);
-    }
 
     @SubscribeEvent
     public static void newRegistries(NewRegistryEvent event) {

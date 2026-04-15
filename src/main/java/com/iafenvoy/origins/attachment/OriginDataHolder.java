@@ -6,25 +6,30 @@ import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Prioritized;
 import com.iafenvoy.origins.data.power.builtin.regular.EntitySetPower;
+import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
+import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.registry.OriginsAttachments;
+import com.iafenvoy.origins.util.RLHelper;
 import com.iafenvoy.origins.util.RandomHelper;
 import com.mojang.serialization.MapCodec;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -49,6 +54,7 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
 
     public void grantPower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().put(source, power);
+        this.data.getComponents().put(RLHelper.id(power), power.value().createComponents().stream().collect(Collectors.toMap(PowerComponent::getClass, Function.identity())));
         power.value().grant(this.entity);
     }
 
@@ -57,8 +63,9 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
     }
 
     public void revokePower(ResourceLocation source, Holder<Power> power) {
-        this.data.getPowers().remove(source, power);
         power.value().revoke(this.entity);
+        this.data.getComponents().remove(RLHelper.id(power));
+        this.data.getPowers().remove(source, power);
     }
 
     public void revokeAllPowers(ResourceLocation source) {
@@ -94,14 +101,14 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
             //TODO::Move message outside
             this.entity.sendSystemMessage(Component.translatable("commands.origin.set.success.single", this.entity.getDisplayName(), Layer.getName(layer), Origin.getName(origin)));
         this.data.getOrigins().put(layer, origin);
-        ResourceLocation id = origin.getKey().location();
+        ResourceLocation id = RLHelper.id(origin);
         origin.value().powers().forEach(x -> this.grantPower(id, x));
     }
 
     public void clearOrigin(@NotNull Holder<Layer> layer) {
         Holder<Origin> origin = this.data.getOrigins().remove(layer);
         if (origin == null) return;
-        ResourceLocation id = origin.getKey().location();
+        ResourceLocation id = RLHelper.id(origin);
         origin.value().powers().forEach(x -> this.revokePower(id, x));
     }
 
@@ -144,58 +151,21 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         return true;
     }
 
-    //Entity Sets
-    public void addEntity(ResourceLocation id, Entity target) {
-        this.addEntity(id, target, -1);
+    //Component Related
+    public <T> List<T> getComponents(Class<T> clazz) {
+        return this.data.getComponents().values().stream().map(x -> x.get(clazz)).filter(Objects::nonNull).map(clazz::cast).toList();
     }
 
-    //-1 for unlimited
-    public void addEntity(ResourceLocation id, Entity target, int timeLimit) {
-        Map<UUID, Integer> map = this.data.getEntitySets().computeIfAbsent(id, i -> new LinkedHashMap<>());
-        if (!map.containsKey(target.getUUID())) {
-            map.put(target.getUUID(), timeLimit);
-            this.postAdd(this.entity, id, target);
-        }
+    public <T> Optional<T> getComponent(ResourceLocation id, Class<T> clazz) {
+        return Optional.ofNullable(this.data.getComponents().get(id).get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast);
     }
 
-    public void removeEntity(ResourceLocation id, Entity target) {
-        Map<UUID, Integer> map = this.data.getEntitySets().computeIfAbsent(id, i -> new LinkedHashMap<>());
-        if (map.containsKey(target.getUUID())) {
-            map.remove(target.getUUID());
-            this.postRemove(this.entity, id, target);
-        }
+    public <H, T extends ComponentHolderProvider<H>> List<H> getComponentHolders(Class<T> clazz) {
+        return this.data.getComponents().values().stream().map(x -> x.get(clazz)).filter(Objects::nonNull).map(clazz::cast).map(x -> x.constructHolder(this)).toList();
     }
 
-    public void postAdd(Entity self, ResourceLocation id, Entity target) {
-        this.getPowers(id, EntitySetPower.class).forEach(x -> x.actionOnAdd().execute(self, target));
-    }
-
-    public void postRemove(Entity self, ResourceLocation id, Entity target) {
-        if (target != null)
-            this.getPowers(id, EntitySetPower.class).forEach(x -> x.actionOnRemove().execute(self, target));
-    }
-
-    public List<UUID> getEntityUuids(ResourceLocation id) {
-        Map<UUID, Integer> map = this.data.getEntitySets().get(id);
-        return map != null ? new LinkedList<>(map.keySet()) : new LinkedList<>();
-    }
-
-    public boolean containEntity(ResourceLocation id, Entity target) {
-        return this.data.getEntitySets().computeIfAbsent(id, i -> new LinkedHashMap<>()).containsKey(target.getUUID());
-    }
-
-    public int getSize(ResourceLocation id) {
-        Map<UUID, Integer> map = this.data.getEntitySets().get(id);
-        return map != null ? map.size() : 0;
-    }
-
-    //Resources
-    public void updateResource(ResourceLocation id, IntBinaryOperator operation, int value) {
-        this.data.getResources().computeInt(id, (i, cur) -> operation.applyAsInt(cur, value));
-    }
-
-    public int getResource(ResourceLocation id) {
-        return this.data.getResources().getOrDefault(id, 0);
+    public <H, T extends ComponentHolderProvider<H>> Optional<H> getComponentHolder(ResourceLocation id, Class<T> clazz) {
+        return Optional.ofNullable(this.data.getComponents().get(id).get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast).map(x -> x.constructHolder(this));
     }
 
     //Utils
@@ -214,21 +184,9 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
 
     public void tick(@NotNull Entity entity) {
         this.getOrigins().values().forEach(o -> executeOnPowers(o, p -> p.tick(entity)));
-        //Entity Sets
-        for (Map.Entry<ResourceLocation, Map<UUID, Integer>> entry : this.data.getEntitySets().entrySet()) {
-            List<UUID> removal = new LinkedList<>();
-            for (Map.Entry<UUID, Integer> e : entry.getValue().entrySet()) {
-                int value = e.getValue();
-                if (value == 0) {
-                    removal.add(e.getKey());
-                    if (entity.level() instanceof ServerLevel serverLevel)
-                        this.postRemove(entity, entry.getKey(), serverLevel.getEntity(e.getKey()));
-                } else if (value > 0) entry.getValue().computeIfPresent(e.getKey(), (u, i) -> i - 1);
-            }
-            removal.forEach(entry.getValue()::remove);
-        }
     }
 
+    @ApiStatus.Internal
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         OriginDataHolder.get(event.getEntity()).tick(event.getEntity());

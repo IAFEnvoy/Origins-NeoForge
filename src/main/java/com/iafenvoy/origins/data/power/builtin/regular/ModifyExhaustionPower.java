@@ -3,7 +3,7 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.ListConfiguration;
-import com.iafenvoy.origins.util.Modifier;
+import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;

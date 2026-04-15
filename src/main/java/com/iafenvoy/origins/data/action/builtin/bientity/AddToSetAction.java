@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.action.builtin.bientity;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BiEntityAction;
+import com.iafenvoy.origins.data.power.component.builtin.EntitySetComponent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -22,6 +23,6 @@ public record AddToSetAction(ResourceLocation set, int timeLimit) implements BiE
 
     @Override
     public void execute(@NotNull Entity source, @NotNull Entity target) {
-        OriginDataHolder.get(source).addEntity(this.set, target, this.timeLimit);
+        OriginDataHolder.get(source).getComponentHolder(this.set, EntitySetComponent.class).ifPresent(x -> x.addEntity(this.set, target, this.timeLimit));
     }
 }

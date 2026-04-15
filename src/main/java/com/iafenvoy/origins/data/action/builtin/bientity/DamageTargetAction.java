@@ -2,8 +2,7 @@ package com.iafenvoy.origins.data.action.builtin.bientity;
 
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.util.ListConfiguration;
-import com.iafenvoy.origins.util.Modifier;
-import com.iafenvoy.origins.util.ModifierUtil;
+import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -29,7 +28,7 @@ public record DamageTargetAction(Holder<DamageType> damageType, float amount, Li
 
     @Override
     public void execute(@NotNull Entity source, @NotNull Entity target) {
-        float finalAmount = (float) ModifierUtil.applyModifiers(this.modifiers, this.amount);
+        float finalAmount = (float) Modifier.applyModifiers(this.modifiers, this.amount);
         target.hurt(new DamageSource(this.damageType, source), finalAmount);
     }
 }

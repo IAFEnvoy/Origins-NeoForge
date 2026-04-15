@@ -2,9 +2,13 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.component.builtin.EntitySetComponent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public record EntitySetPower(BiEntityAction actionOnAdd, BiEntityAction actionOnRemove) implements Power {
     public static final MapCodec<EntitySetPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -15,5 +19,10 @@ public record EntitySetPower(BiEntityAction actionOnAdd, BiEntityAction actionOn
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
+    }
+
+    @Override
+    public List<PowerComponent> createComponents() {
+        return List.of(new EntitySetComponent());
     }
 }

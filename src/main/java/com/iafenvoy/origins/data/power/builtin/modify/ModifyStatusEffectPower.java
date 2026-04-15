@@ -2,8 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.ListConfiguration;
-import com.iafenvoy.origins.util.Modifier;
-import com.iafenvoy.origins.util.ModifierUtil;
+import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -29,6 +28,6 @@ public record ModifyStatusEffectPower(List<Holder<MobEffect>> effects, List<Modi
     }
 
     public double apply(double baseValue) {
-        return ModifierUtil.applyModifiers(this.modifiers, baseValue);
+        return Modifier.applyModifiers(this.modifiers, baseValue);
     }
 }

@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.condition.builtin.bientity;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
+import com.iafenvoy.origins.data.power.component.builtin.EntitySetComponent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +21,6 @@ public record InSetCondition(ResourceLocation set) implements BiEntityCondition 
 
     @Override
     public boolean test(@NotNull Entity source, @NotNull Entity target) {
-        return OriginDataHolder.get(source).containEntity(this.set, target);
+        return OriginDataHolder.get(source).getComponentHolder(this.set, EntitySetComponent.class).map(x -> x.containEntity(target)).orElse(false);
     }
 }

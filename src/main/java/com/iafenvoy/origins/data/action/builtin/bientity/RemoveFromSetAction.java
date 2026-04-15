@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.action.builtin.bientity;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BiEntityAction;
+import com.iafenvoy.origins.data.power.component.builtin.EntitySetComponent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +21,6 @@ public record RemoveFromSetAction(ResourceLocation set) implements BiEntityActio
 
     @Override
     public void execute(@NotNull Entity source, @NotNull Entity target) {
-        OriginDataHolder.get(source).removeEntity(this.set, target);
+        OriginDataHolder.get(source).getComponentHolder(this.set, EntitySetComponent.class).ifPresent(x -> x.removeEntity(this.set, target));
     }
 }

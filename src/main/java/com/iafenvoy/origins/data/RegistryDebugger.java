@@ -7,6 +7,8 @@ import com.iafenvoy.origins.data.condition.ConditionRegistries;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
 import com.iafenvoy.origins.data.power.PowerRegistries;
+import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.component.PowerComponentRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -25,7 +27,7 @@ public final class RegistryDebugger {
             BadgeRegistries.BADGE_TYPE,
             ConditionRegistries.BI_ENTITY_CONDITION, ConditionRegistries.BIOME_CONDITION, ConditionRegistries.BLOCK_CONDITION, ConditionRegistries.DAMAGE_CONDITION,
             ConditionRegistries.ENTITY_CONDITION, ConditionRegistries.FLUID_CONDITION, ConditionRegistries.ITEM_CONDITION,
-            PowerRegistries.POWER_TYPE
+            PowerRegistries.POWER_TYPE, PowerComponentRegistries.POWER_COMPONENT_TYPE
     );
     private static final List<ResourceKey<? extends Registry<?>>> DYNAMIC_REGISTRIES = List.of(BadgeRegistries.BADGE_KEY, LayerRegistries.LAYER_KEY, OriginRegistries.ORIGIN_KEY, PowerRegistries.POWER_KEY);
 

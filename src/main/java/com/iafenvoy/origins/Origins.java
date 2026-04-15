@@ -4,6 +4,7 @@ import com.iafenvoy.origins.data.action.builtin.BiEntityActions;
 import com.iafenvoy.origins.data.action.builtin.BlockActions;
 import com.iafenvoy.origins.data.action.builtin.EntityActions;
 import com.iafenvoy.origins.data.action.builtin.ItemActions;
+import com.iafenvoy.origins.data.badge.BuiltinBadges;
 import com.iafenvoy.origins.data.condition.builtin.*;
 import com.iafenvoy.origins.data.power.builtin.ActionPowers;
 import com.iafenvoy.origins.data.power.builtin.ModifyPowers;
@@ -34,6 +35,8 @@ public final class Origins {
         BlockActions.REGISTRY.register(bus);
         EntityActions.REGISTRY.register(bus);
         ItemActions.REGISTRY.register(bus);
+        //Badge
+        BuiltinBadges.REGISTRY.register(bus);
         //Condition
         BiEntityConditions.REGISTRY.register(bus);
         BiomeConditions.REGISTRY.register(bus);

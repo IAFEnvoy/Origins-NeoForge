@@ -6,7 +6,7 @@ import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.Modifier;
+import com.iafenvoy.origins.util.math.Modifier;
 import com.iafenvoy.origins.util.codec.ExtraEnumCodecs;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

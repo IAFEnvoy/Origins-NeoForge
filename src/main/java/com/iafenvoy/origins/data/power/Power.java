@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power;
 
+import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.util.codec.DefaultedCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -22,7 +23,7 @@ public interface Power {
     @NotNull
     MapCodec<? extends Power> codec();
 
-    //Power maps will use this method to collect
+    //FIXME::Power maps will use this method to collect
     default List<Power> getSelfOrSubPowers() {
         return List.of(this);
     }
@@ -44,6 +45,11 @@ public interface Power {
 
     default boolean hidden() {
         return false;
+    }
+
+    //Only one class each is allowed
+    default List<PowerComponent> createComponents() {
+        return List.of();
     }
 
     default ResourceLocation getId(RegistryAccess access) {

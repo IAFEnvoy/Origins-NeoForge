@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.util;
 
+import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;

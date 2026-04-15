@@ -4,6 +4,7 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
+import com.iafenvoy.origins.data.power.component.builtin.EntitySetComponent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +37,7 @@ public record ActionOnSetAction(ResourceLocation set, BiEntityAction biEntityAct
     @Override
     public void execute(@NotNull Entity source) {
         if (!(source.level() instanceof ServerLevel serverLevel)) return;
-        List<UUID> uuids = OriginDataHolder.get(source).getEntityUuids(this.set);
+        List<UUID> uuids = OriginDataHolder.get(source).getComponentHolder(this.set, EntitySetComponent.class).map(EntitySetComponent.Holder::getEntityUuids).orElse(new LinkedList<>());
         if (this.reverse) Collections.reverse(uuids);
         int remain = this.limit;
         for (UUID uuid : uuids) {
