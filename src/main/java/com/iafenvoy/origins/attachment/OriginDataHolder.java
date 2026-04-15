@@ -5,14 +5,13 @@ import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Prioritized;
-import com.iafenvoy.origins.data.power.builtin.regular.EntitySetPower;
+import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.util.RLHelper;
 import com.iafenvoy.origins.util.RandomHelper;
 import com.mojang.serialization.MapCodec;
-import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -30,7 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.IntBinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -91,6 +89,10 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
     public <T extends Power> Stream<T> streamPowers(Class<T> clazz) {
         Stream<T> results = this.data.getPowers().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast) : results;
+    }
+
+    public void onPowerToggle(int index) {
+        this.streamPowers(Toggleable.class).forEach(x -> x.toggle(this, index));
     }
 
     //Origin Related

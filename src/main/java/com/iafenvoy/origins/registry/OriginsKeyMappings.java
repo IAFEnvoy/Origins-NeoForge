@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.registry;
 
+import com.iafenvoy.origins.network.payload.PowerToggleC2SPayload;
 import com.iafenvoy.origins.screen.ViewOriginScreen;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -9,6 +10,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
@@ -29,5 +31,6 @@ public final class OriginsKeyMappings {
     @SubscribeEvent
     public static void clientTick(ClientTickEvent.Post event) {
         if (VIEW_ORIGIN.consumeClick()) Minecraft.getInstance().setScreen(new ViewOriginScreen());
+        if (PRIMARY_ACTIVE.consumeClick()) PacketDistributor.sendToServer(new PowerToggleC2SPayload(0));
     }
 }

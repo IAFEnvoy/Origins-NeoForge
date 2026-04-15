@@ -1,23 +1,98 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.Toggleable;
+import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public record InventoryPower(String title, boolean dropOnDeath, int containerSize,
-                             EntityCondition condition) implements Power {
+import java.util.List;
+import java.util.Locale;
+
+//FIXME::Back to vanilla screens or use custom screen?
+public record InventoryPower(Component title, boolean dropOnDeath, ContainerType containerType,
+                             EntityCondition condition) implements Power, Toggleable, MenuProvider {
     public static final MapCodec<InventoryPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.STRING.optionalFieldOf("title", "container.inventory").forGetter(InventoryPower::title),
+            ComponentSerialization.CODEC.optionalFieldOf("title", Component.translatable("container.inventory")).forGetter(InventoryPower::title),
             Codec.BOOL.optionalFieldOf("drop_on_death", false).forGetter(InventoryPower::dropOnDeath),
-            Codec.INT.optionalFieldOf("container_size", 9).forGetter(InventoryPower::containerSize),
+            ContainerType.CODEC.optionalFieldOf("container_type", ContainerType.DISPENSER).forGetter(InventoryPower::containerType),
             EntityCondition.optionalCodec("condition").forGetter(InventoryPower::condition)
     ).apply(i, InventoryPower::new));
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
+    }
+
+    @Override
+    public List<PowerComponent> createComponents() {
+        return List.of(new InventoryComponent(this.containerType.getSize()));
+    }
+
+    @Override
+    public void toggle(OriginDataHolder holder, int index) {
+        if (holder.entity() instanceof Player player)
+            player.openMenu(this);
+    }
+
+    @Override
+    public @NotNull Component getDisplayName() {
+        return this.title;
+    }
+
+    @Override
+    public @Nullable AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
+        return OriginDataHolder.get(player).getComponents(InventoryComponent.class).stream().findFirst().map(InventoryComponent::container).map(container -> this.containerType.getFactory().createMenu(id, inventory, container)).orElse(null);
+    }
+
+    public enum ContainerType implements StringRepresentable {
+        CHEST_1x9(9, (id, inventory, container) -> new ChestMenu(MenuType.GENERIC_9x1, id, inventory, container, 1)),
+        CHEST_2x9(18, (id, inventory, container) -> new ChestMenu(MenuType.GENERIC_9x2, id, inventory, container, 2)),
+        CHEST_3x9(27, ChestMenu::threeRows),
+        CHEST_4x9(36, (id, inventory, container) -> new ChestMenu(MenuType.GENERIC_9x4, id, inventory, container, 4)),
+        CHEST_5x9(45, (id, inventory, container) -> new ChestMenu(MenuType.GENERIC_9x5, id, inventory, container, 5)),
+        CHEST_6x9(54, ChestMenu::sixRows),
+        HOPPER(5, HopperMenu::new),
+        DISPENSER(9, DispenserMenu::new);
+        public static final Codec<ContainerType> CODEC = StringRepresentable.fromValues(ContainerType::values);
+        private final int size;
+        private final MenuFactory factory;
+
+        ContainerType(int size, MenuFactory factory) {
+            this.size = size;
+            this.factory = factory;
+        }
+
+        public int getSize() {
+            return this.size;
+        }
+
+        public MenuFactory getFactory() {
+            return this.factory;
+        }
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return this.name().toLowerCase(Locale.ROOT);
+        }
+
+        @FunctionalInterface
+        public interface MenuFactory {
+            AbstractContainerMenu createMenu(int id, Inventory inventory, Container container);
+        }
     }
 }

@@ -7,6 +7,7 @@ import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.network.payload.ChooseOriginC2SPayload;
 import com.iafenvoy.origins.network.payload.ChooseRandomOriginC2SPayload;
 import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
+import com.iafenvoy.origins.network.payload.PowerToggleC2SPayload;
 import com.iafenvoy.origins.util.RLHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,17 +38,7 @@ public final class ServerNetworkHandler {
                 Origins.LOGGER.info("Player {} chose origin \"{}\" for layer \"{}\"", player.getName().getString(), RLHelper.string(origin), RLHelper.string(layer));
 
             }
-        } else {
-            List<Holder<Origin>> randomOriginIds = layer.value().collectRandomizableOrigins(player.registryAccess()).toList();
-            if (!layer.value().allowRandom() || randomOriginIds.isEmpty()) {
-                Origins.LOGGER.warn("Player {} tried to choose a random origin for layer \"{}\", which is not allowed!", player.getName().getString(), RLHelper.string(layer));
-                holder.clearOrigin(layer);
-            } else {
-                Holder<Origin> origin = randomOriginIds.get(player.getRandom().nextInt(randomOriginIds.size()));
-                holder.setOrigin(layer, origin);
-                Origins.LOGGER.info("Player {} was randomly assigned the following origin: {}", player.getName().getString(), RLHelper.string(origin));
-            }
-        }
+        } else randomOrigin(player, holder, layer);
         context.reply(new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
         holder.data().setSelecting(false);
         holder.sync();
@@ -63,6 +54,13 @@ public final class ServerNetworkHandler {
             return;
         }
 
+        randomOrigin(player, holder, layer);
+        context.reply(new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
+        holder.data().setSelecting(false);
+        holder.sync();
+    }
+
+    private static void randomOrigin(ServerPlayer player, OriginDataHolder holder, Holder<Layer> layer) {
         List<Holder<Origin>> randomOriginIds = layer.value().collectRandomizableOrigins(player.registryAccess()).toList();
         if (!layer.value().allowRandom() || randomOriginIds.isEmpty()) {
             Origins.LOGGER.warn("Player {} tried to choose a random origin for layer \"{}\", which is not allowed!", player.getName().getString(), RLHelper.string(layer));
@@ -72,8 +70,10 @@ public final class ServerNetworkHandler {
             holder.setOrigin(layer, origin);
             Origins.LOGGER.info("Player {} was randomly assigned the following origin: {}", player.getName().getString(), RLHelper.string(origin));
         }
-        context.reply(new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
-        holder.data().setSelecting(false);
-        holder.sync();
+    }
+
+    public static void onPowerToggle(PowerToggleC2SPayload payload, IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer player)) return;
+        OriginDataHolder.get(player).onPowerToggle(payload.index());
     }
 }
