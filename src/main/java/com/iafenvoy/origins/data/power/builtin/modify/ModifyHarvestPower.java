@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
@@ -11,12 +12,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@NotImplementedYet
 public class ModifyHarvestPower extends Power {
     public static final MapCodec<ModifyHarvestPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyHarvestPower::getModifiers),
             BlockCondition.optionalCodec("block_condition").forGetter(ModifyHarvestPower::getBlockCondition),
-            Codec.BOOL.fieldOf("allow").forGetter(ModifyHarvestPower::allow)
+            Codec.BOOL.fieldOf("allow").forGetter(ModifyHarvestPower::isAllow)
     ).apply(i, ModifyHarvestPower::new));
     private final List<Modifier> modifiers;
     private final BlockCondition blockCondition;
@@ -39,11 +41,6 @@ public class ModifyHarvestPower extends Power {
 
     public boolean isAllow() {
         return this.allow;
-    }
-
-    @Deprecated
-    public boolean allow() {
-        return this.isAllow();
     }
 
     @Override

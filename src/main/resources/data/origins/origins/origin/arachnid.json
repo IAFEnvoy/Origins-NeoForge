@@ -1,15 +1,15 @@
 {
-	"powers": [
-		"origins:primary_key",
-		"origins:climbing",
-		"origins:master_of_webs",
-		"origins:carnivore",
-		"origins:fragile",
-		"origins:arthropod"
-	],
-	"icon": {
-		"id": "minecraft:cobweb"
-	},
-	"order": 1,
-	"impact": 1
+  "powers": [
+    "origins:primary_key",
+    "origins:climbing",
+    "origins:master_of_webs",
+    "origins:carnivore",
+    "origins:fragile",
+    "origins:arthropod"
+  ],
+  "icon": {
+    "id": "minecraft:cobweb"
+  },
+  "order": 1,
+  "impact": 1
 }

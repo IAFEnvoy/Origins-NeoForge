@@ -1,9 +1,12 @@
 package com.iafenvoy.origins.data.power.component.builtin;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class ToggleComponent implements PowerComponent {
@@ -29,6 +32,11 @@ public class ToggleComponent implements PowerComponent {
 
     public void toggle() {
         this.active ^= true;
+    }
+
+    public void sendMessage(OriginDataHolder holder, String key) {
+        if (holder.entity() instanceof Player player)
+            player.displayClientMessage(Component.translatable(key).append(": ").append(this.isActive() ? Component.literal("ON").withColor(0xFF00FF00) : Component.literal("OFF").withColor(0xFFFF0000)), true);
     }
 
     @Override

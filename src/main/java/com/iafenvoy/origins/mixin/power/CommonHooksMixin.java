@@ -18,7 +18,7 @@ import java.util.Optional;
 public class CommonHooksMixin {
     @Inject(method = "isLivingOnLadder", at = @At("RETURN"), cancellable = true)
     private static void ladder(BlockState state, Level world, BlockPos pos, LivingEntity entity, CallbackInfoReturnable<Optional<BlockPos>> info) {
-        if (info.getReturnValue().isEmpty() && NeoForge.EVENT_BUS.post(new CanClimbEvent(entity)).getResult().allow())
-            info.setReturnValue(Optional.of(pos));
+//        if (info.getReturnValue().isEmpty() && NeoForge.EVENT_BUS.post(new CanClimbEvent(entity)).getResult().allow())
+//            info.setReturnValue(Optional.of(pos));
     }
 }

@@ -2,14 +2,18 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
+@NotImplementedYet
+//FIXME::Wrong implementation
 public class ModifyBlockRenderPower extends Power {
     public static final MapCodec<ModifyBlockRenderPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
@@ -45,12 +49,12 @@ public class ModifyBlockRenderPower extends Power {
     @Override
     public void grant(@NotNull Entity entity) {
         if (entity.level().isClientSide())
-            net.minecraft.client.Minecraft.getInstance().levelRenderer.allChanged();
+            Minecraft.getInstance().levelRenderer.allChanged();
     }
 
     @Override
     public void revoke(@NotNull Entity entity) {
         if (entity.level().isClientSide())
-            net.minecraft.client.Minecraft.getInstance().levelRenderer.allChanged();
+            Minecraft.getInstance().levelRenderer.allChanged();
     }
 }

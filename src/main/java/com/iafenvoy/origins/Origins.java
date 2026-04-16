@@ -8,6 +8,7 @@ import com.iafenvoy.origins.data.badge.BuiltinBadges;
 import com.iafenvoy.origins.data.condition.builtin.*;
 import com.iafenvoy.origins.data.power.builtin.ActionPowers;
 import com.iafenvoy.origins.data.power.builtin.ModifyPowers;
+import com.iafenvoy.origins.data.power.builtin.PreventPowers;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.data.power.component.BuiltinComponents;
 import com.iafenvoy.origins.registry.OriginsAttachments;
@@ -49,6 +50,7 @@ public final class Origins {
         //Powers
         ActionPowers.REGISTRY.register(bus);
         ModifyPowers.REGISTRY.register(bus);
+        PreventPowers.REGISTRY.register(bus);
         RegularPowers.REGISTRY.register(bus);
         //Power Components
         BuiltinComponents.REGISTRY.register(bus);

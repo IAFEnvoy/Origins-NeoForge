@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.iafenvoy.origins.util.codec.ExtraEnumCodecs;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -33,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
+@NotImplementedYet
 public class ModifyPlayerSpawnPower extends Power {
     public static final MapCodec<ModifyPlayerSpawnPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),

@@ -92,6 +92,14 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast) : results;
     }
 
+    public boolean hasPower(Holder<Power> power) {
+        return this.data.getPowers().values().stream().anyMatch(p -> p.equals(power));
+    }
+
+    public boolean hasPower(ResourceLocation source, Holder<Power> power) {
+        return this.data.getPowers().entries().stream().anyMatch(e -> e.getKey().equals(source) && e.getValue().equals(power));
+    }
+
     public void onPowerToggle(String key) {
         this.streamPowers(Toggleable.class).forEach(x -> x.toggle(this, key));
     }
@@ -112,7 +120,11 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         Holder<Origin> origin = this.data.getOrigins().remove(layer);
         if (origin == null) return;
         ResourceLocation id = RLHelper.id(origin);
-        origin.value().powers().forEach(x -> this.revokePower(id, x));
+        this.revokeAllPowers(id);
+    }
+
+    public boolean hasOrigin(Holder<Layer> layer, Holder<Origin> origin) {
+        return this.data.getOrigins().containsKey(layer) && this.data.getOrigins().get(layer).value().equals(origin.value());
     }
 
     public boolean hasOrigin(Holder<Layer> layer) {

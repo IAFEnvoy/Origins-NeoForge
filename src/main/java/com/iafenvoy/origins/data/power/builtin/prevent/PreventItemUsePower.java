@@ -1,12 +1,14 @@
-package com.iafenvoy.origins.data.power.builtin.regular;
+package com.iafenvoy.origins.data.power.builtin.prevent;
 
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
+@NotImplementedYet
 public class PreventItemUsePower extends Power {
     public static final MapCodec<PreventItemUsePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),

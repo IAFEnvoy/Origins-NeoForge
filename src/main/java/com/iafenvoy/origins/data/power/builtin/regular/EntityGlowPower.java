@@ -40,10 +40,6 @@ public class EntityGlowPower extends Power {
         this.color = color;
     }
 
-
-    /**
-     * Standard getters following Java convention.
-     */
     public EntityCondition getEntityCondition() {
         return this.entityCondition;
     }
