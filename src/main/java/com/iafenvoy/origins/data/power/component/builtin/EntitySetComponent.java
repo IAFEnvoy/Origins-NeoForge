@@ -15,11 +15,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public record EntitySetComponent(
-        Map<UUID, Integer> set) implements PowerComponent, ComponentHolderProvider<EntitySetComponent.Holder> {
+public class EntitySetComponent extends PowerComponent implements ComponentHolderProvider<EntitySetComponent.Holder> {
     public static final MapCodec<EntitySetComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.unboundedMap(UUIDUtil.CODEC, Codec.INT).fieldOf("set").forGetter(EntitySetComponent::set)
+            Codec.unboundedMap(UUIDUtil.CODEC, Codec.INT).fieldOf("set").forGetter(EntitySetComponent::getSet)
     ).apply(i, EntitySetComponent::new));
+    private final Map<UUID, Integer> set;
+
 
     public EntitySetComponent() {
         this(Map.of());
@@ -57,6 +58,10 @@ public record EntitySetComponent(
         removal.forEach(this.set::remove);
     }
 
+    public Map<UUID, Integer> getSet() {
+        return this.set;
+    }
+
     public record Holder(OriginDataHolder holder, EntitySetComponent component) {
         public void addEntity(ResourceLocation id, Entity target) {
             this.addEntity(id, target, -1);
@@ -79,11 +84,13 @@ public record EntitySetComponent(
 
         public void postAdd(ResourceLocation id, Entity target) {
             this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnAdd().execute(this.holder.entity(), target));
+            this.component.markDirty();
         }
 
         public void postRemove(ResourceLocation id, Entity target) {
             if (target != null)
                 this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(this.holder.entity(), target));
+            this.component.markDirty();
         }
 
         public List<UUID> getEntityUuids() {

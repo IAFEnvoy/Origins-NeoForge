@@ -90,16 +90,14 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyReturnValue(method = "onClimbable", at = @At("RETURN"))
     private boolean handleClimbing(boolean original) {
         if (original) return true;
-        List<ClimbingPower> climbingPowers = OriginDataHolder.get(this).getPowers(RegularPowers.CLIMBING, ClimbingPower.class);
-        if (this.isSpectator() || climbingPowers.isEmpty()) return false;
+        if (this.isSpectator() || !OriginDataHolder.get(this).isPowerActive(ClimbingPower.class)) return false;
         this.lastClimbablePos = Optional.of(this.blockPosition());
         return true;
     }
 
     @ModifyReturnValue(method = "isSuppressingSlidingDownLadder", at = @At("RETURN"))
     private boolean handleClimbingHold(boolean original) {
-        List<ClimbingPower> climbingPowers = OriginDataHolder.get(this).getPowers(RegularPowers.CLIMBING, ClimbingPower.class);
-        if (climbingPowers.isEmpty()) return original;
-        return climbingPowers.stream().anyMatch(x -> x.canHold(this));
+        OriginDataHolder holder = OriginDataHolder.get(this);
+        return original || holder.getPowers(RegularPowers.CLIMBING, ClimbingPower.class).stream().anyMatch(x -> x.isActive(holder) && x.canHold(this));
     }
 }

@@ -10,9 +10,6 @@ import com.iafenvoy.origins.data.power.component.builtin.ToggleComponent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -76,6 +73,6 @@ public class TogglePower extends Power implements Toggleable {
 
     @Override
     public boolean isActive(OriginDataHolder holder) {
-        return holder.getComponentFor(this, ToggleComponent.class).map(ToggleComponent::isActive).orElse(true);
+        return holder.getComponentFor(this, ToggleComponent.class).map(ToggleComponent::isActive).orElse(false);
     }
 }

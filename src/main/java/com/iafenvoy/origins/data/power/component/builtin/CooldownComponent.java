@@ -8,7 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public final class CooldownComponent implements PowerComponent {
+public class CooldownComponent extends PowerComponent {
     public static final MapCodec<CooldownComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.INT.fieldOf("defaultValue").forGetter(CooldownComponent::getDefaultValue),
             Codec.INT.fieldOf("value").forGetter(CooldownComponent::getValue)
@@ -40,6 +40,7 @@ public final class CooldownComponent implements PowerComponent {
 
     public void startCooldown() {
         this.value = this.defaultValue;
+        this.markDirty();
     }
 
     public boolean canUse() {
@@ -48,6 +49,9 @@ public final class CooldownComponent implements PowerComponent {
 
     @Override
     public void tick(OriginDataHolder holder, ResourceLocation id) {
-        if (!this.canUse()) this.value--;
+        if (!this.canUse()) {
+            this.value--;
+            this.markDirty();
+        }
     }
 }

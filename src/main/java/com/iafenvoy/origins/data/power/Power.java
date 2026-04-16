@@ -47,7 +47,7 @@ public abstract class Power {
     }
 
     public boolean isActive(OriginDataHolder holder) {
-        return true;
+        return this.getSettings().condition().test(holder.entity());
     }
 
     public void grant(@NotNull Entity entity) {

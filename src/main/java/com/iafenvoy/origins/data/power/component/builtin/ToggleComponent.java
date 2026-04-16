@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class ToggleComponent implements PowerComponent {
+public class ToggleComponent extends PowerComponent {
     public static final MapCodec<ToggleComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.BOOL.fieldOf("active").forGetter(ToggleComponent::isActive)
     ).apply(i, ToggleComponent::new));
@@ -27,11 +27,15 @@ public class ToggleComponent implements PowerComponent {
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        if (this.active ^ active) {
+            this.active = active;
+            this.markDirty();
+        }
     }
 
     public void toggle() {
         this.active ^= true;
+        this.markDirty();
     }
 
     public void sendMessage(OriginDataHolder holder, String key) {

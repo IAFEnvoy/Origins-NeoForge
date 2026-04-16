@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntBinaryOperator;
 
-public final class ResourceComponent implements PowerComponent {
+public class ResourceComponent extends PowerComponent {
     public static final MapCodec<ResourceComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.INT.fieldOf("value").forGetter(ResourceComponent::getValue)
     ).apply(i, ResourceComponent::new));
@@ -30,9 +30,11 @@ public final class ResourceComponent implements PowerComponent {
 
     public void updateResource(Int2IntFunction operation) {
         this.value = operation.applyAsInt(this.value);
+        this.markDirty();
     }
 
     public void updateResource(IntBinaryOperator operation, int value) {
         this.value = operation.applyAsInt(this.value, value);
+        this.markDirty();
     }
 }

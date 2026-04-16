@@ -55,6 +55,7 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         this.data.getPowers().put(source, power);
         this.data.getComponents().put(RLHelper.id(power), power.value().createComponents().stream().collect(Collectors.toMap(PowerComponent::getClass, Function.identity())));
         power.value().grant(this.entity);
+        this.sync();
     }
 
     public void revokePower(Holder<Power> power) {
@@ -65,6 +66,7 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         power.value().revoke(this.entity);
         this.data.getComponents().remove(RLHelper.id(power));
         this.data.getPowers().remove(source, power);
+        this.sync();
     }
 
     public void revokeAllPowers(ResourceLocation source) {
@@ -102,6 +104,10 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
 
     public void onPowerToggle(String key) {
         this.streamPowers(Toggleable.class).forEach(x -> x.toggle(this, key));
+    }
+
+    public <T extends Power> boolean isPowerActive(Class<T> clazz) {
+        return this.streamPowers(clazz).anyMatch(x -> x.isActive(this));
     }
 
     //Origin Related
@@ -207,6 +213,9 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
 
     public void tick(@NotNull Entity entity) {
         this.getOrigins().values().forEach(o -> executeOnPowers(o, p -> p.tick(entity)));
+        //Check components and update
+        if (this.data.getComponents().values().stream().flatMap(x -> x.values().stream()).map(PowerComponent::isDirty).reduce(false, (p, c) -> p | c))
+            this.sync();
     }
 
     @ApiStatus.Internal

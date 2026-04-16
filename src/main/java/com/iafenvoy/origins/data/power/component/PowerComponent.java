@@ -10,12 +10,27 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public interface PowerComponent {
-    Codec<PowerComponent> CODEC = DefaultedCodec.registryDispatch(PowerComponentRegistries.POWER_COMPONENT_TYPE, PowerComponent::codec, Function.identity(), EmptyComponent::new);
+public abstract class PowerComponent {
+    public static final Codec<PowerComponent> CODEC = DefaultedCodec.registryDispatch(PowerComponentRegistries.POWER_COMPONENT_TYPE, PowerComponent::codec, Function.identity(), PowerComponent::createEmpty);
+    private boolean dirty = false;
+
+    private static PowerComponent createEmpty() {
+        return new EmptyComponent();
+    }
 
     @NotNull
-    MapCodec<? extends PowerComponent> codec();
+    public abstract MapCodec<? extends PowerComponent> codec();
 
-    default void tick(OriginDataHolder holder, ResourceLocation id) {
+    public void tick(OriginDataHolder holder, ResourceLocation id) {
+    }
+
+    public boolean isDirty() {
+        if (!this.dirty) return false;
+        this.dirty = false;
+        return true;
+    }
+
+    public void markDirty() {
+        this.dirty = true;
     }
 }

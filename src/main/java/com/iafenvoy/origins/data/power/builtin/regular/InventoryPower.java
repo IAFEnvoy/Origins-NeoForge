@@ -93,7 +93,7 @@ public class InventoryPower extends Power implements Toggleable, MenuProvider {
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
-        return OriginDataHolder.get(player).getComponentFor(this, InventoryComponent.class).map(InventoryComponent::container).map(container -> this.containerType.getFactory().createMenu(id, inventory, container)).orElse(null);
+        return OriginDataHolder.get(player).getComponentFor(this, InventoryComponent.class).map(InventoryComponent::getContainer).map(container -> this.containerType.getFactory().createMenu(id, inventory, container)).orElse(null);
     }
 
     public enum ContainerType implements StringRepresentable {

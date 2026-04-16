@@ -50,7 +50,7 @@ public record DropInventoryAction(Optional<ResourceLocation> power, EntityAction
         OriginDataHolder holder = OriginDataHolder.get(source);
         Int2ObjectFunction<SlotAccess> access = this.power.map(id -> holder.getComponent(id, InventoryComponent.class))
                 .flatMap(Function.identity())
-                .map(InventoryComponent::container)
+                .map(InventoryComponent::getContainer)
                 .<Int2ObjectFunction<SlotAccess>>map(c -> id -> SlotAccess.forContainer(c, id))
                 .orElse(source::getSlot);
         for (Integer slot1 : this.slot) {
