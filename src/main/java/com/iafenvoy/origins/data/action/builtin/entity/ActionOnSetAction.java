@@ -37,7 +37,7 @@ public record ActionOnSetAction(ResourceLocation set, BiEntityAction biEntityAct
     @Override
     public void execute(@NotNull Entity source) {
         if (!(source.level() instanceof ServerLevel serverLevel)) return;
-        List<UUID> uuids = OriginDataHolder.get(source).getComponentHolder(this.set, EntitySetComponent.class).map(EntitySetComponent.Holder::getEntityUuids).orElse(new LinkedList<>());
+        List<UUID> uuids = OriginDataHolder.get(source).getComponentHolder(this.set, EntitySetComponent.class).map(EntitySetComponent.SetHolder::getEntityUuids).orElse(new LinkedList<>());
         if (this.reverse) Collections.reverse(uuids);
         int remain = this.limit;
         for (UUID uuid : uuids) {

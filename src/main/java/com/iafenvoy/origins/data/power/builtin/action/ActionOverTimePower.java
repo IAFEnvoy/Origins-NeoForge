@@ -1,15 +1,17 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
+import com.iafenvoy.origins.data.power.IntervalPower;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-@NotImplementedYet
-public class ActionOverTimePower extends Power {
+public class ActionOverTimePower extends IntervalPower {
     public static final MapCodec<ActionOverTimePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             EntityAction.optionalCodec("entity_action").forGetter(ActionOverTimePower::getEntityAction),
@@ -21,6 +23,7 @@ public class ActionOverTimePower extends Power {
     private final EntityAction risingAction;
     private final EntityAction fallingAction;
     private final int interval;
+    private boolean lastValue;
 
     public ActionOverTimePower(BaseSettings settings, EntityAction entityAction, EntityAction risingAction, EntityAction fallingAction, int interval) {
         super(settings);
@@ -42,12 +45,28 @@ public class ActionOverTimePower extends Power {
         return this.fallingAction;
     }
 
+    @Override
+    public @NotNull MapCodec<? extends Power> codec() {
+        return CODEC;
+    }
+
+    @Override
     public int getInterval() {
         return this.interval;
     }
 
     @Override
-    public @NotNull MapCodec<? extends Power> codec() {
-        return CODEC;
+    public void intervalTick(@NotNull Entity entity) {
+        this.entityAction.execute(entity);
+        boolean value = this.getSettings().condition().test(entity);
+        if (value ^ this.lastValue) {
+            this.lastValue = value;
+            (value ? this.risingAction : this.fallingAction).execute(entity);
+        }
+    }
+
+    @Override
+    public boolean isActive(OriginDataHolder holder) {
+        return true;
     }
 }

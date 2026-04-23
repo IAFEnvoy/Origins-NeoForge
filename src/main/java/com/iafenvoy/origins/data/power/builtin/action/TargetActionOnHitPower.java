@@ -1,48 +1,52 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
+import com.iafenvoy.origins.data.common.CooldownSettings;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
+import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.Entity;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
+//FIXME::Merge with ActionOnHitPower
+@EventBusSubscriber
 public class TargetActionOnHitPower extends Power {
     public static final MapCodec<TargetActionOnHitPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.INT.optionalFieldOf("cooldown", 1).forGetter(TargetActionOnHitPower::getCooldown),
             EntityAction.optionalCodec("entity_action").forGetter(TargetActionOnHitPower::getEntityAction),
+            CooldownSettings.CODEC.forGetter(TargetActionOnHitPower::getCooldown),
             DamageCondition.optionalCodec("damage_condition").forGetter(TargetActionOnHitPower::getDamageCondition),
-            EntityCondition.optionalCodec("target_condition").forGetter(TargetActionOnHitPower::getTargetCondition),
-            BiEntityCondition.optionalCodec("bientity_condition").forGetter(TargetActionOnHitPower::getBientityCondition),
-            EntityCondition.optionalCodec("condition").forGetter(TargetActionOnHitPower::getCondition)
+            EntityCondition.optionalCodec("target_condition").forGetter(TargetActionOnHitPower::getTargetCondition)
     ).apply(i, TargetActionOnHitPower::new));
-    private final int cooldown;
     private final EntityAction entityAction;
+    private final CooldownSettings cooldown;
     private final DamageCondition damageCondition;
     private final EntityCondition targetCondition;
-    private final BiEntityCondition bientityCondition;
-    private final EntityCondition condition;
 
-    public TargetActionOnHitPower(BaseSettings settings, int cooldown, EntityAction entityAction, DamageCondition damageCondition, EntityCondition targetCondition, BiEntityCondition bientityCondition, EntityCondition condition) {
+    public TargetActionOnHitPower(BaseSettings settings, EntityAction entityAction, CooldownSettings cooldown, DamageCondition damageCondition, EntityCondition targetCondition) {
         super(settings);
-        this.cooldown = cooldown;
         this.entityAction = entityAction;
+        this.cooldown = cooldown;
         this.damageCondition = damageCondition;
         this.targetCondition = targetCondition;
-        this.bientityCondition = bientityCondition;
-        this.condition = condition;
-    }
-
-    public int getCooldown() {
-        return this.cooldown;
     }
 
     public EntityAction getEntityAction() {
         return this.entityAction;
+    }
+
+    public CooldownSettings getCooldown() {
+        return this.cooldown;
     }
 
     public DamageCondition getDamageCondition() {
@@ -53,16 +57,19 @@ public class TargetActionOnHitPower extends Power {
         return this.targetCondition;
     }
 
-    public BiEntityCondition getBientityCondition() {
-        return this.bientityCondition;
-    }
-
-    public EntityCondition getCondition() {
-        return this.condition;
-    }
-
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
+    }
+
+    @SubscribeEvent
+    public static void onDamage(LivingDamageEvent.Post event) {
+        Entity source = event.getSource().getEntity(), target = event.getEntity();
+        if (source == null) return;
+        OriginDataHolder holder = OriginDataHolder.get(source);
+        holder.streamActivePowers(TargetActionOnHitPower.class).forEach(power -> {
+            if (power.getTargetCondition().test(target) && power.getDamageCondition().test(event.getSource(), event.getNewDamage()))
+                holder.getComponentFor(power, CooldownComponent.class).ifPresent(c -> c.useIfReady(() -> power.getEntityAction().execute(target)));
+        });
     }
 }

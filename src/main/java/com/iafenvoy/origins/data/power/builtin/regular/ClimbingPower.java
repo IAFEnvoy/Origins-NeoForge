@@ -52,12 +52,8 @@ public class ClimbingPower extends Power {
     public static void onClimbCheck(CanClimbEvent event) {
         if (event.getEntity() instanceof LivingEntity living) {
             OriginDataHolder holder = OriginDataHolder.get(living);
-            if (holder.streamPowers(ClimbingPower.class).anyMatch(power -> power.canClimb(living)))
+            if (holder.streamActivePowers(ClimbingPower.class).findAny().isPresent())
                 event.allow();
         }
-    }
-
-    public boolean canClimb(LivingEntity player) {
-        return this.getSettings().condition().test(player);
     }
 }

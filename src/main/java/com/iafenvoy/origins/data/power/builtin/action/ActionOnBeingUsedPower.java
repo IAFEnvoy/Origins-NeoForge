@@ -120,11 +120,8 @@ public class ActionOnBeingUsedPower extends Power implements Prioritized {
                 if (power.getResultStack().isPresent()) {
                     ItemStack result = power.getResultStack().get().copy();
                     power.getResultItemAction().execute(level, player, result);
-                    if (stack.isEmpty()) {
-                        player.setItemInHand(hand, result);
-                    } else if (!player.getInventory().add(result)) {
-                        player.drop(result, false);
-                    }
+                    if (stack.isEmpty()) player.setItemInHand(hand, result);
+                    else if (!player.getInventory().add(result)) player.drop(result, false);
                 }
                 event.setCancellationResult(power.getInteractionResult());
                 event.setCanceled(true);

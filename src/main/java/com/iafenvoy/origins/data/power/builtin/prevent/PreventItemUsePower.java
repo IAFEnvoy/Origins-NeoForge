@@ -8,6 +8,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
+//FIXME::Tooltip
 @NotImplementedYet
 public class PreventItemUsePower extends Power {
     public static final MapCodec<PreventItemUsePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(

@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.common.CooldownSettings;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
@@ -10,11 +11,15 @@ import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.Entity;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-@NotImplementedYet
+@EventBusSubscriber
 public class ActionWhenHitPower extends Power {
     public static final MapCodec<ActionWhenHitPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
@@ -60,5 +65,16 @@ public class ActionWhenHitPower extends Power {
     @Override
     public List<PowerComponent> createComponents() {
         return List.of(new CooldownComponent(this.getCooldown().cooldown()));
+    }
+
+    @SubscribeEvent
+    public static void onDamage(LivingDamageEvent.Post event) {
+        Entity source = event.getSource().getEntity(), target = event.getEntity();
+        if (source == null) return;
+        OriginDataHolder holder = OriginDataHolder.get(target);
+        holder.streamActivePowers(ActionWhenHitPower.class).forEach(power -> {
+            if (power.getBiEntityCondition().test(source, target) && power.getDamageCondition().test(event.getSource(), event.getNewDamage()))
+                holder.getComponentFor(power, CooldownComponent.class).ifPresent(c -> c.useIfReady(() -> power.getBiEntityAction().execute(source, target)));
+        });
     }
 }

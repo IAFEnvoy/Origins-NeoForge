@@ -89,8 +89,8 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
     }
 
     @NotNull
-    public <T> Stream<T> streamPowers(Class<T> clazz) {
-        Stream<T> results = this.data.getPowers().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
+    public <T> Stream<T> streamActivePowers(Class<T> clazz) {
+        Stream<T> results = this.data.getPowers().values().stream().map(Holder::value).filter(x -> x.isActive(this)).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast) : results;
     }
 
@@ -103,11 +103,11 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
     }
 
     public void onPowerToggle(String key) {
-        this.streamPowers(Toggleable.class).forEach(x -> x.toggle(this, key));
+        this.streamActivePowers(Toggleable.class).forEach(x -> x.toggle(this, key));
     }
 
     public <T extends Power> boolean isPowerActive(Class<T> clazz) {
-        return this.streamPowers(clazz).anyMatch(x -> x.isActive(this));
+        return this.streamActivePowers(clazz).findAny().isPresent();
     }
 
     //Origin Related
@@ -202,8 +202,9 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         return new OriginDataHolder(entity, entity.getData(OriginsAttachments.ENTITY_ORIGIN), entity.registryAccess());
     }
 
-    private static void executeOnPowers(@Nullable Holder<Origin> origin, Consumer<Power> consumer) {
-        if (origin != null) origin.value().powers().stream().map(Holder::value).forEach(consumer);
+    private void executeOnPowers(@Nullable Holder<Origin> origin, Consumer<Power> consumer) {
+        if (origin != null)
+            origin.value().powers().stream().map(Holder::value).filter(x -> x.isActive(this)).forEach(consumer);
     }
 
     //Ticking
@@ -212,7 +213,7 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
     }
 
     public void tick(@NotNull Entity entity) {
-        this.getOrigins().values().forEach(o -> executeOnPowers(o, p -> p.tick(entity)));
+        this.getOrigins().values().forEach(o -> this.executeOnPowers(o, p -> p.tick(entity)));
         //Check components and update
         if (this.data.getComponents().values().stream().flatMap(x -> x.values().stream()).map(PowerComponent::isDirty).reduce(false, (p, c) -> p | c))
             this.sync();

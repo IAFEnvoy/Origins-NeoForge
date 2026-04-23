@@ -11,6 +11,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.gameevent.GameEvent;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public final class CombinedCodecs {
     public static final Codec<List<Holder<Enchantment>>> ENCHANTMENT = combineCodec(Enchantment.CODEC);
     public static final Codec<List<Component>> TEXT = combineCodec(ComponentSerialization.CODEC);
     public static final Codec<List<Holder<Biome>>> BIOME = combineCodec(Biome.CODEC);
+    public static final Codec<List<Holder<GameEvent>>> GAME_EVENT = combineCodec(GameEvent.CODEC);
     public static final Codec<List<InteractionHand>> HAND = combineCodec(ExtraEnumCodecs.HAND);
     public static final Codec<List<Modifier>> MODIFIER = combineCodec(Modifier.CODEC);
 

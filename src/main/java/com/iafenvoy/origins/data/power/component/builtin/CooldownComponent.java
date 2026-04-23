@@ -47,6 +47,13 @@ public class CooldownComponent extends PowerComponent {
         return this.value <= 0;
     }
 
+    public void useIfReady(Runnable runnable) {
+        if (this.canUse()) {
+            runnable.run();
+            this.startCooldown();
+        }
+    }
+
     @Override
     public void tick(OriginDataHolder holder, ResourceLocation id) {
         if (!this.canUse()) {

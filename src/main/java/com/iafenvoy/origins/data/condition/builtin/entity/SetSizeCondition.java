@@ -23,6 +23,6 @@ public record SetSizeCondition(ResourceLocation set, Comparison comparison) impl
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return this.comparison.compare(OriginDataHolder.get(entity).getComponentHolder(this.set, EntitySetComponent.class).map(EntitySetComponent.Holder::getSize).orElse(0));
+        return this.comparison.compare(OriginDataHolder.get(entity).getComponentHolder(this.set, EntitySetComponent.class).map(EntitySetComponent.SetHolder::getSize).orElse(0));
     }
 }

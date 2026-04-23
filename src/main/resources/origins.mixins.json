@@ -5,6 +5,7 @@
   "mixins": [
     "accessor.LivingEntityAccessor",
     "accessor.MobAccessor",
+    "power.BlockStateBaseMixin",
     "power.CommonHooksMixin",
     "power.ConduitPowerOnLandMixin",
     "power.FoodDataMixin",
@@ -17,6 +18,7 @@
   ],
   "client": [
     "power.EntityMixin",
+    "power.EntityRenderDispatcherMixin",
     "power.FogRendererMixin",
     "power.GameRendererMixin",
     "power.PlayerRendererMixin",

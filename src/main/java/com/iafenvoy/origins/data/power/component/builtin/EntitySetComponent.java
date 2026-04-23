@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class EntitySetComponent extends PowerComponent implements ComponentHolderProvider<EntitySetComponent.Holder> {
+public class EntitySetComponent extends PowerComponent implements ComponentHolderProvider<EntitySetComponent.SetHolder> {
     public static final MapCodec<EntitySetComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.unboundedMap(UUIDUtil.CODEC, Codec.INT).fieldOf("set").forGetter(EntitySetComponent::getSet)
     ).apply(i, EntitySetComponent::new));
@@ -36,8 +36,8 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
     }
 
     @Override
-    public Holder constructHolder(OriginDataHolder holder) {
-        return new Holder(holder, this);
+    public SetHolder constructHolder(OriginDataHolder holder) {
+        return new SetHolder(holder, this);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
         return this.set;
     }
 
-    public record Holder(OriginDataHolder holder, EntitySetComponent component) {
+    public record SetHolder(OriginDataHolder holder, EntitySetComponent component) {
         public void addEntity(ResourceLocation id, Entity target) {
             this.addEntity(id, target, -1);
         }
