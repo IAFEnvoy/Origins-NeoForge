@@ -12,7 +12,6 @@
     "power.LivingEntityMixin",
     "power.PlayerMixin",
     "power.ScareCreepersMixin",
-    "power.SelectionInvulnerabilityMixin",
     "power.WaterBreathingMixin$BreathingImpl",
     "power.WaterBreathingMixin$TurtleHelmetProxy"
   ],

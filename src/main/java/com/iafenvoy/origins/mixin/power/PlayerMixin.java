@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.mixin.power;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.event.common.CanFlyWithoutElytraEvent;
 import com.iafenvoy.origins.event.common.CanNaturalRegenEvent;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -32,5 +33,12 @@ public class PlayerMixin {
                 cir.setReturnValue(true);
             }
         }
+    }
+
+    //Prevent player from damage when selection origins
+    //TODO::Using events instead of mixin for this
+    @ModifyExpressionValue(method = "isInvulnerableTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInvulnerableTo(Lnet/minecraft/world/damagesource/DamageSource;)Z"))
+    private boolean origins$makePlayerInvulnerable(boolean original) {
+        return original || !OriginDataHolder.get(this.origins$self()).hasAllOrigins();
     }
 }
