@@ -4,14 +4,19 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.badge.Badge;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.util.annotation.Comment;
 import com.iafenvoy.origins.util.codec.DefaultedCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -24,6 +29,7 @@ import java.util.function.Function;
 public abstract class Power {
     public static final Codec<Power> DIRECT_CODEC = DefaultedCodec.registryDispatch(PowerRegistries.POWER_TYPE, Power::codec, Function.identity(), Power::createEmpty);
     public static final Codec<Holder<Power>> CODEC = RegistryFixedCodec.create(PowerRegistries.POWER_KEY);
+    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Power>> STREAM_CODEC = ByteBufCodecs.holderRegistry(PowerRegistries.POWER_KEY);
     private final BaseSettings settings;
 
     private static Power createEmpty() {
@@ -41,7 +47,7 @@ public abstract class Power {
         return this.settings;
     }
 
-    //Only one class each is allowed
+    @Comment("Only one class each is allowed")
     public List<PowerComponent> createComponents() {
         return List.of();
     }
@@ -50,9 +56,11 @@ public abstract class Power {
         return this.getSettings().condition().test(holder.entity());
     }
 
+    @Comment("Call after grant, server side only")
     public void grant(@NotNull Entity entity) {
     }
 
+    @Comment("Call after revoke, server side only")
     public void revoke(@NotNull Entity entity) {
     }
 
@@ -63,12 +71,12 @@ public abstract class Power {
         return access.registryOrThrow(PowerRegistries.POWER_KEY).getKey(this);
     }
 
-    public Component getName(RegistryAccess access) {
-        return this.settings.name().orElse(Component.translatable(this.getId(access).toLanguageKey("power", "name")));
+    public MutableComponent getName(RegistryAccess access) {
+        return this.settings.name().map(Component::copy).orElse(Component.translatable(this.getId(access).toLanguageKey("power", "name")));
     }
 
-    public Component getDescription(RegistryAccess access) {
-        return this.settings.description().orElse(Component.translatable(this.getId(access).toLanguageKey("power", "description")));
+    public MutableComponent getDescription(RegistryAccess access) {
+        return this.settings.description().map(Component::copy).orElse(Component.translatable(this.getId(access).toLanguageKey("power", "description")));
     }
 
     public record BaseSettings(Optional<Component> name, Optional<Component> description, boolean hidden,

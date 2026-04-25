@@ -2,6 +2,9 @@ package com.iafenvoy.origins.mixin.power;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
+import com.iafenvoy.origins.data.power.builtin.modify.ModifyEffectAmplifierPower;
+import com.iafenvoy.origins.data.power.builtin.modify.ModifyFoodPower;
+import com.iafenvoy.origins.data.power.builtin.modify.ModifyEffectDurationPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ClimbingPower;
 import com.iafenvoy.origins.data.power.builtin.regular.LikeWaterPower;
 import com.iafenvoy.origins.event.client.ClientShouldGlowingEvent;
@@ -9,13 +12,22 @@ import com.iafenvoy.origins.event.common.CanFlyWithoutElytraEvent;
 import com.iafenvoy.origins.event.common.CanStandOnFluidEvent;
 import com.iafenvoy.origins.event.common.EntityFrozenEvent;
 import com.iafenvoy.origins.event.common.IgnoreWaterEvent;
+import com.iafenvoy.origins.mixin.accessor.MobEffectInstanceAccessor;
+import com.iafenvoy.origins.util.Mutable;
+import com.iafenvoy.origins.util.math.Modifier;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -27,6 +39,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -76,7 +89,6 @@ public abstract class LivingEntityMixin extends Entity {
             cir.setReturnValue(true);
     }
 
-    // LIKE WATER
     @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getFluidFallingAdjustedMovement(DZLnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;"))
     private Vec3 origins$modifyFluidMovement(Vec3 original, @Local(ordinal = 0) double fallVelocity) {
         List<LikeWaterPower> powers = OriginDataHolder.get(this).getPowers(RegularPowers.LIKE_WATER, LikeWaterPower.class);
@@ -86,7 +98,6 @@ public abstract class LivingEntityMixin extends Entity {
         return original;
     }
 
-    // CLIMBING
     @ModifyReturnValue(method = "onClimbable", at = @At("RETURN"))
     private boolean handleClimbing(boolean original) {
         if (original) return true;
@@ -99,5 +110,32 @@ public abstract class LivingEntityMixin extends Entity {
     private boolean handleClimbingHold(boolean original) {
         OriginDataHolder holder = OriginDataHolder.get(this);
         return original || holder.getPowers(RegularPowers.CLIMBING, ClimbingPower.class).stream().anyMatch(x -> x.isActive(holder) && x.canHold(this));
+    }
+
+    @ModifyVariable(method = "eat*", at = @At("HEAD"), argsOnly = true)
+    private ItemStack modifyEatenItemStack(ItemStack original) {
+        if (this.origins$self() instanceof Player) return original;
+        Mutable<ItemStack> stack = new Mutable<>(original.copy());
+        ModifyFoodPower.modifyStack(this.level(), this.origins$self(), stack);
+        return stack.get();
+    }
+
+    @WrapWithCondition(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEatEffect(Lnet/minecraft/world/food/FoodProperties;)V"))
+    private boolean preventApplyingFoodEffects(LivingEntity instance, FoodProperties foodProperties) {
+        return OriginDataHolder.get(instance).streamActivePowers(ModifyFoodPower.class).noneMatch(ModifyFoodPower::shouldPreventEffects);
+    }
+
+    @ModifyVariable(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At("HEAD"), argsOnly = true)
+    private MobEffectInstance modifyStatusEffect(MobEffectInstance effect) {
+        Holder<MobEffect> effectType = effect.getEffect();
+        int originalAmp = effect.getAmplifier();
+        int originalDur = effect.getDuration();
+
+        int amplifier = OriginDataHolder.get(this.origins$self()).streamActivePowers(ModifyEffectAmplifierPower.class).reduce(originalAmp, (p, power) -> power.doesApply(effectType) ? Integer.valueOf((int) Modifier.applyModifiers(power.getModifiers(), p)) : p, Integer::sum);
+        int duration = OriginDataHolder.get(this.origins$self()).streamActivePowers(ModifyEffectDurationPower.class).reduce(originalDur, (p, power) -> power.doesApply(effectType) ? Integer.valueOf((int) Modifier.applyModifiers(power.getModifiers(), p)) : p, Integer::sum);
+
+        if (amplifier != originalAmp || duration != originalDur)
+            return new MobEffectInstance(effectType, duration, amplifier, effect.isAmbient(), effect.isVisible(), effect.showIcon(), ((MobEffectInstanceAccessor) effect).getHiddenEffect());
+        return effect;
     }
 }

@@ -3,32 +3,25 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.FluidCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.annotation.NotImplementedYet;
+import com.iafenvoy.origins.render.LevelRenderHelper;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
-@NotImplementedYet
-//FIXME::Wrong implementation
 public class ModifyFluidRenderPower extends Power {
     public static final MapCodec<ModifyFluidRenderPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             BlockCondition.optionalCodec("block_condition").forGetter(ModifyFluidRenderPower::getBlockCondition),
             FluidCondition.optionalCodec("fluid_condition").forGetter(ModifyFluidRenderPower::getFluidCondition),
-            FluidState.CODEC.optionalFieldOf("fluid").forGetter(ModifyFluidRenderPower::getFluid)
+            FluidState.CODEC.fieldOf("fluid").forGetter(ModifyFluidRenderPower::getFluid)
     ).apply(i, ModifyFluidRenderPower::new));
     private final BlockCondition blockCondition;
     private final FluidCondition fluidCondition;
-    private final Optional<FluidState> fluid;
+    private final FluidState fluid;
 
-    public ModifyFluidRenderPower(BaseSettings settings, BlockCondition blockCondition, FluidCondition fluidCondition, Optional<FluidState> fluid) {
+    public ModifyFluidRenderPower(BaseSettings settings, BlockCondition blockCondition, FluidCondition fluidCondition, FluidState fluid) {
         super(settings);
         this.blockCondition = blockCondition;
         this.fluidCondition = fluidCondition;
@@ -43,7 +36,7 @@ public class ModifyFluidRenderPower extends Power {
         return this.fluidCondition;
     }
 
-    public Optional<FluidState> getFluid() {
+    public FluidState getFluid() {
         return this.fluid;
     }
 
@@ -53,20 +46,13 @@ public class ModifyFluidRenderPower extends Power {
     }
 
 
-    public boolean test(Level world, BlockPos pos, FluidState fluid) {
-        return this.getBlockCondition().test(world, pos) && this.getFluidCondition().test(fluid);
-    }
-
     @Override
     public void grant(@NotNull Entity entity) {
-        if (entity.level().isClientSide())
-            Minecraft.getInstance().levelRenderer.allChanged();
+        LevelRenderHelper.sendReloadPayload(entity);
     }
 
     @Override
     public void revoke(@NotNull Entity entity) {
-        if (entity.level().isClientSide())
-            Minecraft.getInstance().levelRenderer.allChanged();
+        LevelRenderHelper.sendReloadPayload(entity);
     }
-
 }

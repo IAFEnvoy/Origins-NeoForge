@@ -1,6 +1,5 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.Codec;
@@ -8,28 +7,26 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-@NotImplementedYet
 public class InvisibilityPower extends Power {
     public static final MapCodec<InvisibilityPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.BOOL.optionalFieldOf("render_armor", true).forGetter(InvisibilityPower::isRenderArmor),
-            EntityCondition.optionalCodec("condition").forGetter(InvisibilityPower::getCondition)
+            Codec.BOOL.optionalFieldOf("render_armor", false).forGetter(InvisibilityPower::shouldRenderArmor),
+            Codec.BOOL.optionalFieldOf("render_outline", false).forGetter(InvisibilityPower::shouldRenderOutline)
     ).apply(i, InvisibilityPower::new));
-    private final boolean renderArmor;
-    private final EntityCondition condition;
+    private final boolean renderArmor, renderOutline;
 
-    public InvisibilityPower(BaseSettings settings, boolean renderArmor, EntityCondition condition) {
+    public InvisibilityPower(BaseSettings settings, boolean renderArmor, boolean renderOutline) {
         super(settings);
         this.renderArmor = renderArmor;
-        this.condition = condition;
+        this.renderOutline = renderOutline;
     }
 
-    public boolean isRenderArmor() {
+    public boolean shouldRenderArmor() {
         return this.renderArmor;
     }
 
-    public EntityCondition getCondition() {
-        return this.condition;
+    public boolean shouldRenderOutline() {
+        return this.renderOutline;
     }
 
     @Override

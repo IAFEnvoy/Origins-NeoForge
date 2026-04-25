@@ -20,19 +20,16 @@ public class TogglePower extends Power implements Toggleable {
             BaseSettings.CODEC.forGetter(Power::getSettings),
             Codec.BOOL.optionalFieldOf("active_by_default", true).forGetter(TogglePower::isActiveByDefault),
             Codec.BOOL.optionalFieldOf("retain_state", true).forGetter(TogglePower::isRetainState),
-            EntityCondition.optionalCodec("condition").forGetter(TogglePower::getCondition),
             KeySettings.CODEC.forGetter(TogglePower::getKey)
     ).apply(i, TogglePower::new));
     private final boolean activeByDefault;
     private final boolean retainState;
-    private final EntityCondition condition;
     private final KeySettings key;
 
-    public TogglePower(BaseSettings settings, boolean activeByDefault, boolean retainState, EntityCondition condition, KeySettings key) {
+    public TogglePower(BaseSettings settings, boolean activeByDefault, boolean retainState, KeySettings key) {
         super(settings);
         this.activeByDefault = activeByDefault;
         this.retainState = retainState;
-        this.condition = condition;
         this.key = key;
     }
 
@@ -42,10 +39,6 @@ public class TogglePower extends Power implements Toggleable {
 
     public boolean isRetainState() {
         return this.retainState;
-    }
-
-    public EntityCondition getCondition() {
-        return this.condition;
     }
 
     public KeySettings getKey() {

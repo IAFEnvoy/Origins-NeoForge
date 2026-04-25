@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
@@ -13,8 +14,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -35,14 +37,10 @@ public class ModifyDamageDealtPower extends Power {
     private final DamageCondition damageCondition;
     private final EntityCondition targetCondition;
     private final BiEntityCondition biEntityCondition;
-    private final EntityAction selfAction;
-    private final EntityAction targetAction;
+    private final EntityAction selfAction, targetAction;
     private final BiEntityAction biEntityAction;
 
-    public ModifyDamageDealtPower(BaseSettings settings, List<Modifier> modifiers,
-                                  DamageCondition damageCondition, EntityCondition targetCondition,
-                                  BiEntityCondition biEntityCondition, EntityAction selfAction,
-                                  EntityAction targetAction, BiEntityAction biEntityAction) {
+    public ModifyDamageDealtPower(BaseSettings settings, List<Modifier> modifiers, DamageCondition damageCondition, EntityCondition targetCondition, BiEntityCondition biEntityCondition, EntityAction selfAction, EntityAction targetAction, BiEntityAction biEntityAction) {
         super(settings);
         this.modifiers = modifiers;
         this.damageCondition = damageCondition;
@@ -86,21 +84,19 @@ public class ModifyDamageDealtPower extends Power {
         return CODEC;
     }
 
-    public boolean test(Entity entity, @Nullable Entity target, DamageSource source, float amount) {
-        return this.getDamageCondition().test(source, amount) &&
-                (target == null || this.getTargetCondition().test(target)) &&
-                (target == null || this.getBiEntityCondition().test(entity, target));
-    }
-
-    public void execute(Entity entity, @Nullable Entity target) {
-        this.getSelfAction().execute(entity);
-        if (target != null) {
-            this.getTargetAction().execute(target);
-            this.getBiEntityAction().execute(entity, target);
-        }
-    }
-
-    public double apply(double baseValue) {
-        return Modifier.applyModifiers(this.modifiers, baseValue);
+    @SubscribeEvent
+    public static void onDamage(LivingDamageEvent.Pre event) {
+        Entity source = event.getSource().getEntity(), target = event.getEntity();
+        if (source == null) return;
+        OriginDataHolder.get(source).streamActivePowers(ModifyDamageDealtPower.class).forEach(power -> {
+            float baseValue = event.getNewDamage();
+            DamageSource s = event.getSource();
+            if (power.getDamageCondition().test(s, baseValue) && power.getTargetCondition().test(target) && power.getBiEntityCondition().test(source, target)) {
+                event.setNewDamage((float) Modifier.applyModifiers(power.getModifiers(), baseValue));
+                power.getSelfAction().execute(source);
+                power.getTargetAction().execute(target);
+                power.getBiEntityAction().execute(source, target);
+            }
+        });
     }
 }

@@ -47,10 +47,6 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
     }
 
     //Power Related
-    public void grantPower(Holder<Power> power) {
-        this.grantPower(DEFAULT_SOURCE, power);
-    }
-
     public void grantPower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().put(source, power);
         this.data.getComponents().put(RLHelper.id(power), power.value().createComponents().stream().collect(Collectors.toMap(PowerComponent::getClass, Function.identity())));
@@ -58,14 +54,10 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         this.sync();
     }
 
-    public void revokePower(Holder<Power> power) {
-        this.revokePower(DEFAULT_SOURCE, power);
-    }
-
     public void revokePower(ResourceLocation source, Holder<Power> power) {
-        power.value().revoke(this.entity);
-        this.data.getComponents().remove(RLHelper.id(power));
         this.data.getPowers().remove(source, power);
+        this.data.getComponents().remove(RLHelper.id(power));
+        power.value().revoke(this.entity);
         this.sync();
     }
 
@@ -77,6 +69,7 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         this.data.getPowers().values().remove(power);
     }
 
+    //FIXME::Too many stream lol
     @NotNull
     public <T extends Power> List<T> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder, Class<T> clazz) {
         return this.getPowers(holder.getId(), clazz);
@@ -88,10 +81,16 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast).toList() : results;
     }
 
+    //Only for toggle, which need to bypass active logic
     @NotNull
-    public <T> Stream<T> streamActivePowers(Class<T> clazz) {
-        Stream<T> results = this.data.getPowers().values().stream().map(Holder::value).filter(x -> x.isActive(this)).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
+    public <T> Stream<T> streamPowers(Class<T> clazz) {
+        Stream<T> results = this.data.getPowers().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast) : results;
+    }
+
+    @NotNull
+    public <T extends Power> Stream<T> streamActivePowers(Class<T> clazz) {
+        return this.streamPowers(clazz).filter(x -> x.isActive(this));
     }
 
     public boolean hasPower(Holder<Power> power) {
@@ -102,8 +101,12 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         return this.data.getPowers().entries().stream().anyMatch(e -> e.getKey().equals(source) && e.getValue().equals(power));
     }
 
+    public <T extends Power> boolean hasPower(Class<T> clazz, boolean activeOnly) {
+        return this.data.getPowers().values().stream().map(Holder::value).filter(x -> !activeOnly || x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
+    }
+
     public void onPowerToggle(String key) {
-        this.streamActivePowers(Toggleable.class).forEach(x -> x.toggle(this, key));
+        this.streamPowers(Toggleable.class).forEach(x -> x.toggle(this, key));
     }
 
     public <T extends Power> boolean isPowerActive(Class<T> clazz) {

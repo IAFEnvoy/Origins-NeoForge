@@ -1,38 +1,37 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-@NotImplementedYet
+@EventBusSubscriber
 public class ModifyHarvestPower extends Power {
     public static final MapCodec<ModifyHarvestPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyHarvestPower::getModifiers),
             BlockCondition.optionalCodec("block_condition").forGetter(ModifyHarvestPower::getBlockCondition),
             Codec.BOOL.fieldOf("allow").forGetter(ModifyHarvestPower::isAllow)
     ).apply(i, ModifyHarvestPower::new));
-    private final List<Modifier> modifiers;
     private final BlockCondition blockCondition;
     private final boolean allow;
 
-    public ModifyHarvestPower(BaseSettings settings, List<Modifier> modifiers, BlockCondition blockCondition, boolean allow) {
+    public ModifyHarvestPower(BaseSettings settings, BlockCondition blockCondition, boolean allow) {
         super(settings);
-        this.modifiers = modifiers;
         this.blockCondition = blockCondition;
         this.allow = allow;
-    }
-
-    public List<Modifier> getModifiers() {
-        return this.modifiers;
     }
 
     public BlockCondition getBlockCondition() {
@@ -48,7 +47,13 @@ public class ModifyHarvestPower extends Power {
         return CODEC;
     }
 
-    public double apply(double baseValue) {
-        return Modifier.applyModifiers(this.modifiers, baseValue);
+    @SubscribeEvent
+    public static void checkCanHarvest(PlayerEvent.HarvestCheck event) {
+        if (event.getLevel() instanceof Level level)
+            OriginDataHolder.get(event.getEntity()).streamActivePowers(ModifyHarvestPower.class)
+                    .filter(x -> x.getBlockCondition().test(level, event.getPos()))
+                    .map(ModifyHarvestPower::isAllow)
+                    .reduce((x, y) -> x || y)
+                    .ifPresent(event::setCanHarvest);
     }
 }

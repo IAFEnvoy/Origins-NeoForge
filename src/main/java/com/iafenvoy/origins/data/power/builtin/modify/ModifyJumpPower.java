@@ -1,35 +1,41 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-@NotImplementedYet
+@EventBusSubscriber
 public class ModifyJumpPower extends Power {
     public static final MapCodec<ModifyJumpPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyJumpPower::getModifiers),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyJumpPower::getModifier),
             EntityAction.optionalCodec("entity_action").forGetter(ModifyJumpPower::getEntityAction)
     ).apply(i, ModifyJumpPower::new));
-    private final List<Modifier> modifiers;
+    private final List<Modifier> modifier;
     private final EntityAction entityAction;
 
-    public ModifyJumpPower(BaseSettings settings, List<Modifier> modifiers, EntityAction entityAction) {
+    public ModifyJumpPower(BaseSettings settings, List<Modifier> modifier, EntityAction entityAction) {
         super(settings);
-        this.modifiers = modifiers;
+        this.modifier = modifier;
         this.entityAction = entityAction;
     }
 
-    public List<Modifier> getModifiers() {
-        return this.modifiers;
+    public List<Modifier> getModifier() {
+        return this.modifier;
     }
 
     public EntityAction getEntityAction() {
@@ -41,11 +47,19 @@ public class ModifyJumpPower extends Power {
         return CODEC;
     }
 
-    public double apply(double baseValue) {
-        return Modifier.applyModifiers(this.getModifiers(), baseValue);
-    }
-
-    public void execute(Entity player) {
-        this.getEntityAction().execute(player);
+    /**
+     * This needs to be executed after COMBAT's jump overhaul.
+     */
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void livingJump(LivingEvent.LivingJumpEvent event) {
+        Entity player = event.getEntity();
+        double modified = OriginDataHolder.get(player).streamActivePowers(ModifyJumpPower.class).reduce(event.getEntity().getDeltaMovement().y, (value, power) -> {
+            power.getEntityAction().execute(player);
+            return Modifier.applyModifiers(power.getModifier(), value);
+        }, Double::sum);
+        Vec3 vel = player.getDeltaMovement();
+        double delta = modified - vel.y;
+        if (delta == 0) return;
+        player.setDeltaMovement(vel.add(0, delta, 0));
     }
 }

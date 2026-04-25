@@ -8,18 +8,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class ConduitPowerOnLandPower extends Power {
     public static final MapCodec<ConduitPowerOnLandPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BaseSettings.CODEC.forGetter(Power::getSettings),
-            EntityCondition.optionalCodec("condition").forGetter(ConduitPowerOnLandPower::getCondition)
+            BaseSettings.CODEC.forGetter(Power::getSettings)
     ).apply(i, ConduitPowerOnLandPower::new));
-    private final EntityCondition condition;
 
-    public ConduitPowerOnLandPower(BaseSettings settings, EntityCondition condition) {
+    public ConduitPowerOnLandPower(BaseSettings settings) {
         super(settings);
-        this.condition = condition;
-    }
-
-    public EntityCondition getCondition() {
-        return this.condition;
     }
 
     @Override

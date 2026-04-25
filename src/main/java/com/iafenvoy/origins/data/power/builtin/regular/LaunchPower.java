@@ -1,33 +1,47 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.common.CooldownSettings;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-@NotImplementedYet
-public class LaunchPower extends Power {
+import java.util.Optional;
+
+public class LaunchPower extends Power implements Toggleable {
     public static final MapCodec<LaunchPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.INT.optionalFieldOf("cooldown", 1).forGetter(LaunchPower::getCooldown),
-            Codec.FLOAT.optionalFieldOf("speed", 1F).forGetter(LaunchPower::getSpeed),
-            EntityCondition.optionalCodec("condition").forGetter(LaunchPower::getCondition)
+            CooldownSettings.CODEC.forGetter(LaunchPower::getCooldown),
+            Codec.FLOAT.fieldOf("speed").forGetter(LaunchPower::getSpeed),
+            BuiltInRegistries.SOUND_EVENT.byNameCodec().optionalFieldOf("sound").forGetter(LaunchPower::getSound),
+            Codec.STRING.optionalFieldOf("key").forGetter(LaunchPower::getKey)
     ).apply(i, LaunchPower::new));
-    private final int cooldown;
+    private final CooldownSettings cooldown;
     private final float speed;
-    private final EntityCondition condition;
+    private final Optional<SoundEvent> sound;
+    private final Optional<String> key;
 
-    public LaunchPower(BaseSettings settings, int cooldown, float speed, EntityCondition condition) {
+    public LaunchPower(BaseSettings settings, CooldownSettings cooldown, float speed, Optional<SoundEvent> sound, Optional<String> key) {
         super(settings);
         this.cooldown = cooldown;
         this.speed = speed;
-        this.condition = condition;
+        this.sound = sound;
+        this.key = key;
     }
 
-    public int getCooldown() {
+    public CooldownSettings getCooldown() {
         return this.cooldown;
     }
 
@@ -35,12 +49,28 @@ public class LaunchPower extends Power {
         return this.speed;
     }
 
-    public EntityCondition getCondition() {
-        return this.condition;
+    public Optional<SoundEvent> getSound() {
+        return this.sound;
+    }
+
+    public Optional<String> getKey() {
+        return this.key;
     }
 
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
+    }
+
+    @Override
+    public void toggle(@NotNull OriginDataHolder holder, String key) {
+        Entity entity = holder.entity();
+        if (entity.level() instanceof ServerLevel serverLevel) {
+            entity.push(0, this.speed, 0);
+            entity.hurtMarked = true;
+            this.sound.ifPresent(s -> serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), s, SoundSource.NEUTRAL, 0.5F, 0.4F / (entity.level().random.nextFloat() * 0.4F + 0.8F)));
+            for (int i = 0; i < 4; ++i)
+                serverLevel.sendParticles(ParticleTypes.CLOUD, entity.getX(), entity.getRandomY(), entity.getZ(), 8, entity.level().random.nextGaussian(), 0.0D, entity.level().random.nextGaussian(), 0.5);
+        }
     }
 }

@@ -15,11 +15,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+//FIXME::Duplicate with modify attribute?
 @NotImplementedYet
 public class ModifyFallingPower extends Power {
     public static final MapCodec<ModifyFallingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.DOUBLE.optionalFieldOf("velocity", 0.0).forGetter(ModifyFallingPower::getVelocity),
+            Codec.DOUBLE.fieldOf("velocity").forGetter(ModifyFallingPower::getVelocity),
             Codec.BOOL.optionalFieldOf("take_fall_damage", true).forGetter(ModifyFallingPower::isTakeFallDamage),
             CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyFallingPower::getModifiers)
     ).apply(i, ModifyFallingPower::new));
@@ -50,15 +51,5 @@ public class ModifyFallingPower extends Power {
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
-    }
-
-    //FIXME::No effect?
-    public static double apply(Entity entity, double originalValue) {
-        if (!(entity instanceof LivingEntity living))
-            return originalValue;
-        AttributeInstance attribute = living.getAttribute(Attributes.GRAVITY);
-        if (attribute == null)
-            return originalValue;
-        return originalValue;
     }
 }

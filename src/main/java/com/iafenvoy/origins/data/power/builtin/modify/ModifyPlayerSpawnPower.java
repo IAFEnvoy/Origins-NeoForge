@@ -42,25 +42,21 @@ public class ModifyPlayerSpawnPower extends Power {
             Codec.FLOAT.optionalFieldOf("dimension_distance_multiplier", 0F).forGetter(ModifyPlayerSpawnPower::getDistanceMultiplier),
             ResourceKey.codec(Registries.BIOME).optionalFieldOf("biome").forGetter(ModifyPlayerSpawnPower::getBiome),
             ExtraEnumCodecs.enumCodec(SpawnStrategy::valueOf).optionalFieldOf("spawn_strategy", SpawnStrategy.DEFAULT).forGetter(ModifyPlayerSpawnPower::getSpawnStrategy),
-            ResourceKey.codec(Registries.STRUCTURE).optionalFieldOf("structure").forGetter(ModifyPlayerSpawnPower::getStructure),
-            SoundEvent.DIRECT_CODEC.optionalFieldOf("respawn_sound").forGetter(ModifyPlayerSpawnPower::getSound)
+            ResourceKey.codec(Registries.STRUCTURE).optionalFieldOf("structure").forGetter(ModifyPlayerSpawnPower::getStructure)
     ).apply(i, ModifyPlayerSpawnPower::new));
     private final ResourceKey<Level> dimension;
     private final float distanceMultiplier;
     private final Optional<ResourceKey<Biome>> biome;
     private final SpawnStrategy spawnStrategy;
     private final Optional<ResourceKey<Structure>> structure;
-    private final Optional<SoundEvent> sound;
 
-    public ModifyPlayerSpawnPower(BaseSettings settings, ResourceKey<Level> dimension, float distanceMultiplier, Optional<ResourceKey<Biome>> biome, SpawnStrategy spawnStrategy,
-                                  Optional<ResourceKey<Structure>> structure, Optional<SoundEvent> sound) {
+    public ModifyPlayerSpawnPower(BaseSettings settings, ResourceKey<Level> dimension, float distanceMultiplier, Optional<ResourceKey<Biome>> biome, SpawnStrategy spawnStrategy, Optional<ResourceKey<Structure>> structure) {
         super(settings);
         this.dimension = dimension;
         this.distanceMultiplier = distanceMultiplier;
         this.biome = biome;
         this.spawnStrategy = spawnStrategy;
         this.structure = structure;
-        this.sound = sound;
     }
 
     public ResourceKey<Level> getDimension() {
@@ -81,10 +77,6 @@ public class ModifyPlayerSpawnPower extends Power {
 
     public Optional<ResourceKey<Structure>> getStructure() {
         return this.structure;
-    }
-
-    public Optional<SoundEvent> getSound() {
-        return this.sound;
     }
 
     public Optional<BlockPos> getBiomePos(ResourceLocation powerId, ServerLevel targetDimension, BlockPos originPos) {

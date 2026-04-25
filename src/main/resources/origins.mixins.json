@@ -5,10 +5,14 @@
   "mixins": [
     "accessor.LivingEntityAccessor",
     "accessor.MobAccessor",
+    "accessor.MobEffectInstanceAccessor",
+    "power.BlockBehaviourMixin",
+    "power.BlockItemMixin",
     "power.BlockStateBaseMixin",
     "power.CommonHooksMixin",
     "power.ConduitPowerOnLandMixin",
     "power.FoodDataMixin",
+    "power.ItemMixin",
     "power.LivingEntityMixin",
     "power.PlayerMixin",
     "power.ScareCreepersMixin",
@@ -20,7 +24,10 @@
     "power.EntityRenderDispatcherMixin",
     "power.FogRendererMixin",
     "power.GameRendererMixin",
+    "power.LevelRendererMixin",
+    "power.LivingEntityRendererMixin",
     "power.PlayerRendererMixin",
+    "power.RenderChunkRegionMixin",
     "power.WaterVisionMixin"
   ],
   "injectors": {

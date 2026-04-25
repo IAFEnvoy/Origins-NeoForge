@@ -17,6 +17,8 @@ public class OriginsConfig extends AutoInitConfigContainer {
     public static class General extends AutoInitConfigCategoryBase {
         public final IntegerEntry permissionLevel = IntegerEntry.builder("config.origins.general.permissionLevel", 2).key("permissionLevel").range(0, 4).build();
         public final BooleanEntry showOutput = BooleanEntry.builder("config.origins.general.showOutput", false).key("showOutput").build();
+        public final BooleanEntry compactUsabilityHints = BooleanEntry.builder("config.origins.general.compactUsabilityHints", false).key("compactUsabilityHints").build();
+        public final BooleanEntry separateSpawnFindingThread = BooleanEntry.builder("config.origins.general.separateSpawnFindingThread", false).key("separateSpawnFindingThread").build();
 
         public General() {
             super("general", "category.origins.general.title");

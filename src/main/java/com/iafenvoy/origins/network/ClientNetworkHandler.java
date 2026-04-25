@@ -5,6 +5,8 @@ import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
+import com.iafenvoy.origins.network.payload.ReloadLevelRendererS2CPayload;
+import com.iafenvoy.origins.render.LevelRenderHelper;
 import com.iafenvoy.origins.screen.ChooseOriginScreen;
 import com.iafenvoy.origins.screen.WaitForNextLayerScreen;
 import net.minecraft.client.Minecraft;
@@ -28,6 +30,10 @@ public final class ClientNetworkHandler {
         OriginDataHolder holder = OriginDataHolder.get(context.player());
         List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(context.player().registryAccess()).filter(x -> !holder.hasOrigin(x)).sorted(Comparator.comparing(Holder::value)).toList();
         ClientCall.openOriginScreen(layers, packet.showBackground());
+    }
+
+    public static void onReloadLevelRenderer(ReloadLevelRendererS2CPayload payload, IPayloadContext context) {
+        LevelRenderHelper.reload();
     }
 
     //If I don't call in a single class server will crash

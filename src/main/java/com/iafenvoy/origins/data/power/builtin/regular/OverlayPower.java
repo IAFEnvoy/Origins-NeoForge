@@ -50,7 +50,6 @@ public class OverlayPower extends Power {
         this.condition = condition;
     }
 
-
     public Optional<String> getSprite() {
         return this.sprite;
     }

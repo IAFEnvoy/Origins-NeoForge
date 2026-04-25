@@ -8,7 +8,6 @@ import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
-import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;

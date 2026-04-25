@@ -304,7 +304,7 @@ public class OriginDisplayScreen extends Screen {
         } else {
             for (Holder<Power> power : this.origin.value().powers()) {
                 if (power.value().getSettings().hidden()) continue;
-                LinkedList<FormattedCharSequence> powerName = new LinkedList<>(this.font.split(Component.empty().append(power.value().getName(access)).withStyle(ChatFormatting.UNDERLINE), textWidthLimit));
+                LinkedList<FormattedCharSequence> powerName = new LinkedList<>(this.font.split(power.value().getName(access).withStyle(ChatFormatting.UNDERLINE), textWidthLimit));
                 int powerNameWidth = this.font.width(powerName.getLast());
 
                 for (FormattedCharSequence powerNameLine : powerName) {
