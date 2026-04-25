@@ -3,10 +3,8 @@ package com.iafenvoy.origins.mixin.power;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCameraSubmersionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
 import com.iafenvoy.origins.event.client.NightVisionStrengthEvent;
-import com.iafenvoy.origins.util.MiscUtil;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,13 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

@@ -1,10 +1,9 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
-import com.iafenvoy.origins.util.math.Modifier;
 import com.iafenvoy.origins.util.codec.ExtraEnumCodecs;
+import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Direction;

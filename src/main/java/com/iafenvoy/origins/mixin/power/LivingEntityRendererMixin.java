@@ -17,7 +17,8 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class LivingEntityRendererMixin {
     @ModifyVariable(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getRenderType(Lnet/minecraft/world/entity/LivingEntity;ZZZ)Lnet/minecraft/client/renderer/RenderType;"), ordinal = 2)
     private boolean preventOutlineRendering(boolean original, LivingEntity living) {
-        if (OriginDataHolder.get(living).streamActivePowers(InvisibilityPower.class).noneMatch(InvisibilityPower::shouldRenderOutline)) return false;
+        if (OriginDataHolder.get(living).streamActivePowers(InvisibilityPower.class).noneMatch(InvisibilityPower::shouldRenderOutline))
+            return false;
         return original;
     }
 

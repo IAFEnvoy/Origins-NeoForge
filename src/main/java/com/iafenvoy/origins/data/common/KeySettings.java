@@ -16,7 +16,7 @@ public record KeySettings(String key, boolean continuous) {
     public static final MapCodec<KeySettings> CODEC = BASE_CODEC.optionalFieldOf("key", new KeySettings(Constants.PRIMARY_ACTIVE_KEY, false));
     public static final MapCodec<Optional<KeySettings>> OPTIONAL_CODEC = BASE_CODEC.optionalFieldOf("key");
 
-    public boolean match(String key){
+    public boolean match(String key) {
         return Objects.equals(this.key, key);
     }
 }

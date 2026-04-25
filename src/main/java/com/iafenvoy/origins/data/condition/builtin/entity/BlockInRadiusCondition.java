@@ -2,8 +2,8 @@ package com.iafenvoy.origins.data.condition.builtin.entity;
 
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
-import com.iafenvoy.origins.util.math.Shape;
 import com.iafenvoy.origins.util.math.Comparison;
+import com.iafenvoy.origins.util.math.Shape;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

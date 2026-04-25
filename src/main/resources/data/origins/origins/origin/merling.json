@@ -1,19 +1,19 @@
 {
-	"powers": [
-		"origins:water_breathing",
-		"origins:primary_key",
-		"origins:water_vision",
-		"origins:water_vision_night",
-		"origins:aqua_affinity_underwater",
-		"origins:aqua_affinity_ungrounded",
-		"origins:swim_speed",
-		"origins:like_water",
-		"origins:conduit_power_on_land",
-		"origins:air_from_potions"
-	],
-	"icon": {
-		"id": "minecraft:cod"
-	},
-	"order": 0,
-	"impact": 3
+  "powers": [
+    "origins:water_breathing",
+    "origins:primary_key",
+    "origins:water_vision",
+    "origins:water_vision_night",
+    "origins:aqua_affinity_underwater",
+    "origins:aqua_affinity_ungrounded",
+    "origins:swim_speed",
+    "origins:like_water",
+    "origins:conduit_power_on_land",
+    "origins:air_from_potions"
+  ],
+  "icon": {
+    "id": "minecraft:cod"
+  },
+  "order": 0,
+  "impact": 3
 }

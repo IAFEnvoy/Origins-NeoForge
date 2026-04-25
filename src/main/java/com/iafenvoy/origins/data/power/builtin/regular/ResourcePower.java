@@ -1,10 +1,10 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.data.action.EntityAction;
+import com.iafenvoy.origins.data.common.HudRender;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.data.power.component.builtin.ResourceComponent;
-import com.iafenvoy.origins.data.common.HudRender;
 import com.iafenvoy.origins.util.codec.OptionalCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

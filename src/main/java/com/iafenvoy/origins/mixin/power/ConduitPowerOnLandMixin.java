@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.mixin.power;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.data.power.builtin.regular.ConduitPowerOnLandPower;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;

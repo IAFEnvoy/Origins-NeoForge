@@ -7,7 +7,10 @@ import it.unimi.dsi.fastutil.doubles.DoubleList;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.DoubleBinaryOperator;
 
 public record Modifier(double amount, ModifierOperation operation) {

@@ -1,5 +1,5 @@
 {
-	"type": "origins:sprite",
-	"sprite": "origins:textures/gui/badge/active.png",
-	"text": "origins.gui.badge.active"
+  "type": "origins:sprite",
+  "sprite": "origins:textures/gui/badge/active.png",
+  "text": "origins.gui.badge.active"
 }
