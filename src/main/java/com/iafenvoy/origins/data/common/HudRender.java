@@ -18,7 +18,7 @@ public record HudRender(boolean shouldRender, ResourceLocation spriteLocation, i
             ResourceLocation.CODEC.optionalFieldOf("sprite_location", DEFAULT_SPRITE).forGetter(HudRender::spriteLocation),
             Codec.INT.optionalFieldOf("bar_index", 0).forGetter(HudRender::barIndex),
             Codec.INT.optionalFieldOf("icon_index", 0).forGetter(HudRender::iconIndex),
-            EntityCondition.CODEC.fieldOf("condition").forGetter(HudRender::condition),
+            EntityCondition.optionalCodec("condition").forGetter(HudRender::condition),
             Codec.BOOL.optionalFieldOf("inverted", false).forGetter(HudRender::inverted),
             OptionalCodecs.integer("order").forGetter(HudRender::order)
     ).apply(i, HudRender::new));

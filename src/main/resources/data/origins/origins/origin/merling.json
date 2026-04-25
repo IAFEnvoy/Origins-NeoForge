@@ -1,11 +1,13 @@
 {
 	"powers": [
 		"origins:water_breathing",
+		"origins:primary_key",
 		"origins:water_vision",
-		"origins:aqua_affinity",
+		"origins:water_vision_night",
+		"origins:aqua_affinity_underwater",
+		"origins:aqua_affinity_ungrounded",
 		"origins:swim_speed",
 		"origins:like_water",
-		"origins:aquatic",
 		"origins:conduit_power_on_land",
 		"origins:air_from_potions"
 	],

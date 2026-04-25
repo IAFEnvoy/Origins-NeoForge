@@ -10,6 +10,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public record DamageAction(Holder<DamageType> damageType, float amount,
     public static final MapCodec<DamageAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageAction::damageType),
             Codec.FLOAT.fieldOf("amount").forGetter(DamageAction::amount),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(DamageAction::modifiers)
+            CombinedCodecs.MODIFIER.optionalFieldOf("modifier", List.of()).forGetter(DamageAction::modifiers)
     ).apply(i, DamageAction::new));
 
     @Override
@@ -29,7 +30,9 @@ public record DamageAction(Holder<DamageType> damageType, float amount,
 
     @Override
     public void execute(@NotNull Entity source) {
-        float finalAmount = (float) Modifier.applyModifiers(this.modifiers, this.amount);
-        source.hurt(new DamageSource(this.damageType), finalAmount);
+        float amount = this.amount;
+        if (!this.modifiers.isEmpty() && source instanceof LivingEntity living)
+            amount = (float) Modifier.applyModifiers(this.modifiers, living.getMaxHealth());
+        source.hurt(new DamageSource(this.damageType), amount);
     }
 }

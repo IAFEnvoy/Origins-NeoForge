@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.DoubleBinaryOperator;
 
-public record Modifier(double value, ModifierOperation operation) {
+public record Modifier(double amount, ModifierOperation operation) {
     public static final Codec<Modifier> CODEC = RecordCodecBuilder.create(i -> i.group(
-            Codec.DOUBLE.fieldOf("value").forGetter(Modifier::value),
+            Codec.DOUBLE.fieldOf("amount").forGetter(Modifier::amount),
             ModifierOperation.CODEC.optionalFieldOf("operation", ModifierOperation.ADD_BASE_EARLY).forGetter(Modifier::operation)
     ).apply(i, Modifier::new));
 
@@ -26,7 +26,7 @@ public record Modifier(double value, ModifierOperation operation) {
 
     public static double applyModifiers(List<Modifier> modifiers, double value) {
         Map<ModifierOperation, DoubleList> modifierMap = new EnumMap<>(ModifierOperation.class);
-        modifiers.forEach(m -> modifierMap.computeIfAbsent(m.operation(), op -> new DoubleArrayList()).add(m.value));
+        modifiers.forEach(m -> modifierMap.computeIfAbsent(m.operation(), op -> new DoubleArrayList()).add(m.amount()));
         for (ModifierOperation operation : ModifierOperation.values())
             if (modifierMap.containsKey(operation))
                 value = operation.getOperator().applyAsDouble(value, modifierMap.get(operation));

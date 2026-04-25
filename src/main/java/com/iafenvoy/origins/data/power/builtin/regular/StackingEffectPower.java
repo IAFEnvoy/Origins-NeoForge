@@ -16,22 +16,22 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-public class StackingStatusEffectPower extends Power {
-    public static final MapCodec<StackingStatusEffectPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+public class StackingEffectPower extends Power {
+    public static final MapCodec<StackingEffectPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.INT.optionalFieldOf("min_stacks", 0).forGetter(StackingStatusEffectPower::getMinStacks),
-            Codec.INT.optionalFieldOf("max_stacks", 10).forGetter(StackingStatusEffectPower::getMaxStacks),
-            Codec.INT.optionalFieldOf("duration_per_stack", 10).forGetter(StackingStatusEffectPower::getDurationPerStack),
-            EffectEntry.CODEC.listOf().optionalFieldOf("effect", List.of()).forGetter(StackingStatusEffectPower::getEffects),
-            EntityCondition.optionalCodec("condition").forGetter(StackingStatusEffectPower::getCondition)
-    ).apply(i, StackingStatusEffectPower::new));
+            Codec.INT.optionalFieldOf("min_stacks", 0).forGetter(StackingEffectPower::getMinStacks),
+            Codec.INT.optionalFieldOf("max_stacks", 10).forGetter(StackingEffectPower::getMaxStacks),
+            Codec.INT.optionalFieldOf("duration_per_stack", 10).forGetter(StackingEffectPower::getDurationPerStack),
+            EffectEntry.CODEC.listOf().optionalFieldOf("effect", List.of()).forGetter(StackingEffectPower::getEffects),
+            EntityCondition.optionalCodec("condition").forGetter(StackingEffectPower::getCondition)
+    ).apply(i, StackingEffectPower::new));
     private final int minStacks;
     private final int maxStacks;
     private final int durationPerStack;
     private final List<EffectEntry> effects;
     private final EntityCondition condition;
 
-    public StackingStatusEffectPower(BaseSettings settings, int minStacks, int maxStacks, int durationPerStack, List<EffectEntry> effects, EntityCondition condition) {
+    public StackingEffectPower(BaseSettings settings, int minStacks, int maxStacks, int durationPerStack, List<EffectEntry> effects, EntityCondition condition) {
         super(settings);
         this.minStacks = minStacks;
         this.maxStacks = maxStacks;

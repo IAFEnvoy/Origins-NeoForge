@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.common.CooldownSettings;
+import com.iafenvoy.origins.data.common.KeySettings;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
@@ -26,14 +27,14 @@ public class LaunchPower extends Power implements Toggleable {
             CooldownSettings.CODEC.forGetter(LaunchPower::getCooldown),
             Codec.FLOAT.fieldOf("speed").forGetter(LaunchPower::getSpeed),
             BuiltInRegistries.SOUND_EVENT.byNameCodec().optionalFieldOf("sound").forGetter(LaunchPower::getSound),
-            Codec.STRING.optionalFieldOf("key").forGetter(LaunchPower::getKey)
+            KeySettings.OPTIONAL_CODEC.forGetter(LaunchPower::getKey)
     ).apply(i, LaunchPower::new));
     private final CooldownSettings cooldown;
     private final float speed;
     private final Optional<SoundEvent> sound;
-    private final Optional<String> key;
+    private final Optional<KeySettings> key;
 
-    public LaunchPower(BaseSettings settings, CooldownSettings cooldown, float speed, Optional<SoundEvent> sound, Optional<String> key) {
+    public LaunchPower(BaseSettings settings, CooldownSettings cooldown, float speed, Optional<SoundEvent> sound, Optional<KeySettings> key) {
         super(settings);
         this.cooldown = cooldown;
         this.speed = speed;
@@ -53,7 +54,7 @@ public class LaunchPower extends Power implements Toggleable {
         return this.sound;
     }
 
-    public Optional<String> getKey() {
+    public Optional<KeySettings> getKey() {
         return this.key;
     }
 
@@ -64,6 +65,8 @@ public class LaunchPower extends Power implements Toggleable {
 
     @Override
     public void toggle(@NotNull OriginDataHolder holder, String key) {
+        //FIXME::Key & Cooldown
+        if (this.key.isEmpty() || !this.key.get().match(key)) return;
         Entity entity = holder.entity();
         if (entity.level() instanceof ServerLevel serverLevel) {
             entity.push(0, this.speed, 0);

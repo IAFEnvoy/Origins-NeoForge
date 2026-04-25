@@ -1,5 +1,5 @@
 {
-	"type": "origins:stacking_status_effect",
+	"type": "origins:stacking_effect",
 	"min_stacks": -20,
 	"max_stacks": 361,
 	"duration_per_stack": 10,

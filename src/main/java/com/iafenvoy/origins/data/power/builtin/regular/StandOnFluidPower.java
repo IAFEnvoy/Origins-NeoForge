@@ -49,11 +49,10 @@ public class StandOnFluidPower extends Power {
     public static void handleStandOnFluid(CanStandOnFluidEvent event) {
         LivingEntity living = event.getEntity();
         FluidState fluid = event.getFluid();
-        for (StandOnFluidPower power : OriginDataHolder.get(living).getPowers(RegularPowers.STAND_ON_FLUID, StandOnFluidPower.class)) {
+        for (StandOnFluidPower power : OriginDataHolder.get(living).getPowers(RegularPowers.STAND_ON_FLUID, StandOnFluidPower.class))
             if (fluid.is(power.getFluid()) && power.getCondition().test(living)) {
                 event.allow();
                 return;
             }
-        }
     }
 }
