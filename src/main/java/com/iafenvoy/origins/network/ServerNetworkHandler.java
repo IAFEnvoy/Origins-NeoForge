@@ -22,7 +22,7 @@ public final class ServerNetworkHandler {
 
         OriginDataHolder holder = OriginDataHolder.get(player);
         Holder<Layer> layer = packet.layer();
-        if (holder.hasOrigin(layer)) {
+        if (holder.hasOriginInLayer(layer)) {
             Origins.LOGGER.warn("Player {} tried to choose origin for layer \"{}\" while having one already.", player.getName().getString(), RLHelper.string(layer));
             return;
         }
@@ -49,7 +49,7 @@ public final class ServerNetworkHandler {
 
         OriginDataHolder holder = OriginDataHolder.get(player);
         Holder<Layer> layer = packet.layer();
-        if (holder.hasOrigin(layer)) {
+        if (holder.hasOriginInLayer(layer)) {
             Origins.LOGGER.warn("Player {} tried to choose random origin for layer \"{}\" while having one already.", player.getName().getString(), RLHelper.string(layer));
             return;
         }

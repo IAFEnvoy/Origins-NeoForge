@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+//FIXME::What is this?
 @EventBusSubscriber
 public final class LoginHelper {
     //FIXME::Merge with refreshing power maps

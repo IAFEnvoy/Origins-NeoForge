@@ -28,7 +28,7 @@ public final class ClientNetworkHandler {
 
     static void openOriginScreen(OpenChooseOriginScreenS2CPayload packet, IPayloadContext context) {
         OriginDataHolder holder = OriginDataHolder.get(context.player());
-        List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(context.player().registryAccess()).filter(x -> !holder.hasOrigin(x)).sorted(Comparator.comparing(Holder::value)).toList();
+        List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(context.player().registryAccess()).filter(x -> !holder.hasOriginInLayer(x)).sorted(Comparator.comparing(Holder::value)).toList();
         ClientCall.openOriginScreen(layers, packet.showBackground());
     }
 

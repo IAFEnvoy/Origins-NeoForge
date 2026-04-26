@@ -28,7 +28,6 @@ public record ElytraFlightPossibleCondition(boolean checkState, boolean checkAbi
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        //FIXME::Correct?
         if (!(entity instanceof LivingEntity living)) return false;
         boolean state = true, ability = true, checked = false;
         if (this.checkState) {

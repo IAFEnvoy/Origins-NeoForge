@@ -61,11 +61,4 @@ public class PlayerMixin {
         Entity entity = this.origins$self();
         OriginDataHolder.get(entity).streamActivePowers(ModifyFoodPower.class).filter(x -> x.getItemCondition().test(level, food)).map(ModifyFoodPower::getEntityAction).forEach(x -> x.execute(entity));
     }
-
-    //Prevent player from damage when selection origins
-    //TODO::Using events instead of mixin for this
-    @ModifyExpressionValue(method = "isInvulnerableTo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInvulnerableTo(Lnet/minecraft/world/damagesource/DamageSource;)Z"))
-    private boolean origins$makePlayerInvulnerable(boolean original) {
-        return original || !OriginDataHolder.get(this.origins$self()).hasAllOrigins();
-    }
 }

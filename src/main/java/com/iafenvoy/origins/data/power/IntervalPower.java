@@ -3,9 +3,8 @@ package com.iafenvoy.origins.data.power;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-//FIXME::Map Codec
 public abstract class IntervalPower extends Power {
-    protected int remainTicks = 0;
+    private int remainTicks = 0;
 
     public IntervalPower(BaseSettings settings) {
         super(settings);

@@ -58,13 +58,11 @@ public abstract class GameRendererMixin {
     // PHASING: remove_blocks
     @Inject(method = "render", at = @At(value = "HEAD"))
     private void beforeRender(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
-        if (this.mainCamera.getEntity() == null) return;//FIXME
-        Optional<Float> renderMethod = PhasingPower.getRenderMethod(this.mainCamera.getEntity(), PhasingPower.PhasingRenderType.REMOVE_BLOCKS);
+        //noinspection ConstantValue
+        if (this.mainCamera.getEntity() == null) return;
         ClientLevel level = this.minecraft.level;
-        if (level == null)
-            return;
-        if (renderMethod.isPresent()) {
-            float view = renderMethod.get();
+        if (level == null) return;
+        if (PhasingPower.getRenderMethod(this.mainCamera.getEntity(), PhasingPower.PhasingRenderType.REMOVE_BLOCKS).isPresent()) {
             Set<BlockPos> eyePositions = this.origins$getEyePos(0.25F, 0.05F, 0.25F);
             Set<BlockPos> noLongerEyePositions = new HashSet<>();
             for (BlockPos p : this.origins$savedStates.keySet()) {

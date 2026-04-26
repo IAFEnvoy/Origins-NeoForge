@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -139,7 +138,11 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         return this.data.getOrigins().containsKey(layer) && this.data.getOrigins().get(layer).value().equals(origin.value());
     }
 
-    public boolean hasOrigin(Holder<Layer> layer) {
+    public boolean hasOrigin(Holder<Origin> origin) {
+        return this.data.getOrigins().containsValue(origin);
+    }
+
+    public boolean hasOriginInLayer(Holder<Layer> layer) {
         return this.data.getOrigins().containsKey(layer) && this.data.getOrigins().get(layer).value() != Origin.EMPTY;
     }
 

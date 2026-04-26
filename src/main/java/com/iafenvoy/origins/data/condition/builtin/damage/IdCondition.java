@@ -4,14 +4,17 @@ import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import org.jetbrains.annotations.NotNull;
 
-//FIXME::Don't use holder?
-public record NameCondition(String name) implements DamageCondition {
-    public static final MapCodec<NameCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.STRING.fieldOf("name").forGetter(NameCondition::name)
-    ).apply(i, NameCondition::new));
+import java.util.Objects;
+
+public record IdCondition(Holder<DamageType> value) implements DamageCondition {
+    public static final MapCodec<IdCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            DamageType.CODEC.fieldOf("value").forGetter(IdCondition::value)
+    ).apply(i, IdCondition::new));
 
     @Override
     public @NotNull MapCodec<? extends DamageCondition> codec() {
@@ -20,6 +23,6 @@ public record NameCondition(String name) implements DamageCondition {
 
     @Override
     public boolean test(@NotNull DamageSource source, float amount) {
-        return source.getMsgId().equals(this.name);
+        return Objects.equals(source.type(), this.value.value());
     }
 }

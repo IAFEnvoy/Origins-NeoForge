@@ -26,8 +26,7 @@ public record OriginCondition(Holder<Origin> origin, Optional<Holder<Layer>> lay
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        //TODO::More APIs in attachment?
-        Map<Holder<Layer>, Holder<Origin>> map = OriginDataHolder.get(entity).getOrigins();
-        return map.containsValue(this.origin) && this.layer.map(map::containsKey).orElse(true);
+        OriginDataHolder holder = OriginDataHolder.get(entity);
+        return this.layer.map(x -> holder.hasOrigin(x, this.origin)).orElseGet(() -> holder.hasOrigin(this.origin));
     }
 }

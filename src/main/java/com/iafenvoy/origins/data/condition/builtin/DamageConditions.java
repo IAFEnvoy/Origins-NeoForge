@@ -18,8 +18,8 @@ public final class DamageConditions {
     //List
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<AmountCondition>> AMOUNT = REGISTRY.register("amount", () -> AmountCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<AttackerCondition>> ATTACKER = REGISTRY.register("attacker", () -> AttackerCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<IdCondition>> ID = REGISTRY.register("id", () -> IdCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<InTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> InTagCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<NameCondition>> NAME = REGISTRY.register("name", () -> NameCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<ProjectileCondition>> PROJECTILE = REGISTRY.register("projectile", () -> ProjectileCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<TypeCondition>> TYPE = REGISTRY.register("type", () -> TypeCondition.CODEC);
     //Meta

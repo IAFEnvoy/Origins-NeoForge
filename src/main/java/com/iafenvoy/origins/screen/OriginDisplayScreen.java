@@ -302,50 +302,45 @@ public class OriginDisplayScreen extends Screen {
             }
             y += 14;
         } else {
-            for (Holder<Power> power : this.origin.value().powers()) {
-                if (power.value().getSettings().hidden()) continue;
-                LinkedList<FormattedCharSequence> powerName = new LinkedList<>(this.font.split(power.value().getName(access).withStyle(ChatFormatting.UNDERLINE), textWidthLimit));
+            for (Holder<Power> holder : this.origin.value().powers()) {
+                Power power = holder.value();
+                if (power.getSettings().hidden()) continue;
+                LinkedList<FormattedCharSequence> powerName = new LinkedList<>(this.font.split(power.getName(access).withStyle(ChatFormatting.UNDERLINE), textWidthLimit));
                 int powerNameWidth = this.font.width(powerName.getLast());
 
                 for (FormattedCharSequence powerNameLine : powerName) {
                     graphics.drawString(this.font, powerNameLine, x, y, 0xFFFFFF);
                     y += 12;
                 }
-
                 y -= 12;
 
                 int badgeStartX = x + powerNameWidth + 4;
                 int badgeEndX = x + 135;
 
-                int badgeOffsetX = 0;
-                int badgeOffsetY = 0;
+                int badgeOffsetX = 0, badgeOffsetY = 0;
 
-                for (Power selfOrSubPower : this.getSelfOrSubPowers(power.value(), BadgeManager::has)) {
-                    for (Badge badge : BadgeManager.get(selfOrSubPower.getId(access))) {
-                        int badgeX = badgeStartX + 10 * badgeOffsetX;
-                        int badgeY = (y - 1) + 10 * badgeOffsetY;
+                for (Badge badge : BadgeManager.get(power.getId(access))) {
+                    int badgeX = badgeStartX + 10 * badgeOffsetX;
+                    int badgeY = (y - 1) + 10 * badgeOffsetY;
 
-                        if (badgeX >= badgeEndX) {
+                    if (badgeX >= badgeEndX) {
+                        badgeOffsetX = 0;
+                        badgeOffsetY++;
 
-                            badgeOffsetX = 0;
-                            badgeOffsetY++;
-
-                            badgeX = badgeStartX = x;
-                            badgeY = (y - 1) + 10 * badgeOffsetY;
-
-                        }
-
-                        RenderedBadge renderedBadge = new RenderedBadge(selfOrSubPower, badge, badgeX, badgeY);
-                        this.renderedBadges.add(renderedBadge);
-
-                        graphics.blitSprite(badge.spriteId(), renderedBadge.x, renderedBadge.y, -2, 0, 0, 9, 9, 9, 9);
-                        badgeOffsetX++;
+                        badgeX = badgeStartX = x;
+                        badgeY = (y - 1) + 10 * badgeOffsetY;
                     }
+
+                    RenderedBadge renderedBadge = new RenderedBadge(power, badge, badgeX, badgeY);
+                    this.renderedBadges.add(renderedBadge);
+
+                    graphics.blitSprite(badge.spriteId(), renderedBadge.x, renderedBadge.y, -2, 0, 0, 9, 9, 9, 9);
+                    badgeOffsetX++;
                 }
 
                 y += badgeOffsetY * 10;
 
-                for (FormattedCharSequence powerDescriptionLine : this.font.split(power.value().getDescription(access), textWidthLimit)) {
+                for (FormattedCharSequence powerDescriptionLine : this.font.split(power.getDescription(access), textWidthLimit)) {
                     y += 12;
                     graphics.drawString(this.font, powerDescriptionLine, x + 2, y, 0xCCCCCC);
                 }
@@ -356,16 +351,6 @@ public class OriginDisplayScreen extends Screen {
 
         y += this.scrollPos;
         this.currentMaxScroll = Math.max(0, y - 14 - (this.guiTop + 158));
-
-    }
-
-    protected final Collection<? extends Power> getSelfOrSubPowers(Power power, Predicate<ResourceLocation> selfPredicate) {
-        //TODO
-//        if (!selfPredicate.test(power) && power instanceof MultiplePower multiplePower) {
-//            return multiplePower.getSubPowers();
-//        } else {
-        return Set.of(power);
-//        }
     }
 
     protected record RenderedBadge(Power power, Badge badge, int x, int y) {
