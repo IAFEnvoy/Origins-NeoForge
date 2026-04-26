@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.data.condition.builtin.damage;
 
 import com.iafenvoy.origins.data.condition.DamageCondition;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;

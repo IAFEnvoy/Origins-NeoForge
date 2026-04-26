@@ -6,6 +6,7 @@
     "accessor.LivingEntityAccessor",
     "accessor.MobAccessor",
     "accessor.MobEffectInstanceAccessor",
+    "power.AttributeInstanceMixin",
     "power.BlockBehaviourMixin",
     "power.BlockItemMixin",
     "power.BlockStateBaseMixin",

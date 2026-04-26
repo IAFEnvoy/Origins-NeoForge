@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.mixin.power;
 
+import com.iafenvoy.origins.accessor.AttributeInstanceAccessor;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyEffectAmplifierPower;
@@ -26,6 +27,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -59,6 +62,12 @@ public abstract class LivingEntityMixin extends Entity {
     @Unique
     private LivingEntity origins$self() {
         return (LivingEntity) (Object) this;
+    }
+
+    @Inject(method = "getAttribute", at = @At("RETURN"))
+    private void setEntityToAttributeInstance(Holder<Attribute> attribute, CallbackInfoReturnable<AttributeInstance> cir) {
+        AttributeInstance instance = cir.getReturnValue();
+        if (instance != null) ((AttributeInstanceAccessor) instance).origins$setEntity(this.origins$self());
     }
 
     @ModifyExpressionValue(method = "updateFallFlying", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getItemBySlot(Lnet/minecraft/world/entity/EquipmentSlot;)Lnet/minecraft/world/item/ItemStack;"))
@@ -115,7 +124,7 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyVariable(method = "eat*", at = @At("HEAD"), argsOnly = true)
     private ItemStack modifyEatenItemStack(ItemStack original) {
         if (this.origins$self() instanceof Player) return original;
-        Mutable<ItemStack> stack = new Mutable<>(original.copy());
+        Mutable<ItemStack> stack = Mutable.of(original.copy());
         ModifyFoodPower.modifyStack(this.level(), this.origins$self(), stack);
         return stack.get();
     }

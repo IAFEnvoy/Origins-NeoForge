@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -80,19 +81,24 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
     @NotNull
     public <T extends Power> List<T> getPowers(ResourceLocation id, Class<T> clazz) {
         List<T> results = this.data.getPowers().values().stream().filter(x -> x.unwrapKey().map(ResourceKey::location).map(id::equals).orElse(false)).map(Holder::value).toList().stream().filter(power -> power != null && clazz.isAssignableFrom(power.getClass())).map(clazz::cast).collect(Collectors.toCollection(LinkedList::new));
-        return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast).toList() : results;
+        return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast).toList() : results;
     }
 
     //Only for toggle and hud render, which need to bypass active logic
     @NotNull
     public <T> Stream<T> streamPowers(Class<T> clazz) {
         Stream<T> results = this.data.getPowers().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
-        return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast) : results;
+        return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast) : results;
     }
 
     @NotNull
     public <T extends Power> Stream<T> streamActivePowers(Class<T> clazz) {
         return this.streamPowers(clazz).filter(x -> x.isActive(this));
+    }
+
+    //TODO::For action powers
+    public <T extends Power> void executePowersWithCondition(Class<T> clazz, Predicate<T> condition, Consumer<T> action) {
+        this.streamActivePowers(clazz).filter(condition).forEach(action);
     }
 
     public boolean hasPower(Holder<Power> power) {

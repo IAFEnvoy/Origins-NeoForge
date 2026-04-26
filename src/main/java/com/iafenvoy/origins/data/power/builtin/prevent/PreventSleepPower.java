@@ -22,7 +22,7 @@ public class PreventSleepPower extends Power implements Prioritized {
             BlockCondition.optionalCodec("block_condition").forGetter(PreventSleepPower::getBlockCondition),
             ComponentSerialization.CODEC.optionalFieldOf("message", Component.translatable("text.origins.cannot_sleep")).forGetter(PreventSleepPower::getMessage),
             Codec.BOOL.optionalFieldOf("set_spawn_point", false).forGetter(PreventSleepPower::shouldSetSpawnPoint),
-            Codec.INT.optionalFieldOf("priority", 0).forGetter(PreventSleepPower::priority)
+            Codec.INT.optionalFieldOf("priority", 0).forGetter(PreventSleepPower::getPriority)
     ).apply(i, PreventSleepPower::new));
     private final BlockCondition blockCondition;
     private final Component message;
@@ -50,7 +50,7 @@ public class PreventSleepPower extends Power implements Prioritized {
     }
 
     @Override
-    public int priority() {
+    public int getPriority() {
         return this.priority;
     }
 

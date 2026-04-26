@@ -27,6 +27,6 @@ public interface ItemAction {
     void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack);
 
     default void execute(@NotNull Level level, @NotNull Entity source, ItemStack stack) {
-        this.execute(level, source, new Mutable<>(stack));
+        this.execute(level, source, Mutable.of(stack));
     }
 }

@@ -28,7 +28,7 @@ public class ActionOnItemUsePower extends Power implements Prioritized {
             EntityAction.optionalCodec("entity_action").forGetter(ActionOnItemUsePower::getEntityAction),
             ItemAction.optionalCodec("item_action").forGetter(ActionOnItemUsePower::getItemAction),
             Trigger.CODEC.optionalFieldOf("trigger", Trigger.FINISH).forGetter(ActionOnItemUsePower::getTrigger),
-            Codec.INT.optionalFieldOf("priority", 0).forGetter(ActionOnItemUsePower::priority)
+            Codec.INT.optionalFieldOf("priority", 0).forGetter(ActionOnItemUsePower::getPriority)
     ).apply(i, ActionOnItemUsePower::new));
     private final ItemCondition itemCondition;
     private final EntityAction entityAction;
@@ -62,7 +62,7 @@ public class ActionOnItemUsePower extends Power implements Prioritized {
     }
 
     @Override
-    public int priority() {
+    public int getPriority() {
         return this.priority;
     }
 

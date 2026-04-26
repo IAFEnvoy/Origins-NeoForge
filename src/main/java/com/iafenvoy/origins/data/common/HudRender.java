@@ -6,8 +6,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.function.ToIntFunction;
-
 public record HudRender(boolean shouldRenderInActive, ResourceLocation spriteLocation, int barIndex, int iconIndex,
                         EntityCondition condition, boolean inverted, int order) {
     public static final ResourceLocation DEFAULT_SPRITE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "textures/gui/resource_bar.png");

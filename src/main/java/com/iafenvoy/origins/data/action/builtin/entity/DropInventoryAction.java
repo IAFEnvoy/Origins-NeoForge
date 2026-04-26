@@ -60,7 +60,7 @@ public record DropInventoryAction(Optional<ResourceLocation> power, EntityAction
                 if (!stack.isEmpty()) {
                     if (this.itemCondition.test(source.level(), stack)) {
                         this.entityAction.execute(source);
-                        Mutable<ItemStack> newStack = new Mutable<>(stack.copy());
+                        Mutable<ItemStack> newStack = Mutable.of(stack.copy());
                         this.itemAction.execute(source.level(), source, newStack);
                         if (this.amount != 0) {
                             int newAmount = this.amount > 0 ? this.amount * -1 : this.amount;

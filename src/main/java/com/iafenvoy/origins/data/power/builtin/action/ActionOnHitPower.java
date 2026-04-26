@@ -7,7 +7,6 @@ import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.power.HasCooldownPower;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -16,8 +15,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 @EventBusSubscriber
 public class ActionOnHitPower extends HasCooldownPower {
@@ -61,7 +58,9 @@ public class ActionOnHitPower extends HasCooldownPower {
         Entity source = event.getSource().getEntity(), target = event.getEntity();
         if (source == null) return;
         OriginDataHolder holder = OriginDataHolder.get(source);
-        holder.streamActivePowers(ActionOnHitPower.class).forEach(power -> {
+        holder.streamActivePowers(ActionOnHitPower.class)
+                .filter()
+                .forEach(power -> {
             if (power.getBiEntityCondition().test(source, target) && power.getDamageCondition().test(event.getSource(), event.getNewDamage()))
                 holder.getComponentFor(power, CooldownComponent.class).ifPresent(c -> c.useIfReady(() -> power.getBiEntityAction().execute(source, target)));
         });

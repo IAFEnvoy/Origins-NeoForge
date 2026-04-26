@@ -10,7 +10,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.Optional;
 
 public record OriginCondition(Holder<Origin> origin, Optional<Holder<Layer>> layer) implements EntityCondition {

@@ -19,21 +19,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-//TODO::Merge with ActionOnEntityUsePower
-public class ActionOnBeingUsedPower extends Power implements Prioritized {
-    public static final MapCodec<ActionOnBeingUsedPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+public class ActionOnEntityUsePower extends Power implements Prioritized {
+    public static final MapCodec<ActionOnEntityUsePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            ActionInteractionSettings.CODEC.forGetter(ActionOnBeingUsedPower::getInteractionSettings),
-            BiEntityAction.optionalCodec("bientity_action").forGetter(ActionOnBeingUsedPower::getBiEntityAction),
-            BiEntityCondition.optionalCodec("bientity_condition").forGetter(ActionOnBeingUsedPower::getBiEntityCondition),
-            Codec.INT.optionalFieldOf("priority", 0).forGetter(ActionOnBeingUsedPower::getPriority)
-    ).apply(i, ActionOnBeingUsedPower::new));
+            ActionInteractionSettings.CODEC.forGetter(ActionOnEntityUsePower::getInteractionSettings),
+            BiEntityAction.optionalCodec("bientity_action").forGetter(ActionOnEntityUsePower::getBiEntityAction),
+            BiEntityCondition.optionalCodec("bientity_condition").forGetter(ActionOnEntityUsePower::getBiEntityCondition),
+            Codec.INT.optionalFieldOf("priority", 0).forGetter(ActionOnEntityUsePower::getPriority)
+    ).apply(i, ActionOnEntityUsePower::new));
     private final ActionInteractionSettings interactionSettings;
     private final BiEntityAction biEntityAction;
     private final BiEntityCondition biEntityCondition;
     private final int priority;
 
-    public ActionOnBeingUsedPower(BaseSettings settings, ActionInteractionSettings interactionSettings, BiEntityAction biEntityAction, BiEntityCondition biEntityCondition, int priority) {
+    protected ActionOnEntityUsePower(BaseSettings settings, ActionInteractionSettings interactionSettings, BiEntityAction biEntityAction, BiEntityCondition biEntityCondition, int priority) {
         super(settings);
         this.interactionSettings = interactionSettings;
         this.biEntityAction = biEntityAction;
@@ -64,8 +63,8 @@ public class ActionOnBeingUsedPower extends Power implements Prioritized {
     }
 
     public static Optional<InteractionResult> tryPrevent(Entity self, Entity other, InteractionHand hand) {
-        for (ActionOnBeingUsedPower power : OriginDataHolder.get(self).streamActivePowers(ActionOnBeingUsedPower.class).toList()) {
-            Optional<InteractionResult> result = power.tryExecute( self, other, hand);
+        for (ActionOnEntityUsePower power : OriginDataHolder.get(self).streamActivePowers(ActionOnEntityUsePower.class).toList()) {
+            Optional<InteractionResult> result = power.tryExecute(self, other, hand);
             if (result.isPresent())
                 return result;
         }
@@ -73,12 +72,12 @@ public class ActionOnBeingUsedPower extends Power implements Prioritized {
     }
 
     public static Optional<InteractionResult> tryInteract(Entity self, Entity other, InteractionHand hand) {
-        return OriginDataHolder.get(self).streamActivePowers(ActionOnBeingUsedPower.class).flatMap(x -> x.tryExecute(self, other, hand).stream()).reduce(MiscUtil::reduce);
+        return OriginDataHolder.get(self).streamActivePowers(ActionOnEntityUsePower.class).flatMap(x -> x.tryExecute(self, other, hand).stream()).reduce(MiscUtil::reduce);
     }
 
-    public Optional<InteractionResult> tryExecute( Entity self, Entity other, InteractionHand hand) {
-        if (other instanceof LivingEntity living && this.check(other, self, hand, living.getItemInHand(hand))) {
-            return Optional.of(this.executeAction(other, self, hand));
+    public Optional<InteractionResult> tryExecute(Entity self, Entity other, InteractionHand hand) {
+        if (self instanceof LivingEntity living && this.check(self, other, hand, living.getItemInHand(hand))) {
+            return Optional.of(this.executeAction(self, other, hand));
         }
         return Optional.empty();
     }
