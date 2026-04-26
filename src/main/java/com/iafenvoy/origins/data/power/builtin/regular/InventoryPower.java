@@ -5,7 +5,7 @@ import com.iafenvoy.origins.data.common.KeySettings;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
-import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -76,8 +76,8 @@ public class InventoryPower extends Power implements Toggleable, MenuProvider {
     }
 
     @Override
-    public List<PowerComponent> createComponents() {
-        return List.of(new InventoryComponent(this.containerType.getSize()));
+    public void createComponents(ComponentCollector collector) {
+        collector.add(new InventoryComponent(this.containerType.getSize()));
     }
 
     @Override

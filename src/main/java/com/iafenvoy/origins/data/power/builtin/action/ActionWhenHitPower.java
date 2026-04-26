@@ -5,8 +5,9 @@ import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.common.CooldownSettings;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.DamageCondition;
+import com.iafenvoy.origins.data.power.HasCooldownPower;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -19,25 +20,23 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @EventBusSubscriber
-public class ActionWhenHitPower extends Power {
+public class ActionWhenHitPower extends HasCooldownPower {
     public static final MapCodec<ActionWhenHitPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
+            CooldownSettings.CODEC.forGetter(ActionWhenHitPower::getCooldown),
             BiEntityAction.CODEC.fieldOf("bientity_action").forGetter(ActionWhenHitPower::getBiEntityAction),
             BiEntityCondition.optionalCodec("bientity_condition").forGetter(ActionWhenHitPower::getBiEntityCondition),
-            DamageCondition.optionalCodec("damage_condition").forGetter(ActionWhenHitPower::getDamageCondition),
-            CooldownSettings.CODEC.forGetter(ActionWhenHitPower::getCooldown)
+            DamageCondition.optionalCodec("damage_condition").forGetter(ActionWhenHitPower::getDamageCondition)
     ).apply(i, ActionWhenHitPower::new));
     private final BiEntityAction biEntityAction;
     private final BiEntityCondition biEntityCondition;
     private final DamageCondition damageCondition;
-    private final CooldownSettings cooldown;
 
-    public ActionWhenHitPower(BaseSettings settings, BiEntityAction biEntityAction, BiEntityCondition biEntityCondition, DamageCondition damageCondition, CooldownSettings cooldown) {
-        super(settings);
+    public ActionWhenHitPower(BaseSettings settings, CooldownSettings cooldown, BiEntityAction biEntityAction, BiEntityCondition biEntityCondition, DamageCondition damageCondition) {
+        super(settings, cooldown);
         this.biEntityAction = biEntityAction;
         this.biEntityCondition = biEntityCondition;
         this.damageCondition = damageCondition;
-        this.cooldown = cooldown;
     }
 
     public BiEntityAction getBiEntityAction() {
@@ -52,18 +51,9 @@ public class ActionWhenHitPower extends Power {
         return this.damageCondition;
     }
 
-    public CooldownSettings getCooldown() {
-        return this.cooldown;
-    }
-
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
-    }
-
-    @Override
-    public List<PowerComponent> createComponents() {
-        return List.of(new CooldownComponent(this.getCooldown().cooldown()));
     }
 
     @SubscribeEvent

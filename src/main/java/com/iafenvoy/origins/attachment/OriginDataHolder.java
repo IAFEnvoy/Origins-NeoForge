@@ -7,6 +7,7 @@ import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.Prioritized;
 import com.iafenvoy.origins.data.power.Toggleable;
+import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.registry.OriginsAttachments;
@@ -49,7 +50,9 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
     //Power Related
     public void grantPower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().put(source, power);
-        this.data.getComponents().put(RLHelper.id(power), power.value().createComponents().stream().collect(Collectors.toMap(PowerComponent::getClass, Function.identity())));
+        ComponentCollector collector = ComponentCollector.create();
+        power.value().createComponents(collector);
+        this.data.getComponents().put(RLHelper.id(power), collector.build());
         power.value().grant(this.entity);
         this.sync();
     }
@@ -81,7 +84,7 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::priority)).map(clazz::cast).toList() : results;
     }
 
-    //Only for toggle, which need to bypass active logic
+    //Only for toggle and hud render, which need to bypass active logic
     @NotNull
     public <T> Stream<T> streamPowers(Class<T> clazz) {
         Stream<T> results = this.data.getPowers().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);

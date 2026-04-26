@@ -3,7 +3,7 @@ package com.iafenvoy.origins.data.power;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.badge.Badge;
 import com.iafenvoy.origins.data.condition.EntityCondition;
-import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.util.annotation.Comment;
 import com.iafenvoy.origins.util.codec.DefaultedCodec;
 import com.mojang.serialization.Codec;
@@ -48,8 +48,7 @@ public abstract class Power {
     }
 
     @Comment("Only one class each is allowed")
-    public List<PowerComponent> createComponents() {
-        return List.of();
+    public void createComponents(ComponentCollector collector) {
     }
 
     public boolean isActive(OriginDataHolder holder) {

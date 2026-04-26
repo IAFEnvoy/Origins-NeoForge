@@ -1,9 +1,11 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.common.HudRender;
+import com.iafenvoy.origins.data.power.HudRenderable;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.ResourceComponent;
 import com.iafenvoy.origins.util.codec.OptionalCodecs;
 import com.mojang.serialization.Codec;
@@ -11,11 +13,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-public class ResourcePower extends Power {
+public class ResourcePower extends Power implements HudRenderable {
     public static final MapCodec<ResourcePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             Codec.INT.fieldOf("min").forGetter(ResourcePower::getMin),
@@ -72,7 +73,22 @@ public class ResourcePower extends Power {
     }
 
     @Override
-    public List<PowerComponent> createComponents() {
-        return List.of(new ResourceComponent(this.getStartValue().orElse(this.getMin())));
+    public void createComponents(ComponentCollector collector) {
+        collector.add(new ResourceComponent(this.getStartValue().orElse(this.getMin())));
+    }
+
+    @Override
+    public Power getPowerForHudRender() {
+        return this;
+    }
+
+    @Override
+    public Optional<HudRender> getHudRenderData() {
+        return this.hudRender;
+    }
+
+    @Override
+    public float getRenderPercentage(OriginDataHolder holder) {
+        return HudRenderable.clampProgress(holder.getComponentFor(this, ResourceComponent.class).map(ResourceComponent::getValue).orElse(this.min), this.min, this.max);
     }
 }

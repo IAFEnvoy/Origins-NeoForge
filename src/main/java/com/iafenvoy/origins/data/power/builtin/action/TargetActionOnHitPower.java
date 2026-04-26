@@ -3,8 +3,11 @@ package com.iafenvoy.origins.data.power.builtin.action;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.common.CooldownSettings;
+import com.iafenvoy.origins.data.common.HudRender;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
+import com.iafenvoy.origins.data.power.HasCooldownPower;
+import com.iafenvoy.origins.data.power.HudRenderable;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
 import com.mojang.serialization.MapCodec;
@@ -15,35 +18,31 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 //FIXME::Merge with ActionOnHitPower
 @EventBusSubscriber
-public class TargetActionOnHitPower extends Power {
+public class TargetActionOnHitPower extends HasCooldownPower {
     public static final MapCodec<TargetActionOnHitPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            EntityAction.optionalCodec("entity_action").forGetter(TargetActionOnHitPower::getEntityAction),
             CooldownSettings.CODEC.forGetter(TargetActionOnHitPower::getCooldown),
+            EntityAction.optionalCodec("entity_action").forGetter(TargetActionOnHitPower::getEntityAction),
             DamageCondition.optionalCodec("damage_condition").forGetter(TargetActionOnHitPower::getDamageCondition),
             EntityCondition.optionalCodec("target_condition").forGetter(TargetActionOnHitPower::getTargetCondition)
     ).apply(i, TargetActionOnHitPower::new));
     private final EntityAction entityAction;
-    private final CooldownSettings cooldown;
     private final DamageCondition damageCondition;
     private final EntityCondition targetCondition;
 
-    public TargetActionOnHitPower(BaseSettings settings, EntityAction entityAction, CooldownSettings cooldown, DamageCondition damageCondition, EntityCondition targetCondition) {
-        super(settings);
+    public TargetActionOnHitPower(BaseSettings settings, CooldownSettings cooldown, EntityAction entityAction, DamageCondition damageCondition, EntityCondition targetCondition) {
+        super(settings, cooldown);
         this.entityAction = entityAction;
-        this.cooldown = cooldown;
         this.damageCondition = damageCondition;
         this.targetCondition = targetCondition;
     }
 
     public EntityAction getEntityAction() {
         return this.entityAction;
-    }
-
-    public CooldownSettings getCooldown() {
-        return this.cooldown;
     }
 
     public DamageCondition getDamageCondition() {

@@ -2,7 +2,10 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.common.CooldownSettings;
+import com.iafenvoy.origins.data.common.HudRender;
 import com.iafenvoy.origins.data.common.KeySettings;
+import com.iafenvoy.origins.data.power.HasCooldownPower;
+import com.iafenvoy.origins.data.power.HudRenderable;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
 import com.mojang.serialization.Codec;
@@ -18,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class LaunchPower extends Power implements Toggleable {
+public class LaunchPower extends HasCooldownPower implements Toggleable {
     public static final MapCodec<LaunchPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             CooldownSettings.CODEC.forGetter(LaunchPower::getCooldown),
@@ -26,21 +29,15 @@ public class LaunchPower extends Power implements Toggleable {
             BuiltInRegistries.SOUND_EVENT.byNameCodec().optionalFieldOf("sound").forGetter(LaunchPower::getSound),
             KeySettings.OPTIONAL_CODEC.forGetter(LaunchPower::getKey)
     ).apply(i, LaunchPower::new));
-    private final CooldownSettings cooldown;
     private final float speed;
     private final Optional<SoundEvent> sound;
     private final Optional<KeySettings> key;
 
     public LaunchPower(BaseSettings settings, CooldownSettings cooldown, float speed, Optional<SoundEvent> sound, Optional<KeySettings> key) {
-        super(settings);
-        this.cooldown = cooldown;
+        super(settings, cooldown);
         this.speed = speed;
         this.sound = sound;
         this.key = key;
-    }
-
-    public CooldownSettings getCooldown() {
-        return this.cooldown;
     }
 
     public float getSpeed() {

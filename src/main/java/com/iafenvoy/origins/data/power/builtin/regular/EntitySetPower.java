@@ -2,7 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.EntitySetComponent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -39,7 +39,7 @@ public class EntitySetPower extends Power {
     }
 
     @Override
-    public List<PowerComponent> createComponents() {
-        return List.of(new EntitySetComponent());
+    public void createComponents(ComponentCollector collector) {
+        collector.add(new EntitySetComponent());
     }
 }

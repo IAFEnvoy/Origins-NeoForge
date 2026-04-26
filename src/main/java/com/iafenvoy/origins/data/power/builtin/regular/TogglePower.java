@@ -4,7 +4,7 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.common.KeySettings;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
-import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.ToggleComponent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -50,8 +50,8 @@ public class TogglePower extends Power implements Toggleable {
     }
 
     @Override
-    public List<PowerComponent> createComponents() {
-        return List.of(new ToggleComponent(this.activeByDefault));
+    public void createComponents(ComponentCollector collector) {
+        collector.add(new ToggleComponent(this.activeByDefault));
     }
 
     @Override
