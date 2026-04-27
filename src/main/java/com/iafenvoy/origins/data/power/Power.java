@@ -52,7 +52,7 @@ public abstract class Power {
     }
 
     public boolean isActive(OriginDataHolder holder) {
-        return this.settings.condition().test(holder.entity());
+        return this.settings.condition().test(holder.getEntity());
     }
 
     @Comment("Call after grant, server side only")

@@ -12,6 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class ModifyPowers {
     public static final DeferredRegister<MapCodec<? extends Power>> REGISTRY = DeferredRegister.create(PowerRegistries.POWER_TYPE, Origins.MOD_ID);
 
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyAirSpeedPower>> MODIFY_AIR_SPEED = REGISTRY.register("modify_air_speed", () -> ModifyAirSpeedPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyAttributePower>> MODIFY_ATTRIBUTE = REGISTRY.register("modify_attribute", () -> ModifyAttributePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyBlockRenderPower>> MODIFY_BLOCK_RENDER = REGISTRY.register("modify_block_render", () -> ModifyBlockRenderPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyBreakSpeedPower>> MODIFY_BREAK_SPEED = REGISTRY.register("modify_break_speed", () -> ModifyBreakSpeedPower.CODEC);

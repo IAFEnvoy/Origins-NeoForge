@@ -3,7 +3,10 @@ package com.iafenvoy.origins.event;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.action.ActionOnBeingUsedPower;
 import com.iafenvoy.origins.data.power.builtin.action.ActionOnEntityUsePower;
+import com.iafenvoy.origins.data.power.builtin.prevent.PreventBeingUsedPower;
+import com.iafenvoy.origins.data.power.builtin.prevent.PreventEntityUsePower;
 import com.iafenvoy.origins.util.MiscUtil;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -30,10 +33,9 @@ public final class CommonEvents {
         Player player = event.getEntity();
         if (player.isSpectator()) return;
         Entity target = event.getTarget();
-        Optional<InteractionResult> result = ActionOnEntityUsePower.tryPrevent(player, target, event.getHand());
-        if (result.isEmpty() || result.get() == InteractionResult.PASS) {
-            result = ActionOnBeingUsedPower.tryPrevent(target, player, event.getHand());
-        }
+        Optional<InteractionResult> result = PreventEntityUsePower.tryPrevent(player, target, event.getHand());
+        if (result.isEmpty() || result.get() == InteractionResult.PASS)
+            result = PreventBeingUsedPower.tryPrevent(target, player, event.getHand());
         result.ifPresent(res -> {
             if (res != InteractionResult.PASS) {
                 event.setCancellationResult(res);
@@ -49,14 +51,13 @@ public final class CommonEvents {
         Player player = event.getEntity();
         if (player.isSpectator()) return;
         Entity target = event.getTarget();
-        Optional<InteractionResult> result = Stream.concat(
-                ActionOnEntityUsePower.tryInteract(player, target, event.getHand()).stream(),
-                ActionOnBeingUsedPower.tryInteract(target, player, event.getHand()).stream()).reduce(MiscUtil::reduce);
-        result.ifPresent(res -> {
-            if (res != InteractionResult.PASS) {
-                event.setCancellationResult(res);
-                event.setCanceled(true);
-            }
+        InteractionHand hand = event.getHand();
+        Stream.concat(
+                OriginDataHolder.get(player).streamActivePowers(ActionOnEntityUsePower.class).flatMap(x -> x.tryExecute(player, target, hand).stream()),
+                OriginDataHolder.get(target).streamActivePowers(ActionOnBeingUsedPower.class).flatMap(x1 -> x1.tryExecute(target, player, hand).stream())
+        ).reduce(MiscUtil::reduce).filter(res -> res != InteractionResult.PASS).ifPresent(res -> {
+            event.setCancellationResult(res);
+            event.setCanceled(true);
         });
     }
 }

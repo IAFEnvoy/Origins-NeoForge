@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @EventBusSubscriber
-public class ModifyJumpPower extends Power {
+public class ModifyJumpPower extends Power implements ModifierPowerHelper {
     public static final MapCodec<ModifyJumpPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyJumpPower::getModifier),

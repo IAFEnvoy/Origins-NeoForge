@@ -6,7 +6,6 @@ import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.Prioritized;
-import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
@@ -30,13 +29,39 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @EventBusSubscriber
-public record OriginDataHolder(Entity entity, EntityOriginAttachment data, RegistryAccess access) {
+public final class OriginDataHolder {
     public static final ResourceLocation DEFAULT_SOURCE = ResourceLocation.withDefaultNamespace("command");
+    private final Entity entity;
+    private final EntityOriginAttachment data;
+    private final RegistryAccess access;
+    private final PowerHelper helper;
+
+    public OriginDataHolder(Entity entity, EntityOriginAttachment data) {
+        this.entity = entity;
+        this.data = data;
+        this.access = entity.registryAccess();
+        this.helper = new PowerHelper(this);
+    }
+
+    public Entity getEntity() {
+        return this.entity;
+    }
+
+    public EntityOriginAttachment getData() {
+        return this.data;
+    }
+
+    public RegistryAccess getAccess() {
+        return this.access;
+    }
+
+    public PowerHelper getHelper() {
+        return this.helper;
+    }
 
     //Query
     public Map<Holder<Layer>, Holder<Origin>> getOrigins() {
@@ -96,11 +121,6 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
         return this.streamPowers(clazz).filter(x -> x.isActive(this));
     }
 
-    //TODO::For action powers
-    public <T extends Power> void executePowersWithCondition(Class<T> clazz, Predicate<T> condition, Consumer<T> action) {
-        this.streamActivePowers(clazz).filter(condition).forEach(action);
-    }
-
     public boolean hasPower(Holder<Power> power) {
         return this.data.getPowers().values().stream().anyMatch(p -> p.equals(power));
     }
@@ -111,10 +131,6 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
 
     public <T extends Power> boolean hasPower(Class<T> clazz, boolean activeOnly) {
         return this.data.getPowers().values().stream().map(Holder::value).filter(x -> !activeOnly || x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
-    }
-
-    public void onPowerToggle(String key) {
-        this.streamPowers(Toggleable.class).forEach(x -> x.toggle(this, key));
     }
 
     public <T extends Power> boolean isPowerActive(Class<T> clazz) {
@@ -214,7 +230,7 @@ public record OriginDataHolder(Entity entity, EntityOriginAttachment data, Regis
 
     //Utils
     public static OriginDataHolder get(Entity entity) {
-        return new OriginDataHolder(entity, entity.getData(OriginsAttachments.ENTITY_ORIGIN), entity.registryAccess());
+        return new OriginDataHolder(entity, entity.getData(OriginsAttachments.ENTITY_ORIGIN));
     }
 
     private void executeOnPowers(@Nullable Holder<Origin> origin, Consumer<Power> consumer) {

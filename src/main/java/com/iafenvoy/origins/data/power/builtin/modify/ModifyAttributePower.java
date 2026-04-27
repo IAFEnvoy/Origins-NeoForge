@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
@@ -13,27 +14,27 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @NotImplementedYet
-public class ModifyAttributePower extends Power {
+public class ModifyAttributePower extends Power implements ModifierPowerHelper {
     public static final MapCodec<ModifyAttributePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             Attribute.CODEC.fieldOf("attribute").forGetter(ModifyAttributePower::getAttribute),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyAttributePower::getModifiers)
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyAttributePower::getModifier)
     ).apply(i, ModifyAttributePower::new));
     private final Holder<Attribute> attribute;
-    private final List<Modifier> modifiers;
+    private final List<Modifier> modifier;
 
-    public ModifyAttributePower(BaseSettings settings, Holder<Attribute> attribute, List<Modifier> modifiers) {
+    public ModifyAttributePower(BaseSettings settings, Holder<Attribute> attribute, List<Modifier> modifier) {
         super(settings);
         this.attribute = attribute;
-        this.modifiers = modifiers;
+        this.modifier = modifier;
     }
 
     public Holder<Attribute> getAttribute() {
         return this.attribute;
     }
 
-    public List<Modifier> getModifiers() {
-        return this.modifiers;
+    public List<Modifier> getModifier() {
+        return this.modifier;
     }
 
     @Override

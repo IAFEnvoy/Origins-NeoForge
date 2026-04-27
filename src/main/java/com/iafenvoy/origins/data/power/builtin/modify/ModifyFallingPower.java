@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
@@ -18,23 +19,23 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @EventBusSubscriber
-public class ModifyFallingPower extends Power {
+public class ModifyFallingPower extends Power implements ModifierPowerHelper {
     public static final MapCodec<ModifyFallingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             Codec.DOUBLE.fieldOf("velocity").forGetter(ModifyFallingPower::getVelocity),
             Codec.BOOL.optionalFieldOf("take_fall_damage", true).forGetter(ModifyFallingPower::shouldTakeFallDamage),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyFallingPower::getModifiers)
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyFallingPower::getModifier)
     ).apply(i, ModifyFallingPower::new));
     //FIXME::No use?
     private final double velocity;
     private final boolean takeFallDamage;
-    private final List<Modifier> modifiers;
+    private final List<Modifier> modifier;
 
-    public ModifyFallingPower(BaseSettings settings, double velocity, boolean takeFallDamage, List<Modifier> modifiers) {
+    public ModifyFallingPower(BaseSettings settings, double velocity, boolean takeFallDamage, List<Modifier> modifier) {
         super(settings);
         this.velocity = velocity;
         this.takeFallDamage = takeFallDamage;
-        this.modifiers = modifiers;
+        this.modifier = modifier;
     }
 
     public double getVelocity() {
@@ -45,8 +46,8 @@ public class ModifyFallingPower extends Power {
         return this.takeFallDamage;
     }
 
-    public List<Modifier> getModifiers() {
-        return this.modifiers;
+    public List<Modifier> getModifier() {
+        return this.modifier;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class ModifyFallingPower extends Power {
     public static double apply(LivingEntity living, double originalValue) {
         AttributeInstance attribute = living.getAttribute(Attributes.GRAVITY);
         if (attribute != null) {
-            double modifier = OriginDataHolder.get(living).streamActivePowers(ModifyFallingPower.class).map(ModifyFallingPower::getModifiers).reduce(originalValue, (p, c) -> Modifier.applyModifiers(c, p), Double::sum);
+            double modifier = OriginDataHolder.get(living).getHelper().modify(ModifyFallingPower.class, originalValue);
             if (modifier != originalValue && modifier >= 0.0) return modifier;
         }
         return originalValue;

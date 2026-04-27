@@ -3,10 +3,11 @@ package com.iafenvoy.origins.data.power.builtin.action;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.data._common.ActionInteractionSettings;
+import com.iafenvoy.origins.data._common.InteractionPowerSettings;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.MiscUtil;
+import com.iafenvoy.origins.util.codec.ExtraEnumCodecs;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -30,28 +31,31 @@ import java.util.Optional;
 public class ActionOnBlockUsePower extends Power {
     public static final MapCodec<ActionOnBlockUsePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(ActionOnBlockUsePower::getSettings),
-            ActionInteractionSettings.CODEC.forGetter(ActionOnBlockUsePower::getInteractionSettings),
+            InteractionPowerSettings.CODEC.forGetter(ActionOnBlockUsePower::getInteractionSettings),
             EntityAction.optionalCodec("entity_action").forGetter(ActionOnBlockUsePower::getEntityAction),
             BlockAction.optionalCodec("block_action").forGetter(ActionOnBlockUsePower::getBlockAction),
             BlockCondition.optionalCodec("block_condition").forGetter(ActionOnBlockUsePower::getBlockCondition),
-            Direction.CODEC.listOf().optionalFieldOf("directions", List.of(Direction.values())).forGetter(ActionOnBlockUsePower::getDirections)
+            Direction.CODEC.listOf().optionalFieldOf("directions", List.of(Direction.values())).forGetter(ActionOnBlockUsePower::getDirections),
+            ExtraEnumCodecs.INTERACTION_RESULT.optionalFieldOf("interaction_result", InteractionResult.SUCCESS).forGetter(ActionOnBlockUsePower::getInteractionResult)
     ).apply(i, ActionOnBlockUsePower::new));
-    private final ActionInteractionSettings interactionSettings;
+    private final InteractionPowerSettings interactionSettings;
     private final EntityAction entityAction;
     private final BlockAction blockAction;
     private final BlockCondition blockCondition;
     private final List<Direction> directions;
+    private final InteractionResult interactionResult;
 
-    public ActionOnBlockUsePower(BaseSettings settings, ActionInteractionSettings interactionSettings, EntityAction entityAction, BlockAction blockAction, BlockCondition blockCondition, List<Direction> directions) {
+    public ActionOnBlockUsePower(BaseSettings settings, InteractionPowerSettings interactionSettings, EntityAction entityAction, BlockAction blockAction, BlockCondition blockCondition, List<Direction> directions, InteractionResult interactionResult) {
         super(settings);
         this.interactionSettings = interactionSettings;
         this.entityAction = entityAction;
         this.blockAction = blockAction;
         this.blockCondition = blockCondition;
         this.directions = directions;
+        this.interactionResult = interactionResult;
     }
 
-    public ActionInteractionSettings getInteractionSettings() {
+    public InteractionPowerSettings getInteractionSettings() {
         return this.interactionSettings;
     }
 
@@ -69,6 +73,10 @@ public class ActionOnBlockUsePower extends Power {
 
     public List<Direction> getDirections() {
         return this.directions;
+    }
+
+    public InteractionResult getInteractionResult() {
+        return this.interactionResult;
     }
 
     @Override
@@ -92,7 +100,7 @@ public class ActionOnBlockUsePower extends Power {
         this.blockAction.execute(entity.level(), blockPos, direction);
         this.entityAction.execute(entity);
         if (entity instanceof LivingEntity living) this.interactionSettings.performActorItemStuff(living, hand);
-        return this.interactionSettings.actionResult();
+        return this.interactionResult;
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

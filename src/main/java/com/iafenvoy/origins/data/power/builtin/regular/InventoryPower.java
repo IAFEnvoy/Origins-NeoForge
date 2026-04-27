@@ -81,7 +81,7 @@ public class InventoryPower extends Power implements Toggleable, MenuProvider {
 
     @Override
     public void toggle(@NotNull OriginDataHolder holder, String key) {
-        if (holder.entity() instanceof Player player && Objects.equals(this.key.key(), key))
+        if (holder.getEntity() instanceof Player player && Objects.equals(this.key.key(), key))
             player.openMenu(this);
     }
 

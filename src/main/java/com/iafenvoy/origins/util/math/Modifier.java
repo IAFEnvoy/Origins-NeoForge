@@ -19,12 +19,17 @@ public record Modifier(double amount, ModifierOperation operation) {
             ModifierOperation.CODEC.optionalFieldOf("operation", ModifierOperation.ADD_BASE_EARLY).forGetter(Modifier::operation)
     ).apply(i, Modifier::new));
 
-    public double apply(double value) {
+    //FIXME::Remove this?
+    public int apply(int value) {
         return applyModifiers(List.of(this), value);
     }
 
-    public int apply(int value) {
-        return (int) applyModifiers(List.of(this), value);
+    public static int applyModifiers(List<Modifier> modifiers, int value) {
+        return (int) applyModifiers(modifiers, (double) value);
+    }
+
+    public static float applyModifiers(List<Modifier> modifiers, float value) {
+        return (float) applyModifiers(modifiers, (double) value);
     }
 
     public static double applyModifiers(List<Modifier> modifiers, double value) {

@@ -69,14 +69,14 @@ public final class PowerCommand {
 
     private static CompletableFuture<Suggestions> suggestPowers(final CommandContext<CommandSourceStack> context, final SuggestionsBuilder builder) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "target");
-        Collection<Holder<Power>> sources = OriginDataHolder.get(player).data().getPowers().values();
+        Collection<Holder<Power>> sources = OriginDataHolder.get(player).getData().getPowers().values();
         Stream<String> stream = sources.stream().map(Holder::unwrapKey).filter(Optional::isPresent).map(Optional::get).map(ResourceKey::location).map(ResourceLocation::toString);
         return SharedSuggestionProvider.suggest(stream, builder);
     }
 
     private static CompletableFuture<Suggestions> suggestAllSources(final CommandContext<CommandSourceStack> context, final SuggestionsBuilder builder) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "target");
-        Set<ResourceLocation> sources = new HashSet<>(OriginDataHolder.get(player).data().getPowers().keySet());
+        Set<ResourceLocation> sources = new HashSet<>(OriginDataHolder.get(player).getData().getPowers().keySet());
         sources.add(OriginDataHolder.DEFAULT_SOURCE);
         return SharedSuggestionProvider.suggest(sources.stream().map(ResourceLocation::toString), builder);
     }
@@ -84,7 +84,7 @@ public final class PowerCommand {
     private static CompletableFuture<Suggestions> suggestSources(final CommandContext<CommandSourceStack> context, final SuggestionsBuilder builder) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "target");
         Holder.Reference<Power> power = ResourceArgument.getResource(context, "power", PowerRegistries.POWER_KEY);
-        Stream<String> stream = OriginDataHolder.get(player).data().getPowers().entries().stream().filter(x -> x.getValue().value() == power.value()).map(Map.Entry::getKey).map(ResourceLocation::toString);
+        Stream<String> stream = OriginDataHolder.get(player).getData().getPowers().entries().stream().filter(x -> x.getValue().value() == power.value()).map(Map.Entry::getKey).map(ResourceLocation::toString);
         return SharedSuggestionProvider.suggest(stream, builder);
     }
 
@@ -138,7 +138,7 @@ public final class PowerCommand {
         ServerPlayer target = EntityArgument.getPlayer(context, "target");
         OriginDataHolder holder = OriginDataHolder.get(target);
         // collect entries to avoid concurrent modification
-        List<Map.Entry<ResourceLocation, Holder<Power>>> entries = new ArrayList<>(holder.data().getPowers().entries());
+        List<Map.Entry<ResourceLocation, Holder<Power>>> entries = new ArrayList<>(holder.getData().getPowers().entries());
         for (Map.Entry<ResourceLocation, Holder<Power>> e : entries) holder.revokePower(e.getKey(), e.getValue());
         holder.sync();
         context.getSource().sendSuccess(() -> Component.translatable("commands.power.clear.success", target.getName()), true);
@@ -168,7 +168,7 @@ public final class PowerCommand {
     private static int list(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer target = EntityArgument.getPlayer(context, "target");
         OriginDataHolder holder = OriginDataHolder.get(target);
-        String list = holder.data().getPowers().entries().stream().map(e -> RLHelper.string(e.getValue()) + " (" + e.getKey().toString() + ")").reduce((a, b) -> a + ", " + b).orElse("(none)");
+        String list = holder.getData().getPowers().entries().stream().map(e -> RLHelper.string(e.getValue()) + " (" + e.getKey().toString() + ")").reduce((a, b) -> a + ", " + b).orElse("(none)");
         context.getSource().sendSuccess(() -> Component.translatable("commands.power.list.result", target.getName(), list), false);
         return 1;
     }
@@ -187,7 +187,7 @@ public final class PowerCommand {
         ServerPlayer target = EntityArgument.getPlayer(context, "target");
         Holder<Power> power = ResourceArgument.getResource(context, "power", PowerRegistries.POWER_KEY);
         OriginDataHolder holder = OriginDataHolder.get(target);
-        String list = holder.data().getPowers().entries().stream().filter(e -> e.getValue().equals(power)).map(Map.Entry::getKey).map(ResourceLocation::toString).reduce((a, b) -> a + ", " + b).orElse("(none)");
+        String list = holder.getData().getPowers().entries().stream().filter(e -> e.getValue().equals(power)).map(Map.Entry::getKey).map(ResourceLocation::toString).reduce((a, b) -> a + ", " + b).orElse("(none)");
         context.getSource().sendSuccess(() -> Component.translatable("commands.power.sources.result", target.getName(), RLHelper.string(power), list), false);
         return 1;
     }

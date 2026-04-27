@@ -46,7 +46,7 @@ public class PlayerMixin {
 
     @ModifyVariable(method = "causeFoodExhaustion", at = @At("HEAD"), ordinal = 0, name = "exhaustion", argsOnly = true)
     private float modifyExhaustion(float exhaustion) {
-        return OriginDataHolder.get(this.origins$self()).streamActivePowers(ModifyExhaustionPower.class).map(ModifyExhaustionPower::getModifiers).reduce(exhaustion, (p, c) -> (float) Modifier.applyModifiers(c, p), Float::sum);
+        return OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyExhaustionPower.class, exhaustion);
     }
 
     @ModifyVariable(method = "eat", at = @At("HEAD"), argsOnly = true)

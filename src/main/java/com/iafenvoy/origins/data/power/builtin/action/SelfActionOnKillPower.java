@@ -57,7 +57,7 @@ public class SelfActionOnKillPower extends HasCooldownPower {
         Entity self = event.getSource().getEntity(), target = event.getEntity();
         if (self == null) return;
         OriginDataHolder holder = OriginDataHolder.get(self);
-        holder.executePowersWithCondition(SelfActionOnKillPower.class,
+        holder.getHelper().execute(SelfActionOnKillPower.class,
                 p -> p.damageCondition.test(event.getSource(), 1) && p.targetCondition.test(target),
                 p -> p.getCooldownComponent(holder).useIfReady(() -> p.entityAction.execute(self)));
     }

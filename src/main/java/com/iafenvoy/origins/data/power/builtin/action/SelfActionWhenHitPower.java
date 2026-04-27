@@ -48,7 +48,7 @@ public class SelfActionWhenHitPower extends HasCooldownPower {
     public static void onHit(LivingDamageEvent.Post event) {
         Entity self = event.getEntity();
         OriginDataHolder holder = OriginDataHolder.get(self);
-        holder.executePowersWithCondition(SelfActionWhenHitPower.class,
+        holder.getHelper().execute(SelfActionWhenHitPower.class,
                 p -> p.damageCondition.test(event.getSource(), event.getNewDamage()),
                 p -> p.getCooldownComponent(holder).useIfReady(() -> p.entityAction.execute(self)));
     }

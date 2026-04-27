@@ -24,10 +24,8 @@ public class BlockBehaviourMixin {
     @Inject(method = "getDestroyProgress", at = @At(value = "RETURN"), cancellable = true)
     private void allowUnbreakableBreaking(BlockState state, Player player, BlockGetter getter, BlockPos pos, CallbackInfoReturnable<Float> cir) {
         if (state.getDestroySpeed(getter, pos) <= 0)
-            cir.setReturnValue(OriginDataHolder.get(player)
-                    .streamActivePowers(ModifyBreakSpeedPower.class)
-                    .filter(x -> x.getBlockCondition().test(player.level(), pos))
-                    .map(ModifyBreakSpeedPower::getModifier)
-                    .reduce(cir.getReturnValue(), (cur, mod) -> (float) Modifier.applyModifiers(mod, cur), Float::sum));
+            cir.setReturnValue(OriginDataHolder.get(player).getHelper().modify(ModifyBreakSpeedPower.class,
+                    p -> p.getBlockCondition().test(player.level(), pos),
+                    cir.getReturnValue()));
     }
 }

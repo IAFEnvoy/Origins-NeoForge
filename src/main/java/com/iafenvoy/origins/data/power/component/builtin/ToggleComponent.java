@@ -39,7 +39,7 @@ public class ToggleComponent extends PowerComponent {
     }
 
     public void sendMessage(OriginDataHolder holder, String key) {
-        if (holder.entity() instanceof Player player)
+        if (holder.getEntity() instanceof Player player)
             player.displayClientMessage(Component.translatable(key).append(": ").append(this.active ? Component.literal("ON").withColor(0xFF00FF00) : Component.literal("OFF").withColor(0xFFFF0000)), true);
     }
 

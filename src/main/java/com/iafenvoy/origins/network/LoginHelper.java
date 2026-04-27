@@ -45,7 +45,7 @@ public final class LoginHelper {
         component.fillAutoChoosing();
         if (!component.hasAllOrigins())
             if (!isFakePlayer(player)) {
-                component.data().setSelecting(true);
+                component.getData().setSelecting(true);
                 component.sync();
                 PacketDistributor.sendToPlayer(player, new OpenChooseOriginScreenS2CPayload(true));
                 return;
@@ -72,10 +72,10 @@ public final class LoginHelper {
                 .map(l -> l.value().getOriginOptionCount(target.registryAccess()))
                 .orElseGet(() -> OriginRegistries.streamAvailableOrigins(target.registryAccess()).toList().size());
 
-        holder.data().setSelecting(!automaticallyAssigned || options > 0);
+        holder.getData().setSelecting(!automaticallyAssigned || options > 0);
         holder.sync();
 
-        if (holder.data().isSelecting())
+        if (holder.getData().isSelecting())
             PacketDistributor.sendToPlayer(target, new OpenChooseOriginScreenS2CPayload(false));
     }
 }

@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
@@ -11,27 +12,27 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ModifyEffectAmplifierPower extends Power {
+public class ModifyEffectAmplifierPower extends Power  implements ModifierPowerHelper {
     public static final MapCodec<ModifyEffectAmplifierPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            MobEffect.CODEC.listOf().optionalFieldOf("effect", List.of()).forGetter(ModifyEffectAmplifierPower::getEffects),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyEffectAmplifierPower::getModifiers)
+            MobEffect.CODEC.listOf().optionalFieldOf("effect", List.of()).forGetter(ModifyEffectAmplifierPower::getEffect),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyEffectAmplifierPower::getModifier)
     ).apply(i, ModifyEffectAmplifierPower::new));
-    private final List<Holder<MobEffect>> effects;
-    private final List<Modifier> modifiers;
+    private final List<Holder<MobEffect>> effect;
+    private final List<Modifier> modifier;
 
-    public ModifyEffectAmplifierPower(BaseSettings settings, List<Holder<MobEffect>> effects, List<Modifier> modifiers) {
+    public ModifyEffectAmplifierPower(BaseSettings settings, List<Holder<MobEffect>> effect, List<Modifier> modifier) {
         super(settings);
-        this.effects = effects;
-        this.modifiers = modifiers;
+        this.effect = effect;
+        this.modifier = modifier;
     }
 
-    public List<Holder<MobEffect>> getEffects() {
-        return this.effects;
+    public List<Holder<MobEffect>> getEffect() {
+        return this.effect;
     }
 
-    public List<Modifier> getModifiers() {
-        return this.modifiers;
+    public List<Modifier> getModifier() {
+        return this.modifier;
     }
 
     @Override
@@ -40,6 +41,6 @@ public class ModifyEffectAmplifierPower extends Power {
     }
 
     public boolean doesApply(Holder<MobEffect> effect) {
-        return this.effects.isEmpty() || this.effects.contains(effect);
+        return this.effect.isEmpty() || this.effect.contains(effect);
     }
 }

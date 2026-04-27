@@ -40,7 +40,7 @@ public final class ServerNetworkHandler {
             }
         } else randomOrigin(player, holder, layer);
         context.reply(new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
-        holder.data().setSelecting(false);
+        holder.getData().setSelecting(false);
         holder.sync();
     }
 
@@ -56,7 +56,7 @@ public final class ServerNetworkHandler {
 
         randomOrigin(player, holder, layer);
         context.reply(new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
-        holder.data().setSelecting(false);
+        holder.getData().setSelecting(false);
         holder.sync();
     }
 
@@ -74,6 +74,7 @@ public final class ServerNetworkHandler {
 
     public static void onPowerToggle(PowerToggleC2SPayload payload, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) return;
-        OriginDataHolder.get(player).onPowerToggle(payload.key());
+        OriginDataHolder holder = OriginDataHolder.get(player);
+        holder.getHelper().toggle(payload.key());
     }
 }

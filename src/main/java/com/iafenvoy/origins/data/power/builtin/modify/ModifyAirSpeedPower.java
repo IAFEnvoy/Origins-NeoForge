@@ -12,18 +12,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @NotImplementedYet
-public class ModifyValuePower extends Power implements ModifierPowerHelper {
-    public static final MapCodec<ModifyValuePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+public class ModifyAirSpeedPower extends Power implements ModifierPowerHelper {
+    public static final MapCodec<ModifyAirSpeedPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyValuePower::getModifier)
-    ).apply(i, ModifyValuePower::new));
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyAirSpeedPower::getModifier)
+    ).apply(i, ModifyAirSpeedPower::new));
     private final List<Modifier> modifier;
 
-    public ModifyValuePower(BaseSettings settings, List<Modifier> modifier) {
+    public ModifyAirSpeedPower(BaseSettings settings, List<Modifier> modifier) {
         super(settings);
         this.modifier = modifier;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }
@@ -31,9 +32,5 @@ public class ModifyValuePower extends Power implements ModifierPowerHelper {
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
-    }
-
-    public double apply(double baseValue) {
-        return Modifier.applyModifiers(this.modifier, baseValue);
     }
 }

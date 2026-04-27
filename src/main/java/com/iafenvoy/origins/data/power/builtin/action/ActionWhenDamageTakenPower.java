@@ -48,7 +48,7 @@ public class ActionWhenDamageTakenPower extends HasCooldownPower {
     public static void onLivingHurt(LivingDamageEvent.Post event) {
         LivingEntity living = event.getEntity();
         OriginDataHolder holder = OriginDataHolder.get(living);
-        holder.executePowersWithCondition(ActionWhenDamageTakenPower.class,
+        holder.getHelper().execute(ActionWhenDamageTakenPower.class,
                 p -> p.damageCondition.test(event.getSource(), event.getNewDamage()),
                 p -> p.getCooldownComponent(holder).useIfReady(() -> p.entityAction.execute(living)));
     }

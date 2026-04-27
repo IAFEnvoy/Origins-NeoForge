@@ -57,7 +57,7 @@ public class ActionWhenHitPower extends HasCooldownPower {
         Entity source = event.getSource().getEntity(), target = event.getEntity();
         if (source == null) return;
         OriginDataHolder holder = OriginDataHolder.get(target);
-        holder.executePowersWithCondition(ActionWhenHitPower.class,
+        holder.getHelper().execute(ActionWhenHitPower.class,
                 p -> p.biEntityCondition.test(source, target) && p.damageCondition.test(event.getSource(), event.getNewDamage()),
                 p -> p.getCooldownComponent(holder).useIfReady(() -> p.biEntityAction.execute(source, target)));
     }

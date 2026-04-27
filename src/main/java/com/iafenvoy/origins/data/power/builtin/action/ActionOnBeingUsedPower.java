@@ -1,56 +1,61 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BiEntityAction;
-import com.iafenvoy.origins.data._common.ActionInteractionSettings;
+import com.iafenvoy.origins.data._common.InteractionPowerSettings;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Prioritized;
-import com.iafenvoy.origins.util.MiscUtil;
+import com.iafenvoy.origins.data.power.helper.InteractionPowerHelper;
+import com.iafenvoy.origins.util.codec.ExtraEnumCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
 //TODO::Merge with ActionOnEntityUsePower
-public class ActionOnBeingUsedPower extends Power implements Prioritized {
+public class ActionOnBeingUsedPower extends Power implements InteractionPowerHelper, Prioritized {
     public static final MapCodec<ActionOnBeingUsedPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            ActionInteractionSettings.CODEC.forGetter(ActionOnBeingUsedPower::getInteractionSettings),
+            InteractionPowerSettings.CODEC.forGetter(ActionOnBeingUsedPower::getInteractionSettings),
             BiEntityAction.optionalCodec("bientity_action").forGetter(ActionOnBeingUsedPower::getBiEntityAction),
             BiEntityCondition.optionalCodec("bientity_condition").forGetter(ActionOnBeingUsedPower::getBiEntityCondition),
+            ExtraEnumCodecs.INTERACTION_RESULT.optionalFieldOf("interaction_result", InteractionResult.SUCCESS).forGetter(ActionOnBeingUsedPower::getInteractionResult),
             Codec.INT.optionalFieldOf("priority", 0).forGetter(ActionOnBeingUsedPower::getPriority)
     ).apply(i, ActionOnBeingUsedPower::new));
-    private final ActionInteractionSettings interactionSettings;
+    private final InteractionPowerSettings interactionSettings;
     private final BiEntityAction biEntityAction;
     private final BiEntityCondition biEntityCondition;
+    private final InteractionResult interactionResult;
     private final int priority;
 
-    public ActionOnBeingUsedPower(BaseSettings settings, ActionInteractionSettings interactionSettings, BiEntityAction biEntityAction, BiEntityCondition biEntityCondition, int priority) {
+    public ActionOnBeingUsedPower(BaseSettings settings, InteractionPowerSettings interactionSettings, BiEntityAction biEntityAction, BiEntityCondition biEntityCondition, InteractionResult interactionResult, int priority) {
         super(settings);
         this.interactionSettings = interactionSettings;
         this.biEntityAction = biEntityAction;
         this.biEntityCondition = biEntityCondition;
+        this.interactionResult = interactionResult;
         this.priority = priority;
     }
 
-    public ActionInteractionSettings getInteractionSettings() {
+    @Override
+    public InteractionPowerSettings getInteractionSettings() {
         return this.interactionSettings;
     }
 
+    @Override
     public BiEntityAction getBiEntityAction() {
         return this.biEntityAction;
     }
 
+    @Override
     public BiEntityCondition getBiEntityCondition() {
         return this.biEntityCondition;
+    }
+
+    @Override
+    public InteractionResult getInteractionResult() {
+        return this.interactionResult;
     }
 
     @Override
@@ -61,36 +66,5 @@ public class ActionOnBeingUsedPower extends Power implements Prioritized {
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
-    }
-
-    public static Optional<InteractionResult> tryPrevent(Entity self, Entity other, InteractionHand hand) {
-        for (ActionOnBeingUsedPower power : OriginDataHolder.get(self).streamActivePowers(ActionOnBeingUsedPower.class).toList()) {
-            Optional<InteractionResult> result = power.tryExecute( self, other, hand);
-            if (result.isPresent())
-                return result;
-        }
-        return Optional.empty();
-    }
-
-    public static Optional<InteractionResult> tryInteract(Entity self, Entity other, InteractionHand hand) {
-        return OriginDataHolder.get(self).streamActivePowers(ActionOnBeingUsedPower.class).flatMap(x -> x.tryExecute(self, other, hand).stream()).reduce(MiscUtil::reduce);
-    }
-
-    public Optional<InteractionResult> tryExecute( Entity self, Entity other, InteractionHand hand) {
-        if (other instanceof LivingEntity living && this.check(other, self, hand, living.getItemInHand(hand))) {
-            return Optional.of(this.executeAction(other, self, hand));
-        }
-        return Optional.empty();
-    }
-
-    public boolean check(Entity actor, Entity target, InteractionHand hand, ItemStack held) {
-        return this.interactionSettings.appliesTo(actor.level(), hand, held) && this.biEntityCondition.test(actor, target);
-    }
-
-    public InteractionResult executeAction(Entity actor, Entity target, InteractionHand hand) {
-        this.biEntityAction.execute(actor, target);
-        if (actor instanceof LivingEntity living)
-            this.interactionSettings.performActorItemStuff(living, hand);
-        return this.interactionSettings.actionResult();
     }
 }

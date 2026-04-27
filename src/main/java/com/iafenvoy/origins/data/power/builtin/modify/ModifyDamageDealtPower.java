@@ -7,7 +7,7 @@ import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.annotation.NotImplementedYet;
+import com.iafenvoy.origins.data.power.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
@@ -15,16 +15,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-@NotImplementedYet
-public class ModifyDamageDealtPower extends Power {
+@EventBusSubscriber
+public class ModifyDamageDealtPower extends Power implements ModifierPowerHelper {
     public static final MapCodec<ModifyDamageDealtPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyDamageDealtPower::getModifiers),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyDamageDealtPower::getModifier),
             DamageCondition.optionalCodec("damage_condition").forGetter(ModifyDamageDealtPower::getDamageCondition),
             EntityCondition.optionalCodec("target_condition").forGetter(ModifyDamageDealtPower::getTargetCondition),
             BiEntityCondition.optionalCodec("bientity_condition").forGetter(ModifyDamageDealtPower::getBiEntityCondition),
@@ -33,16 +34,16 @@ public class ModifyDamageDealtPower extends Power {
             BiEntityAction.optionalCodec("bientity_action").forGetter(ModifyDamageDealtPower::getBiEntityAction)
     ).apply(i, ModifyDamageDealtPower::new));
 
-    private final List<Modifier> modifiers;
+    private final List<Modifier> modifier;
     private final DamageCondition damageCondition;
     private final EntityCondition targetCondition;
     private final BiEntityCondition biEntityCondition;
     private final EntityAction selfAction, targetAction;
     private final BiEntityAction biEntityAction;
 
-    public ModifyDamageDealtPower(BaseSettings settings, List<Modifier> modifiers, DamageCondition damageCondition, EntityCondition targetCondition, BiEntityCondition biEntityCondition, EntityAction selfAction, EntityAction targetAction, BiEntityAction biEntityAction) {
+    public ModifyDamageDealtPower(BaseSettings settings, List<Modifier> modifier, DamageCondition damageCondition, EntityCondition targetCondition, BiEntityCondition biEntityCondition, EntityAction selfAction, EntityAction targetAction, BiEntityAction biEntityAction) {
         super(settings);
-        this.modifiers = modifiers;
+        this.modifier = modifier;
         this.damageCondition = damageCondition;
         this.targetCondition = targetCondition;
         this.biEntityCondition = biEntityCondition;
@@ -51,8 +52,8 @@ public class ModifyDamageDealtPower extends Power {
         this.biEntityAction = biEntityAction;
     }
 
-    public List<Modifier> getModifiers() {
-        return this.modifiers;
+    public List<Modifier> getModifier() {
+        return this.modifier;
     }
 
     public DamageCondition getDamageCondition() {
@@ -92,7 +93,7 @@ public class ModifyDamageDealtPower extends Power {
             float baseValue = event.getNewDamage();
             DamageSource s = event.getSource();
             if (power.damageCondition.test(s, baseValue) && power.targetCondition.test(target) && power.biEntityCondition.test(source, target)) {
-                event.setNewDamage((float) Modifier.applyModifiers(power.modifiers, baseValue));
+                event.setNewDamage(power.modify(baseValue));
                 power.selfAction.execute(source);
                 power.targetAction.execute(target);
                 power.biEntityAction.execute(source, target);

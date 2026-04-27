@@ -140,8 +140,8 @@ public abstract class LivingEntityMixin extends Entity {
         int originalAmp = effect.getAmplifier();
         int originalDur = effect.getDuration();
 
-        int amplifier = OriginDataHolder.get(this.origins$self()).streamActivePowers(ModifyEffectAmplifierPower.class).reduce(originalAmp, (p, power) -> power.doesApply(effectType) ? Integer.valueOf((int) Modifier.applyModifiers(power.getModifiers(), p)) : p, Integer::sum);
-        int duration = OriginDataHolder.get(this.origins$self()).streamActivePowers(ModifyEffectDurationPower.class).reduce(originalDur, (p, power) -> power.doesApply(effectType) ? Integer.valueOf((int) Modifier.applyModifiers(power.getModifiers(), p)) : p, Integer::sum);
+        int amplifier = OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyEffectAmplifierPower.class, p -> p.doesApply(effectType), originalAmp);
+        int duration = OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyEffectDurationPower.class, p -> p.doesApply(effectType), originalDur);
 
         if (amplifier != originalAmp || duration != originalDur)
             return new MobEffectInstance(effectType, duration, amplifier, effect.isAmbient(), effect.isVisible(), effect.showIcon(), ((MobEffectInstanceAccessor) effect).getHiddenEffect());

@@ -42,7 +42,7 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
 
     @Override
     public void tick(OriginDataHolder holder, ResourceLocation id) {
-        Entity entity = holder.entity();
+        Entity entity = holder.getEntity();
         List<UUID> removal = new LinkedList<>();
         for (Map.Entry<UUID, Integer> e : this.set.entrySet()) {
             int value = e.getValue();
@@ -83,13 +83,13 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
         }
 
         public void postAdd(ResourceLocation id, Entity target) {
-            this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnAdd().execute(this.holder.entity(), target));
+            this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnAdd().execute(this.holder.getEntity(), target));
             this.component.markDirty();
         }
 
         public void postRemove(ResourceLocation id, Entity target) {
             if (target != null)
-                this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(this.holder.entity(), target));
+                this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(this.holder.getEntity(), target));
             this.component.markDirty();
         }
 
