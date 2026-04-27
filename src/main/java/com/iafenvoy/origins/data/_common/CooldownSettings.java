@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.Optional;
 
+//TODO::Put to HasCooldownPower?
 public record CooldownSettings(int cooldown, Optional<HudRender> hudRender) {
     public static final MapCodec<CooldownSettings> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.INT.optionalFieldOf("cooldown", 1).forGetter(CooldownSettings::cooldown),

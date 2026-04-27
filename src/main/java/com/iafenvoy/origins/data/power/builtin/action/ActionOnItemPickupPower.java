@@ -34,7 +34,7 @@ public class ActionOnItemPickupPower extends Power implements Prioritized {
     private final ItemCondition itemCondition;
     private final int priority;
 
-    protected ActionOnItemPickupPower(BaseSettings settings, BiEntityAction biEntityAction, ItemAction itemAction, BiEntityCondition biEntityCondition, ItemCondition itemCondition, int priority) {
+    public ActionOnItemPickupPower(BaseSettings settings, BiEntityAction biEntityAction, ItemAction itemAction, BiEntityCondition biEntityCondition, ItemCondition itemCondition, int priority) {
         super(settings);
         this.biEntityAction = biEntityAction;
         this.itemAction = itemAction;

@@ -25,6 +25,12 @@ public final class ActionPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnLandPower>> ACTION_ON_LAND = REGISTRY.register("action_on_land", () -> ActionOnLandPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnWakeUpPower>> ACTION_ON_WAKE_UP = REGISTRY.register("action_on_wake_up", () -> ActionOnWakeUpPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOverTimePower>> ACTION_OVER_TIME = REGISTRY.register("action_over_time", () -> ActionOverTimePower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionWhenDamageTakenPower>> ACTION_WHEN_DAMAGE_TAKEN = REGISTRY.register("action_when_damage_taken", () -> ActionWhenDamageTakenPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionWhenHitPower>> ACTION_WHEN_HIT = REGISTRY.register("action_when_hit", () -> ActionWhenHitPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActiveSelfPower>> ACTIVE_SELF = REGISTRY.register("active_self", () -> ActiveSelfPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<AttackerActionWhenHitPower>> ATTACKER_ACTION_WHEN_HIT = REGISTRY.register("attacker_action_when_hit", () -> AttackerActionWhenHitPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<SelfActionOnHitPower>> SELF_ACTION_ON_HIT = REGISTRY.register("self_action_on_hit", () -> SelfActionOnHitPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<SelfActionOnKillPower>> SELF_ACTION_ON_KILL = REGISTRY.register("self_action_on_kill", () -> SelfActionOnKillPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<SelfActionWhenHitPower>> SELF_ACTION_WHEN_HIT = REGISTRY.register("self_action_when_hit", () -> SelfActionWhenHitPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<TargetActionOnHitPower>> TARGET_ACTION_ON_HIT = REGISTRY.register("target_action_on_hit", () -> TargetActionOnHitPower.CODEC);
 }

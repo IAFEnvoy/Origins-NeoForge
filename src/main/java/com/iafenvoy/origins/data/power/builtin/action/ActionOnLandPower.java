@@ -19,7 +19,7 @@ public class ActionOnLandPower extends Power {
     ).apply(i, ActionOnLandPower::new));
     private final EntityAction entityAction;
 
-    protected ActionOnLandPower(BaseSettings settings, EntityAction entityAction) {
+    public ActionOnLandPower(BaseSettings settings, EntityAction entityAction) {
         super(settings);
         this.entityAction = entityAction;
     }

@@ -37,6 +37,10 @@ public abstract class HasCooldownPower extends Power implements HudRenderable {
 
     @Override
     public float getRenderPercentage(OriginDataHolder holder) {
-        return HudRenderable.clampProgress(holder.getComponentFor(this, CooldownComponent.class).map(CooldownComponent::getValue).orElse(0), 0, this.cooldown.cooldown());
+        return HudRenderable.clampProgress(this.getCooldownComponent(holder).getValue(), 0, this.cooldown.cooldown());
+    }
+
+    protected CooldownComponent getCooldownComponent(OriginDataHolder holder) {
+        return holder.getComponentFor(this, CooldownComponent.class).orElse(new CooldownComponent(1));
     }
 }

@@ -42,7 +42,7 @@ public class ActionOnBlockUsePower extends Power {
     private final BlockCondition blockCondition;
     private final List<Direction> directions;
 
-    protected ActionOnBlockUsePower(BaseSettings settings, ActionInteractionSettings interactionSettings, EntityAction entityAction, BlockAction blockAction, BlockCondition blockCondition, List<Direction> directions) {
+    public ActionOnBlockUsePower(BaseSettings settings, ActionInteractionSettings interactionSettings, EntityAction entityAction, BlockAction blockAction, BlockCondition blockCondition, List<Direction> directions) {
         super(settings);
         this.interactionSettings = interactionSettings;
         this.entityAction = entityAction;

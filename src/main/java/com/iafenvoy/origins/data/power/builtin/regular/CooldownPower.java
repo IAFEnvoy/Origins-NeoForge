@@ -26,6 +26,6 @@ public class CooldownPower extends HasCooldownPower {
 
     @Override
     public boolean isActive(OriginDataHolder holder) {
-        return holder.getComponentFor(this, CooldownComponent.class).map(CooldownComponent::canUse).orElse(true);
+        return this.getCooldownComponent(holder).canUse();
     }
 }

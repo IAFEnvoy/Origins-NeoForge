@@ -6,6 +6,7 @@ import com.iafenvoy.origins.data._common.KeySettings;
 import com.iafenvoy.origins.data.power.HasCooldownPower;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
+import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -57,15 +58,17 @@ public class LaunchPower extends HasCooldownPower implements Toggleable {
 
     @Override
     public void toggle(@NotNull OriginDataHolder holder, String key) {
-        //FIXME::Key & Cooldown
-        if (this.key.isEmpty() || !this.key.get().match(key)) return;
-        Entity entity = holder.entity();
-        if (entity.level() instanceof ServerLevel serverLevel) {
-            entity.push(0, this.speed, 0);
-            entity.hurtMarked = true;
-            this.sound.ifPresent(s -> serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), s, SoundSource.NEUTRAL, 0.5F, 0.4F / (entity.level().random.nextFloat() * 0.4F + 0.8F)));
-            for (int i = 0; i < 4; ++i)
-                serverLevel.sendParticles(ParticleTypes.CLOUD, entity.getX(), entity.getRandomY(), entity.getZ(), 8, entity.level().random.nextGaussian(), 0.0D, entity.level().random.nextGaussian(), 0.5);
-        }
+        this.getCooldownComponent(holder).useIfReady(() -> {
+            if (this.key.isPresent() && this.key.get().match(key)) {
+                Entity entity = holder.entity();
+                if (entity.level() instanceof ServerLevel serverLevel) {
+                    entity.push(0, this.speed, 0);
+                    entity.hurtMarked = true;
+                    this.sound.ifPresent(s -> serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), s, SoundSource.NEUTRAL, 0.5F, 0.4F / (entity.level().random.nextFloat() * 0.4F + 0.8F)));
+                    for (int i = 0; i < 4; ++i)
+                        serverLevel.sendParticles(ParticleTypes.CLOUD, entity.getX(), entity.getRandomY(), entity.getZ(), 8, entity.level().random.nextGaussian(), 0.0D, entity.level().random.nextGaussian(), 0.5);
+                }
+            }
+        });
     }
 }

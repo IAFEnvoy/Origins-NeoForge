@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
+//TODO::Use _common
 @NotImplementedYet
 public class ActionOnBlockPlacePower extends Power {
     public static final MapCodec<ActionOnBlockPlacePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -44,7 +45,7 @@ public class ActionOnBlockPlacePower extends Power {
     private final Optional<ItemStack> resultStack;
     private final ItemAction resultItemAction;
 
-    protected ActionOnBlockPlacePower(BaseSettings settings, EntityAction entityAction, ItemAction heldItemAction, BlockAction placeToAction, BlockAction placeOnAction, ItemCondition itemCondition, BlockCondition placeToCondition, BlockCondition placeOnCondition, List<Direction> directions, List<InteractionHand> hands, Optional<ItemStack> resultStack, ItemAction resultItemAction) {
+    public ActionOnBlockPlacePower(BaseSettings settings, EntityAction entityAction, ItemAction heldItemAction, BlockAction placeToAction, BlockAction placeOnAction, ItemCondition itemCondition, BlockCondition placeToCondition, BlockCondition placeOnCondition, List<Direction> directions, List<InteractionHand> hands, Optional<ItemStack> resultStack, ItemAction resultItemAction) {
         super(settings);
         this.entityAction = entityAction;
         this.heldItemAction = heldItemAction;

@@ -1,36 +1,35 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data._common.CooldownSettings;
+import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.HasCooldownPower;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import org.jetbrains.annotations.NotNull;
 
-//FIXME::Merge with ActionOnHitPower
 @EventBusSubscriber
-public class TargetActionOnHitPower extends HasCooldownPower {
-    public static final MapCodec<TargetActionOnHitPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+public class SelfActionOnKillPower extends HasCooldownPower {
+    public static final MapCodec<SelfActionOnKillPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            CooldownSettings.CODEC.forGetter(TargetActionOnHitPower::getCooldown),
-            EntityAction.optionalCodec("entity_action").forGetter(TargetActionOnHitPower::getEntityAction),
-            DamageCondition.optionalCodec("damage_condition").forGetter(TargetActionOnHitPower::getDamageCondition),
-            EntityCondition.optionalCodec("target_condition").forGetter(TargetActionOnHitPower::getTargetCondition)
-    ).apply(i, TargetActionOnHitPower::new));
+            CooldownSettings.CODEC.forGetter(HasCooldownPower::getCooldown),
+            EntityAction.CODEC.fieldOf("entity_action").forGetter(SelfActionOnKillPower::getEntityAction),
+            DamageCondition.optionalCodec("damage_condition").forGetter(SelfActionOnKillPower::getDamageCondition),
+            EntityCondition.optionalCodec("target_condition").forGetter(SelfActionOnKillPower::getTargetCondition)
+    ).apply(i, SelfActionOnKillPower::new));
     private final EntityAction entityAction;
     private final DamageCondition damageCondition;
     private final EntityCondition targetCondition;
 
-    public TargetActionOnHitPower(BaseSettings settings, CooldownSettings cooldown, EntityAction entityAction, DamageCondition damageCondition, EntityCondition targetCondition) {
+    protected SelfActionOnKillPower(BaseSettings settings, CooldownSettings cooldown, EntityAction entityAction, DamageCondition damageCondition, EntityCondition targetCondition) {
         super(settings, cooldown);
         this.entityAction = entityAction;
         this.damageCondition = damageCondition;
@@ -55,12 +54,12 @@ public class TargetActionOnHitPower extends HasCooldownPower {
     }
 
     @SubscribeEvent
-    public static void onDamage(LivingDamageEvent.Post event) {
-        Entity source = event.getSource().getEntity(), target = event.getEntity();
-        if (source == null) return;
-        OriginDataHolder holder = OriginDataHolder.get(source);
-        holder.executePowersWithCondition(TargetActionOnHitPower.class,
-                p -> p.getTargetCondition().test(target) && p.getDamageCondition().test(event.getSource(), event.getNewDamage()),
-                p -> p.getCooldownComponent(holder).useIfReady(() -> p.getEntityAction().execute(target)));
+    public static void onDeath(LivingDeathEvent event) {
+        Entity self = event.getSource().getEntity(), target = event.getEntity();
+        if (self == null) return;
+        OriginDataHolder holder = OriginDataHolder.get(self);
+        holder.executePowersWithCondition(SelfActionOnKillPower.class,
+                p -> p.damageCondition.test(event.getSource(), 1) && p.targetCondition.test(target),
+                p -> p.getCooldownComponent(holder).useIfReady(() -> p.entityAction.execute(self)));
     }
 }

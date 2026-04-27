@@ -26,7 +26,7 @@ public class ActionOnDeathPower extends Power {
     private final BiEntityCondition biEntityCondition;
     private final DamageCondition damageCondition;
 
-    protected ActionOnDeathPower(BaseSettings settings, BiEntityAction biEntityAction, BiEntityCondition biEntityCondition, DamageCondition damageCondition) {
+    public ActionOnDeathPower(BaseSettings settings, BiEntityAction biEntityAction, BiEntityCondition biEntityCondition, DamageCondition damageCondition) {
         super(settings);
         this.biEntityAction = biEntityAction;
         this.biEntityCondition = biEntityCondition;
@@ -52,8 +52,7 @@ public class ActionOnDeathPower extends Power {
 
     @SubscribeEvent
     public static void onDeath(LivingDeathEvent event) {
-        LivingEntity target = event.getEntity();
-        Entity actor = event.getSource().getEntity();
+        Entity actor = event.getSource().getEntity(), target = event.getEntity();
         if (actor == null) return;
         OriginDataHolder.get(target).streamActivePowers(ActionOnDeathPower.class).forEach(power -> {
             if (power.biEntityCondition.test(target, actor) && power.damageCondition.test(event.getSource(), 1))

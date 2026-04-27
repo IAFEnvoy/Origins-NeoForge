@@ -32,7 +32,7 @@ public class ActionOnEntityUsePower extends Power implements Prioritized {
     private final BiEntityCondition biEntityCondition;
     private final int priority;
 
-    protected ActionOnEntityUsePower(BaseSettings settings, ActionInteractionSettings interactionSettings, BiEntityAction biEntityAction, BiEntityCondition biEntityCondition, int priority) {
+    public ActionOnEntityUsePower(BaseSettings settings, ActionInteractionSettings interactionSettings, BiEntityAction biEntityAction, BiEntityCondition biEntityCondition, int priority) {
         super(settings);
         this.interactionSettings = interactionSettings;
         this.biEntityAction = biEntityAction;
