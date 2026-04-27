@@ -92,16 +92,16 @@ public class ModifyDamageTakenPower extends Power {
     }
 
     public boolean check(Entity entity, DamageSource source, float amount) {
-        if (!this.getDamageCondition().test(source, amount)) return false;
+        if (!this.damageCondition.test(source, amount)) return false;
         Entity attacker = source.getEntity();
-        return attacker != null && this.getBiEntityCondition().test(source.getEntity(), entity);
+        return attacker != null && this.biEntityCondition.test(source.getEntity(), entity);
     }
 
     public void execute(Entity entity, DamageSource source) {
-        this.getSelfAction().execute(entity);
+        this.selfAction.execute(entity);
         if (source.getEntity() != null) {
-            this.getAttackerAction().execute(source.getEntity());
-            this.getBiEntityAction().execute(source.getEntity(), entity);
+            this.attackerAction.execute(source.getEntity());
+            this.biEntityAction.execute(source.getEntity(), entity);
         }
     }
 
@@ -116,11 +116,11 @@ public class ModifyDamageTakenPower extends Power {
         OriginDataHolder.get(target).streamActivePowers(ModifyDamageTakenPower.class).forEach(power -> {
             float baseValue = event.getNewDamage();
             DamageSource s = event.getSource();
-            if (power.getBiEntityCondition().test(source, target) && power.getDamageCondition().test(s, baseValue)) {
-                event.setNewDamage((float) Modifier.applyModifiers(power.getModifiers(), baseValue));
-                power.getSelfAction().execute(target);
-                power.getAttackerAction().execute(source);
-                power.getBiEntityAction().execute(source, target);
+            if (power.biEntityCondition.test(source, target) && power.damageCondition.test(s, baseValue)) {
+                event.setNewDamage((float) Modifier.applyModifiers(power.modifiers, baseValue));
+                power.selfAction.execute(target);
+                power.attackerAction.execute(source);
+                power.biEntityAction.execute(source, target);
             }
         });
     }

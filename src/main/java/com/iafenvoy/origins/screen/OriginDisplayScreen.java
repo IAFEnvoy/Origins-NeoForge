@@ -28,11 +28,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
 
 @OnlyIn(Dist.CLIENT)
 public class OriginDisplayScreen extends Screen {

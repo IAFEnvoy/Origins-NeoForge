@@ -38,7 +38,7 @@ public class FreezePower extends Power {
     public static void enableFrozen(EntityFrozenEvent event) {
         Entity entity = event.getEntity();
         for (FreezePower power : OriginDataHolder.get(entity).getPowers(RegularPowers.FREEZE, FreezePower.class))
-            if (power.getCondition().test(entity))
+            if (power.condition.test(entity))
                 event.allow();
     }
 }

@@ -45,7 +45,7 @@ public class ModifyHarvestPower extends Power {
     public static void checkCanHarvest(PlayerEvent.HarvestCheck event) {
         if (event.getLevel() instanceof Level level)
             OriginDataHolder.get(event.getEntity()).streamActivePowers(ModifyHarvestPower.class)
-                    .filter(x -> x.getBlockCondition().test(level, event.getPos()))
+                    .filter(x -> x.blockCondition.test(level, event.getPos()))
                     .map(ModifyHarvestPower::isAllow)
                     .reduce((x, y) -> x || y)
                     .ifPresent(event::setCanHarvest);

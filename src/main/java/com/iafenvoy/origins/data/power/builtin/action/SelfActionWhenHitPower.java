@@ -4,7 +4,6 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data._common.CooldownSettings;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.DamageCondition;
-import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.HasCooldownPower;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.MapCodec;
@@ -50,7 +49,7 @@ public class SelfActionWhenHitPower extends HasCooldownPower {
         Entity self = event.getEntity();
         OriginDataHolder holder = OriginDataHolder.get(self);
         holder.executePowersWithCondition(SelfActionWhenHitPower.class,
-                p -> p.getDamageCondition().test(event.getSource(), event.getNewDamage()),
-                p -> p.getCooldownComponent(holder).useIfReady(() -> p.getEntityAction().execute(self)));
+                p -> p.damageCondition.test(event.getSource(), event.getNewDamage()),
+                p -> p.getCooldownComponent(holder).useIfReady(() -> p.entityAction.execute(self)));
     }
 }

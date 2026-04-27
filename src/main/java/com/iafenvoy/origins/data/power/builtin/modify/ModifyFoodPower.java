@@ -91,9 +91,9 @@ public class ModifyFoodPower extends Power {
     }
 
     public static void modifyStack(Level level, Entity entity, Mutable<ItemStack> input) {
-        OriginDataHolder.get(entity).streamActivePowers(ModifyFoodPower.class).filter(x -> x.getItemCondition().test(level, input.get())).forEach(power -> {
-            power.getReplaceStack().ifPresent(stack -> input.set(stack.copy()));
-            power.getItemAction().execute(level, entity, input);
+        OriginDataHolder.get(entity).streamActivePowers(ModifyFoodPower.class).filter(x -> x.itemCondition.test(level, input.get())).forEach(power -> {
+            power.replaceStack.ifPresent(stack -> input.set(stack.copy()));
+            power.itemAction.execute(level, entity, input);
         });
     }
 }

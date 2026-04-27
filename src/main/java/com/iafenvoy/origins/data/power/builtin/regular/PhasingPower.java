@@ -106,7 +106,7 @@ public class PhasingPower extends Power {
     }
 
     public boolean canPhaseThrough(Level level, BlockPos pos) {
-        return this.blacklist ^ this.getBlockCondition().test(level, pos);
+        return this.blacklist ^ this.blockCondition.test(level, pos);
     }
 
     public static BlockState getInWallBlockState(LivingEntity playerEntity) {

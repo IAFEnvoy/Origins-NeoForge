@@ -91,27 +91,23 @@ public class ModifyCraftingPower extends Power {
     // Recipe identification in 1.21.1 uses RecipeInput instead of CraftingContainer
 
     public boolean doesApply(RecipeInput container, Recipe<? super RecipeInput> recipe, Level level) {
-        return (this.getRecipeLocation().isEmpty() || this.getRecipeLocation().get().equals(BuiltInRegistries.RECIPE_TYPE.getKey(recipe.getType()))) &&
-                (this.getItemCondition().test(level, recipe.assemble(container, level.registryAccess())));
+        return (this.recipeLocation.isEmpty() || this.recipeLocation.get().equals(BuiltInRegistries.RECIPE_TYPE.getKey(recipe.getType()))) &&
+                (this.itemCondition.test(level, recipe.assemble(container, level.registryAccess())));
     }
 
     public ItemStack createResult(RecipeInput container, Recipe<? super RecipeInput> recipe, Entity entity, Level level) {
-        ItemStack stack;
-        if (this.getNewStack().isPresent())
-            stack = this.getNewStack().get().copy();
-        else
-            stack = recipe.assemble(container, level.registryAccess());
-        this.getItemAction().execute(level, entity, stack);
+        ItemStack stack = this.newStack.map(ItemStack::copy).orElseGet(() -> recipe.assemble(container, level.registryAccess()));
+        this.itemAction.execute(level, entity, stack);
         return stack;
     }
 
     public void execute(Entity entity, @Nullable BlockPos pos) {
         if (pos != null)
-            this.getBlockAction().execute(entity.level(), pos, Direction.UP);
-        this.getEntityAction().execute(entity);
+            this.blockAction.execute(entity.level(), pos, Direction.UP);
+        this.entityAction.execute(entity);
     }
 
     public void executeAfterCraftingAction(Level level, Entity entity, ItemStack stack) {
-        this.getAfterCraftingItemAction().execute(level, entity, stack);
+        this.afterCraftingItemAction.execute(level, entity, stack);
     }
 }

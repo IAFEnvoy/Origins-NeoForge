@@ -58,9 +58,9 @@ public class ActionOnWakeUpPower extends Power {
         Optional<BlockPos> pos = player.getSleepingPos();
         if (pos.isEmpty()) return;
         OriginDataHolder.get(player).streamActivePowers(ActionOnWakeUpPower.class).forEach(power -> {
-            if (power.getBlockCondition().test(player.level(), pos.get())) {
-                power.getEntityAction().execute(player);
-                power.getBlockAction().execute(player.level(), pos.get(), player.getDirection());
+            if (power.blockCondition.test(player.level(), pos.get())) {
+                power.entityAction.execute(player);
+                power.blockAction.execute(player.level(), pos.get(), player.getDirection());
             }
         });
 

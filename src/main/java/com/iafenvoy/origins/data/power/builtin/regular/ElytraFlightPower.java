@@ -54,8 +54,8 @@ public class ElytraFlightPower extends Power {
     @SubscribeEvent
     public static void enableElytraRender(ElytraTextureEvent event) {
         for (ElytraFlightPower power : OriginDataHolder.get(event.getEntity()).getPowers(RegularPowers.ELYTRA_FLIGHT, ElytraFlightPower.class))
-            if (power.isRenderElytra()) {
-                event.setTexture(power.getTextureLocation().orElse(ELYTRA_TEXTURE));
+            if (power.renderElytra) {
+                event.setTexture(power.textureLocation.orElse(ELYTRA_TEXTURE));
                 break;
             }
     }

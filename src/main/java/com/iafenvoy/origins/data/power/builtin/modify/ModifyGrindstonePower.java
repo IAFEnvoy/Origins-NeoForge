@@ -114,16 +114,16 @@ public class ModifyGrindstonePower extends Power {
     }
 
     public void tryExecute(ModifyGrindstonePower power, Entity entity, ItemStack itemStack, Optional<BlockPos> pos) {
-        power.getLateItemAction().execute(entity.level(), entity, itemStack);
-        power.getEntityAction().execute(entity);
-        pos.ifPresent(blockPos -> power.getBlockAction().execute(entity.level(), blockPos, Direction.UP));
+        power.lateItemAction.execute(entity.level(), entity, itemStack);
+        power.entityAction.execute(entity);
+        pos.ifPresent(blockPos -> power.blockAction.execute(entity.level(), blockPos, Direction.UP));
     }
 
     public boolean doesApply(ModifyGrindstonePower power, Level level, ItemStack top, ItemStack bottom, ItemStack original, Optional<BlockPos> pos) {
-        return power.getTopItemCondition().test(level, top) &&
-                power.getBottomItemCondition().test(level, bottom) &&
-                power.getOutputItemCondition().test(level, original) &&
-                (pos.isEmpty() || power.getBlockCondition().test(level, pos.get()));
+        return power.topItemCondition.test(level, top) &&
+                power.bottomItemCondition.test(level, bottom) &&
+                power.outputItemCondition.test(level, original) &&
+                (pos.isEmpty() || power.blockCondition.test(level, pos.get()));
     }
 
     public enum ResultType {

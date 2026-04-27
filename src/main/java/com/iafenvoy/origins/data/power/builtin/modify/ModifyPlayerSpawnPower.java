@@ -14,10 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.Tuple;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.level.ChunkPos;
@@ -80,11 +77,11 @@ public class ModifyPlayerSpawnPower extends Power {
 
     public Optional<BlockPos> getBiomePos(ResourceLocation powerId, ServerLevel targetDimension, BlockPos originPos) {
 
-        if (this.getBiome().isEmpty()) return Optional.empty();
+        if (this.biome.isEmpty()) return Optional.empty();
 
-        Optional<Biome> targetBiome = targetDimension.registryAccess().registryOrThrow(Registries.BIOME).getOptional(this.getBiome().get());
+        Optional<Biome> targetBiome = targetDimension.registryAccess().registryOrThrow(Registries.BIOME).getOptional(this.biome.get());
         if (targetBiome.isEmpty()) {
-            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it's not registered in dimension \"{}\".", powerId, this.getBiome(), this.getDimension());
+            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it's not registered in dimension \"{}\".", powerId, this.biome, this.dimension);
             return Optional.empty();
         }
 
@@ -98,7 +95,7 @@ public class ModifyPlayerSpawnPower extends Power {
 
         if (targetBiomePos != null) return Optional.of(targetBiomePos.getFirst());
         else {
-            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it couldn't be found in dimension \"{}\".", powerId, this.getBiome(), this.getDimension());
+            Origins.LOGGER.warn("Power {} could not set spawnpoint at biome \"{}\" as it couldn't be found in dimension \"{}\".", powerId, this.biome, this.dimension);
             return Optional.empty();
         }
 
@@ -156,9 +153,9 @@ public class ModifyPlayerSpawnPower extends Power {
 
     public Optional<Vec3> getSpawnPos(ResourceLocation powerId, ServerLevel targetDimension, BlockPos originPos, int range) {
 
-        if (this.getStructure().isEmpty()) return getValidSpawn(originPos, range, targetDimension);
+        if (this.structure.isEmpty()) return getValidSpawn(originPos, range, targetDimension);
 
-        Optional<Pair<BlockPos, Structure>> targetStructure = this.getStructurePos(powerId, targetDimension, this.getStructure().get(), null, this.getDimension());
+        Optional<Pair<BlockPos, Structure>> targetStructure = this.getStructurePos(powerId, targetDimension, this.structure.get(), null, this.dimension);
         if (targetStructure.isEmpty()) return Optional.empty();
 
         BlockPos targetStructurePos = targetStructure.get().getFirst();
@@ -234,14 +231,6 @@ public class ModifyPlayerSpawnPower extends Power {
             d--;
         }
         return Optional.empty();
-    }
-
-    @Nullable
-    public Tuple<ServerLevel, BlockPos> getSpawn(ResourceLocation powerId, Entity entity, boolean isSpawnObstructed) {
-        if (entity instanceof ServerPlayer) {
-
-        }
-        return null;
     }
 
     public enum SpawnStrategy {

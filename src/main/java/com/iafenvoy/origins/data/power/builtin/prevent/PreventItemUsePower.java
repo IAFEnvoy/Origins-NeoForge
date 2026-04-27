@@ -58,7 +58,7 @@ public class PreventItemUsePower extends Power {
     }
 
     public static boolean isUsagePrevented(Entity entity, ItemStack stack) {
-        return OriginDataHolder.get(entity).streamActivePowers(PreventItemUsePower.class).anyMatch(x -> x.getItemCondition().test(entity.level(), stack));
+        return OriginDataHolder.get(entity).streamActivePowers(PreventItemUsePower.class).anyMatch(x -> x.itemCondition.test(entity.level(), stack));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

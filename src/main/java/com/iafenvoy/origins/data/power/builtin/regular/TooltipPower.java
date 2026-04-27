@@ -59,7 +59,7 @@ public class TooltipPower extends Power {
         Player player = event.getEntity();
         if (player != null)
             for (TooltipPower power : OriginDataHolder.get(player).getPowers(RegularPowers.TOOLTIP, TooltipPower.class))
-                if (power.getItemCondition().test(player.level(), event.getItemStack()))
-                    event.getToolTip().addAll(power.getOrder(), power.getText());
+                if (power.itemCondition.test(player.level(), event.getItemStack()))
+                    event.getToolTip().addAll(power.order, power.text);
     }
 }

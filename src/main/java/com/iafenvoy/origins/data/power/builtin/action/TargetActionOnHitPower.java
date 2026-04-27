@@ -7,7 +7,6 @@ import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.HasCooldownPower;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
@@ -60,7 +59,7 @@ public class TargetActionOnHitPower extends HasCooldownPower {
         if (source == null) return;
         OriginDataHolder holder = OriginDataHolder.get(source);
         holder.executePowersWithCondition(TargetActionOnHitPower.class,
-                p -> p.getTargetCondition().test(target) && p.getDamageCondition().test(event.getSource(), event.getNewDamage()),
-                p -> p.getCooldownComponent(holder).useIfReady(() -> p.getEntityAction().execute(target)));
+                p -> p.targetCondition.test(target) && p.damageCondition.test(event.getSource(), event.getNewDamage()),
+                p -> p.getCooldownComponent(holder).useIfReady(() -> p.entityAction.execute(target)));
     }
 }

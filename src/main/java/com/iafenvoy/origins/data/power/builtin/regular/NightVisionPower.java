@@ -47,8 +47,8 @@ public class NightVisionPower extends Power {
     public static void handleNightVisionStrength(NightVisionStrengthEvent event) {
         Entity entity = event.getEntity();
         for (NightVisionPower power : OriginDataHolder.get(entity).getPowers(RegularPowers.NIGHT_VISION, NightVisionPower.class))
-            if (power.getCondition().test(entity)) {
-                event.setStrength(power.getStrength());
+            if (power.condition.test(entity)) {
+                event.setStrength(power.strength);
                 break;
             }
     }

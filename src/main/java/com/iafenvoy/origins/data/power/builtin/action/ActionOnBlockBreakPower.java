@@ -60,10 +60,10 @@ public class ActionOnBlockBreakPower extends Power {
     @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         OriginDataHolder.get(event.getPlayer()).streamActivePowers(ActionOnBlockBreakPower.class).forEach(power -> {
-            if (power.isOnlyWheSuccess() && event.isCanceled()) return;
-            if (!power.getBlockCondition().test(event.getPlayer().level(), event.getPos())) return;
-            power.getEntityAction().execute(event.getPlayer());
-            power.getBlockAction().execute(event.getPlayer().level(), event.getPos(), event.getPlayer().getDirection());
+            if (power.onlyWheSuccess && event.isCanceled()) return;
+            if (!power.blockCondition.test(event.getPlayer().level(), event.getPos())) return;
+            power.entityAction.execute(event.getPlayer());
+            power.blockAction.execute(event.getPlayer().level(), event.getPos(), event.getPlayer().getDirection());
         });
     }
 }

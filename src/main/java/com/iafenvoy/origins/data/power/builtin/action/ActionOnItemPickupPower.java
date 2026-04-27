@@ -76,10 +76,10 @@ public class ActionOnItemPickupPower extends Power implements Prioritized {
         ItemStack stack = event.getItemEntity().getItem();
         if (actor == null) return;
         OriginDataHolder.get(target).executePowersWithCondition(ActionOnItemPickupPower.class,
-                p -> p.getBiEntityCondition().test(actor, target) && p.getItemCondition().test(level, stack),
+                p -> p.biEntityCondition.test(actor, target) && p.itemCondition.test(level, stack),
                 p -> {
-                    p.getBiEntityAction().execute(actor, target);
-                    p.getItemAction().execute(level, target, stack);
+                    p.biEntityAction.execute(actor, target);
+                    p.itemAction.execute(level, target, stack);
                 });
     }
 }

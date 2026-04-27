@@ -73,12 +73,12 @@ public class ActionOnItemUsePower extends Power implements Prioritized {
 
     @SubscribeEvent
     public static void onItemUse(LivingEntityUseItemEvent event) {
-        OriginDataHolder.get(event.getEntity()).streamActivePowers(ActionOnItemUsePower.class).filter(x -> x.getTrigger().testEvent(event)).forEach(p -> {
+        OriginDataHolder.get(event.getEntity()).streamActivePowers(ActionOnItemUsePower.class).filter(x -> x.trigger.testEvent(event)).forEach(p -> {
             ItemStack stack = event.getItem();
             LivingEntity entity = event.getEntity();
-            if (p.getItemCondition().test(entity.level(), stack)) {
-                p.getEntityAction().execute(entity);
-                p.getItemAction().execute(entity.level(), entity, event.getItem());
+            if (p.itemCondition.test(entity.level(), stack)) {
+                p.entityAction.execute(entity);
+                p.itemAction.execute(entity.level(), entity, event.getItem());
             }
         });
     }

@@ -91,11 +91,11 @@ public class ModifyDamageDealtPower extends Power {
         OriginDataHolder.get(source).streamActivePowers(ModifyDamageDealtPower.class).forEach(power -> {
             float baseValue = event.getNewDamage();
             DamageSource s = event.getSource();
-            if (power.getDamageCondition().test(s, baseValue) && power.getTargetCondition().test(target) && power.getBiEntityCondition().test(source, target)) {
-                event.setNewDamage((float) Modifier.applyModifiers(power.getModifiers(), baseValue));
-                power.getSelfAction().execute(source);
-                power.getTargetAction().execute(target);
-                power.getBiEntityAction().execute(source, target);
+            if (power.damageCondition.test(s, baseValue) && power.targetCondition.test(target) && power.biEntityCondition.test(source, target)) {
+                event.setNewDamage((float) Modifier.applyModifiers(power.modifiers, baseValue));
+                power.selfAction.execute(source);
+                power.targetAction.execute(target);
+                power.biEntityAction.execute(source, target);
             }
         });
     }

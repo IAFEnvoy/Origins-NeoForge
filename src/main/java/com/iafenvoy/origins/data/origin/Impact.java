@@ -43,7 +43,7 @@ public enum Impact {
     }
 
     public MutableComponent getTextComponent() {
-        return Component.translatable(this.getTranslationKey()).withStyle(this.getTextStyle());
+        return Component.translatable(this.translationKey).withStyle(this.textStyle);
     }
 
     public static Impact getByValue(int impactValue) {

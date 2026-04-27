@@ -56,10 +56,10 @@ public class PreventGameEventPower extends Power {
         if (entity == null) return;
         List<PreventGameEventPower> list = OriginDataHolder.get(entity)
                 .streamActivePowers(PreventGameEventPower.class)
-                .filter(x -> x.getEvent().map(l -> l.stream().anyMatch(e -> e.value() == event.getVanillaEvent().value()), tag -> event.getVanillaEvent().is(tag)))
+                .filter(x -> x.event.map(l -> l.stream().anyMatch(e -> e.value() == event.getVanillaEvent().value()), tag -> event.getVanillaEvent().is(tag)))
                 .toList();
         if (!list.isEmpty()) {
-            list.forEach(x -> x.getEntityAction().execute(entity));
+            list.forEach(x -> x.entityAction.execute(entity));
             event.setCanceled(true);
         }
     }

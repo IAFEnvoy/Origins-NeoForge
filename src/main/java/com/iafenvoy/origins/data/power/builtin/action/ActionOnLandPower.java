@@ -36,6 +36,6 @@ public class ActionOnLandPower extends Power {
     @SubscribeEvent
     public static void onFall(LivingFallEvent event) {
         LivingEntity living = event.getEntity();
-        OriginDataHolder.get(living).streamActivePowers(ActionOnLandPower.class).forEach(x -> x.getEntityAction().execute(living));
+        OriginDataHolder.get(living).streamActivePowers(ActionOnLandPower.class).forEach(x -> x.entityAction.execute(living));
     }
 }
