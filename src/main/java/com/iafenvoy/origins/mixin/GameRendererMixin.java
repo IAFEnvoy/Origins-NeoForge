@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.mixin.power;
+package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCameraSubmersionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Mixin(GameRenderer.class)

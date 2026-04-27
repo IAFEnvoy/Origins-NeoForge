@@ -2,7 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.action;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BiEntityAction;
-import com.iafenvoy.origins.data.common.CooldownSettings;
+import com.iafenvoy.origins.data._common.CooldownSettings;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.power.HasCooldownPower;

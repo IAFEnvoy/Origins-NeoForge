@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.mixin.power;
+package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.event.common.CanClimbEvent;
 import net.minecraft.core.BlockPos;

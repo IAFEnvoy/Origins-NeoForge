@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.mixin.power;
+package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.accessor.MovingEntity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;

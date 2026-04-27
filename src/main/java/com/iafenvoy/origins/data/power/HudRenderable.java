@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.power;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.common.HudRender;
+import com.iafenvoy.origins.data._common.HudRender;
 import net.minecraft.util.Mth;
 
 import java.util.Optional;

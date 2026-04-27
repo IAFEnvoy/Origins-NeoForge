@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.data.common;
+package com.iafenvoy.origins.data._common;
 
 import com.iafenvoy.origins.Constants;
 import com.mojang.serialization.Codec;

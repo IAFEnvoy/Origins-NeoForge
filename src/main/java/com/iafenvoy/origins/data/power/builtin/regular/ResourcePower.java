@@ -2,7 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.data.common.HudRender;
+import com.iafenvoy.origins.data._common.HudRender;
 import com.iafenvoy.origins.data.power.HudRenderable;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;

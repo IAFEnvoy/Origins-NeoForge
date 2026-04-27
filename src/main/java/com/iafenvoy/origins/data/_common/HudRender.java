@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.data.common;
+package com.iafenvoy.origins.data._common;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.condition.EntityCondition;

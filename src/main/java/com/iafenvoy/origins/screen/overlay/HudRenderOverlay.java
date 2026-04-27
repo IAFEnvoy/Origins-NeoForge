@@ -3,7 +3,7 @@ package com.iafenvoy.origins.screen.overlay;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.config.OriginsConfig;
-import com.iafenvoy.origins.data.common.HudRender;
+import com.iafenvoy.origins.data._common.HudRender;
 import com.iafenvoy.origins.data.power.HudRenderable;
 import com.iafenvoy.origins.data.power.Power;
 import net.minecraft.client.DeltaTracker;

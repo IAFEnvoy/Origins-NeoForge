@@ -3,7 +3,7 @@ package com.iafenvoy.origins.data.power.builtin.action;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.data.common.ActionInteractionSettings;
+import com.iafenvoy.origins.data._common.ActionInteractionSettings;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.MiscUtil;

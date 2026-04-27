@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.data.common;
+package com.iafenvoy.origins.data._common;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

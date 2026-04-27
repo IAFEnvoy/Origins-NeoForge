@@ -1,8 +1,8 @@
 package com.iafenvoy.origins.data.power;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.common.CooldownSettings;
-import com.iafenvoy.origins.data.common.HudRender;
+import com.iafenvoy.origins.data._common.CooldownSettings;
+import com.iafenvoy.origins.data._common.HudRender;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
 

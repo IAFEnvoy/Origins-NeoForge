@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.mixin.power;
+package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
 import com.iafenvoy.origins.render.LevelRenderHelper;
