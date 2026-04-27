@@ -3,6 +3,7 @@ package com.iafenvoy.origins.mixin;
 import com.iafenvoy.origins.accessor.AttributeInstanceAccessor;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyFallingPower;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -21,27 +22,27 @@ import javax.annotation.Nullable;
 public class AttributeInstanceMixin implements AttributeInstanceAccessor {
     @Shadow
     @Final
-    private Attribute attribute;
+    private Holder<Attribute> attribute;
 
     @Unique
     @Nullable
-    private LivingEntity apoli$entity;
+    private LivingEntity origins$entity;
 
     @Override
     public void origins$setEntity(LivingEntity entity) {
-        this.apoli$entity = entity;
+        this.origins$entity = entity;
     }
 
     @Override
     public @Nullable LivingEntity origins$getEntity() {
-        return this.apoli$entity;
+        return this.origins$entity;
     }
 
     @Inject(method = "getValue", at = @At("RETURN"), cancellable = true)
-    private void apoli$modifyAttributeValue(CallbackInfoReturnable<Double> cir) {
-        if (this.apoli$entity != null && this.attribute == Attributes.GRAVITY.value() && this.apoli$entity.getDeltaMovement().y <= 0 && OriginDataHolder.get(this.apoli$entity).hasPower(ModifyFallingPower.class, true)) {
+    private void modifyAttributeValue(CallbackInfoReturnable<Double> cir) {
+        if (this.origins$entity != null && this.attribute.value() == Attributes.GRAVITY.value() && this.origins$entity.getDeltaMovement().y <= 0 && OriginDataHolder.get(this.origins$entity).hasPower(ModifyFallingPower.class, true)) {
             double original = cir.getReturnValueD();
-            cir.setReturnValue(ModifyFallingPower.apply(this.apoli$entity, original));
+            cir.setReturnValue(ModifyFallingPower.apply(this.origins$entity, original));
         }
     }
 }

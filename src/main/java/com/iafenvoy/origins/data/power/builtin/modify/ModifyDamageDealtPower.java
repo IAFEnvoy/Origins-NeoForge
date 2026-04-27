@@ -52,6 +52,7 @@ public class ModifyDamageDealtPower extends Power implements ModifierPowerHelper
         this.biEntityAction = biEntityAction;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }

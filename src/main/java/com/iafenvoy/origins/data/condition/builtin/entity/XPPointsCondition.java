@@ -8,10 +8,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-public record ExperiencePointsCondition(Comparison comparison) implements EntityCondition {
-    public static final MapCodec<ExperiencePointsCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Comparison.CODEC.forGetter(ExperiencePointsCondition::comparison)
-    ).apply(i, ExperiencePointsCondition::new));
+public record XPPointsCondition(Comparison comparison) implements EntityCondition {
+    public static final MapCodec<XPPointsCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            Comparison.CODEC.forGetter(XPPointsCondition::comparison)
+    ).apply(i, XPPointsCondition::new));
 
     @Override
     public @NotNull MapCodec<? extends EntityCondition> codec() {

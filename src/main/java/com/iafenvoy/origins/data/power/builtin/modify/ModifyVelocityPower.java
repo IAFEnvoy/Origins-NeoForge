@@ -30,6 +30,7 @@ public class ModifyVelocityPower extends Power implements ModifierPowerHelper {
         this.axes = axes;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }

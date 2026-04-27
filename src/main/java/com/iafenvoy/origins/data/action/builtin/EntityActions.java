@@ -18,7 +18,7 @@ public final class EntityActions {
     //List
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ActionOnSetAction>> ACTION_ON_SET = REGISTRY.register("action_on_set", () -> ActionOnSetAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddEffectAction>> ADD_EFFECT = REGISTRY.register("add_effect", () -> AddEffectAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddExperienceAction>> ADD_EXPERIENCE = REGISTRY.register("add_experience", () -> AddExperienceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddXPAction>> ADD_XP = REGISTRY.register("add_xp", () -> AddXPAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ApplyEffectAction>> APPLY_EFFECT = REGISTRY.register("apply_effect", () -> ApplyEffectAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<BlockActionAction>> BLOCK_ACTION = REGISTRY.register("block_action", () -> BlockActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<BlockActionAtAction>> BLOCK_ACTION_AT = REGISTRY.register("block_action_at", () -> BlockActionAtAction.CODEC);

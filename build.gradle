@@ -113,10 +113,10 @@ configurations {
 
 dependencies {
     implementation "maven.modrinth:jupiter:Jpcw76rq"
-    implementation "maven.modrinth:integration:$integration_version"
-    jarJar "maven.modrinth:integration:$integration_version"
+    implementation jarJar("maven.modrinth:integration:$integration_version")
 
     compileOnly "maven.modrinth:bedsheet:HbBAModY"
+    implementation jarJar("maven.modrinth:AdditionalEntityAttributes:6oJLT6m7")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

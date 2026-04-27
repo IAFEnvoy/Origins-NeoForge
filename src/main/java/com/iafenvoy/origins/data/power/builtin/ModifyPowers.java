@@ -22,15 +22,20 @@ public final class ModifyPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyDamageTakenPower>> MODIFY_DAMAGE_TAKEN = REGISTRY.register("modify_damage_taken", () -> ModifyDamageTakenPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyEffectAmplifierPower>> MODIFY_EFFECT_AMPLIFIER = REGISTRY.register("modify_effect_amplifier", () -> ModifyEffectAmplifierPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyEffectDurationPower>> MODIFY_EFFECT_DURATION = REGISTRY.register("modify_effect_duration", () -> ModifyEffectDurationPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyEnchantmentLevelPower>> MODIFY_ENCHANTMENT_LEVEL = REGISTRY.register("modify_enchantment_level", () -> ModifyEnchantmentLevelPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyExhaustionPower>> MODIFY_EXHAUSTION = REGISTRY.register("modify_exhaustion", () -> ModifyExhaustionPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyFallingPower>> MODIFY_FALLING = REGISTRY.register("modify_falling", () -> ModifyFallingPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyFluidRenderPower>> MODIFY_FLUID_RENDER = REGISTRY.register("modify_fluid_render", () -> ModifyFluidRenderPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyFoodPower>> MODIFY_FOOD = REGISTRY.register("modify_food", () -> ModifyFoodPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyGrindstonePower>> MODIFY_GRINDSTONE = REGISTRY.register("modify_grindstone", () -> ModifyGrindstonePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyHarvestPower>> MODIFY_HARVEST = REGISTRY.register("modify_harvest", () -> ModifyHarvestPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyHealingPower>> MODIFY_HEALING = REGISTRY.register("modify_healing", () -> ModifyHealingPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyInsomniaTicksPower>> MODIFY_INSOMNIA_TICKS = REGISTRY.register("modify_insomnia_ticks", () -> ModifyInsomniaTicksPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyJumpPower>> MODIFY_JUMP = REGISTRY.register("modify_jump", () -> ModifyJumpPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyPlayerSpawnPower>> MODIFY_PLAYER_SPAWN = REGISTRY.register("modify_player_spawn", () -> ModifyPlayerSpawnPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyProjectileDamagePower>> MODIFY_PROJECTILE_DAMAGE = REGISTRY.register("modify_projectile_damage", () -> ModifyProjectileDamagePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyValueBlockPower>> MODIFY_VALUE_BLOCK = REGISTRY.register("modify_value_block", () -> ModifyValueBlockPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyValuePower>> MODIFY_VALUE = REGISTRY.register("modify_value", () -> ModifyValuePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyVelocityPower>> MODIFY_VELOCITY = REGISTRY.register("modify_velocity", () -> ModifyVelocityPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyXPGainPower>> MODIFY_XP_GAIN = REGISTRY.register("modify_xp_gain", () -> ModifyXPGainPower.CODEC);
 }

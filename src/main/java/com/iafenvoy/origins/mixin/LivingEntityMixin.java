@@ -3,6 +3,7 @@ package com.iafenvoy.origins.mixin;
 import com.iafenvoy.origins.accessor.AttributeInstanceAccessor;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.RegularPowers;
+import com.iafenvoy.origins.data.power.builtin.modify.ModifyAirSpeedPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyEffectAmplifierPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyEffectDurationPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyFoodPower;
@@ -54,6 +55,9 @@ public abstract class LivingEntityMixin extends Entity {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Shadow
     private Optional<BlockPos> lastClimbablePos;
+
+    @Shadow
+    protected abstract float getFlyingSpeed();
 
     public LivingEntityMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -146,5 +150,11 @@ public abstract class LivingEntityMixin extends Entity {
         if (amplifier != originalAmp || duration != originalDur)
             return new MobEffectInstance(effectType, duration, amplifier, effect.isAmbient(), effect.isVisible(), effect.showIcon(), ((MobEffectInstanceAccessor) effect).getHiddenEffect());
         return effect;
+    }
+
+    @Inject(method = "getFrictionInfluencedSpeed(F)F", at = @At("RETURN"), cancellable = true)
+    private void modifyFlySpeed(float slipperiness, CallbackInfoReturnable<Float> cir) {
+        if (!this.onGround())
+            cir.setReturnValue(OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyAirSpeedPower.class, this.getFlyingSpeed()));
     }
 }

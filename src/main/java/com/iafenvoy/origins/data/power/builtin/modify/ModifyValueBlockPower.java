@@ -30,6 +30,7 @@ public class ModifyValueBlockPower extends Power implements ModifierPowerHelper 
         this.condition = condition;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }

@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.Codec;
@@ -9,7 +10,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,8 +66,8 @@ public class StackingEffectPower extends Power {
     }
 
     @Override
-    public void tick(@NotNull Entity entity) {
-        if (entity instanceof LivingEntity living && this.condition.test(entity)) {
+    public void tick(@NotNull OriginDataHolder holder) {
+        if (holder.getEntity() instanceof LivingEntity living && this.condition.test(living)) {
             for (EffectEntry entry : this.effects) {
                 entry.effect().ifPresent(effect -> {
                     int duration = Math.max(this.durationPerStack * 2, 20);

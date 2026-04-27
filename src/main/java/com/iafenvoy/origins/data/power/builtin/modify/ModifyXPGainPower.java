@@ -1,0 +1,45 @@
+package com.iafenvoy.origins.data.power.builtin.modify;
+
+import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.helper.ModifierPowerHelper;
+import com.iafenvoy.origins.util.math.Modifier;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+@EventBusSubscriber
+public class ModifyXPGainPower extends Power implements ModifierPowerHelper {
+    public static final MapCodec<ModifyXPGainPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Modifier.CODEC.listOf().fieldOf("modifier").forGetter(ModifyXPGainPower::getModifier)
+    ).apply(i, ModifyXPGainPower::new));
+    private final List<Modifier> modifier;
+
+    protected ModifyXPGainPower(BaseSettings settings, List<Modifier> modifier) {
+        super(settings);
+        this.modifier = modifier;
+    }
+
+    @Override
+    public List<Modifier> getModifier() {
+        return this.modifier;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends Power> codec() {
+        return CODEC;
+    }
+
+    @SubscribeEvent
+    public static void onXPGain(PlayerXpEvent.PickupXp event) {
+        ExperienceOrb orb = event.getOrb();
+        orb.value = OriginDataHolder.get(event.getEntity()).getHelper().modify(ModifyXPGainPower.class, orb.value);
+    }
+}

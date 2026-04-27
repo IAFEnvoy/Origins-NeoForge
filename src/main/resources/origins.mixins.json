@@ -3,9 +3,6 @@
   "package": "com.iafenvoy.origins.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "accessor.LivingEntityAccessor",
-    "accessor.MobAccessor",
-    "accessor.MobEffectInstanceAccessor",
     "AttributeInstanceMixin",
     "BlockBehaviourMixin",
     "BlockItemMixin",
@@ -13,12 +10,17 @@
     "CommonHooksMixin",
     "ConduitPowerOnLandMixin",
     "FoodDataMixin",
+    "IBlockStateExtensionMixin",
     "ItemMixin",
     "LivingEntityMixin",
+    "PhantomSpawnerMixin",
     "PlayerMixin",
     "ScareCreepersMixin",
     "WaterBreathingMixin$BreathingImpl",
-    "WaterBreathingMixin$TurtleHelmetProxy"
+    "WaterBreathingMixin$TurtleHelmetProxy",
+    "accessor.LivingEntityAccessor",
+    "accessor.MobAccessor",
+    "accessor.MobEffectInstanceAccessor"
   ],
   "client": [
     "EntityMixin",
@@ -27,6 +29,7 @@
     "GameRendererMixin",
     "LevelRendererMixin",
     "LivingEntityRendererMixin",
+    "LocalPlayerMixin",
     "PlayerRendererMixin",
     "RenderChunkRegionMixin",
     "WaterVisionMixin"

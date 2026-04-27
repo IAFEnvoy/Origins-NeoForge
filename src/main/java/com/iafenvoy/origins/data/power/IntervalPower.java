@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,10 +17,10 @@ public abstract class IntervalPower extends Power {
     }
 
     @Override
-    public void tick(@NotNull Entity entity) {
+    public void tick(@NotNull OriginDataHolder entity) {
         if (this.remainTicks <= 0) {
             this.remainTicks = this.getInterval();
-            this.intervalTick(entity);
+            this.intervalTick(entity.getEntity());
         }
         this.remainTicks--;
     }

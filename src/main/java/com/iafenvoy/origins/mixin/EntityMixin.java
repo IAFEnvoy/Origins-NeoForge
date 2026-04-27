@@ -85,7 +85,7 @@ public class EntityMixin implements MovingEntity {
     }
 
     @Redirect(method = "lambda$isInWall$8", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/phys/shapes/VoxelShape;"))
-    private VoxelShape apoli$preventSuffocation(BlockState state, BlockGetter level, BlockPos pos) {
+    private VoxelShape preventSuffocation(BlockState state, BlockGetter level, BlockPos pos) {
         return state.getCollisionShape(level, pos, CollisionContext.of(this.origins$self()));
     }
 }

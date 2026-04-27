@@ -4,6 +4,7 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.badge.Badge;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
+import com.iafenvoy.origins.data.power.component.builtin.ActiveComponent;
 import com.iafenvoy.origins.util.annotation.Comment;
 import com.iafenvoy.origins.util.codec.DefaultedCodec;
 import com.mojang.serialization.Codec;
@@ -19,7 +20,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -49,21 +49,28 @@ public abstract class Power {
 
     @Comment("Only one class each is allowed")
     public void createComponents(ComponentCollector collector) {
+        collector.add(new ActiveComponent(false));
     }
 
     public boolean isActive(OriginDataHolder holder) {
         return this.settings.condition().test(holder.getEntity());
     }
 
-    @Comment("Call after grant, server side only")
-    public void grant(@NotNull Entity entity) {
+    public void grant(@NotNull OriginDataHolder holder) {
     }
 
-    @Comment("Call after revoke, server side only")
-    public void revoke(@NotNull Entity entity) {
+    public void revoke(@NotNull OriginDataHolder holder) {
+        if (this.isActive(holder)) this.inactive(holder);
     }
 
-    public void tick(@NotNull Entity entity) {
+    public void active(@NotNull OriginDataHolder holder) {
+    }
+
+    public void inactive(@NotNull OriginDataHolder holder) {
+    }
+
+    public void tick(@NotNull OriginDataHolder holder) {
+        holder.getComponentFor(this, ActiveComponent.class).ifPresent(x -> x.tick(holder, this));
     }
 
     public ResourceLocation getId(RegistryAccess access) {

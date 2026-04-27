@@ -24,6 +24,7 @@ public class ModifyValuePower extends Power implements ModifierPowerHelper {
         this.modifier = modifier;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }

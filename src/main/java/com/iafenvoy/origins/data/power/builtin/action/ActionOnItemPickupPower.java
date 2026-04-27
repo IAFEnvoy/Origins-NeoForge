@@ -70,7 +70,7 @@ public class ActionOnItemPickupPower extends Power implements Prioritized {
     }
 
     @SubscribeEvent
-    public static void onItemPickup(ItemEntityPickupEvent event) {
+    public static void onItemPickup(ItemEntityPickupEvent.Post event) {
         Entity actor = event.getItemEntity().getOwner(), target = event.getPlayer();
         Level level = target.level();
         ItemStack stack = event.getItemEntity().getItem();

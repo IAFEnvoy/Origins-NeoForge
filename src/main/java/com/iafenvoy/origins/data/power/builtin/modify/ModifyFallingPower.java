@@ -46,6 +46,7 @@ public class ModifyFallingPower extends Power implements ModifierPowerHelper {
         return this.takeFallDamage;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }

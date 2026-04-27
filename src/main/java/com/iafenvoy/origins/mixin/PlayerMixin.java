@@ -61,4 +61,9 @@ public class PlayerMixin {
         Entity entity = this.origins$self();
         OriginDataHolder.get(entity).streamActivePowers(ModifyFoodPower.class).filter(x -> x.getItemCondition().test(level, food)).map(ModifyFoodPower::getEntityAction).forEach(x -> x.execute(entity));
     }
+
+    @Inject(method = "getFlyingSpeed", at = @At("RETURN"), cancellable = true)
+    private void modifyFlySpeed(CallbackInfoReturnable<Float> cir) {
+        cir.setReturnValue(OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyExhaustionPower.class, cir.getReturnValue()));
+    }
 }

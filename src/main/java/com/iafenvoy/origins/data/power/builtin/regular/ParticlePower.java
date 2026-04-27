@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.Codec;
@@ -9,6 +10,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,12 +50,10 @@ public class ParticlePower extends Power {
     }
 
     @Override
-    public void tick(@NotNull Entity entity) {
-        if (entity.level() instanceof ServerLevel serverLevel && entity.tickCount % this.frequency == 0) {
-            if (this.condition.test(entity) && this.particle instanceof ParticleOptions options) {
-                serverLevel.sendParticles(options, entity.getX(), entity.getY() + entity.getBbHeight() * 0.5, entity.getZ(),
-                        1, entity.getBbWidth() * 0.3, entity.getBbHeight() * 0.3, entity.getBbWidth() * 0.3, 0.01);
-            }
-        }
+    public void tick(@NotNull OriginDataHolder holder) {
+        Entity entity = holder.getEntity();
+        if (entity.level() instanceof ServerLevel serverLevel && entity.tickCount % this.frequency == 0 && this.condition.test(entity) && this.particle instanceof ParticleOptions options)
+            serverLevel.sendParticles(options, entity.getX(), entity.getY() + entity.getBbHeight() * 0.5, entity.getZ(),
+                    1, entity.getBbWidth() * 0.3, entity.getBbHeight() * 0.3, entity.getBbWidth() * 0.3, 0.01);
     }
 }

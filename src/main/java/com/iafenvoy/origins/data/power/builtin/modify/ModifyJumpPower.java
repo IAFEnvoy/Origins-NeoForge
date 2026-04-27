@@ -34,6 +34,7 @@ public class ModifyJumpPower extends Power implements ModifierPowerHelper {
         this.entityAction = entityAction;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }

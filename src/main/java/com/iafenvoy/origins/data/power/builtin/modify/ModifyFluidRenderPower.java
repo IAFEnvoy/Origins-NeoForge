@@ -1,12 +1,12 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.FluidCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.render.LevelRenderHelper;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,12 +47,12 @@ public class ModifyFluidRenderPower extends Power {
 
 
     @Override
-    public void grant(@NotNull Entity entity) {
-        LevelRenderHelper.sendReloadPayload(entity);
+    public void active(@NotNull OriginDataHolder holder) {
+        LevelRenderHelper.sendReloadPayload(holder.getEntity());
     }
 
     @Override
-    public void revoke(@NotNull Entity entity) {
-        LevelRenderHelper.sendReloadPayload(entity);
+    public void inactive(@NotNull OriginDataHolder holder) {
+        LevelRenderHelper.sendReloadPayload(holder.getEntity());
     }
 }

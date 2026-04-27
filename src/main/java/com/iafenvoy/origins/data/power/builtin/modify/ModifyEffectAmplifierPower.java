@@ -31,6 +31,7 @@ public class ModifyEffectAmplifierPower extends Power  implements ModifierPowerH
         return this.effect;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }

@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.Codec;
@@ -8,7 +9,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -42,8 +42,8 @@ public class AttributePower extends Power {
     }
 
     @Override
-    public void grant(@NotNull Entity entity) {
-        if (entity instanceof LivingEntity living) {
+    public void active(@NotNull OriginDataHolder holder) {
+        if (holder.getEntity() instanceof LivingEntity living) {
             for (AttributeEntry entry : this.modifiers) {
                 entry.attribute().ifPresent(attr -> {
                     AttributeInstance instance = living.getAttribute(attr);
@@ -56,8 +56,8 @@ public class AttributePower extends Power {
     }
 
     @Override
-    public void revoke(@NotNull Entity entity) {
-        if (entity instanceof LivingEntity living) {
+    public void inactive(@NotNull OriginDataHolder holder) {
+        if (holder.getEntity() instanceof LivingEntity living) {
             for (AttributeEntry entry : this.modifiers) {
                 entry.attribute().ifPresent(attr -> {
                     AttributeInstance instance = living.getAttribute(attr);

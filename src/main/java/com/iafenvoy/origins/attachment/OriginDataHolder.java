@@ -78,14 +78,14 @@ public final class OriginDataHolder {
         ComponentCollector collector = ComponentCollector.create();
         power.value().createComponents(collector);
         this.data.getComponents().put(RLHelper.id(power), collector.build());
-        power.value().grant(this.entity);
+        power.value().grant(this);
         this.sync();
     }
 
     public void revokePower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().remove(source, power);
         this.data.getComponents().remove(RLHelper.id(power));
-        power.value().revoke(this.entity);
+        power.value().revoke(this);
         this.sync();
     }
 
@@ -244,7 +244,7 @@ public final class OriginDataHolder {
     }
 
     public void tick(@NotNull Entity entity) {
-        this.getOrigins().values().forEach(o -> this.executeOnPowers(o, p -> p.tick(entity)));
+        this.getOrigins().values().forEach(o -> this.executeOnPowers(o, p -> p.tick(this)));
         //Check components and update
         if (this.data.getComponents().values().stream().flatMap(x -> x.values().stream()).map(PowerComponent::isDirty).reduce(false, (p, c) -> p | c))
             this.sync();

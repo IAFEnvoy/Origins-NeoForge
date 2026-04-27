@@ -35,8 +35,6 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EntityTypeCondition>> ENTITY_TYPE = REGISTRY.register("entity_type", () -> EntityTypeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EquippedItemCondition>> EQUIPPED_ITEM = REGISTRY.register("equipped_item", () -> EquippedItemCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ExistsCondition>> EXISTS = REGISTRY.register("exists", () -> ExistsCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ExperienceLevelsCondition>> EXPERIENCE_LEVELS = REGISTRY.register("experience_levels", () -> ExperienceLevelsCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ExperiencePointsCondition>> EXPERIENCE_POINTS = REGISTRY.register("experience_points", () -> ExperiencePointsCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ExposedToSkyCondition>> EXPOSED_TO_SKY = REGISTRY.register("exposed_to_sky", () -> ExposedToSkyCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ExposedToSunCondition>> EXPOSED_TO_SUN = REGISTRY.register("exposed_to_sun", () -> ExposedToSunCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<FallDistanceCondition>> FALL_DISTANCE = REGISTRY.register("fall_distance", () -> FallDistanceCondition.CODEC);
@@ -82,6 +80,8 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<TimeOfDayCondition>> TIME_OF_DAY = REGISTRY.register("time_of_day", () -> TimeOfDayCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<UsingEffectiveToolCondition>> USING_EFFECTIVE_TOOL = REGISTRY.register("using_effective_tool", () -> UsingEffectiveToolCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<UsingItemCondition>> USING_ITEM = REGISTRY.register("using_item", () -> UsingItemCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<XPLevelsCondition>> XP_LEVELS = REGISTRY.register("xp_levels", () -> XPLevelsCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<XPPointsCondition>> XP_POINTS = REGISTRY.register("xp_points", () -> XPPointsCondition.CODEC);
     //Meta
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AndCondition>> AND = REGISTRY.register("and", () -> AndCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ChanceCondition>> CHANCE = REGISTRY.register("chance", () -> ChanceCondition.CODEC);

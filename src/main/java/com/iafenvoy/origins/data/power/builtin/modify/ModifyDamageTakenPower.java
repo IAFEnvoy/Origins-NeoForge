@@ -55,6 +55,7 @@ public class ModifyDamageTakenPower extends Power implements ModifierPowerHelper
         this.damageCondition = damageCondition;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }

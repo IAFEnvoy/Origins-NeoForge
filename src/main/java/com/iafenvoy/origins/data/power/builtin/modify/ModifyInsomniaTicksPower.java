@@ -2,7 +2,6 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.helper.ModifierPowerHelper;
-import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -10,14 +9,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ModifyAirSpeedPower extends Power implements ModifierPowerHelper {
-    public static final MapCodec<ModifyAirSpeedPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+public class ModifyInsomniaTicksPower extends Power implements ModifierPowerHelper {
+    public static final MapCodec<ModifyInsomniaTicksPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyAirSpeedPower::getModifier)
-    ).apply(i, ModifyAirSpeedPower::new));
+            Modifier.CODEC.listOf().fieldOf("modifier").forGetter(ModifyInsomniaTicksPower::getModifier)
+    ).apply(i, ModifyInsomniaTicksPower::new));
     private final List<Modifier> modifier;
 
-    public ModifyAirSpeedPower(BaseSettings settings, List<Modifier> modifier) {
+    public ModifyInsomniaTicksPower(BaseSettings settings, List<Modifier> modifier) {
         super(settings);
         this.modifier = modifier;
     }

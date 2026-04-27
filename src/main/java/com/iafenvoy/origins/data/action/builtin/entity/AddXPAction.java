@@ -10,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.OptionalInt;
 
-public record AddExperienceAction(OptionalInt points, OptionalInt levels) implements EntityAction {
-    public static final MapCodec<AddExperienceAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            OptionalCodecs.integer("points").forGetter(AddExperienceAction::points),
-            OptionalCodecs.integer("levels").forGetter(AddExperienceAction::levels)
-    ).apply(i, AddExperienceAction::new));
+public record AddXPAction(OptionalInt points, OptionalInt levels) implements EntityAction {
+    public static final MapCodec<AddXPAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            OptionalCodecs.integer("points").forGetter(AddXPAction::points),
+            OptionalCodecs.integer("levels").forGetter(AddXPAction::levels)
+    ).apply(i, AddXPAction::new));
 
     @Override
     public @NotNull MapCodec<? extends EntityAction> codec() {

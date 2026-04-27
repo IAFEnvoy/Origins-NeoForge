@@ -11,28 +11,27 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ModifyBreakSpeedPower extends Power implements ModifierPowerHelper {
-    public static final MapCodec<ModifyBreakSpeedPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BaseSettings.CODEC.forGetter(Power::getSettings),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyBreakSpeedPower::getModifier),
-            BlockCondition.optionalCodec("block_condition").forGetter(ModifyBreakSpeedPower::getBlockCondition)
-    ).apply(i, ModifyBreakSpeedPower::new));
-    private final List<Modifier> modifier;
+public class ModifySlipperinessPower extends Power implements ModifierPowerHelper {
+    public static final MapCodec<ModifySlipperinessPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BaseSettings.CODEC.forGetter(ModifySlipperinessPower::getSettings),
+            BlockCondition.optionalCodec("block_condition").forGetter(ModifySlipperinessPower::getBlockCondition),
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifySlipperinessPower::getModifier)
+    ).apply(i, ModifySlipperinessPower::new));
     private final BlockCondition blockCondition;
+    private final List<Modifier> modifier;
 
-    public ModifyBreakSpeedPower(BaseSettings settings, List<Modifier> modifier, BlockCondition blockCondition) {
+    public ModifySlipperinessPower(BaseSettings settings, BlockCondition blockCondition, List<Modifier> modifier) {
         super(settings);
-        this.modifier = modifier;
         this.blockCondition = blockCondition;
-    }
-
-    @Override
-    public List<Modifier> getModifier() {
-        return this.modifier;
+        this.modifier = modifier;
     }
 
     public BlockCondition getBlockCondition() {
         return this.blockCondition;
+    }
+
+    public List<Modifier> getModifier() {
+        return this.modifier;
     }
 
     @Override

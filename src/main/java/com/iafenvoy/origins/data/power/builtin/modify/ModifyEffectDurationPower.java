@@ -31,6 +31,7 @@ public class ModifyEffectDurationPower extends Power implements ModifierPowerHel
         return this.effect;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }
