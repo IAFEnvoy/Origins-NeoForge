@@ -5,11 +5,9 @@ import com.iafenvoy.origins.data._common.InteractionPowerSettings;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.builtin.action.ActionOnEntityUsePower;
 import com.iafenvoy.origins.data.power.helper.InteractionPowerHelper;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -35,14 +33,17 @@ public class PreventEntityUsePower extends Power implements InteractionPowerHelp
         this.biEntityCondition = biEntityCondition;
     }
 
+    @Override
     public InteractionPowerSettings getInteractionSettings() {
         return this.interactionSettings;
     }
 
+    @Override
     public BiEntityAction getBiEntityAction() {
         return this.biEntityAction;
     }
 
+    @Override
     public BiEntityCondition getBiEntityCondition() {
         return this.biEntityCondition;
     }

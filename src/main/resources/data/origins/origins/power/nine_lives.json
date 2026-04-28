@@ -1,9 +1,8 @@
 {
   "type": "origins:attribute",
   "modifier": {
-    "id": "origins:nine_lives",
     "attribute": "minecraft:generic.max_health",
-    "amount": -2.0,
+    "value": -2.0,
     "operation": "add_value"
   }
 }

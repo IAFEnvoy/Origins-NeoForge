@@ -30,6 +30,7 @@ public class ModifySlipperinessPower extends Power implements ModifierPowerHelpe
         return this.blockCondition;
     }
 
+    @Override
     public List<Modifier> getModifier() {
         return this.modifier;
     }

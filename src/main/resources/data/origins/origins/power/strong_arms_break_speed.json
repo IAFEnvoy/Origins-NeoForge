@@ -9,7 +9,7 @@
     "inverted": true
   },
   "modifier": {
-    "amount": 0.06,
+    "value": 0.06,
     "operation": "add_base_early"
   },
   "hidden": true

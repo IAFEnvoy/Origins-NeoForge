@@ -47,8 +47,4 @@ public class ModifyValueBlockPower extends Power implements ModifierPowerHelper 
     public boolean test(Level level, BlockPos pos) {
         return this.condition.test(level, pos);
     }
-
-    public double apply(double baseValue) {
-        return Modifier.applyModifiers(this.modifier, baseValue);
-    }
 }

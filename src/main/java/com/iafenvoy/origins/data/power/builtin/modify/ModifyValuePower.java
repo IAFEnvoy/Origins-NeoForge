@@ -33,8 +33,4 @@ public class ModifyValuePower extends Power implements ModifierPowerHelper {
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
     }
-
-    public double apply(double baseValue) {
-        return Modifier.applyModifiers(this.modifier, baseValue);
-    }
 }

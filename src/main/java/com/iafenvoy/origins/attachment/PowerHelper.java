@@ -17,7 +17,7 @@ public record PowerHelper(OriginDataHolder holder) {
     }
 
     public <T extends Power & ModifierPowerHelper> int modify(Class<T> clazz, Predicate<T> condition, int baseValue) {
-        return this.holder.streamActivePowers(clazz).filter(condition).reduce(baseValue, (value, power) -> power.modify(value), Integer::sum);
+        return this.holder.streamActivePowers(clazz).filter(condition).reduce(baseValue, (value, power) -> power.modify(this.holder, value), Integer::sum);
     }
 
     public <T extends Power & ModifierPowerHelper> float modify(Class<T> clazz, float baseValue) {
@@ -25,7 +25,7 @@ public record PowerHelper(OriginDataHolder holder) {
     }
 
     public <T extends Power & ModifierPowerHelper> float modify(Class<T> clazz, Predicate<T> condition, float baseValue) {
-        return this.holder.streamActivePowers(clazz).filter(condition).reduce(baseValue, (value, power) -> power.modify(value), Float::sum);
+        return this.holder.streamActivePowers(clazz).filter(condition).reduce(baseValue, (value, power) -> power.modify(this.holder, value), Float::sum);
     }
 
     public <T extends Power & ModifierPowerHelper> double modify(Class<T> clazz, double baseValue) {
@@ -33,7 +33,7 @@ public record PowerHelper(OriginDataHolder holder) {
     }
 
     public <T extends Power & ModifierPowerHelper> double modify(Class<T> clazz, Predicate<T> condition, double baseValue) {
-        return this.holder.streamActivePowers(clazz).filter(condition).reduce(baseValue, (value, power) -> power.modify(value), Double::sum);
+        return this.holder.streamActivePowers(clazz).filter(condition).reduce(baseValue, (value, power) -> power.modify(this.holder, value), Double::sum);
     }
 
     public void toggle(String key) {

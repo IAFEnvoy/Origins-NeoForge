@@ -19,6 +19,7 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<AttributeModifyTransferPower>> ATTRIBUTE_MODIFY_TRANSFER = REGISTRY.register("attribute_modify_transfer", () -> AttributeModifyTransferPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<BurnPower>> BURN = REGISTRY.register("burn", () -> BurnPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ClimbingPower>> CLIMBING = REGISTRY.register("climbing", () -> ClimbingPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ConditionedAttributePower>> CONDITIONED_ATTRIBUTE = REGISTRY.register("conditioned_attribute", () -> ConditionedAttributePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<CooldownPower>> COOLDOWN = REGISTRY.register("cooldown", () -> CooldownPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ConduitPowerOnLandPower>> CONDUIT_POWER_ON_LAND = REGISTRY.register("conduit_power_on_land", () -> ConduitPowerOnLandPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<CreativeFlightPower>> CREATIVE_FLIGHT = REGISTRY.register("creative_flight", () -> CreativeFlightPower.CODEC);
@@ -49,9 +50,9 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ScareCreepersPower>> SCARE_CREEPERS = REGISTRY.register("scare_creepers", () -> ScareCreepersPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<SelfGlowPower>> SELF_GLOW = REGISTRY.register("self_glow", () -> SelfGlowPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<StackingEffectPower>> STACKING_STATUS_EFFECT = REGISTRY.register("stacking_effect", () -> StackingEffectPower.CODEC);
-    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<StandOnFluidPower>> STAND_ON_FLUID = REGISTRY.register("stand_on_fluid", () -> StandOnFluidPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<TogglePower>> TOGGLE = REGISTRY.register("toggle", () -> TogglePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<TooltipPower>> TOOLTIP = REGISTRY.register("tooltip", () -> TooltipPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<WalkOnFluidPower>> WALK_ON_FLUID = REGISTRY.register("walk_on_fluid", () -> WalkOnFluidPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<WaterBreathingPower>> WATER_BREATHING = REGISTRY.register("water_breathing", () -> WaterBreathingPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<WaterVisionPower>> WATER_VISION = REGISTRY.register("water_vision", () -> WaterVisionPower.CODEC);
 }

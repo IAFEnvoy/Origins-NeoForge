@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
@@ -32,7 +33,7 @@ public record DamageAction(Holder<DamageType> damageType, float amount,
     public void execute(@NotNull Entity source) {
         float amount = this.amount;
         if (!this.modifiers.isEmpty() && source instanceof LivingEntity living)
-            amount = (float) Modifier.applyModifiers(this.modifiers, living.getMaxHealth());
+            amount = Modifier.applyModifiers(OriginDataHolder.get(living), this.modifiers, living.getMaxHealth());
         source.hurt(new DamageSource(this.damageType), amount);
     }
 }

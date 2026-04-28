@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
@@ -44,11 +45,11 @@ public class ModifyVelocityPower extends Power implements ModifierPowerHelper {
         return CODEC;
     }
 
-    public Vec3 apply(Vec3 original) {
+    public Vec3 apply(OriginDataHolder holder, Vec3 original) {
         double x = original.x, y = original.y, z = original.z;
-        if (this.axes.contains(Direction.Axis.X)) x = this.modify(x);
-        if (this.axes.contains(Direction.Axis.Y)) y = this.modify(y);
-        if (this.axes.contains(Direction.Axis.Z)) z = this.modify(z);
+        if (this.axes.contains(Direction.Axis.X)) x = this.modify(holder,x);
+        if (this.axes.contains(Direction.Axis.Y)) y = this.modify(holder,y);
+        if (this.axes.contains(Direction.Axis.Z)) z = this.modify(holder,z);
         return new Vec3(x, y, z);
     }
 }

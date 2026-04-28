@@ -1,8 +1,8 @@
 {
   "type": "origins:modify_damage_dealt",
   "modifier": {
-    "id": "origins:aerial_combatant",
-    "amount": 1,
+    "resource": "origins:aerial_combatant",
+    "value": 1,
     "operation": "multiply_base_multiplicative"
   },
   "condition": {

@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.action.builtin.bientity;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
@@ -29,7 +30,7 @@ public record DamageTargetAction(Holder<DamageType> damageType, float amount,
 
     @Override
     public void execute(@NotNull Entity source, @NotNull Entity target) {
-        float finalAmount = (float) Modifier.applyModifiers(this.modifiers, this.amount);
+        float finalAmount = Modifier.applyModifiers(OriginDataHolder.get(source), this.modifiers, this.amount);
         target.hurt(new DamageSource(this.damageType, source), finalAmount);
     }
 }

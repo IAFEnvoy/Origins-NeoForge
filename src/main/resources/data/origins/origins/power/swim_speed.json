@@ -1,9 +1,8 @@
 {
   "type": "origins:attribute",
   "modifier": {
-    "id": "origins:swim_speed",
     "attribute": "neoforge:swim_speed",
-    "amount": 1.5,
+    "value": 1.5,
     "operation": "add_multiplied_base"
   }
 }

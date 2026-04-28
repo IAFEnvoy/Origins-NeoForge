@@ -11,16 +11,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class AttributePower extends Power implements AttributePowerHelper {
-    public static final MapCodec<AttributePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+public class ConditionedAttributePower extends Power implements AttributePowerHelper {
+    public static final MapCodec<ConditionedAttributePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            AttributeEntry.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(AttributePower::getModifiers),
-            Codec.BOOL.optionalFieldOf("update_health", true).forGetter(AttributePower::shouldUpdateHealth)
-    ).apply(i, AttributePower::new));
+            AttributeEntry.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(ConditionedAttributePower::getModifiers),
+            Codec.BOOL.optionalFieldOf("update_health", true).forGetter(ConditionedAttributePower::shouldUpdateHealth)
+    ).apply(i, ConditionedAttributePower::new));
     private final List<AttributeEntry> modifiers;
     private final boolean updateHealth;
 
-    public AttributePower(BaseSettings settings, List<AttributeEntry> modifiers, boolean updateHealth) {
+    public ConditionedAttributePower(BaseSettings settings, List<AttributeEntry> modifiers, boolean updateHealth) {
         super(settings);
         this.modifiers = modifiers;
         this.updateHealth = updateHealth;
@@ -42,12 +42,12 @@ public class AttributePower extends Power implements AttributePowerHelper {
     }
 
     @Override
-    public void grant(@NotNull OriginDataHolder holder) {
+    public void active(@NotNull OriginDataHolder holder) {
         this.modify(holder, true);
     }
 
     @Override
-    public void revoke(@NotNull OriginDataHolder holder) {
+    public void inactive(@NotNull OriginDataHolder holder) {
         this.modify(holder, false);
     }
 }

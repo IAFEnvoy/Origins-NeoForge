@@ -1,7 +1,7 @@
 {
   "type": "origins:modify_break_speed",
   "modifier": {
-    "amount": 4,
+    "value": 4,
     "operation": "multiply_total_multiplicative"
   },
   "condition": {

@@ -76,7 +76,8 @@ public class EntityMixin implements MovingEntity {
     @ModifyVariable(method = "move", at = @At(value = "HEAD"), argsOnly = true)
     private Vec3 modifyMovementVelocityXZ(Vec3 vec, MoverType movementType) {
         if (movementType != MoverType.SELF) return vec;
-        return OriginDataHolder.get(this.origins$self()).streamActivePowers(ModifyVelocityPower.class).reduce(vec, (v, p) -> p.apply(v), Vec3::add);
+        OriginDataHolder holder = OriginDataHolder.get(this.origins$self());
+        return holder.streamActivePowers(ModifyVelocityPower.class).reduce(vec, (v, p) -> p.apply(holder, v), Vec3::add);
     }
 
     @Inject(method = "moveTowardsClosestSpace", at = @At(value = "HEAD"), cancellable = true)

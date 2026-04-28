@@ -2,7 +2,6 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -47,7 +46,7 @@ public class ModifyAttributePower extends Power {
 
     private Optional<AttributeInstance> getAttribute(Entity entity) {
         if (entity instanceof LivingEntity player)
-            return player.getAttributes().hasAttribute(this.attribute) ? Optional.ofNullable(player.getAttribute(attribute)) : Optional.empty();
+            return player.getAttributes().hasAttribute(this.attribute) ? Optional.ofNullable(player.getAttribute(this.attribute)) : Optional.empty();
         return Optional.empty();
     }
 

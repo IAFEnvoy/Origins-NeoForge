@@ -9,14 +9,13 @@ import com.iafenvoy.origins.data.power.builtin.modify.ModifyEffectDurationPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyFoodPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ClimbingPower;
 import com.iafenvoy.origins.data.power.builtin.regular.LikeWaterPower;
+import com.iafenvoy.origins.data.power.builtin.regular.WalkOnFluidPower;
 import com.iafenvoy.origins.event.client.ClientShouldGlowingEvent;
 import com.iafenvoy.origins.event.common.CanFlyWithoutElytraEvent;
-import com.iafenvoy.origins.event.common.CanStandOnFluidEvent;
 import com.iafenvoy.origins.event.common.EntityFrozenEvent;
 import com.iafenvoy.origins.event.common.IgnoreWaterEvent;
 import com.iafenvoy.origins.mixin.accessor.MobEffectInstanceAccessor;
 import com.iafenvoy.origins.util.Mutable;
-import com.iafenvoy.origins.util.math.Modifier;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
@@ -96,12 +95,6 @@ public abstract class LivingEntityMixin extends Entity {
         return NeoForge.EVENT_BUS.post(new IgnoreWaterEvent(this.origins$self())).getResult().allow() ? 1 : original;
     }
 
-    @Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true)
-    private void modifyWalkableFluids(FluidState fluidState, CallbackInfoReturnable<Boolean> cir) {
-        if (NeoForge.EVENT_BUS.post(new CanStandOnFluidEvent(this.origins$self(), fluidState)).getResult().allow())
-            cir.setReturnValue(true);
-    }
-
     @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getFluidFallingAdjustedMovement(DZLnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;"))
     private Vec3 origins$modifyFluidMovement(Vec3 original, @Local(ordinal = 0) double fallVelocity) {
         List<LikeWaterPower> powers = OriginDataHolder.get(this).getPowers(RegularPowers.LIKE_WATER, LikeWaterPower.class);
@@ -122,7 +115,7 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyReturnValue(method = "isSuppressingSlidingDownLadder", at = @At("RETURN"))
     private boolean handleClimbingHold(boolean original) {
         OriginDataHolder holder = OriginDataHolder.get(this);
-        return original || holder.getPowers(RegularPowers.CLIMBING, ClimbingPower.class).stream().anyMatch(x -> x.isActive(holder) && x.canHold(this));
+        return original || holder.streamActivePowers(ClimbingPower.class).anyMatch(x -> x.isActive(holder) && x.canHold(this));
     }
 
     @ModifyVariable(method = "eat*", at = @At("HEAD"), argsOnly = true)
@@ -156,5 +149,11 @@ public abstract class LivingEntityMixin extends Entity {
     private void modifyFlySpeed(float slipperiness, CallbackInfoReturnable<Float> cir) {
         if (!this.onGround())
             cir.setReturnValue(OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyAirSpeedPower.class, this.getFlyingSpeed()));
+    }
+
+    @Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true)
+    private void modifyWalkableFluids(FluidState fluid, CallbackInfoReturnable<Boolean> cir) {
+        if (OriginDataHolder.get(this.origins$self()).streamActivePowers(WalkOnFluidPower.class).anyMatch(x -> fluid.is(x.getFluid())))
+            cir.setReturnValue(true);
     }
 }

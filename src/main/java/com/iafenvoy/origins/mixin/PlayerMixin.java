@@ -6,7 +6,6 @@ import com.iafenvoy.origins.data.power.builtin.modify.ModifyFoodPower;
 import com.iafenvoy.origins.event.common.CanFlyWithoutElytraEvent;
 import com.iafenvoy.origins.event.common.CanNaturalRegenEvent;
 import com.iafenvoy.origins.util.Mutable;
-import com.iafenvoy.origins.util.math.Modifier;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

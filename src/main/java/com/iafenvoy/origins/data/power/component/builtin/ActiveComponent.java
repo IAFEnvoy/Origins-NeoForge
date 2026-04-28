@@ -6,10 +6,7 @@ import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.BooleanSupplier;
 
 public class ActiveComponent extends PowerComponent {
     public static final MapCodec<ActiveComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(

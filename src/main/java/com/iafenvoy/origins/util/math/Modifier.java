@@ -1,40 +1,44 @@
 package com.iafenvoy.origins.util.math;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.power.component.builtin.ResourceComponent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.DoubleBinaryOperator;
 
-public record Modifier(double amount, ModifierOperation operation) {
-    public static final Codec<Modifier> CODEC = RecordCodecBuilder.create(i -> i.group(
-            Codec.DOUBLE.fieldOf("amount").forGetter(Modifier::amount),
-            ModifierOperation.CODEC.optionalFieldOf("operation", ModifierOperation.ADD_BASE_EARLY).forGetter(Modifier::operation)
-    ).apply(i, Modifier::new));
+public record Modifier(double value, ModifierOperation operation, Optional<ResourceLocation> resource,
+                       Optional<Modifier> modifier) {
+    public static final Codec<Modifier> CODEC = Codec.recursive(Modifier.class.getSimpleName(), codec -> RecordCodecBuilder.create(i -> i.group(
+            Codec.DOUBLE.fieldOf("value").forGetter(Modifier::value),
+            ModifierOperation.CODEC.optionalFieldOf("operation", ModifierOperation.ADD_BASE_EARLY).forGetter(Modifier::operation),
+            ResourceLocation.CODEC.optionalFieldOf("resource").forGetter(Modifier::resource),
+            codec.optionalFieldOf("modifier").forGetter(Modifier::modifier)
+    ).apply(i, Modifier::new)));
 
-    //FIXME::Remove this?
-    public int apply(int value) {
-        return applyModifiers(List.of(this), value);
+    public double getValue(OriginDataHolder holder) {
+        return this.resource.flatMap(x -> holder.getComponent(x, ResourceComponent.class)).map(ResourceComponent::getValue).map(Double.class::cast)
+                .map(x -> this.modifier.map(m -> applyModifiers(holder, List.of(m), x)).orElse(x))
+                .orElse(this.value);
     }
 
-    public static int applyModifiers(List<Modifier> modifiers, int value) {
-        return (int) applyModifiers(modifiers, (double) value);
+    public static int applyModifiers(OriginDataHolder holder, List<Modifier> modifiers, int value) {
+        return (int) applyModifiers(holder, modifiers, (double) value);
     }
 
-    public static float applyModifiers(List<Modifier> modifiers, float value) {
-        return (float) applyModifiers(modifiers, (double) value);
+    public static float applyModifiers(OriginDataHolder holder, List<Modifier> modifiers, float value) {
+        return (float) applyModifiers(holder, modifiers, (double) value);
     }
 
-    public static double applyModifiers(List<Modifier> modifiers, double value) {
+    public static double applyModifiers(OriginDataHolder holder, List<Modifier> modifiers, double value) {
         Map<ModifierOperation, DoubleList> modifierMap = new EnumMap<>(ModifierOperation.class);
-        modifiers.forEach(m -> modifierMap.computeIfAbsent(m.operation(), op -> new DoubleArrayList()).add(m.amount()));
+        modifiers.forEach(m -> modifierMap.computeIfAbsent(m.operation(), op -> new DoubleArrayList()).add(m.getValue(holder)));
         for (ModifierOperation operation : ModifierOperation.values())
             if (modifierMap.containsKey(operation))
                 value = operation.getOperator().applyAsDouble(value, modifierMap.get(operation));

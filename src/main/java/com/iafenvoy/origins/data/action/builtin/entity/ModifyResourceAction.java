@@ -10,6 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public record ModifyResourceAction(Modifier modifier, ResourceLocation resource) implements EntityAction {
     public static final MapCodec<ModifyResourceAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Modifier.CODEC.fieldOf("modifier").forGetter(ModifyResourceAction::modifier),
@@ -23,6 +25,7 @@ public record ModifyResourceAction(Modifier modifier, ResourceLocation resource)
 
     @Override
     public void execute(@NotNull Entity source) {
-        OriginDataHolder.get(source).getComponent(this.resource, ResourceComponent.class).ifPresent(x -> x.updateResource(this.modifier::apply));
+        OriginDataHolder holder = OriginDataHolder.get(source);
+        holder.getComponent(this.resource, ResourceComponent.class).ifPresent(x -> x.updateResource(y -> Modifier.applyModifiers(holder, List.of(this.modifier), y)));
     }
 }

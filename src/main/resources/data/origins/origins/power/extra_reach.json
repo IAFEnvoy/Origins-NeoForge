@@ -1,16 +1,14 @@
 {
   "type": "origins:attribute",
-  "modifiers": [
+  "modifier": [
     {
-      "id": "origins:extra_reach_block",
       "attribute": "minecraft:player.block_interaction_range",
-      "amount": 1.5,
+      "value": 1.5,
       "operation": "add_value"
     },
     {
-      "id": "origins:extra_reach_entity",
       "attribute": "minecraft:player.entity_interaction_range",
-      "amount": 1.5,
+      "value": 1.5,
       "operation": "add_value"
     }
   ]

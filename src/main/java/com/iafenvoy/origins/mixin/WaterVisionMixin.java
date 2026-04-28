@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.data.power.builtin.regular.WaterVisionPower;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.player.LocalPlayer;
@@ -22,8 +21,6 @@ public class WaterVisionMixin {
 
     @ModifyExpressionValue(method = "getWaterVision", at = @At(value = "FIELD", target = "Lnet/minecraft/client/player/LocalPlayer;waterVisionTime:I", ordinal = 0, opcode = Opcodes.GETFIELD))
     private int origins$ignoreVisibilityDelay(int original) {
-        return !OriginDataHolder.get(this.origins$self()).getPowers(RegularPowers.WATER_VISION, WaterVisionPower.class).isEmpty()
-                ? 600
-                : original;
+        return !OriginDataHolder.get(this.origins$self()).hasPower(WaterVisionPower.class, true) ? 600 : original;
     }
 }

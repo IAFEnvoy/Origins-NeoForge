@@ -4,7 +4,7 @@
     "type": "origins:on_fire"
   },
   "modifier": {
-    "amount": 3,
+    "value": 3,
     "operation": "add_base_early"
   }
 }

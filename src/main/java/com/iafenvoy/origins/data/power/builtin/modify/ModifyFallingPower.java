@@ -22,24 +22,16 @@ import java.util.List;
 public class ModifyFallingPower extends Power implements ModifierPowerHelper {
     public static final MapCodec<ModifyFallingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.DOUBLE.fieldOf("velocity").forGetter(ModifyFallingPower::getVelocity),
             Codec.BOOL.optionalFieldOf("take_fall_damage", true).forGetter(ModifyFallingPower::shouldTakeFallDamage),
             CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyFallingPower::getModifier)
     ).apply(i, ModifyFallingPower::new));
-    //FIXME::No use?
-    private final double velocity;
     private final boolean takeFallDamage;
     private final List<Modifier> modifier;
 
-    public ModifyFallingPower(BaseSettings settings, double velocity, boolean takeFallDamage, List<Modifier> modifier) {
+    public ModifyFallingPower(BaseSettings settings,boolean takeFallDamage, List<Modifier> modifier) {
         super(settings);
-        this.velocity = velocity;
         this.takeFallDamage = takeFallDamage;
         this.modifier = modifier;
-    }
-
-    public double getVelocity() {
-        return this.velocity;
     }
 
     public boolean shouldTakeFallDamage() {

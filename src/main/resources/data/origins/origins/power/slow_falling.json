@@ -1,6 +1,9 @@
 {
   "type": "origins:modify_falling",
-  "velocity": 0.01,
+  "modifier": {
+    "operation": "min_total",
+    "value": 0.01
+  },
   "take_fall_damage": false,
   "condition": {
     "type": "origins:or",

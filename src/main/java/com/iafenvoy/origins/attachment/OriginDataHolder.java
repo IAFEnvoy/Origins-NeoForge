@@ -137,6 +137,10 @@ public final class OriginDataHolder {
         return this.streamActivePowers(clazz).findAny().isPresent();
     }
 
+    public ResourceLocation getPowerId(Power power) {
+        return this.access.registryOrThrow(PowerRegistries.POWER_KEY).getKey(power);
+    }
+
     //Origin Related
     public void setOrigin(@NotNull Holder<Layer> layer, @NotNull Holder<Origin> origin) {
         this.clearOrigin(layer);

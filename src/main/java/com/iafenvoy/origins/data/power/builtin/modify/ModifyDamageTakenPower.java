@@ -107,19 +107,16 @@ public class ModifyDamageTakenPower extends Power implements ModifierPowerHelper
         }
     }
 
-    public double apply(double baseValue) {
-        return Modifier.applyModifiers(this.modifier, baseValue);
-    }
-
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent.Pre event) {
         Entity source = event.getSource().getEntity(), target = event.getEntity();
         if (source == null) return;
-        OriginDataHolder.get(target).streamActivePowers(ModifyDamageTakenPower.class).forEach(power -> {
+        OriginDataHolder holder = OriginDataHolder.get(target);
+        holder.streamActivePowers(ModifyDamageTakenPower.class).forEach(power -> {
             float baseValue = event.getNewDamage();
             DamageSource s = event.getSource();
             if (power.biEntityCondition.test(source, target) && power.damageCondition.test(s, baseValue)) {
-                event.setNewDamage(power.modify(baseValue));
+                event.setNewDamage(power.modify(holder, baseValue));
                 power.selfAction.execute(target);
                 power.attackerAction.execute(source);
                 power.biEntityAction.execute(source, target);
