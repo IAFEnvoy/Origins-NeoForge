@@ -1,97 +1,100 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
+import com.iafenvoy.origins.data._common.ColorSettings;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
+import java.util.Locale;
 
 @NotImplementedYet
 public class OverlayPower extends Power {
     public static final MapCodec<OverlayPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.STRING.optionalFieldOf("sprite").forGetter(OverlayPower::getSprite),
-            Codec.FLOAT.optionalFieldOf("red", 1F).forGetter(OverlayPower::getRed),
-            Codec.FLOAT.optionalFieldOf("green", 1F).forGetter(OverlayPower::getGreen),
-            Codec.FLOAT.optionalFieldOf("blue", 1F).forGetter(OverlayPower::getBlue),
-            Codec.FLOAT.optionalFieldOf("strength", 1F).forGetter(OverlayPower::getStrength),
-            Codec.STRING.optionalFieldOf("draw_mode", "texture").forGetter(OverlayPower::getDrawMode),
-            Codec.STRING.optionalFieldOf("draw_phase", "below_hud").forGetter(OverlayPower::getDrawPhase),
-            Codec.BOOL.optionalFieldOf("visible_in_third_person", false).forGetter(OverlayPower::isVisibleInThirdPerson),
-            Codec.BOOL.optionalFieldOf("hide_with_hud", true).forGetter(OverlayPower::isHideWithHud),
-            EntityCondition.optionalCodec("condition").forGetter(OverlayPower::getCondition)
+            ResourceLocation.CODEC.fieldOf("texture").forGetter(OverlayPower::getTexture),
+            Codec.FLOAT.optionalFieldOf("strength", 1f).forGetter(OverlayPower::getStrength),
+            ColorSettings.NO_ALPHA_CODEC.forGetter(OverlayPower::getColor),
+            DrawMode.CODEC.fieldOf("draw_mode").forGetter(OverlayPower::getDrawMode),
+            DrawPhase.CODEC.fieldOf("draw_phase").forGetter(OverlayPower::getDrawPhase),
+            Codec.BOOL.optionalFieldOf("hide_with_hud", true).forGetter(OverlayPower::shouldHideWithHud),
+            Codec.BOOL.optionalFieldOf("visible_in_third_person", false).forGetter(OverlayPower::isVisibleInThirdPerson)
     ).apply(i, OverlayPower::new));
-    private final Optional<String> sprite;
-    private final float red;
-    private final float green;
-    private final float blue;
+    private final ResourceLocation texture;
     private final float strength;
-    private final String drawMode;
-    private final String drawPhase;
-    private final boolean visibleInThirdPerson;
+    private final ColorSettings color;
+    private final DrawMode drawMode;
+    private final DrawPhase drawPhase;
     private final boolean hideWithHud;
-    private final EntityCondition condition;
+    private final boolean visibleInThirdPerson;
 
-    public OverlayPower(BaseSettings settings, Optional<String> sprite, float red, float green, float blue, float strength, String drawMode, String drawPhase, boolean visibleInThirdPerson, boolean hideWithHud, EntityCondition condition) {
+    public OverlayPower(BaseSettings settings, ResourceLocation texture, float strength, ColorSettings color, DrawMode drawMode, DrawPhase drawPhase, boolean hideWithHud, boolean visibleInThirdPerson) {
         super(settings);
-        this.sprite = sprite;
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+        this.texture = texture;
         this.strength = strength;
+        this.color = color;
         this.drawMode = drawMode;
         this.drawPhase = drawPhase;
-        this.visibleInThirdPerson = visibleInThirdPerson;
         this.hideWithHud = hideWithHud;
-        this.condition = condition;
+        this.visibleInThirdPerson = visibleInThirdPerson;
     }
 
-    public Optional<String> getSprite() {
-        return this.sprite;
-    }
-
-    public float getRed() {
-        return this.red;
-    }
-
-    public float getGreen() {
-        return this.green;
-    }
-
-    public float getBlue() {
-        return this.blue;
+    public ResourceLocation getTexture() {
+        return this.texture;
     }
 
     public float getStrength() {
         return this.strength;
     }
 
-    public String getDrawMode() {
+    public ColorSettings getColor() {
+        return this.color;
+    }
+
+    public DrawMode getDrawMode() {
         return this.drawMode;
     }
 
-    public String getDrawPhase() {
+    public DrawPhase getDrawPhase() {
         return this.drawPhase;
+    }
+
+    public boolean shouldHideWithHud() {
+        return this.hideWithHud;
     }
 
     public boolean isVisibleInThirdPerson() {
         return this.visibleInThirdPerson;
     }
 
-    public boolean isHideWithHud() {
-        return this.hideWithHud;
-    }
-
-    public EntityCondition getCondition() {
-        return this.condition;
-    }
-
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
+    }
+
+    public enum DrawMode implements StringRepresentable {
+        NAUSEA,
+        TEXTURE;
+        public static final Codec<DrawMode> CODEC = StringRepresentable.fromValues(DrawMode::values);
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return this.name().toLowerCase(Locale.ROOT);
+        }
+    }
+
+    public enum DrawPhase implements StringRepresentable {
+        BELOW_HUD,
+        ABOVE_HUD;
+        public static final Codec<DrawPhase> CODEC = StringRepresentable.fromValues(DrawPhase::values);
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return this.name().toLowerCase(Locale.ROOT);
+        }
     }
 }

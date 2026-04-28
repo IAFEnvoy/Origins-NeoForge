@@ -1,7 +1,7 @@
 {
   "type": "origins:overlay",
   "hidden": true,
-  "sprite": "*:*",
+  "texture": "origins:textures/overlay/sprites/phantomize_overlay.png",
   "red": 0.4,
   "green": 0.2,
   "blue": 0.2,

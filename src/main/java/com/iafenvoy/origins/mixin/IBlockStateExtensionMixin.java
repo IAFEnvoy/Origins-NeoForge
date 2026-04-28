@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(IBlockStateExtension.class)
 public interface IBlockStateExtensionMixin {
     @ModifyReturnValue(method = "getFriction", at = @At("RETURN"))
-    default float apoli$modifyFriction(float original, @Local(argsOnly = true) LevelReader reader, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) @Nullable Entity entity) {
+    default float modifyFriction(float original, @Local(argsOnly = true) LevelReader reader, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) @Nullable Entity entity) {
         if (entity != null && reader instanceof Level level)
             return OriginDataHolder.get(entity).getHelper().modify(ModifySlipperinessPower.class, p -> p.getBlockCondition().test(level, pos), original);
         return original;
