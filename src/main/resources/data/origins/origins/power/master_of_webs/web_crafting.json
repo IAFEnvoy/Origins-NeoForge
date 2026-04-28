@@ -1,0 +1,18 @@
+{
+  "type": "origins:recipe",
+  "recipe": {
+    "id": "origins:master_of_webs/web_crafting",
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "minecraft:string"
+      },
+      {
+        "item": "minecraft:string"
+      }
+    ],
+    "result": {
+      "id": "minecraft:cobweb"
+    }
+  }
+}

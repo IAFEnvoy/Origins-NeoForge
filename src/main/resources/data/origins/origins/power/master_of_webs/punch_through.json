@@ -1,0 +1,11 @@
+{
+  "type": "origins:prevent_block_selection",
+  "block_condition": {
+    "type": "origins:in_tag",
+    "tag": "origins:cobwebs"
+  },
+  "condition": {
+    "type": "origins:sneaking",
+    "inverted": true
+  }
+}

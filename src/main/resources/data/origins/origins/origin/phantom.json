@@ -1,14 +1,16 @@
 {
   "powers": [
-    "origins:phantomize",
+    "origins:phantomize/toggle",
+    "origins:phantomize/overlay/green",
+    "origins:phantomize/overlay/orange",
+    "origins:phantomize/overlay/red",
+    "origins:phantomize/callback",
     "origins:translucent",
     "origins:phasing",
     "origins:invisibility",
     "origins:burn_in_daylight",
     "origins:hunger_over_time",
-    "origins:fragile",
-    "origins:phantomize_overlay",
-    "origins:phantomize_callback"
+    "origins:fragile"
   ],
   "icon": {
     "id": "minecraft:phantom_membrane"

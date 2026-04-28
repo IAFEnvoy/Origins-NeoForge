@@ -1,0 +1,32 @@
+{
+  "type": "origins:climbing",
+  "condition": {
+    "type": "origins:and",
+    "conditions": [
+      {
+        "type": "origins:in_block_anywhere",
+        "block_condition": {
+          "type": "origins:in_tag",
+          "tag": "origins:cobwebs"
+        }
+      },
+      {
+        "type": "origins:power_active",
+        "power": "origins:primary_key"
+      }
+    ]
+  },
+  "hold_condition": {
+    "type": "origins:and",
+    "conditions": [
+      {
+        "type": "origins:power_active",
+        "power": "origins:primary_key"
+      },
+      {
+        "type": "origins:sneaking",
+        "inverted": true
+      }
+    ]
+  }
+}

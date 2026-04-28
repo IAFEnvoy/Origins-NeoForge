@@ -97,7 +97,6 @@ public final class OriginDataHolder {
         this.data.getPowers().values().remove(power);
     }
 
-    //FIXME::Too many stream lol
     @NotNull
     public <T extends Power> List<T> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder, Class<T> clazz) {
         return this.getPowers(holder.getId(), clazz);
@@ -221,7 +220,7 @@ public final class OriginDataHolder {
     }
 
     public <T> Optional<T> getComponentFor(Holder<Power> power, Class<T> clazz) {
-        return Optional.ofNullable(this.data.getComponents().get(RLHelper.id(power)).get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast);
+        return Optional.ofNullable(this.data.getComponents().get(RLHelper.id(power))).map(x -> x.get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast);
     }
 
     public <H, T extends ComponentHolderProvider<H>> List<H> getComponentHolders(Class<T> clazz) {
@@ -229,7 +228,7 @@ public final class OriginDataHolder {
     }
 
     public <H, T extends ComponentHolderProvider<H>> Optional<H> getComponentHolder(ResourceLocation id, Class<T> clazz) {
-        return Optional.ofNullable(this.data.getComponents().get(id).get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast).map(x -> x.constructHolder(this));
+        return Optional.ofNullable(this.data.getComponents().get(id)).map(x -> x.get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast).map(x -> x.constructHolder(this));
     }
 
     //Utils

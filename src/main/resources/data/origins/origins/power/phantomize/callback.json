@@ -4,12 +4,12 @@
     "type": "origins:if_else",
     "condition": {
       "type": "origins:power_active",
-      "power": "origins:phantomize",
+      "power": "origins:phantomize/toggle",
       "inverted": true
     },
     "if_action": {
       "type": "origins:toggle",
-      "power": "origins:phantomize"
+      "power": "origins:phantomize/toggle"
     }
   },
   "hidden": true
