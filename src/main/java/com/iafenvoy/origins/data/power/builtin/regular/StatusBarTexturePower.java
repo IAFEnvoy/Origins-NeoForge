@@ -33,6 +33,7 @@ public class StatusBarTexturePower extends Power implements Prioritized {
         return this.textureMap;
     }
 
+    @Override
     public int getPriority() {
         return this.priority;
     }

@@ -1,6 +1,5 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.MapCodec;
@@ -10,18 +9,11 @@ import org.jetbrains.annotations.NotNull;
 @NotImplementedYet
 public class WaterBreathingPower extends Power {
     public static final MapCodec<WaterBreathingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BaseSettings.CODEC.forGetter(Power::getSettings),
-            EntityCondition.optionalCodec("condition").forGetter(WaterBreathingPower::getCondition)
+            BaseSettings.CODEC.forGetter(Power::getSettings)
     ).apply(i, WaterBreathingPower::new));
-    private final EntityCondition condition;
 
-    public WaterBreathingPower(BaseSettings settings, EntityCondition condition) {
+    public WaterBreathingPower(BaseSettings settings) {
         super(settings);
-        this.condition = condition;
-    }
-
-    public EntityCondition getCondition() {
-        return this.condition;
     }
 
     @Override

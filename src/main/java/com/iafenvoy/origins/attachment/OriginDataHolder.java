@@ -236,18 +236,13 @@ public final class OriginDataHolder {
         return new OriginDataHolder(entity, entity.getData(OriginsAttachments.ENTITY_ORIGIN));
     }
 
-    private void executeOnPowers(@Nullable Holder<Origin> origin, Consumer<Power> consumer) {
-        if (origin != null)
-            origin.value().powers().stream().map(Holder::value).filter(x -> x.isActive(this)).forEach(consumer);
-    }
-
     //Ticking
     public void sync() {
         this.entity.syncData(OriginsAttachments.ENTITY_ORIGIN);
     }
 
     public void tick() {
-        this.data.getOrigins().values().forEach(o -> this.executeOnPowers(o, p -> p.tick(this)));
+        this.data.getPowers().values().stream().map(Holder::value).forEach(p -> p.tick(this));
         this.data.getComponents().forEach((id, map) -> map.values().forEach(c -> c.tick(this, id)));
         //Check components and update
         if (this.data.getComponents().values().stream().flatMap(x -> x.values().stream()).map(PowerComponent::isDirty).reduce(false, (p, c) -> p | c))

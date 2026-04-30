@@ -5,7 +5,6 @@ import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;

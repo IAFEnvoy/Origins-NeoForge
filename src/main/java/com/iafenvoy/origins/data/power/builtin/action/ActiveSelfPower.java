@@ -1,9 +1,12 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
+import com.google.common.collect.ImmutableSet;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data._common.CooldownSettings;
 import com.iafenvoy.origins.data._common.KeySettings;
 import com.iafenvoy.origins.data.action.EntityAction;
+import com.iafenvoy.origins.data.badge.Badge;
+import com.iafenvoy.origins.data.badge.PresetBadges;
 import com.iafenvoy.origins.data.power.HasCooldownPower;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
@@ -27,6 +30,7 @@ public class ActiveSelfPower extends HasCooldownPower implements Toggleable {
         this.entityAction = entityAction;
     }
 
+    @Override
     public KeySettings getKey() {
         return this.key;
     }
@@ -38,6 +42,12 @@ public class ActiveSelfPower extends HasCooldownPower implements Toggleable {
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
+    }
+
+    @Override
+    public void collectBadges(ImmutableSet.Builder<Badge> builder) {
+        super.collectBadges(builder);
+        builder.add(PresetBadges.ACTIVE);
     }
 
     @Override

@@ -28,6 +28,6 @@ public final class BadgeRegistries {
 
     @SubscribeEvent
     public static void newDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(BADGE_KEY, Badge.CODEC, Badge.CODEC);
+        event.dataPackRegistry(BADGE_KEY, Badge.DIRECT_CODEC, Badge.DIRECT_CODEC);
     }
 }

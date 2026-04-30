@@ -29,6 +29,8 @@ public abstract class IntervalPower extends Power {
 
     @Override
     public void tick(@NotNull OriginDataHolder holder) {
+        super.tick(holder);
+        if (!this.isActive(holder)) return;
         Entity entity = holder.getEntity();
         this.remainTicks.putIfAbsent(entity.getUUID(), this.delay);
         this.remainTicks.computeInt(entity.getUUID(), (uuid, tick) -> {

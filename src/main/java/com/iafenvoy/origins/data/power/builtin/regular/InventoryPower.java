@@ -1,17 +1,20 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.google.common.collect.ImmutableSet;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data._common.KeySettings;
+import com.iafenvoy.origins.data.badge.Badge;
+import com.iafenvoy.origins.data.badge.PresetBadges;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
+import com.iafenvoy.origins.util.codec.ComponentCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
@@ -37,7 +40,7 @@ import java.util.Optional;
 public class InventoryPower extends Power implements Toggleable, MenuProvider {
     public static final MapCodec<InventoryPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            ComponentSerialization.CODEC.optionalFieldOf("title", Component.translatable("container.inventory")).forGetter(InventoryPower::getTitle),
+            ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("title", Component.translatable("container.inventory")).forGetter(InventoryPower::getTitle),
             ContainerType.CODEC.optionalFieldOf("container_type", ContainerType.DISPENSER).forGetter(InventoryPower::getContainerType),
             Codec.BOOL.optionalFieldOf("drop_on_death", false).forGetter(InventoryPower::shouldDropOnDeath),
             ItemCondition.optionalCodec("drop_on_death_filter").forGetter(InventoryPower::getDropOnDeathFilter),
@@ -81,6 +84,7 @@ public class InventoryPower extends Power implements Toggleable, MenuProvider {
         return this.recoverable;
     }
 
+    @Override
     public KeySettings getKey() {
         return this.key;
     }
@@ -94,6 +98,12 @@ public class InventoryPower extends Power implements Toggleable, MenuProvider {
     public void createComponents(ComponentCollector collector) {
         super.createComponents(collector);
         collector.add(new InventoryComponent(this.containerType.getSize()));
+    }
+
+    @Override
+    public void collectBadges(ImmutableSet.Builder<Badge> builder) {
+        super.collectBadges(builder);
+        builder.add(PresetBadges.ACTIVE);
     }
 
     @Override

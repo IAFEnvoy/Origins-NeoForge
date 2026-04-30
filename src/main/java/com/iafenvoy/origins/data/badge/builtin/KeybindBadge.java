@@ -1,14 +1,18 @@
 package com.iafenvoy.origins.data.badge.builtin;
 
 import com.iafenvoy.origins.data.badge.Badge;
+import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.Toggleable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public record KeybindBadge(ResourceLocation sprite, String text) implements Badge {
     public static final MapCodec<KeybindBadge> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -22,11 +26,14 @@ public record KeybindBadge(ResourceLocation sprite, String text) implements Badg
     }
 
     @Override
-    public void execute(@NotNull LivingEntity living, @NotNull Level level, @NotNull RegistryAccess access) {
+    public ResourceLocation spriteId() {
+        return this.sprite;
     }
 
     @Override
-    public ResourceLocation spriteId() {
-        return this.sprite;
+    public List<ClientTooltipComponent> getTooltipComponents(Power power, Font textRenderer, int widthLimit, float delta) {
+        if (power instanceof Toggleable toggleable)
+            return List.of(ClientTooltipComponent.create(Component.translatable(this.text, Component.translatable(toggleable.getKey().key())).getVisualOrderText()));
+        return Badge.super.getTooltipComponents(power, textRenderer, widthLimit, delta);
     }
 }

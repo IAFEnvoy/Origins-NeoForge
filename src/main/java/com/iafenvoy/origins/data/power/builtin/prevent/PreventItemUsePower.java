@@ -2,7 +2,6 @@ package com.iafenvoy.origins.data.power.builtin.prevent;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.config.OriginsConfig;
-import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.MapCodec;
@@ -32,24 +31,17 @@ import java.util.stream.Collectors;
 public class PreventItemUsePower extends Power {
     public static final MapCodec<PreventItemUsePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            ItemCondition.optionalCodec("item_condition").forGetter(PreventItemUsePower::getItemCondition),
-            EntityCondition.optionalCodec("condition").forGetter(PreventItemUsePower::getCondition)
+            ItemCondition.optionalCodec("item_condition").forGetter(PreventItemUsePower::getItemCondition)
     ).apply(i, PreventItemUsePower::new));
     private final ItemCondition itemCondition;
-    private final EntityCondition condition;
 
-    public PreventItemUsePower(BaseSettings settings, ItemCondition itemCondition, EntityCondition condition) {
+    public PreventItemUsePower(BaseSettings settings, ItemCondition itemCondition) {
         super(settings);
         this.itemCondition = itemCondition;
-        this.condition = condition;
     }
 
     public ItemCondition getItemCondition() {
         return this.itemCondition;
-    }
-
-    public EntityCondition getCondition() {
-        return this.condition;
     }
 
     @Override

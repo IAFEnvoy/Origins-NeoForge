@@ -70,7 +70,7 @@ public class StartingEquipmentPower extends Power {
                 if (slot >= 0 && slot <= inventory.getContainerSize() && inventory.getItem(slot).isEmpty())
                     player.getInventory().setItem(slot, x.stack().copy());
                 else
-                    Origins.LOGGER.warn("Couldn't give player {} stack {} in slot {}, slot is not empty or invalid!", player.getName().getString(), x.stack().toString(), slot);
+                    Origins.LOGGER.warn("Couldn't give player {} stack {} in slot {}, slot is not empty or invalid!", player.getName().getString(), x.stack(), slot);
             } else player.addItem(x.stack().copy());
         });
     }

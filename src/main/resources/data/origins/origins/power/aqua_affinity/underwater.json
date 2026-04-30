@@ -18,5 +18,7 @@
         "compare_to": 0
       }
     ]
-  }
+  },
+  "name": "power.origins.aqua_affinity.name",
+  "description": "power.origins.aqua_affinity.description"
 }

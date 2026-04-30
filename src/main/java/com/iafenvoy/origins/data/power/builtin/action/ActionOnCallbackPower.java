@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.Codec;
@@ -19,8 +18,7 @@ public class ActionOnCallbackPower extends Power {
             EntityAction.optionalCodec("entity_action_removed").forGetter(ActionOnCallbackPower::getEntityActionRemoved),
             EntityAction.optionalCodec("entity_action_gained").forGetter(ActionOnCallbackPower::getEntityActionGained),
             EntityAction.optionalCodec("entity_action_lost").forGetter(ActionOnCallbackPower::getEntityActionLost),
-            EntityAction.optionalCodec("entity_action_added").forGetter(ActionOnCallbackPower::getEntityActionAdded),
-            EntityCondition.optionalCodec("condition").forGetter(ActionOnCallbackPower::getCondition)
+            EntityAction.optionalCodec("entity_action_added").forGetter(ActionOnCallbackPower::getEntityActionAdded)
     ).apply(i, ActionOnCallbackPower::new));
     private final EntityAction entityActionChosen;
     private final boolean executeChosenWhenOrb;
@@ -29,9 +27,8 @@ public class ActionOnCallbackPower extends Power {
     private final EntityAction entityActionGained;
     private final EntityAction entityActionLost;
     private final EntityAction entityActionAdded;
-    private final EntityCondition condition;
 
-    public ActionOnCallbackPower(BaseSettings settings, EntityAction entityActionChosen, boolean executeChosenWhenOrb, EntityAction entityActionRespawned, EntityAction entityActionRemoved, EntityAction entityActionGained, EntityAction entityActionLost, EntityAction entityActionAdded, EntityCondition condition) {
+    public ActionOnCallbackPower(BaseSettings settings, EntityAction entityActionChosen, boolean executeChosenWhenOrb, EntityAction entityActionRespawned, EntityAction entityActionRemoved, EntityAction entityActionGained, EntityAction entityActionLost, EntityAction entityActionAdded) {
         super(settings);
         this.entityActionChosen = entityActionChosen;
         this.executeChosenWhenOrb = executeChosenWhenOrb;
@@ -40,7 +37,6 @@ public class ActionOnCallbackPower extends Power {
         this.entityActionGained = entityActionGained;
         this.entityActionLost = entityActionLost;
         this.entityActionAdded = entityActionAdded;
-        this.condition = condition;
     }
 
     public EntityAction getEntityActionChosen() {
@@ -69,10 +65,6 @@ public class ActionOnCallbackPower extends Power {
 
     public EntityAction getEntityActionAdded() {
         return this.entityActionAdded;
-    }
-
-    public EntityCondition getCondition() {
-        return this.condition;
     }
 
     @Override

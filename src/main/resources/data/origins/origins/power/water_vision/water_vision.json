@@ -3,5 +3,6 @@
   "condition": {
     "type": "origins:power_active",
     "power": "origins:primary_key"
-  }
+  },
+  "hidden": true
 }

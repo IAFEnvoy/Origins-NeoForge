@@ -1,8 +1,11 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.google.common.collect.ImmutableSet;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data._common.CooldownSettings;
 import com.iafenvoy.origins.data._common.KeySettings;
+import com.iafenvoy.origins.data.badge.Badge;
+import com.iafenvoy.origins.data.badge.PresetBadges;
 import com.iafenvoy.origins.data.power.HasCooldownPower;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
@@ -25,13 +28,13 @@ public class LaunchPower extends HasCooldownPower implements Toggleable {
             CooldownSettings.CODEC.forGetter(LaunchPower::getCooldown),
             Codec.FLOAT.fieldOf("speed").forGetter(LaunchPower::getSpeed),
             BuiltInRegistries.SOUND_EVENT.byNameCodec().optionalFieldOf("sound").forGetter(LaunchPower::getSound),
-            KeySettings.OPTIONAL_CODEC.forGetter(LaunchPower::getKey)
+            KeySettings.CODEC.forGetter(LaunchPower::getKey)
     ).apply(i, LaunchPower::new));
     private final float speed;
     private final Optional<SoundEvent> sound;
-    private final Optional<KeySettings> key;
+    private final KeySettings key;
 
-    public LaunchPower(BaseSettings settings, CooldownSettings cooldown, float speed, Optional<SoundEvent> sound, Optional<KeySettings> key) {
+    public LaunchPower(BaseSettings settings, CooldownSettings cooldown, float speed, Optional<SoundEvent> sound, KeySettings key) {
         super(settings, cooldown);
         this.speed = speed;
         this.sound = sound;
@@ -46,7 +49,8 @@ public class LaunchPower extends HasCooldownPower implements Toggleable {
         return this.sound;
     }
 
-    public Optional<KeySettings> getKey() {
+    @Override
+    public KeySettings getKey() {
         return this.key;
     }
 
@@ -56,9 +60,15 @@ public class LaunchPower extends HasCooldownPower implements Toggleable {
     }
 
     @Override
+    public void collectBadges(ImmutableSet.Builder<Badge> builder) {
+        super.collectBadges(builder);
+        builder.add(PresetBadges.ACTIVE);
+    }
+
+    @Override
     public void toggle(@NotNull OriginDataHolder holder, String key) {
         this.getCooldownComponent(holder).useIfReady(() -> {
-            if (this.key.isPresent() && this.key.get().match(key)) {
+            if (this.key.match(key)) {
                 Entity entity = holder.getEntity();
                 if (entity.level() instanceof ServerLevel serverLevel) {
                     entity.push(0, this.speed, 0);

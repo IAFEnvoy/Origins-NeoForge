@@ -7,30 +7,24 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Function;
 
 public interface Badge {
-    Codec<Badge> CODEC = DefaultedCodec.registryDispatch(BadgeRegistries.BADGE_TYPE, Badge::codec, Function.identity(), EmptyBadge::new);
+    Codec<Badge> DIRECT_CODEC = DefaultedCodec.registryDispatch(BadgeRegistries.BADGE_TYPE, Badge::codec, Function.identity(), () -> EmptyBadge.INSTANCE);
+    Codec<Holder<Badge>> CODEC = RegistryFixedCodec.create(BadgeRegistries.BADGE_KEY);
 
     @NotNull
     MapCodec<? extends Badge> codec();
-
-    void execute(@NotNull LivingEntity living, @NotNull Level level, @NotNull RegistryAccess access);
 
     ResourceLocation spriteId();
 
     default List<ClientTooltipComponent> getTooltipComponents(Power power, Font textRenderer, int widthLimit, float delta) {
         return List.of();
-    }
-
-    default boolean hasTooltip() {
-        return false;
     }
 }

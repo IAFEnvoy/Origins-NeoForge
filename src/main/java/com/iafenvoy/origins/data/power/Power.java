@@ -1,11 +1,13 @@
 package com.iafenvoy.origins.data.power;
 
+import com.google.common.collect.ImmutableSet;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.badge.Badge;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.ActiveComponent;
 import com.iafenvoy.origins.util.annotation.Comment;
+import com.iafenvoy.origins.util.codec.ComponentCodec;
 import com.iafenvoy.origins.util.codec.DefaultedCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -14,7 +16,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -52,6 +53,10 @@ public abstract class Power {
         collector.add(new ActiveComponent(false));
     }
 
+    public void collectBadges(ImmutableSet.Builder<Badge> builder) {
+        this.settings.badges().stream().map(Holder::value).forEach(builder::add);
+    }
+
     public boolean isActive(OriginDataHolder holder) {
         return this.settings.condition().test(holder.getEntity());
     }
@@ -86,10 +91,10 @@ public abstract class Power {
     }
 
     public record BaseSettings(Optional<Component> name, Optional<Component> description, boolean hidden,
-                               EntityCondition condition, int loadingPriority, List<Badge> badges) {
+                               EntityCondition condition, int loadingPriority, List<Holder<Badge>> badges) {
         public static final MapCodec<BaseSettings> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-                ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(BaseSettings::name),
-                ComponentSerialization.CODEC.optionalFieldOf("description").forGetter(BaseSettings::description),
+                ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("name").forGetter(BaseSettings::name),
+                ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("description").forGetter(BaseSettings::description),
                 Codec.BOOL.optionalFieldOf("hidden", false).forGetter(BaseSettings::hidden),
                 EntityCondition.optionalCodec("condition").forGetter(BaseSettings::condition),
                 Codec.INT.optionalFieldOf("loading_priority", 0).forGetter(BaseSettings::loadingPriority),

@@ -3,9 +3,6 @@ package com.iafenvoy.origins.util.codec;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.serialization.Codec;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntImmutableList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 

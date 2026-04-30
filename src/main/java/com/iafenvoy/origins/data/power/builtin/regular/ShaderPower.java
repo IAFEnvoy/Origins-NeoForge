@@ -3,7 +3,6 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.network.payload.ReapplyShadersS2CPayload;
-import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,7 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-@NotImplementedYet
 public class ShaderPower extends Power {
     public static final MapCodec<ShaderPower> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),

@@ -7,5 +7,6 @@
   "condition": {
     "type": "origins:sneaking",
     "inverted": true
-  }
+  },
+  "hidden": true
 }

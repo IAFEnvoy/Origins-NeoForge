@@ -59,6 +59,7 @@ public class PreventItemPickupPower extends Power implements Prioritized {
         return this.itemCondition;
     }
 
+    @Override
     public int getPriority() {
         return this.priority;
     }

@@ -1,9 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.event.common.EntityFireImmuneEvent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,18 +13,11 @@ import org.jetbrains.annotations.NotNull;
 @EventBusSubscriber
 public class FireImmunityPower extends Power {
     public static final MapCodec<FireImmunityPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BaseSettings.CODEC.forGetter(Power::getSettings),
-            EntityCondition.optionalCodec("condition").forGetter(FireImmunityPower::getCondition)
+            BaseSettings.CODEC.forGetter(Power::getSettings)
     ).apply(i, FireImmunityPower::new));
-    private final EntityCondition condition;
 
-    public FireImmunityPower(BaseSettings settings, EntityCondition condition) {
+    public FireImmunityPower(BaseSettings settings) {
         super(settings);
-        this.condition = condition;
-    }
-
-    public EntityCondition getCondition() {
-        return this.condition;
     }
 
     @Override
@@ -37,8 +28,7 @@ public class FireImmunityPower extends Power {
     @SubscribeEvent
     public static void enableFireImmune(EntityFireImmuneEvent event) {
         Entity entity = event.getEntity();
-        for (FireImmunityPower power : OriginDataHolder.get(entity).getPowers(RegularPowers.FIRE_IMMUNITY, FireImmunityPower.class))
-            if (power.condition.test(entity))
-                event.allow();
+        if (OriginDataHolder.get(entity).streamActivePowers(FireImmunityPower.class).findAny().isPresent())
+            event.allow();
     }
 }

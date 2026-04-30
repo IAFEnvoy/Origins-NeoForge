@@ -35,7 +35,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
@@ -130,7 +133,9 @@ public abstract class GameRendererMixin {
 
     @Inject(method = "checkEntityPostEffect", at = @At("TAIL"))
     private void loadShaderFromPowerOnCameraEntity(Entity entity, CallbackInfo ci) {
-        OriginDataHolder.get(this.minecraft.getCameraEntity()).streamActivePowers(ShaderPower.class).forEach(x -> {
+        Entity cameraEntity = this.minecraft.getCameraEntity();
+        if (cameraEntity == null) return;
+        OriginDataHolder.get(cameraEntity).streamActivePowers(ShaderPower.class).forEach(x -> {
             ResourceLocation shaderLoc = x.getShader();
             if (this.resourceManager.getResource(shaderLoc).isPresent()) {
                 this.loadEffect(shaderLoc);
@@ -141,7 +146,9 @@ public abstract class GameRendererMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
     private void loadShaderFromPower(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
-        List<ShaderPower> shaderPowers = OriginDataHolder.get(this.minecraft.getCameraEntity()).streamActivePowers(ShaderPower.class).toList();
+        Entity cameraEntity = this.minecraft.getCameraEntity();
+        if (cameraEntity == null) return;
+        List<ShaderPower> shaderPowers = OriginDataHolder.get(cameraEntity).streamActivePowers(ShaderPower.class).toList();
         shaderPowers.forEach(x -> {
             ResourceLocation shader = x.getShader();
             if (this.currentlyLoadedShader != shader) {

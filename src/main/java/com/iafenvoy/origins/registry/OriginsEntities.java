@@ -12,7 +12,7 @@ public final class OriginsEntities {
     public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(Registries.ENTITY_TYPE, Origins.MOD_ID);
 
     public static final DeferredHolder<EntityType<?>, EntityType<EnderianPearlEntity>> ENDERIAN_PEARL = REGISTRY.register("enderian_pearl",
-            () -> EntityType.Builder.<EnderianPearlEntity>of(EnderianPearlEntity::new, MobCategory.MISC)
+            () -> EntityType.Builder.of(EnderianPearlEntity::new, MobCategory.MISC)
                     .sized(0.25F, 0.25F)
                     .clientTrackingRange(64)
                     .updateInterval(10)

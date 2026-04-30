@@ -1,19 +1,22 @@
 package com.iafenvoy.origins.data.badge.builtin;
 
 import com.iafenvoy.origins.data.badge.Badge;
-import com.mojang.serialization.Codec;
+import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.codec.ComponentCodec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public record TooltipBadge(ResourceLocation sprite, String text) implements Badge {
+import java.util.List;
+
+public record TooltipBadge(ResourceLocation sprite, Component text) implements Badge {
     public static final MapCodec<TooltipBadge> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             ResourceLocation.CODEC.fieldOf("sprite").forGetter(TooltipBadge::sprite),
-            Codec.STRING.optionalFieldOf("text", "").forGetter(TooltipBadge::text)
+            ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("text", Component.empty()).forGetter(TooltipBadge::text)
     ).apply(i, TooltipBadge::new));
 
     @Override
@@ -22,11 +25,12 @@ public record TooltipBadge(ResourceLocation sprite, String text) implements Badg
     }
 
     @Override
-    public void execute(@NotNull LivingEntity living, @NotNull Level level, @NotNull RegistryAccess access) {
+    public ResourceLocation spriteId() {
+        return this.sprite;
     }
 
     @Override
-    public ResourceLocation spriteId() {
-        return this.sprite;
+    public List<ClientTooltipComponent> getTooltipComponents(Power power, Font textRenderer, int widthLimit, float delta) {
+        return List.of(ClientTooltipComponent.create(this.text.getVisualOrderText()));
     }
 }

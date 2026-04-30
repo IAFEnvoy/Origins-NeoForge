@@ -3,13 +3,13 @@ package com.iafenvoy.origins.data.layer;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
 import com.iafenvoy.origins.util.RLHelper;
+import com.iafenvoy.origins.util.codec.ComponentCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -84,8 +84,8 @@ public record Layer(int order, TagKey<Origin> origins, boolean enabled, Optional
 
     public record GuiTitle(Optional<Component> chooseOrigin, Optional<Component> viewOrigin) {
         public static final Codec<GuiTitle> CODEC = RecordCodecBuilder.create(i -> i.group(
-                ComponentSerialization.CODEC.optionalFieldOf("choose_origin").forGetter(GuiTitle::chooseOrigin),
-                ComponentSerialization.CODEC.optionalFieldOf("view_origin").forGetter(GuiTitle::viewOrigin)
+                ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("choose_origin").forGetter(GuiTitle::chooseOrigin),
+                ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("view_origin").forGetter(GuiTitle::viewOrigin)
         ).apply(i, GuiTitle::new));
     }
 }

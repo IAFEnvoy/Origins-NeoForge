@@ -109,15 +109,12 @@ public class ReplaceLootTablePowerTypeMixin {
 
         @Inject(method = "getRandomItemsRaw(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V", at = @At("HEAD"), cancellable = true)
         private void replaceTable(LootContext context, Consumer<ItemStack> lootConsumer, CallbackInfo ci) {
-
-            if (!(context instanceof ReplacingLootContext replacingContext)) {
-                return;
-            }
+            if (!(context instanceof ReplacingLootContext replacingContext)) return;
 
             LootContextParamSet contextType = replacingContext.apoli$getType();
             ResourceKey<LootTable> key = this.apoli$key;
 
-            if (key == null || replacingContext.apoli$isReplaced(key)) {
+            if (key == null || replacingContext.apoli$isReplaced(key) || !context.hasParam(LootContextParams.THIS_ENTITY)) {
                 return;
             }
 

@@ -14,5 +14,6 @@
     "result": {
       "id": "minecraft:cobweb"
     }
-  }
+  },
+  "hidden": true
 }

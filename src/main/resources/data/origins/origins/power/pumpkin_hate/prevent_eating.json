@@ -14,5 +14,6 @@
       }
     ]
   },
-  "name": "power.origins.pumpkin_hate.name"
+  "name": "power.origins.pumpkin_hate.name",
+  "description": "power.origins.pumpkin_hate.description"
 }

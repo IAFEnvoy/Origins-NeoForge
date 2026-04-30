@@ -8,8 +8,6 @@ import it.unimi.dsi.fastutil.ints.IntImmutableList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -26,7 +24,7 @@ public final class CombinedCodecs {
     public static final Codec<List<Holder<MobEffect>>> MOB_EFFECT = combineCodec(MobEffect.CODEC);
     public static final Codec<List<MobEffectInstance>> MOB_EFFECT_INSTANCE = combineCodec(MobEffectInstance.CODEC);
     public static final Codec<List<Holder<Enchantment>>> ENCHANTMENT = combineCodec(Enchantment.CODEC);
-    public static final Codec<List<Component>> TEXT = combineCodec(ComponentSerialization.CODEC);
+    public static final Codec<List<Component>> TEXT = combineCodec(ComponentCodec.TRANSLATE_FIRST);
     public static final Codec<List<Holder<Biome>>> BIOME = combineCodec(Biome.CODEC);
     public static final Codec<List<Holder<GameEvent>>> GAME_EVENT = combineCodec(GameEvent.CODEC);
     public static final Codec<List<Modifier>> MODIFIER = combineCodec(Modifier.CODEC);

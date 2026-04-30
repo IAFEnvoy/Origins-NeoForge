@@ -2,7 +2,6 @@ package com.iafenvoy.origins.data.power.builtin.prevent;
 
 import com.iafenvoy.origins.data._common.BlockPlaceSettings;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.builtin.action.ActionOnBlockPlacePower;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

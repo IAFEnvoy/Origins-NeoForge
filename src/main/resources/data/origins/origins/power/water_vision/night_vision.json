@@ -13,5 +13,10 @@
         "fluid": "minecraft:water"
       }
     ]
-  }
+  },
+  "name": "power.origins.water_vision.name",
+  "description": "power.origins.water_vision.description",
+  "badges": [
+    "origins:toggle"
+  ]
 }

@@ -1,8 +1,8 @@
 package com.iafenvoy.origins.screen;
 
+import com.google.common.collect.ImmutableSet;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.badge.Badge;
-import com.iafenvoy.origins.data.badge.BadgeManager;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Impact;
 import com.iafenvoy.origins.data.origin.Origin;
@@ -156,7 +156,7 @@ public class OriginDisplayScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double x, double y, double horizontal, double vertical) {
-        int newScrollPos = this.scrollPos - (int) vertical * 4;
+        int newScrollPos = this.scrollPos - (int) vertical * 10;
         this.scrollPos = Mth.clamp(newScrollPos, 0, this.currentMaxScroll);
 
         return super.mouseScrolled(x, y, horizontal, vertical);
@@ -201,15 +201,15 @@ public class OriginDisplayScreen extends Screen {
     protected void renderBadgeTooltips(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         int widthLimit = this.width - mouseX - 24;
         if (this.isWithinWindowBoundaries(mouseX, mouseY))
-            this.renderedBadges.stream().filter(RenderedBadge::hasTooltip).filter(renderedBadge -> this.isWithinBadgeBoundaries(renderedBadge, mouseX, mouseY)).map(renderedBadge -> renderedBadge.getTooltipComponents(this.font, widthLimit, delta)).forEach(tooltipComponents -> graphics.renderTooltipInternal(this.font, tooltipComponents, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE));
+            this.renderedBadges.stream()
+                    .filter(b -> b.isWithinBadgeBoundaries(mouseX, mouseY))
+                    .map(b -> b.getTooltipComponents(this.font, widthLimit, delta))
+                    .filter(x -> !x.isEmpty())
+                    .forEach(t -> graphics.renderTooltipInternal(this.font, t, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE));
     }
 
     protected boolean isWithinWindowBoundaries(int mouseX, int mouseY) {
         return (mouseX >= this.guiLeft && mouseX < this.guiLeft + WINDOW_WIDTH) && (mouseY >= this.guiTop && mouseY < this.guiTop + WINDOW_HEIGHT);
-    }
-
-    protected boolean isWithinBadgeBoundaries(RenderedBadge renderedBadge, int mouseX, int mouseY) {
-        return (mouseX >= renderedBadge.x && mouseX < renderedBadge.x + 9) && (mouseY >= renderedBadge.y && mouseY < renderedBadge.y + 9);
     }
 
     protected void renderOriginWindow(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
@@ -236,9 +236,7 @@ public class OriginDisplayScreen extends Screen {
 
             this.renderScrollbar(graphics, mouseX, mouseY);
             this.renderBadgeTooltips(graphics, mouseX, mouseY, delta);
-
         }
-
     }
 
     protected void renderOriginImpact(GuiGraphics graphics, int mouseX, int mouseY) {
@@ -316,7 +314,9 @@ public class OriginDisplayScreen extends Screen {
 
                 int badgeOffsetX = 0, badgeOffsetY = 0;
 
-                for (Badge badge : BadgeManager.get(power.getId(access))) {
+                ImmutableSet.Builder<Badge> badgeBuilder = ImmutableSet.builder();
+                power.collectBadges(badgeBuilder);
+                for (Badge badge : badgeBuilder.build()) {
                     int badgeX = badgeStartX + 10 * badgeOffsetX;
                     int badgeY = (y - 1) + 10 * badgeOffsetY;
 
@@ -331,7 +331,7 @@ public class OriginDisplayScreen extends Screen {
                     RenderedBadge renderedBadge = new RenderedBadge(power, badge, badgeX, badgeY);
                     this.renderedBadges.add(renderedBadge);
 
-                    graphics.blitSprite(badge.spriteId(), renderedBadge.x, renderedBadge.y, -2, 0, 0, 9, 9, 9, 9);
+                    graphics.blit(badge.spriteId(), renderedBadge.x, renderedBadge.y, 0, 0, 9, 9, 9, 9);
                     badgeOffsetX++;
                 }
 
@@ -355,8 +355,8 @@ public class OriginDisplayScreen extends Screen {
             return this.badge.getTooltipComponents(this.power, textRenderer, widthLimit, delta);
         }
 
-        public boolean hasTooltip() {
-            return this.badge.hasTooltip();
+        protected boolean isWithinBadgeBoundaries(int mouseX, int mouseY) {
+            return (mouseX >= this.x && mouseX < this.x + 9) && (mouseY >= this.y && mouseY < this.y + 9);
         }
     }
 }

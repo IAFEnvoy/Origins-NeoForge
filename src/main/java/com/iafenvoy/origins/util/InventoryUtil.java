@@ -1,6 +1,5 @@
 package com.iafenvoy.origins.util;
 
-import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
@@ -11,9 +10,7 @@ import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.commands.arguments.SlotArgument;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Container;
@@ -25,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.SlotRange;
 import net.minecraft.world.inventory.SlotRanges;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -79,7 +75,7 @@ public class InventoryUtil {
         return matches;
     }
 
-    public static void modifyInventory(IntList slotArgumentTypes, EntityAction entityAction, ItemCondition itemCondition, ItemAction itemAction, Entity entity, Optional<ResourceLocation> powerId, Function<ItemStack, Integer> processor, int limit) {
+    public static void modifyInventory(IntList slotArgumentTypes, EntityAction entityAction, ItemCondition itemCondition, ItemAction itemAction, Entity entity, Optional<Holder<Power>> powerId, Function<ItemStack, Integer> processor, int limit) {
         if (limit <= 0) {
             limit = Integer.MAX_VALUE;
         }
@@ -117,7 +113,7 @@ public class InventoryUtil {
                 }
             }
         } else {
-            Optional<InventoryComponent> optional = OriginDataHolder.get(entity).getComponent(powerId.get(), InventoryComponent.class);
+            Optional<InventoryComponent> optional = OriginDataHolder.get(entity).getComponentFor(powerId.get(), InventoryComponent.class);
             if (optional.isEmpty()) return;
             InventoryComponent component = optional.get();
             Container container = component.getContainer();
@@ -144,7 +140,7 @@ public class InventoryUtil {
                                         EntityAction entityAction,
                                         ItemCondition itemCondition,
                                         ItemAction itemAction,
-                                        Entity entity, Optional<ResourceLocation> powerId,
+                                        Entity entity, Optional<Holder<Power>> powerId,
                                         boolean mergeComponent) {
 
         Set<Integer> slots = getSlots(slotArgumentTypes);
@@ -166,7 +162,7 @@ public class InventoryUtil {
                 }
             }
         } else {
-            Optional<InventoryComponent> optional = OriginDataHolder.get(entity).getComponent(powerId.get(), InventoryComponent.class);
+            Optional<InventoryComponent> optional = OriginDataHolder.get(entity).getComponentFor(powerId.get(), InventoryComponent.class);
             if (optional.isEmpty()) return;
             InventoryComponent component = optional.get();
             Container container = component.getContainer();
@@ -188,7 +184,7 @@ public class InventoryUtil {
 
     }
 
-    public static void dropInventory(IntList slotArgumentTypes, EntityAction entityAction, ItemCondition itemCondition, ItemAction itemAction, boolean throwRandomly, boolean retainOwnership, Entity entity, Optional<ResourceLocation> powerId, int amount) {
+    public static void dropInventory(IntList slotArgumentTypes, EntityAction entityAction, ItemCondition itemCondition, ItemAction itemAction, boolean throwRandomly, boolean retainOwnership, Entity entity, Optional<Holder<Power>> powerId, int amount) {
 
         Set<Integer> slots = getSlots(slotArgumentTypes);
         deduplicateSlots(entity, slots);
@@ -215,7 +211,7 @@ public class InventoryUtil {
                 }
             }
         } else {
-            Optional<InventoryComponent> optional = OriginDataHolder.get(entity).getComponent(powerId.get(), InventoryComponent.class);
+            Optional<InventoryComponent> optional = OriginDataHolder.get(entity).getComponentFor(powerId.get(), InventoryComponent.class);
             if (optional.isEmpty()) return;
             InventoryComponent component = optional.get();
             Container container = component.getContainer();
@@ -365,7 +361,7 @@ public class InventoryUtil {
         }
 
         @Override
-        public String getSerializedName() {
+        public @NotNull String getSerializedName() {
             return this.name().toLowerCase(Locale.ROOT);
         }
     }
