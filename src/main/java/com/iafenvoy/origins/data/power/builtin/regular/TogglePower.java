@@ -50,6 +50,7 @@ public class TogglePower extends Power implements Toggleable {
 
     @Override
     public void createComponents(ComponentCollector collector) {
+        super.createComponents(collector);
         collector.add(new ToggleComponent(this.activeByDefault));
     }
 

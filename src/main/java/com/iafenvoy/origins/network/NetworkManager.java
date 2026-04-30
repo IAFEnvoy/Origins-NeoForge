@@ -16,6 +16,7 @@ public final class NetworkManager {
                 .playToClient(ConfirmOriginS2CPayload.TYPE, ConfirmOriginS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onOriginConfirm))
                 .playToClient(OpenChooseOriginScreenS2CPayload.TYPE, OpenChooseOriginScreenS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::openOriginScreen))
                 .playToServer(PowerToggleC2SPayload.TYPE, PowerToggleC2SPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ServerNetworkHandler::onPowerToggle))
+                .playToClient(ReapplyShadersS2CPayload.TYPE, ReapplyShadersS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onReapplyShaders))
                 .playToClient(ReloadLevelRendererS2CPayload.TYPE, ReloadLevelRendererS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onReloadLevelRenderer));
     }
 }

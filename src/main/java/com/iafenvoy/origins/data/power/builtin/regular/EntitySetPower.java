@@ -38,6 +38,7 @@ public class EntitySetPower extends Power {
 
     @Override
     public void createComponents(ComponentCollector collector) {
+        super.createComponents(collector);
         collector.add(new EntitySetComponent());
     }
 }

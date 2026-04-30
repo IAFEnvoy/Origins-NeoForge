@@ -22,6 +22,7 @@ public abstract class HasCooldownPower extends Power implements HudRenderable {
 
     @Override
     public void createComponents(ComponentCollector collector) {
+        super.createComponents(collector);
         collector.add(new CooldownComponent(this.cooldown.cooldown()));
     }
 

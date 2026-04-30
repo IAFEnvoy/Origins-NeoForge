@@ -5,6 +5,7 @@ import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
+import com.iafenvoy.origins.network.payload.ReapplyShadersS2CPayload;
 import com.iafenvoy.origins.network.payload.ReloadLevelRendererS2CPayload;
 import com.iafenvoy.origins.render.LevelRenderHelper;
 import com.iafenvoy.origins.screen.ChooseOriginScreen;
@@ -32,14 +33,23 @@ public final class ClientNetworkHandler {
         ClientCall.openOriginScreen(layers, packet.showBackground());
     }
 
+    public static void onReapplyShaders(ReapplyShadersS2CPayload payload, IPayloadContext context) {
+        ClientCall.onReapplyShaders();
+    }
+
     public static void onReloadLevelRenderer(ReloadLevelRendererS2CPayload payload, IPayloadContext context) {
         LevelRenderHelper.reload();
     }
 
-    //If I don't call in a single class server will crash
+    //FIXME::If I don't call in a single class server will crash
     private static final class ClientCall {
         public static void openOriginScreen(List<Holder<Layer>> layers, boolean showBackground) {
             Minecraft.getInstance().setScreen(new ChooseOriginScreen(layers, 0, showBackground));
+        }
+
+        public static void onReapplyShaders() {
+            Minecraft minecraft = Minecraft.getInstance();
+            minecraft.gameRenderer.checkEntityPostEffect(minecraft.options.getCameraType().isFirstPerson() ? minecraft.getCameraEntity() : null);
         }
     }
 }

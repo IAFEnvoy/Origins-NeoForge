@@ -1,9 +1,9 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
+import com.iafenvoy.origins.data._common.RaycastSettings;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.data._common.RaycastSettings;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.util.CommandHelper;
 import com.mojang.serialization.Codec;

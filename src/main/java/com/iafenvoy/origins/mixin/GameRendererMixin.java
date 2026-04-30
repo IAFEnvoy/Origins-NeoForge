@@ -1,13 +1,19 @@
 package com.iafenvoy.origins.mixin;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCameraSubmersionPower;
+import com.iafenvoy.origins.data.power.builtin.regular.NightVisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
+import com.iafenvoy.origins.data.power.builtin.regular.ShaderPower;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.PostChain;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,9 +34,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import javax.annotation.Nullable;
+import java.util.*;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
@@ -40,8 +45,22 @@ public abstract class GameRendererMixin {
     @Shadow
     @Final
     Minecraft minecraft;
+
+    @Shadow
+    public abstract void loadEffect(ResourceLocation resourceLocation);
+
+    @Shadow
+    @Nullable
+    private PostChain postEffect;
+    @Shadow
+    private boolean effectActive;
+    @Shadow
+    @Final
+    private ResourceManager resourceManager;
     @Unique
     private final HashMap<BlockPos, BlockState> origins$savedStates = new HashMap<>();
+    @Unique
+    private ResourceLocation currentlyLoadedShader;
 
     @Inject(method = "getNightVisionScale", at = @At("HEAD"), cancellable = true)
     private static void nightVisionPatch(LivingEntity livingEntity, float nanoTime, CallbackInfoReturnable<Float> cir) {
@@ -107,5 +126,48 @@ public abstract class GameRendererMixin {
         HashSet<BlockPos> set = new HashSet<>();
         BlockPos.betweenClosedStream(cameraBox).forEach(p -> set.add(p.immutable()));
         return set;
+    }
+
+    @Inject(method = "checkEntityPostEffect", at = @At("TAIL"))
+    private void loadShaderFromPowerOnCameraEntity(Entity entity, CallbackInfo ci) {
+        OriginDataHolder.get(this.minecraft.getCameraEntity()).streamActivePowers(ShaderPower.class).forEach(x -> {
+            ResourceLocation shaderLoc = x.getShader();
+            if (this.resourceManager.getResource(shaderLoc).isPresent()) {
+                this.loadEffect(shaderLoc);
+                this.currentlyLoadedShader = shaderLoc;
+            }
+        });
+    }
+
+    @Inject(method = "render", at = @At("HEAD"))
+    private void loadShaderFromPower(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
+        List<ShaderPower> shaderPowers = OriginDataHolder.get(this.minecraft.getCameraEntity()).streamActivePowers(ShaderPower.class).toList();
+        shaderPowers.forEach(x -> {
+            ResourceLocation shader = x.getShader();
+            if (this.currentlyLoadedShader != shader) {
+                this.loadEffect(shader);
+                this.currentlyLoadedShader = shader;
+            }
+        });
+        if (shaderPowers.isEmpty() && this.currentlyLoadedShader != null) {
+            if (this.postEffect != null) {
+                this.postEffect.close();
+                this.postEffect = null;
+            }
+            this.effectActive = false;
+            this.currentlyLoadedShader = null;
+        }
+    }
+
+    @Inject(method = "togglePostEffect", at = @At("HEAD"), cancellable = true)
+    private void disableShaderToggle(CallbackInfo ci) {
+        if (OriginDataHolder.get(this.minecraft.getCameraEntity()).streamActivePowers(ShaderPower.class).anyMatch(power -> !power.isToggleable() && power.getShader().equals(this.currentlyLoadedShader)))
+            ci.cancel();
+    }
+
+    @Inject(at = @At("RETURN"), method = "getNightVisionScale", cancellable = true)
+    private static void updateNightVisionScale(LivingEntity living, float tickDelta, CallbackInfoReturnable<Float> cir) {
+        if (!living.hasEffect(MobEffects.NIGHT_VISION))
+            OriginDataHolder.get(living).streamActivePowers(NightVisionPower.class).map(NightVisionPower::getStrength).max(Float::compareTo).ifPresent(cir::setReturnValue);
     }
 }

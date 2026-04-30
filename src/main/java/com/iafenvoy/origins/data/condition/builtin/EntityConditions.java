@@ -50,6 +50,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InSnowCondition>> IN_SNOW = REGISTRY.register("in_snow", () -> InSnowCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> InTagCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InThunderstormCondition>> IN_THUNDERSTORM = REGISTRY.register("in_thunderstorm", () -> InThunderstormCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InventoryCondition>> INVENTORY = REGISTRY.register("inventory", () -> InventoryCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InvisibleCondition>> INVISIBLE = REGISTRY.register("invisible", () -> InvisibleCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<LivingCondition>> LIVING = REGISTRY.register("living", () -> LivingCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<MobEffectCondition>> MOB_EFFECT = REGISTRY.register("mob_effect", () -> MobEffectCondition.CODEC);

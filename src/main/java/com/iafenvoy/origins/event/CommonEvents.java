@@ -53,8 +53,8 @@ public final class CommonEvents {
         Entity target = event.getTarget();
         InteractionHand hand = event.getHand();
         Stream.concat(
-                OriginDataHolder.get(player).streamActivePowers(ActionOnEntityUsePower.class).flatMap(x -> x.tryExecute(player, target, hand).stream()),
-                OriginDataHolder.get(target).streamActivePowers(ActionOnBeingUsedPower.class).flatMap(x1 -> x1.tryExecute(target, player, hand).stream())
+                OriginDataHolder.get(player).streamActivePowers(ActionOnEntityUsePower.class).flatMap(p -> p.tryExecute(player, target, hand).stream()),
+                OriginDataHolder.get(target).streamActivePowers(ActionOnBeingUsedPower.class).flatMap(p -> p.tryExecute(target, player, hand).stream())
         ).reduce(MiscUtil::reduce).filter(res -> res != InteractionResult.PASS).ifPresent(res -> {
             event.setCancellationResult(res);
             event.setCanceled(true);

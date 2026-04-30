@@ -40,12 +40,12 @@ public abstract class Power {
         this.settings = settings;
     }
 
-    @NotNull
-    public abstract MapCodec<? extends Power> codec();
-
     public BaseSettings getSettings() {
         return this.settings;
     }
+
+    @NotNull
+    public abstract MapCodec<? extends Power> codec();
 
     @Comment("Only one class each is allowed")
     public void createComponents(ComponentCollector collector) {

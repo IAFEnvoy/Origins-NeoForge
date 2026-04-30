@@ -7,6 +7,7 @@ import com.iafenvoy.origins.data.power.builtin.modify.ModifyAirSpeedPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyEffectAmplifierPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyEffectDurationPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyFoodPower;
+import com.iafenvoy.origins.data.power.builtin.prevent.PreventEntityCollisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ClimbingPower;
 import com.iafenvoy.origins.data.power.builtin.regular.LikeWaterPower;
 import com.iafenvoy.origins.data.power.builtin.regular.WalkOnFluidPower;
@@ -155,5 +156,13 @@ public abstract class LivingEntityMixin extends Entity {
     private void modifyWalkableFluids(FluidState fluid, CallbackInfoReturnable<Boolean> cir) {
         if (OriginDataHolder.get(this.origins$self()).streamActivePowers(WalkOnFluidPower.class).anyMatch(x -> fluid.is(x.getFluid())))
             cir.setReturnValue(true);
+    }
+
+    @Inject(method = "doPush", at = @At("HEAD"), cancellable = true)
+    private void preventPushing(Entity target, CallbackInfo ci) {
+        Entity self = this.origins$self();
+        if (OriginDataHolder.get(self).streamActivePowers(PreventEntityCollisionPower.class).anyMatch(x -> x.getBiEntityCondition().test(self, target)) ||
+                OriginDataHolder.get(target).streamActivePowers(PreventEntityCollisionPower.class).anyMatch(x -> x.getBiEntityCondition().test(target, self)))
+            ci.cancel();
     }
 }

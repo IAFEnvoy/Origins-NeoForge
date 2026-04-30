@@ -41,11 +41,14 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<GrantPowerAction>> GRANT_POWER = REGISTRY.register("grant_power", () -> GrantPowerAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<HealAction>> HEAL = REGISTRY.register("heal", () -> HealAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ModifyDeathTicksAction>> MODIFY_DEATH_TICKS = REGISTRY.register("modify_death_ticks", () -> ModifyDeathTicksAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ModifyInventoryAction>> MODIFY_INVENTORY = REGISTRY.register("modify_inventory", () -> ModifyInventoryAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ModifyResourceAction>> MODIFY_RESOURCE = REGISTRY.register("modify_resource", () -> ModifyResourceAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<PassengerActionAction>> PASSENGER_ACTION = REGISTRY.register("passenger_action", () -> PassengerActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<PlaySoundAction>> PLAY_SOUND = REGISTRY.register("play_sound", () -> PlaySoundAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RandomTeleportAction>> RANDOM_TELEPORT = REGISTRY.register("random_teleport", () -> RandomTeleportAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RaycastAction>> RAYCAST = REGISTRY.register("raycast", () -> RaycastAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RemoveEffectAction>> REMOVE_EFFECT = REGISTRY.register("remove_effect", () -> RemoveEffectAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ReplaceInventoryAction>> REPLACE_INVENTORY = REGISTRY.register("replace_inventory", () -> ReplaceInventoryAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RevokeAdvancementAction>> REVOKE_ADVANCEMENT = REGISTRY.register("revoke_advancement", () -> RevokeAdvancementAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RevokePowerAction>> REVOKE_POWER = REGISTRY.register("revoke_power", () -> RevokePowerAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RidingActionAction>> RIDING_ACTION = REGISTRY.register("riding_action", () -> RidingActionAction.CODEC);

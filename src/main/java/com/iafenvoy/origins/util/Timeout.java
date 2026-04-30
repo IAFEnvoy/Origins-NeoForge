@@ -4,6 +4,7 @@ import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -38,6 +39,7 @@ public final class Timeout {
         TIMEOUTS.add(new Timeout(waitTicks, maxTimes, callback, finalize));
     }
 
+    @ApiStatus.Internal
     @SubscribeEvent
     public static void runTimeout(ServerTickEvent.Post event) {
         TIMEOUTS.forEach(x -> x.tick(event.getServer()));

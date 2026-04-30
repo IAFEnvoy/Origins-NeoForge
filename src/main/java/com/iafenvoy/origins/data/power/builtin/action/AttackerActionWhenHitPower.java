@@ -23,7 +23,7 @@ public class AttackerActionWhenHitPower extends HasCooldownPower {
     private final EntityAction entityAction;
     private final DamageCondition damageCondition;
 
-    protected AttackerActionWhenHitPower(BaseSettings settings, CooldownSettings cooldown, EntityAction entityAction, DamageCondition damageCondition) {
+    public AttackerActionWhenHitPower(BaseSettings settings, CooldownSettings cooldown, EntityAction entityAction, DamageCondition damageCondition) {
         super(settings, cooldown);
         this.entityAction = entityAction;
         this.damageCondition = damageCondition;

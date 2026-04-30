@@ -14,7 +14,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 
-@NotImplementedYet
 @EventBusSubscriber
 public class ClimbingPower extends Power {
     public static final MapCodec<ClimbingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(

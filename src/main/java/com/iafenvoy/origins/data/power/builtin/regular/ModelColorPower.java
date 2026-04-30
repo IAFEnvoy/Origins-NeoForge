@@ -1,8 +1,8 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.data._common.ColorSettings;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
-import com.iafenvoy.origins.data._common.ColorSettings;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;

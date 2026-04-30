@@ -1,28 +1,43 @@
 package com.iafenvoy.origins.data.power;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class IntervalPower extends Power {
-    private int remainTicks = 0;
+import java.util.UUID;
 
-    public IntervalPower(BaseSettings settings) {
-        super(settings);
+public abstract class IntervalPower extends Power {
+    private final Object2IntMap<UUID> remainTicks = new Object2IntOpenHashMap<>();
+    private final int delay;
+
+    protected IntervalPower(BaseSettings settings) {
+        this(settings, 0);
     }
 
-    public IntervalPower(BaseSettings settings, int delay) {
-        this(settings);
-        this.remainTicks = delay;
+    protected IntervalPower(BaseSettings settings, int delay) {
+        super(settings);
+        this.delay = delay;
     }
 
     @Override
-    public void tick(@NotNull OriginDataHolder entity) {
-        if (this.remainTicks <= 0) {
-            this.remainTicks = this.getInterval();
-            this.intervalTick(entity.getEntity());
-        }
-        this.remainTicks--;
+    public void revoke(@NotNull OriginDataHolder holder) {
+        super.revoke(holder);
+        this.remainTicks.removeInt(holder.getEntity().getUUID());
+    }
+
+    @Override
+    public void tick(@NotNull OriginDataHolder holder) {
+        Entity entity = holder.getEntity();
+        this.remainTicks.putIfAbsent(entity.getUUID(), this.delay);
+        this.remainTicks.computeInt(entity.getUUID(), (uuid, tick) -> {
+            if (tick <= 0) {
+                tick = this.getInterval();
+                this.intervalTick(holder.getEntity());
+            }
+            return --tick;
+        });
     }
 
     public abstract int getInterval();

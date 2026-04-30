@@ -13,6 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.EnumMap;
+
 public class RestrictArmorPower extends IntervalPower {
     public static final MapCodec<RestrictArmorPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
@@ -27,39 +29,19 @@ public class RestrictArmorPower extends IntervalPower {
     private final ItemCondition legs;
     private final ItemCondition feet;
     private final int tickRate;
+    private final EnumMap<EquipmentSlot, ItemCondition> conditions = new EnumMap<>(EquipmentSlot.class);
 
     public RestrictArmorPower(BaseSettings settings, ItemCondition head, ItemCondition chest, ItemCondition legs, ItemCondition feet, int tickRate) {
-        super(settings, tickRate);
+        super(settings);
         this.head = head;
         this.chest = chest;
         this.legs = legs;
         this.feet = feet;
         this.tickRate = tickRate;
-    }
-
-    @Override
-    public int getInterval() {
-        return this.tickRate;
-    }
-
-    @Override
-    public void intervalTick(@NotNull Entity entity) {
-        if (entity.level().isClientSide || !(entity instanceof LivingEntity living)) return;
-        checkSingle(living, EquipmentSlot.HEAD, this.head);
-        checkSingle(living, EquipmentSlot.CHEST, this.chest);
-        checkSingle(living, EquipmentSlot.LEGS, this.legs);
-        checkSingle(living, EquipmentSlot.FEET, this.feet);
-    }
-
-    private static void checkSingle(LivingEntity entity, EquipmentSlot slot, ItemCondition condition) {
-        ItemStack stack = entity.getItemBySlot(slot);
-        if (!condition.test(entity.level(), stack))
-            Block.popResource(entity.level(), entity.blockPosition(), stack.split(stack.getCount()));
-    }
-
-    @Override
-    public @NotNull MapCodec<? extends Power> codec() {
-        return CODEC;
+        this.conditions.put(EquipmentSlot.HEAD, head);
+        this.conditions.put(EquipmentSlot.CHEST, chest);
+        this.conditions.put(EquipmentSlot.LEGS, legs);
+        this.conditions.put(EquipmentSlot.FEET, feet);
     }
 
     public ItemCondition getHeadCondition() {
@@ -76,5 +58,31 @@ public class RestrictArmorPower extends IntervalPower {
 
     public ItemCondition getFeetCondition() {
         return this.feet;
+    }
+
+    public EnumMap<EquipmentSlot, ItemCondition> getConditions() {
+        return this.conditions;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends Power> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public int getInterval() {
+        return this.tickRate;
+    }
+
+    @Override
+    public void intervalTick(@NotNull Entity entity) {
+        if (!(entity instanceof LivingEntity living)) return;
+        this.conditions.forEach((slot, condition) -> checkSingle(living, slot, condition));
+    }
+
+    private static void checkSingle(LivingEntity entity, EquipmentSlot slot, ItemCondition condition) {
+        ItemStack stack = entity.getItemBySlot(slot);
+        if (!condition.test(entity.level(), stack))
+            Block.popResource(entity.level(), entity.blockPosition(), stack.split(stack.getCount()));
     }
 }

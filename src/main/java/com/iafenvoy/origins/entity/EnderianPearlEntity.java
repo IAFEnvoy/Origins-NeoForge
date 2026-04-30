@@ -1,11 +1,9 @@
 package com.iafenvoy.origins.entity;
 
-import com.iafenvoy.origins.registry.OriginsEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
@@ -15,13 +13,8 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class EnderianPearlEntity extends ThrowableItemProjectile {
-
     public EnderianPearlEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
         super(entityType, level);
-    }
-
-    public EnderianPearlEntity(Level level, LivingEntity owner) {
-        super(OriginsEntities.ENDERIAN_PEARL.get(), owner, level);
     }
 
     @Override
@@ -58,10 +51,7 @@ public class EnderianPearlEntity extends ThrowableItemProjectile {
     @Override
     public void tick() {
         Entity owner = this.getOwner();
-        if (owner instanceof Player && !owner.isAlive()) {
-            this.discard();
-        } else {
-            super.tick();
-        }
+        if (owner instanceof Player && !owner.isAlive()) this.discard();
+        else super.tick();
     }
 }

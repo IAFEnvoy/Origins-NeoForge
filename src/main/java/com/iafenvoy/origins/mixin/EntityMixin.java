@@ -3,6 +3,7 @@ package com.iafenvoy.origins.mixin;
 import com.iafenvoy.origins.accessor.MovingEntity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyVelocityPower;
+import com.iafenvoy.origins.data.power.builtin.regular.GroundedPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
 import com.iafenvoy.origins.event.client.ClientGlowingColorEvent;
 import com.iafenvoy.origins.event.common.EntityFireImmuneEvent;
@@ -34,6 +35,8 @@ import java.util.OptionalInt;
 public class EntityMixin implements MovingEntity {
     @Shadow
     public float moveDist;
+    @Shadow
+    private boolean onGround;
     @Unique
     private boolean origins$isMoving;
     @Unique
@@ -88,5 +91,12 @@ public class EntityMixin implements MovingEntity {
     @Redirect(method = "lambda$isInWall$8", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/phys/shapes/VoxelShape;"))
     private VoxelShape preventSuffocation(BlockState state, BlockGetter level, BlockPos pos) {
         return state.getCollisionShape(level, pos, CollisionContext.of(this.origins$self()));
+    }
+
+    @Inject(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getOnPosLegacy()Lnet/minecraft/core/BlockPos;"))
+    private void forceGrounded(MoverType pType, Vec3 pPos, CallbackInfo ci) {
+        if (OriginDataHolder.get(this.origins$self()).hasPower(GroundedPower.class, true)) {
+            this.onGround = true;
+        }
     }
 }

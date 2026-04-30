@@ -20,6 +20,7 @@ group = mod_group_id
 repositories {
     maven { url = "https://api.modrinth.com/maven" }
     maven { url = "https://jitpack.io" }
+    maven { url = "https://maven.theillusivec4.top/" }
 }
 
 base {
@@ -114,9 +115,11 @@ configurations {
 dependencies {
     implementation "maven.modrinth:jupiter:Jpcw76rq"
     implementation jarJar("maven.modrinth:integration:$integration_version")
+    implementation jarJar("maven.modrinth:AdditionalEntityAttributes:6oJLT6m7")
+
+    implementation "maven.modrinth:caelus:KsfI4QsR"
 
     compileOnly "maven.modrinth:bedsheet:HbBAModY"
-    implementation jarJar("maven.modrinth:AdditionalEntityAttributes:6oJLT6m7")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

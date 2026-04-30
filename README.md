@@ -9,9 +9,10 @@ This mod provide an "origin" system. Each of them have special effects, and you 
 
 ## FAQ
 
-### Any Extra Dependencies?
+### Some powers missing?
 
-Currently, no dependencies are needed. But later I will add a config library to provide config system.
+NeoForge and Additional Entity Attributes provides some attributes which can replace them, just use AttributePowers
+instead.
 
 ### When the game is loading saves, this mod is spam in the console?
 

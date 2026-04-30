@@ -1,44 +1,28 @@
 package com.iafenvoy.origins.mixin;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCameraSubmersionPower;
+import com.iafenvoy.origins.data.power.builtin.regular.NightVisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
-import com.iafenvoy.origins.event.client.NightVisionStrengthEvent;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.FogType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForge;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-
-import java.util.Optional;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @OnlyIn(Dist.CLIENT)
 @Mixin(FogRenderer.class)
 public class FogRendererMixin {
-    @Unique
-    @NotNull
-    private static Optional<Float> NIGHT_VISION_STRENGTH = Optional.empty();
-
-    @ModifyExpressionValue(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/core/Holder;)Z", ordinal = 0))
-    private static boolean handleNightVisionStrength1(boolean original, @Local LivingEntity living) {
-        NIGHT_VISION_STRENGTH = NeoForge.EVENT_BUS.post(new NightVisionStrengthEvent(living)).getStrength();
-        return original || NIGHT_VISION_STRENGTH.isPresent();
-    }
-
-    @ModifyExpressionValue(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;getNightVisionScale(Lnet/minecraft/world/entity/LivingEntity;F)F"))
-    private static float handleNightVisionStrength2(float original) {
-        return NIGHT_VISION_STRENGTH.orElse(original);
-    }
-
     @ModifyVariable(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;getEntity()Lnet/minecraft/world/entity/Entity;", ordinal = 0), ordinal = 0)
     private static FogType modifyCameraSubmersionTypeRender(FogType original, Camera camera) {
         return ModifyCameraSubmersionPower.tryReplace(camera.getEntity(), original).orElse(original);
@@ -55,5 +39,12 @@ public class FogRendererMixin {
         if (camera.getEntity() instanceof LivingEntity living && PhasingPower.hasRenderMethod(living, PhasingPower.PhasingRenderType.BLINDNESS) && PhasingPower.getInWallBlockState(living) != null)
             return 0;
         return original;
+    }
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/core/Holder;)Z", ordinal = 0), method = "setupColor")
+    private static boolean hasStatusEffectProxy(LivingEntity instance, Holder<MobEffect> effect) {
+        if (instance instanceof Player && effect == MobEffects.NIGHT_VISION && !instance.hasEffect(MobEffects.NIGHT_VISION))
+            return OriginDataHolder.get(instance).streamActivePowers(NightVisionPower.class).map(NightVisionPower::getStrength).max(Float::compareTo).isPresent();
+        return instance.hasEffect(effect);
     }
 }

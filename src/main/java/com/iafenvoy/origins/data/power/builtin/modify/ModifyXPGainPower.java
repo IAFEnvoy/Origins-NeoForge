@@ -22,7 +22,7 @@ public class ModifyXPGainPower extends Power implements ModifierPowerHelper {
     ).apply(i, ModifyXPGainPower::new));
     private final List<Modifier> modifier;
 
-    protected ModifyXPGainPower(BaseSettings settings, List<Modifier> modifier) {
+    public ModifyXPGainPower(BaseSettings settings, List<Modifier> modifier) {
         super(settings);
         this.modifier = modifier;
     }

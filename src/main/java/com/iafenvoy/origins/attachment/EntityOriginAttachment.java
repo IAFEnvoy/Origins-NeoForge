@@ -6,7 +6,6 @@ import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
-import com.iafenvoy.origins.util.codec.AutoIgnoreMapCodec;
 import com.iafenvoy.origins.util.codec.CollectionCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -20,11 +19,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class EntityOriginAttachment {
-    private static final Codec<Map<Holder<Layer>, Holder<Origin>>> ORIGINS_CODEC = new AutoIgnoreMapCodec<>(Layer.CODEC, Origin.CODEC);
     public static final Codec<EntityOriginAttachment> CODEC = RecordCodecBuilder.create(i -> i.group(
-            ORIGINS_CODEC.fieldOf("origins").forGetter(EntityOriginAttachment::getOrigins),
+            CollectionCodecs.ofAutoIgnore(Layer.CODEC, Origin.CODEC).fieldOf("origins").forGetter(EntityOriginAttachment::getOrigins),
             CollectionCodecs.multiMapCodec(ResourceLocation.CODEC, Power.CODEC).fieldOf("powers").forGetter(EntityOriginAttachment::getPowers),
-            Codec.unboundedMap(ResourceLocation.CODEC, CollectionCodecs.classMapCodec(PowerComponent.CODEC)).fieldOf("components").forGetter(EntityOriginAttachment::getComponents)
+            CollectionCodecs.ofAutoIgnore(ResourceLocation.CODEC, CollectionCodecs.classMapCodec(PowerComponent.CODEC)).fieldOf("components").forGetter(EntityOriginAttachment::getComponents)
     ).apply(i, EntityOriginAttachment::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityOriginAttachment> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
     private final Map<Holder<Layer>, Holder<Origin>> origins = new LinkedHashMap<>();

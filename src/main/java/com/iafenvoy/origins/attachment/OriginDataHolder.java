@@ -246,8 +246,9 @@ public final class OriginDataHolder {
         this.entity.syncData(OriginsAttachments.ENTITY_ORIGIN);
     }
 
-    public void tick(@NotNull Entity entity) {
-        this.getOrigins().values().forEach(o -> this.executeOnPowers(o, p -> p.tick(this)));
+    public void tick() {
+        this.data.getOrigins().values().forEach(o -> this.executeOnPowers(o, p -> p.tick(this)));
+        this.data.getComponents().forEach((id, map) -> map.values().forEach(c -> c.tick(this, id)));
         //Check components and update
         if (this.data.getComponents().values().stream().flatMap(x -> x.values().stream()).map(PowerComponent::isDirty).reduce(false, (p, c) -> p | c))
             this.sync();
@@ -256,6 +257,6 @@ public final class OriginDataHolder {
     @ApiStatus.Internal
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
-        OriginDataHolder.get(event.getEntity()).tick(event.getEntity());
+        OriginDataHolder.get(event.getEntity()).tick();
     }
 }

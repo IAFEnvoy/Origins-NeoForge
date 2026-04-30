@@ -25,7 +25,7 @@ public class SelfActionWhenHitPower extends HasCooldownPower {
     private final EntityAction entityAction;
     private final DamageCondition damageCondition;
 
-    protected SelfActionWhenHitPower(BaseSettings settings, CooldownSettings cooldown, EntityAction entityAction, DamageCondition damageCondition) {
+    public SelfActionWhenHitPower(BaseSettings settings, CooldownSettings cooldown, EntityAction entityAction, DamageCondition damageCondition) {
         super(settings, cooldown);
         this.entityAction = entityAction;
         this.damageCondition = damageCondition;

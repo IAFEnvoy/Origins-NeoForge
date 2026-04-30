@@ -25,7 +25,7 @@ public class ModifyEnchantmentLevelPower extends Power implements ModifierPowerH
     private final ItemCondition itemCondition;
     private final List<Modifier> modifier;
 
-    protected ModifyEnchantmentLevelPower(BaseSettings settings, Holder<Enchantment> enchantment, ItemCondition itemCondition, List<Modifier> modifier) {
+    public ModifyEnchantmentLevelPower(BaseSettings settings, Holder<Enchantment> enchantment, ItemCondition itemCondition, List<Modifier> modifier) {
         super(settings);
         this.enchantment = enchantment;
         this.itemCondition = itemCondition;

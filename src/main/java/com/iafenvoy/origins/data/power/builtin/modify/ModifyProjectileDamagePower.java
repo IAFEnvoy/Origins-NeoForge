@@ -29,7 +29,7 @@ public class ModifyProjectileDamagePower extends Power implements ModifierPowerH
     private final EntityCondition targetCondition;
     private final EntityAction selfAction, targetAction;
 
-    protected ModifyProjectileDamagePower(BaseSettings settings, DamageCondition damageCondition, List<Modifier> modifier, EntityCondition targetCondition, EntityAction selfAction, EntityAction targetAction) {
+    public ModifyProjectileDamagePower(BaseSettings settings, DamageCondition damageCondition, List<Modifier> modifier, EntityCondition targetCondition, EntityAction selfAction, EntityAction targetAction) {
         super(settings);
         this.damageCondition = damageCondition;
         this.modifier = modifier;

@@ -21,7 +21,7 @@ public class ModifyHealingPower extends Power implements ModifierPowerHelper {
     ).apply(i, ModifyHealingPower::new));
     private final List<Modifier> modifier;
 
-    protected ModifyHealingPower(BaseSettings settings, List<Modifier> modifier) {
+    public ModifyHealingPower(BaseSettings settings, List<Modifier> modifier) {
         super(settings);
         this.modifier = modifier;
     }

@@ -2,7 +2,6 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.event.common.CanNaturalRegenEvent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,7 +26,7 @@ public class DisableRegenPower extends Power {
 
     @SubscribeEvent
     public static void disableNaturalRegen(CanNaturalRegenEvent event) {
-        if (!OriginDataHolder.get(event.getEntity()).getPowers(RegularPowers.DISABLE_REGEN, DisableRegenPower.class).isEmpty())
+        if (OriginDataHolder.get(event.getEntity()).hasPower(DisableRegenPower.class, true))
             event.deny();
     }
 }

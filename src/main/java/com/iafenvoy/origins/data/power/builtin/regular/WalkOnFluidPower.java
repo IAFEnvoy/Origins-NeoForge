@@ -14,7 +14,7 @@ public class WalkOnFluidPower extends Power {
     ).apply(i, WalkOnFluidPower::new));
     private final Fluid fluid;
 
-    protected WalkOnFluidPower(BaseSettings settings, Fluid fluid) {
+    public WalkOnFluidPower(BaseSettings settings, Fluid fluid) {
         super(settings);
         this.fluid = fluid;
     }
