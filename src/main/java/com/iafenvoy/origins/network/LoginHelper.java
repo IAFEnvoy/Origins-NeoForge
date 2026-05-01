@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.network;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;

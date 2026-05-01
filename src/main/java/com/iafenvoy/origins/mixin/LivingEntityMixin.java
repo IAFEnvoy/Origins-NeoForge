@@ -16,7 +16,7 @@ import com.iafenvoy.origins.event.common.CanFlyWithoutElytraEvent;
 import com.iafenvoy.origins.event.common.EntityFrozenEvent;
 import com.iafenvoy.origins.event.common.IgnoreWaterEvent;
 import com.iafenvoy.origins.mixin.accessor.MobEffectInstanceAccessor;
-import com.iafenvoy.origins.util.Mutable;
+import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;

@@ -8,16 +8,13 @@ import com.iafenvoy.origins.network.payload.ChooseOriginC2SPayload;
 import com.iafenvoy.origins.registry.OriginsItems;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -125,9 +122,8 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
 
             int actualX = 12 + x * 28 + this.calculatedLeft;
             int actualY = 10 + y * 30 + this.calculatedTop;
-            //TODO::Rewrite?
             int finalI = i;
-            this.addRenderableWidget(Button.builder(Component.empty(), (b) -> {
+            this.addWidget(Button.builder(Component.empty(), (b) -> {
                 int index = finalI + this.currentPage * COUNT_PER_PAGE;
                 if (index <= this.maxSelection - 1) {
                     this.currentOriginIndex = index;
@@ -146,10 +142,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
         }
         if (this.maxSelection > 0) {
             this.addRenderableWidget(Button.builder(Component.translatable("origins.gui.select"), (button) -> {
-                if (this.currentOriginIndex == this.origins.size())
-                    PacketDistributor.sendToServer(new ChooseOriginC2SPayload(this.getCurrentLayer(), Optional.empty()));
-                else
-                    PacketDistributor.sendToServer(new ChooseOriginC2SPayload(this.getCurrentLayer(), Optional.of(super.getCurrentOrigin())));
+                PacketDistributor.sendToServer(new ChooseOriginC2SPayload(this.getCurrentLayer(), this.currentOriginIndex == this.origins.size() ? Optional.empty() : Optional.of(super.getCurrentOrigin())));
                 this.openNextLayerScreen();
             }).bounds(this.guiLeft + 88 - 50, this.guiTop + CHOICES_HEIGHT + 5, 100, 20).build());
         }
@@ -175,11 +168,16 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         if (this.maxSelection == 0) this.openNextLayerScreen();
         else super.render(graphics, mouseX, mouseY, delta);
-        this.renderOriginChoicesBox(graphics, mouseX, mouseY, delta);
         this.tickTime += delta;
     }
 
-    public void renderOriginChoicesBox(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    @Override
+    protected void renderOriginWindow(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        this.renderOriginChoicesBox(graphics, mouseX, mouseY);
+        super.renderOriginWindow(graphics, mouseX, mouseY, delta);
+    }
+
+    public void renderOriginChoicesBox(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.blit(ORIGINS_CHOICES, this.calculatedLeft, this.calculatedTop, 0, 0, CHOICES_WIDTH, CHOICES_HEIGHT);
         int x = 0;
         int y = 0;
@@ -194,56 +192,43 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
             int actualY = 10 + y * 30 + this.calculatedTop;
             if (i >= this.origins.size()) {
                 boolean selected = this.getCurrentOrigin().equals(this.randomOrigin);
-                this.renderRandomOrigin(graphics, mouseX, mouseY, delta, actualX, actualY, selected);
+                this.renderRandomOrigin(graphics, mouseX, mouseY, actualX, actualY, selected);
             } else {
                 Holder<Origin> origin = this.origins.get(i);
                 boolean selected = Objects.equals(origin.getKey(), this.getCurrentOrigin().getKey());
-                this.renderOriginWidget(graphics, mouseX, mouseY, delta, actualX, actualY, selected, origin);
+                this.renderOriginWidget(graphics, mouseX, mouseY, actualX, actualY, selected, origin);
                 graphics.renderItem(origin.value().icon().orElse(ItemStack.EMPTY), actualX + 5, actualY + 5);
             }
 
             ++x;
         }
 
-        Font var10001 = this.font;
-        int var10002 = this.currentPage + 1;
-        FormattedCharSequence var13 = Component.literal(var10002 + "/" + this.pages).getVisualOrderText();
-        int var10003 = this.calculatedLeft + 109;
-        int var10004 = this.guiTop + CHOICES_HEIGHT + 5;
-        Objects.requireNonNull(this.font);
-        graphics.drawCenteredString(var10001, var13, var10003, var10004 + 9 / 2, 16777215);
+        graphics.drawCenteredString(this.font, Component.literal((this.currentPage + 1) + "/" + this.pages).getVisualOrderText(), this.calculatedLeft + 109, this.guiTop + CHOICES_HEIGHT + 9, 16777215);
     }
 
-    public void renderOriginWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta, int x, int y, boolean selected, Holder<Origin> origin) {
+    public void renderOriginWidget(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, boolean selected, Holder<Origin> origin) {
         RenderSystem.setShaderTexture(0, ORIGINS_CHOICES);
         boolean mouseHovering = mouseX >= x && mouseY >= y && mouseX < x + ORIGIN_ICON_SIZE && mouseY < y + ORIGIN_ICON_SIZE;
-        GuiEventListener var13 = this.getFocused();
-        boolean guiSelected = var13 instanceof Button buttonWidget && buttonWidget.getX() == x && (buttonWidget.getY() == y || mouseHovering);
-        int u = (selected ? ORIGIN_ICON_SIZE : 0) + (guiSelected ? 52 : 0);
+        boolean guiSelected = this.getFocused() instanceof Button buttonWidget && buttonWidget.getX() == x && (buttonWidget.getY() == y || mouseHovering);
+        graphics.blit(ORIGINS_CHOICES, x, y, 230, (selected ? ORIGIN_ICON_SIZE : 0) + (guiSelected ? 52 : 0), ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
 
-        graphics.blit(ORIGINS_CHOICES, x, y, 230, u, ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
-        Impact impact = origin.value().impact();
-        switch (impact.name()) {
-            case "NONE" -> graphics.blit(ORIGINS_CHOICES, x, y, 224, guiSelected ? 112 : 104, 8, 8);
-            case "LOW" -> graphics.blit(ORIGINS_CHOICES, x, y, 232, guiSelected ? 112 : 104, 8, 8);
-            case "MEDIUM" -> graphics.blit(ORIGINS_CHOICES, x, y, 240, guiSelected ? 112 : 104, 8, 8);
-            case "HIGH" -> graphics.blit(ORIGINS_CHOICES, x, y, 248, guiSelected ? 112 : 104, 8, 8);
-            case "VERY_HIGH" -> graphics.blit(ORIGINS_CHOICES, x, y, 248, guiSelected ? 144 : 136, 8, 8);
-            default -> graphics.blit(ORIGINS_CHOICES, x, y, 240, guiSelected ? 144 : 136, 8, 8);
+        switch (origin.value().impact()) {
+            case NONE -> graphics.blit(ORIGINS_CHOICES, x, y, 224, guiSelected ? 112 : 104, 8, 8);
+            case LOW -> graphics.blit(ORIGINS_CHOICES, x, y, 232, guiSelected ? 112 : 104, 8, 8);
+            case MEDIUM -> graphics.blit(ORIGINS_CHOICES, x, y, 240, guiSelected ? 112 : 104, 8, 8);
+            case HIGH -> graphics.blit(ORIGINS_CHOICES, x, y, 248, guiSelected ? 112 : 104, 8, 8);
         }
-
         if (mouseHovering) {
             Component text = Layer.getName(this.getCurrentLayer()).copy().append(": ").append(Origin.getName(origin));
             graphics.renderTooltip(this.font, text, mouseX, mouseY);
         }
     }
 
-    public void renderRandomOrigin(GuiGraphics graphics, int mouseX, int mouseY, float delta, int x, int y, boolean selected) {
+    public void renderRandomOrigin(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, boolean selected) {
         boolean mouseHovering = mouseX >= x && mouseY >= y && mouseX < x + ORIGIN_ICON_SIZE && mouseY < y + ORIGIN_ICON_SIZE;
-        GuiEventListener var12 = this.getFocused();
-        boolean guiSelected = var12 instanceof Button buttonWidget && buttonWidget.getX() == x && (buttonWidget.getY() == y || mouseHovering);
-        int u = (selected ? ORIGIN_ICON_SIZE : 0) + (guiSelected ? 52 : 0);
-        graphics.blit(ORIGINS_CHOICES, x, y, 230, u, ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
+        boolean guiSelected = this.getFocused() instanceof Button buttonWidget && buttonWidget.getX() == x && (buttonWidget.getY() == y || mouseHovering);
+        graphics.blit(ORIGINS_CHOICES, x, y, 230, (selected ? ORIGIN_ICON_SIZE : 0) + (guiSelected ? 52 : 0), ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
+
         graphics.blit(ORIGINS_CHOICES, x + 6, y + 5, 243, 120, 13, 16);
         int impact = (int) ((double) this.tickTime / (double) 15.0F) % 4;
         graphics.blit(ORIGINS_CHOICES, x, y, 224 + impact * 8, guiSelected ? 112 : 104, 8, 8);

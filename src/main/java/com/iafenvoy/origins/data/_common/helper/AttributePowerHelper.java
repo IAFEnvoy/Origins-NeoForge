@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.data.power.helper;
+package com.iafenvoy.origins.data._common.helper;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data._common.AttributeEntry;

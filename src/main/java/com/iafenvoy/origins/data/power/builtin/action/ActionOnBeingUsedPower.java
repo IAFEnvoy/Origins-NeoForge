@@ -1,11 +1,11 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
 import com.iafenvoy.origins.data._common.InteractionPowerSettings;
+import com.iafenvoy.origins.data._common.helper.InteractionPowerHelper;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Prioritized;
-import com.iafenvoy.origins.data.power.helper.InteractionPowerHelper;
 import com.iafenvoy.origins.util.codec.ExtraEnumCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

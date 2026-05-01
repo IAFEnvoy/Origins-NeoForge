@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.util;
+package com.iafenvoy.origins.util.wrapper;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

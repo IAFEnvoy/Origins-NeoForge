@@ -2,8 +2,8 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data._common.AttributeEntry;
+import com.iafenvoy.origins.data._common.helper.AttributePowerHelper;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.helper.AttributePowerHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

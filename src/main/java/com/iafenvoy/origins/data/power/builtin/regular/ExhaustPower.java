@@ -31,7 +31,7 @@ public class ExhaustPower extends IntervalPower {
 
     @Override
     public void intervalTick(@NotNull Entity entity) {
-        if (entity instanceof Player player )
+        if (entity instanceof Player player)
             player.causeFoodExhaustion(this.exhaustion);
     }
 

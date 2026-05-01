@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.data.power.helper;
+package com.iafenvoy.origins.data._common.helper;
 
 import com.iafenvoy.origins.data._common.InteractionPowerSettings;
 import com.iafenvoy.origins.data.action.BiEntityAction;

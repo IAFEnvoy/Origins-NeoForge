@@ -8,7 +8,7 @@ import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
 
 public class WalkOnFluidPower extends Power {
-    public static final MapCodec<WalkOnFluidPower> CODEC= RecordCodecBuilder.mapCodec(i -> i.group(
+    public static final MapCodec<WalkOnFluidPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(WalkOnFluidPower::getFluid)
     ).apply(i, WalkOnFluidPower::new));

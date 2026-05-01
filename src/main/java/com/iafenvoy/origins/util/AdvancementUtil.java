@@ -14,16 +14,15 @@ import java.util.Locale;
 
 public final class AdvancementUtil {
     public static List<AdvancementHolder> getAdvancements(ServerAdvancementManager manager, AdvancementHolder advancement, Mode mode) {
-        AdvancementTree advancementtree = manager.tree();
-        AdvancementNode advancementnode = advancementtree.get(advancement);
-        if (advancementnode == null) return List.of(advancement);
+        AdvancementNode node = manager.tree().get(advancement);
+        if (node == null) return List.of(advancement);
         else {
             List<AdvancementHolder> list = new ArrayList<>();
             if (mode.parents)
-                for (AdvancementNode advancementnode1 = advancementnode.parent(); advancementnode1 != null; advancementnode1 = advancementnode1.parent())
-                    list.add(advancementnode1.holder());
+                for (AdvancementNode n = node.parent(); n != null; n = n.parent())
+                    list.add(n.holder());
             list.add(advancement);
-            if (mode.children) addChildren(advancementnode, list);
+            if (mode.children) addChildren(node, list);
             return list;
         }
     }
@@ -41,10 +40,9 @@ public final class AdvancementUtil {
         FROM(false, true),
         UNTIL(true, false),
         EVERYTHING(true, true);
-
+        public static final Codec<Mode> CODEC = StringRepresentable.fromValues(Mode::values);
         private final boolean parents;
         private final boolean children;
-        public static final Codec<Mode> CODEC = StringRepresentable.fromValues(Mode::values);
 
         Mode(boolean parents, boolean children) {
             this.parents = parents;

@@ -109,7 +109,6 @@ public class OriginDisplayScreen extends Screen {
         this.renderedBadges.clear();
         super.render(graphics, mouseX, mouseY, delta);
         this.renderOriginWindow(graphics, mouseX, mouseY, delta);
-
     }
 
     @Override
@@ -247,22 +246,18 @@ public class OriginDisplayScreen extends Screen {
             MutableComponent impactHoverTooltip = Component.translatable(Origins.MOD_ID + ".gui.impact.impact").append(": ").append(impact.getTextComponent());
             graphics.renderTooltip(this.font, impactHoverTooltip, mouseX, mouseY);
         }
-
     }
 
     protected boolean isWithinImpactBoundaries(int mouseX, int mouseY) {
         int impactStartX = this.guiLeft + 128;
         int impactStartY = this.guiTop + 19;
-
         return (mouseX >= impactStartX && mouseX < impactStartX + 28) && (mouseY >= impactStartY && mouseY < impactStartY + 8);
-
     }
 
     protected void renderOriginName(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         if (this.refreshOriginNameWidget || (this.origin != this.prevOrigin || this.layer != this.prevLayer)) {
             this.originNameWidget = new ScrollingTextWidget(this.guiLeft + 38, this.guiTop + 18, WINDOW_WIDTH - (62 + 3 * 8), 9, Origin.getName(this.getCurrentOriginId()), true, this.font);
             this.originNameWidget.setAlignment(TextAlignment.LEFT);
-
             this.refreshOriginNameWidget = false;
 
             this.prevOrigin = this.origin;
@@ -270,10 +265,8 @@ public class OriginDisplayScreen extends Screen {
         }
 
         this.originNameWidget.render(graphics, mouseX, mouseY, delta);
-
         ItemStack iconStack = this.getCurrentOrigin().value().icon().orElse(ItemStack.EMPTY);
         graphics.renderItem(iconStack, this.guiLeft + 15, this.guiTop + 15);
-
     }
 
     protected void renderOriginContent(GuiGraphics graphics) {
@@ -310,11 +303,7 @@ public class OriginDisplayScreen extends Screen {
                 }
                 y -= 12;
 
-                int badgeStartX = x + powerNameWidth + 4;
-                int badgeEndX = x + 135;
-
-                int badgeOffsetX = 0, badgeOffsetY = 0;
-
+                int badgeStartX = x + powerNameWidth + 4, badgeEndX = x + 135, badgeOffsetX = 0, badgeOffsetY = 0;
                 ImmutableSet.Builder<Badge> badgeBuilder = ImmutableSet.builder();
                 power.collectBadges(badgeBuilder);
                 for (Badge badge : badgeBuilder.build()) {

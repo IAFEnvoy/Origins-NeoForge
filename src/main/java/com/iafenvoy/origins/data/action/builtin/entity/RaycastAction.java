@@ -50,12 +50,12 @@ public record RaycastAction(RaycastSettings settings, EntityAction beforeAction,
                 if (commandInfo.commandHitOffset().isPresent()) {
                     offset = commandInfo.commandHitOffset().get();
                 } else {
-                    if (hitResult instanceof BlockHitResult bhr) {
-                        if (bhr.getDirection() == Direction.DOWN) {
+                    if (hitResult instanceof BlockHitResult bhr)
+                        if (bhr.getDirection() == Direction.DOWN)
                             offset = source.getBbHeight();
-                        } else if (bhr.getDirection() == Direction.UP) {
+                        else if (bhr.getDirection() == Direction.UP)
                             offset = 0;
-                        } else {
+                        else {
                             offset = source.getBbWidth() / 2;
                             offsetDirection = new Vec3(
                                     -bhr.getDirection().getStepX(),
@@ -63,11 +63,10 @@ public record RaycastAction(RaycastSettings settings, EntityAction beforeAction,
                                     -bhr.getDirection().getStepZ()
                             ).reverse();
                         }
-                    }
                     offset += 0.05;
                 }
                 Vec3 at = hitPos.subtract(offsetDirection.scale(offset));
-                executeCommandAtHit(source, at, commandInfo.commandAtHit().get());
+                CommandHelper.executeAt(source, at, commandInfo.commandAtHit().get());
             }
             if (commandInfo.commandAlongRay().isPresent()) {
                 executeStepCommands(source, origin, hitResult.getLocation(), commandInfo.commandAlongRay().get(), commandInfo.commandStep());
@@ -89,10 +88,6 @@ public record RaycastAction(RaycastSettings settings, EntityAction beforeAction,
         double length = origin.distanceTo(target);
         for (double current = 0; current < length; current += step)
             CommandHelper.executeAt(entity, origin.add(direction.scale(current)), command);
-    }
-
-    private static void executeCommandAtHit(Entity entity, Vec3 hitPosition, String command) {
-        CommandHelper.executeAt(entity, hitPosition, command);
     }
 
     public record CommandInfo(Optional<String> commandAtHit, Optional<Double> commandHitOffset,

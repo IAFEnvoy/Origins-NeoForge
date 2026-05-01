@@ -1,8 +1,8 @@
 package com.iafenvoy.origins.data.action;
 
 import com.iafenvoy.origins.data.action.builtin.item.meta.AndAction;
-import com.iafenvoy.origins.util.Mutable;
 import com.iafenvoy.origins.util.codec.DefaultedCodec;
+import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

@@ -1,8 +1,8 @@
 package com.iafenvoy.origins.attachment;
 
+import com.iafenvoy.origins.data._common.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
-import com.iafenvoy.origins.data.power.helper.ModifierPowerHelper;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;

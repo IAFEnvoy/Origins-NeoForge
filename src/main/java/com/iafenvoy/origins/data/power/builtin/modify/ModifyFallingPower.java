@@ -1,8 +1,8 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data._common.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.Codec;
@@ -28,7 +28,7 @@ public class ModifyFallingPower extends Power implements ModifierPowerHelper {
     private final boolean takeFallDamage;
     private final List<Modifier> modifier;
 
-    public ModifyFallingPower(BaseSettings settings,boolean takeFallDamage, List<Modifier> modifier) {
+    public ModifyFallingPower(BaseSettings settings, boolean takeFallDamage, List<Modifier> modifier) {
         super(settings);
         this.takeFallDamage = takeFallDamage;
         this.modifier = modifier;

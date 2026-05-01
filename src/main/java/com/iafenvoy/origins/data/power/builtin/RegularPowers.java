@@ -35,7 +35,6 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<FireImmunityPower>> FIRE_IMMUNITY = REGISTRY.register("fire_immunity", () -> FireImmunityPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<FireProjectilePower>> FIRE_PROJECTILE = REGISTRY.register("fire_projectile", () -> FireProjectilePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<FreezePower>> FREEZE = REGISTRY.register("freeze", () -> FreezePower.CODEC);
-    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<GameEventListenerPower>> GAME_EVENT_LISTENER = REGISTRY.register("game_event_listener", () -> GameEventListenerPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<GroundedPower>> GROUNDED = REGISTRY.register("grounded", () -> GroundedPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<IgnoreWaterPower>> IGNORE_WATER = REGISTRY.register("ignore_water", () -> IgnoreWaterPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<InventoryPower>> INVENTORY = REGISTRY.register("inventory", () -> InventoryPower.CODEC);

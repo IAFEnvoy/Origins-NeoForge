@@ -1,10 +1,10 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
+import com.iafenvoy.origins.data._common.helper.InventoryActionHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.InventoryUtil;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public record ReplaceInventoryAction(EntityAction entityAction, ItemAction itemAction, ItemCondition itemCondition,
                                      IntList slot, Optional<Holder<Power>> power, ItemStack stack,
-                                     boolean mergeComponent) implements EntityAction {
+                                     boolean mergeComponent) implements EntityAction, InventoryActionHelper {
     public static final MapCodec<ReplaceInventoryAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             EntityAction.optionalCodec("entity_action").forGetter(ReplaceInventoryAction::entityAction),
             ItemAction.CODEC.fieldOf("item_action").forGetter(ReplaceInventoryAction::itemAction),
@@ -37,6 +37,6 @@ public record ReplaceInventoryAction(EntityAction entityAction, ItemAction itemA
 
     @Override
     public void execute(@NotNull Entity source) {
-        InventoryUtil.replaceInventory(this.slot, this.stack, this.entityAction, this.itemCondition, this.itemAction, source, this.power, this.mergeComponent);
+        this.replaceInventory(this.stack, source, this.mergeComponent);
     }
 }

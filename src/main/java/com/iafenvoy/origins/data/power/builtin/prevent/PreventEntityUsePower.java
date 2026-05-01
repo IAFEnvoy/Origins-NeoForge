@@ -2,10 +2,10 @@ package com.iafenvoy.origins.data.power.builtin.prevent;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data._common.InteractionPowerSettings;
+import com.iafenvoy.origins.data._common.helper.InteractionPowerHelper;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.helper.InteractionPowerHelper;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.InteractionHand;

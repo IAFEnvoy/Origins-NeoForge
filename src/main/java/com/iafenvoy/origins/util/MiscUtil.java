@@ -25,29 +25,22 @@ public final class MiscUtil {
         return second.consumesAction() && !first.consumesAction() || second.shouldSwing() && !first.shouldSwing() ? second : first;
     }
 
-    public static Optional<Entity> getEntityWithPassengers(Level world, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, float yaw, float pitch) {
-
-        if (world.isClientSide()) return Optional.empty();
-        ServerLevel serverWorld = (ServerLevel) world;
-
+    public static Optional<Entity> getEntityWithPassengers(Level level, EntityType<?> entityType, @Nullable CompoundTag entityNbt, Vec3 pos, float yaw, float pitch) {
+        if (!(level instanceof ServerLevel serverLevel)) return Optional.empty();
         CompoundTag entityToSpawnNbt = new CompoundTag();
         if (entityNbt != null) entityToSpawnNbt.merge(entityNbt);
         entityToSpawnNbt.putString("id", BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString());
 
-        Entity entityToSpawn = EntityType.loadEntityRecursive(
-                entityToSpawnNbt,
-                serverWorld,
-                entity -> {
-                    entity.moveTo(pos.x, pos.y, pos.z, yaw, pitch);
-                    return entity;
-                }
-        );
+        Entity entityToSpawn = EntityType.loadEntityRecursive(entityToSpawnNbt, serverLevel, entity -> {
+            entity.moveTo(pos.x, pos.y, pos.z, yaw, pitch);
+            return entity;
+        });
         if (entityToSpawn == null) return Optional.empty();
 
         if (entityNbt == null && entityToSpawn instanceof Mob mobToSpawn) EventHooks.finalizeMobSpawn(
                 mobToSpawn,
-                serverWorld,
-                serverWorld.getCurrentDifficultyAt(BlockPos.containing(pos)),
+                serverLevel,
+                serverLevel.getCurrentDifficultyAt(BlockPos.containing(pos)),
                 MobSpawnType.COMMAND,
                 null
         );
