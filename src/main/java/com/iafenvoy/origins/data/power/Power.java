@@ -58,7 +58,7 @@ public abstract class Power {
     }
 
     public boolean isActive(OriginDataHolder holder) {
-        return this.settings.condition().test(holder.getEntity());
+        return holder.getComponentFor(this, ActiveComponent.class).map(ActiveComponent::isLastActive).orElse(false);
     }
 
     public void grant(@NotNull OriginDataHolder holder) {

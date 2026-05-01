@@ -1,18 +1,13 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
 import com.iafenvoy.origins.data.condition.EntityCondition;
-import com.iafenvoy.origins.event.common.CanFlyWithoutElytraEvent;
+import com.illusivesoulworks.caelus.api.CaelusApi;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ElytraItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
 public record ElytraFlightPossibleCondition(boolean checkState, boolean checkAbilities) implements EntityCondition {
@@ -28,17 +23,22 @@ public record ElytraFlightPossibleCondition(boolean checkState, boolean checkAbi
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        if (!(entity instanceof LivingEntity living)) return false;
-        boolean state = true, ability = true, checked = false;
-        if (this.checkState) {
-            checked = true;
-            state = !living.onGround() && !living.isFallFlying() && !living.isInWater() && !living.hasEffect(MobEffects.LEVITATION);
-        }
-        if (this.checkAbilities) {
-            checked = true;
-            ItemStack equippedChestStack = living.getItemBySlot(EquipmentSlot.CHEST);
-            ability = equippedChestStack.is(Items.ELYTRA) && ElytraItem.isFlyEnabled(equippedChestStack) || NeoForge.EVENT_BUS.post(new CanFlyWithoutElytraEvent(living)).getResult().allow();
-        }
-        return checked && state && ability;
+        if (!(entity instanceof LivingEntity livingEntity))
+            return false;
+        boolean ability = this.checkAbilities || CaelusApi.getInstance().canFallFly(livingEntity, false);
+        //FORGE STILL DOESN'T HAVE ELYTRA EVENTS.
+        //(Also PRs are for 1.18.2 and that ain't gonna happen for quite a while)
+        //I'm just going to assume that Caelus does all the hard work for me.
+        //For when forge gets events (if ever):
+		/*
+		if (!ability && EntityElytraEvents.CUSTOM.invoker().useCustomElytra(livingEntity, false))
+			ability = true;
+		if (!EntityElytraEvents.ALLOW.invoker().allowElytraFlight(livingEntity))
+			ability = false;
+		*/
+        boolean state = true;
+        if (this.checkState)
+            state = !livingEntity.onGround() && !livingEntity.isFallFlying() && !livingEntity.isInWater() && !livingEntity.hasEffect(MobEffects.LEVITATION);
+        return ability && state;
     }
 }

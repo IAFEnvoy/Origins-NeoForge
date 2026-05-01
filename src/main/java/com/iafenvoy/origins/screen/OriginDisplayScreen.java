@@ -277,6 +277,7 @@ public class OriginDisplayScreen extends Screen {
     }
 
     protected void renderOriginContent(GuiGraphics graphics) {
+        assert Minecraft.getInstance().level != null;
         RegistryAccess access = Minecraft.getInstance().level.registryAccess();
         int textWidthLimit = WINDOW_WIDTH - 48;
         int x = this.guiLeft + 18;

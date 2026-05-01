@@ -140,7 +140,7 @@ public class PhasingPower extends Power {
     public static class ClientEvents {
         @SubscribeEvent(priority = EventPriority.HIGHEST)
         public static void onBlockOverlay(RenderBlockScreenEffectEvent event) {
-            if (OriginDataHolder.get(event.getPlayer()).hasPower(PhasingPower.class, true))
+            if (OriginDataHolder.get(event.getPlayer()).hasActivePower(PhasingPower.class))
                 event.setCanceled(true);
         }
 

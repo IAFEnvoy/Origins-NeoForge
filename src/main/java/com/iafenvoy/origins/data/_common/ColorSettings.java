@@ -52,9 +52,9 @@ public record ColorSettings(Optional<Float> r, Optional<Float> g, Optional<Float
 
     public int getIntValue() {
         return ((int) (this.a.orElse(1f) * 255) << 24) |
-                ((int) (this.r.orElse(0f) * 255) << 16) |
-                ((int) (this.g.orElse(0f) * 255) << 8) |
-                (int) (this.b.orElse(0f) * 255);
+                ((int) (this.r.orElse(1f) * 255) << 16) |
+                ((int) (this.g.orElse(1f) * 255) << 8) |
+                (int) (this.b.orElse(1f) * 255);
     }
 
     public ColorSettings merge(int color) {
@@ -73,19 +73,11 @@ public record ColorSettings(Optional<Float> r, Optional<Float> g, Optional<Float
     private static Optional<Float> mergeComponent(Optional<Float> c1, Optional<Float> c2) {
         if (c1.isPresent() && c2.isPresent()) return Optional.of(c1.get() * c2.get());
         else if (c1.isPresent()) return c1;
+        else if (c2.isPresent()) return c2;
         else return c2;
     }
 
     public ColorSettings withAlpha(float alpha) {
         return new ColorSettings(this.r, this.g, this.b, Optional.of(alpha));
-    }
-
-    public ColorSettings multiply(float strength) {
-        return new ColorSettings(
-                this.r.map(r -> r * strength),
-                this.g.map(g -> g * strength),
-                this.b.map(b -> b * strength),
-                this.a.map(a -> a * strength)
-        );
     }
 }

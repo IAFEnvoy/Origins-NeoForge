@@ -25,10 +25,8 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -128,8 +126,8 @@ public final class OriginDataHolder {
         return this.data.getPowers().entries().stream().anyMatch(e -> e.getKey().equals(source) && e.getValue().equals(power));
     }
 
-    public <T extends Power> boolean hasPower(Class<T> clazz, boolean activeOnly) {
-        return this.data.getPowers().values().stream().map(Holder::value).filter(x -> !activeOnly || x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
+    public <T extends Power> boolean hasActivePower(Class<T> clazz) {
+        return this.data.getPowers().values().stream().map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
     }
 
     public <T extends Power> boolean isPowerActive(Class<T> clazz) {

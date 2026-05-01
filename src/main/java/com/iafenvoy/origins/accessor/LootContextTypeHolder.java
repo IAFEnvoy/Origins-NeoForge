@@ -3,7 +3,7 @@ package com.iafenvoy.origins.accessor;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 
 public interface LootContextTypeHolder {
-    LootContextParamSet apoli$getType();
+    LootContextParamSet origins$getType();
 
-    void apoli$setType(LootContextParamSet type);
+    void origins$setType(LootContextParamSet type);
 }

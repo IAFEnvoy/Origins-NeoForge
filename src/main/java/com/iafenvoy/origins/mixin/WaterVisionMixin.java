@@ -21,6 +21,6 @@ public class WaterVisionMixin {
 
     @ModifyExpressionValue(method = "getWaterVision", at = @At(value = "FIELD", target = "Lnet/minecraft/client/player/LocalPlayer;waterVisionTime:I", ordinal = 0, opcode = Opcodes.GETFIELD))
     private int origins$ignoreVisibilityDelay(int original) {
-        return !OriginDataHolder.get(this.origins$self()).hasPower(WaterVisionPower.class, true) ? 600 : original;
+        return !OriginDataHolder.get(this.origins$self()).hasActivePower(WaterVisionPower.class) ? 600 : original;
     }
 }

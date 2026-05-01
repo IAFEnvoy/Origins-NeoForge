@@ -24,14 +24,14 @@ public interface PreventArmorEquipMixin {
     ItemStack self();
 
     @Inject(method = "canEquip", at = @At("HEAD"), cancellable = true, remap = false)
-    private void apoli$preventArmorEquip(EquipmentSlot armorType, LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
+    private void preventArmorEquip(EquipmentSlot armorType, LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
         OriginDataHolder holder = OriginDataHolder.get(entity);
         ItemStack stack = this.self();
         if (Stream.concat(
                 holder.streamActivePowers(ConditionedRestrictArmorPower.class).map(ConditionedRestrictArmorPower::getConditions),
                 holder.streamActivePowers(RestrictArmorPower.class).map(RestrictArmorPower::getConditions)
         ).anyMatch(x -> x.get(armorType) != null && x.get(armorType).test(entity.level(), stack)) ||
-                stack.is(Items.ELYTRA) && holder.hasPower(ElytraFlightPower.class, true))
+                stack.is(Items.ELYTRA) && holder.hasActivePower(ElytraFlightPower.class))
             cir.setReturnValue(false);
     }
 }

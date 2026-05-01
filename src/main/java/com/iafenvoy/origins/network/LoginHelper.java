@@ -27,10 +27,6 @@ public final class LoginHelper {
     //FIXME::Merge with refreshing power maps
     @SubscribeEvent
     public static void onSyncDatapack(OnDatapackSyncEvent event) {
-        // Clear stale badge cache on datapack reload so badges are refreshed from the registry
-        if (event.getPlayer() == null) {
-            Origins.LOGGER.debug("Datapack reload: cleared badge cache, layers/origins/badges will be re-synced");
-        }
         if (event.getPlayer() != null) forEachPlayer(event.getPlayer(), false);
         else for (ServerPlayer player : event.getPlayerList().getPlayers())
             forEachPlayer(player, true);
@@ -41,13 +37,12 @@ public final class LoginHelper {
         component.sync();
         if (component.hasAllOrigins()) return;
         component.fillAutoChoosing();
-        if (!component.hasAllOrigins())
-            if (!isFakePlayer(player)) {
-                component.getData().setSelecting(true);
-                component.sync();
-                PacketDistributor.sendToPlayer(player, new OpenChooseOriginScreenS2CPayload(true));
-                return;
-            }
+        if (!component.hasAllOrigins() && !isFakePlayer(player)) {
+            component.getData().setSelecting(true);
+            component.sync();
+            PacketDistributor.sendToPlayer(player, new OpenChooseOriginScreenS2CPayload(true));
+            return;
+        }
         component.sync();
     }
 

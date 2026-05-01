@@ -40,7 +40,7 @@ public class AttributeInstanceMixin implements AttributeInstanceAccessor {
 
     @Inject(method = "getValue", at = @At("RETURN"), cancellable = true)
     private void modifyAttributeValue(CallbackInfoReturnable<Double> cir) {
-        if (this.origins$entity != null && this.attribute.value() == Attributes.GRAVITY.value() && this.origins$entity.getDeltaMovement().y <= 0 && OriginDataHolder.get(this.origins$entity).hasPower(ModifyFallingPower.class, true)) {
+        if (this.origins$entity != null && this.attribute.value() == Attributes.GRAVITY.value() && this.origins$entity.getDeltaMovement().y <= 0 && OriginDataHolder.get(this.origins$entity).hasActivePower(ModifyFallingPower.class)) {
             double original = cir.getReturnValueD();
             cir.setReturnValue(ModifyFallingPower.apply(this.origins$entity, original));
         }

@@ -4,6 +4,7 @@ import com.iafenvoy.origins.accessor.MovingEntity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyVelocityPower;
 import com.iafenvoy.origins.data.power.builtin.regular.GroundedPower;
+import com.iafenvoy.origins.data.power.builtin.regular.InvisibilityPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
 import com.iafenvoy.origins.event.client.ClientGlowingColorEvent;
 import com.iafenvoy.origins.event.common.EntityFireImmuneEvent;
@@ -95,8 +96,14 @@ public class EntityMixin implements MovingEntity {
 
     @Inject(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getOnPosLegacy()Lnet/minecraft/core/BlockPos;"))
     private void forceGrounded(MoverType pType, Vec3 pPos, CallbackInfo ci) {
-        if (OriginDataHolder.get(this.origins$self()).hasPower(GroundedPower.class, true)) {
+        if (OriginDataHolder.get(this.origins$self()).hasActivePower(GroundedPower.class)) {
             this.onGround = true;
         }
+    }
+
+    @Inject(at = @At("HEAD"), method = "isInvisible", cancellable = true)
+    private void phantomInvisibility(CallbackInfoReturnable<Boolean> info) {
+        if (OriginDataHolder.get(this.origins$self()).hasActivePower(InvisibilityPower.class))
+            info.setReturnValue(true);
     }
 }

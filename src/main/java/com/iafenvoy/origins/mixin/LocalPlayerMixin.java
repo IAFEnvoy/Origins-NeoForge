@@ -25,6 +25,6 @@ public class LocalPlayerMixin {
 
     @ModifyVariable(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;onGround()Z"), ordinal = 4)
     private boolean modifySprintAbility(boolean original) {
-        return original && !OriginDataHolder.get(this.origins$self()).hasPower(PreventSprintingPower.class, true);
+        return original && !OriginDataHolder.get(this.origins$self()).hasActivePower(PreventSprintingPower.class);
     }
 }

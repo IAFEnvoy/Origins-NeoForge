@@ -111,10 +111,10 @@ public class ReplaceLootTablePowerTypeMixin {
         private void replaceTable(LootContext context, Consumer<ItemStack> lootConsumer, CallbackInfo ci) {
             if (!(context instanceof ReplacingLootContext replacingContext)) return;
 
-            LootContextParamSet contextType = replacingContext.apoli$getType();
+            LootContextParamSet contextType = replacingContext.origins$getType();
             ResourceKey<LootTable> key = this.apoli$key;
 
-            if (key == null || replacingContext.apoli$isReplaced(key) || !context.hasParam(LootContextParams.THIS_ENTITY)) {
+            if (key == null || replacingContext.origins$isReplaced(key) || !context.hasParam(LootContextParams.THIS_ENTITY)) {
                 return;
             }
 
@@ -160,7 +160,7 @@ public class ReplaceLootTablePowerTypeMixin {
             }
 
             LootTable table = replacementTable.get();
-            replacingContext.apoli$setReplaced(key);
+            replacingContext.origins$setReplaced(key);
 
             table.getRandomItemsRaw(context, lootConsumer);
             ci.cancel();
@@ -199,17 +199,17 @@ public class ReplaceLootTablePowerTypeMixin {
         private final Set<ResourceKey<LootTable>> apoli$replacedTables = new ObjectOpenHashSet<>();
 
         @Override
-        public LootContextParamSet apoli$getType() {
-            return ((LootContextTypeHolder) this.params).apoli$getType();
+        public LootContextParamSet origins$getType() {
+            return ((LootContextTypeHolder) this.params).origins$getType();
         }
 
         @Override
-        public boolean apoli$isReplaced(ResourceKey<LootTable> key) {
+        public boolean origins$isReplaced(ResourceKey<LootTable> key) {
             return this.apoli$replacedTables.contains(key);
         }
 
         @Override
-        public void apoli$setReplaced(ResourceKey<LootTable> key) {
+        public void origins$setReplaced(ResourceKey<LootTable> key) {
             this.apoli$replacedTables.add(key);
         }
 
@@ -222,12 +222,12 @@ public class ReplaceLootTablePowerTypeMixin {
         private LootContextParamSet apoli$contextType;
 
         @Override
-        public LootContextParamSet apoli$getType() {
+        public LootContextParamSet origins$getType() {
             return Objects.requireNonNull(this.apoli$contextType, "Loot context parameters are not initialized properly!");
         }
 
         @Override
-        public void apoli$setType(LootContextParamSet type) {
+        public void origins$setType(LootContextParamSet type) {
             this.apoli$contextType = type;
         }
 
@@ -238,7 +238,7 @@ public class ReplaceLootTablePowerTypeMixin {
         @ModifyReturnValue(method = "create", at = @At("RETURN"))
         private LootParams cacheType(LootParams original, LootContextParamSet type) {
 
-            ((LootContextTypeHolder) original).apoli$setType(type);
+            ((LootContextTypeHolder) original).origins$setType(type);
 
             return original;
 

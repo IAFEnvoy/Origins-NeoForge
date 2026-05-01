@@ -83,6 +83,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     private void initRandomOrigin() {
         this.randomOrigin = Holder.direct(Origin.special(OriginsItems.ORB_OF_ORIGIN.toStack(), Impact.NONE, -1));
         MutableComponent randomOriginText = Component.empty();
+        assert Minecraft.getInstance().player != null;
         this.layers.get(this.currentLayerIndex).value().collectRandomizableOrigins(Minecraft.getInstance().player.registryAccess()).sorted((ia, ib) -> {
             Origin a = ia.value();
             Origin b = ib.value();

@@ -28,9 +28,12 @@
     "WaterBreathingMixin$TurtleHelmetProxy",
     "accessor.LivingEntityAccessor",
     "accessor.MobAccessor",
-    "accessor.MobEffectInstanceAccessor"
+    "accessor.MobEffectInstanceAccessor",
+    "integration.CaelusApiImplMixin"
   ],
   "client": [
+    "CapeLayerMixin",
+    "ElytraLayerMixin",
     "EntityMixin",
     "EntityRenderDispatcherMixin",
     "FogRendererMixin",

@@ -26,7 +26,7 @@ public class DisableRegenPower extends Power {
 
     @SubscribeEvent
     public static void disableNaturalRegen(CanNaturalRegenEvent event) {
-        if (OriginDataHolder.get(event.getEntity()).hasPower(DisableRegenPower.class, true))
+        if (OriginDataHolder.get(event.getEntity()).hasActivePower(DisableRegenPower.class))
             event.deny();
     }
 }
