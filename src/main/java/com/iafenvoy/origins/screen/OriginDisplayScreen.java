@@ -7,6 +7,7 @@ import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Impact;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.render.BadgeTooltipManager;
 import com.iafenvoy.origins.util.math.TextAlignment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -342,7 +343,7 @@ public class OriginDisplayScreen extends Screen {
 
     protected record RenderedBadge(Power power, Badge badge, int x, int y) {
         public List<ClientTooltipComponent> getTooltipComponents(Font textRenderer, int widthLimit, float delta) {
-            return this.badge.getTooltipComponents(this.power, textRenderer, widthLimit, delta);
+            return BadgeTooltipManager.getTooltipComponents(this.badge, this.power, textRenderer, widthLimit, delta);
         }
 
         protected boolean isWithinBadgeBoundaries(int mouseX, int mouseY) {

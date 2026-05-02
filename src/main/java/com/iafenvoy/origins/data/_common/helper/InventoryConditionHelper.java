@@ -19,7 +19,10 @@ import net.minecraft.world.inventory.SlotRanges;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 public interface InventoryConditionHelper {
