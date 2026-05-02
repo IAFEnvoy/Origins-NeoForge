@@ -14,8 +14,10 @@
         "compare_to": 0
       },
       {
-        "type": "origins:on_block",
-        "inverted": true
+        "type": "origins:not",
+        "condition": {
+          "type": "origins:on_block"
+        }
       }
     ]
   },

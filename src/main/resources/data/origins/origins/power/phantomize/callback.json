@@ -3,9 +3,11 @@
   "entity_action_respawned": {
     "type": "origins:if_else",
     "condition": {
-      "type": "origins:power_active",
-      "power": "origins:phantomize/toggle",
-      "inverted": true
+      "type": "origins:not",
+      "condition": {
+        "type": "origins:power_active",
+        "power": "origins:phantomize/toggle"
+      }
     },
     "if_action": {
       "type": "origins:toggle",

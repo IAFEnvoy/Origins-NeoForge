@@ -27,8 +27,10 @@
             "inverted": true
           },
           {
-            "type": "origins:fall_flying",
-            "inverted": true
+            "type": "origins:not",
+            "condition": {
+              "type": "origins:fall_flying"
+            }
           }
         ]
       }

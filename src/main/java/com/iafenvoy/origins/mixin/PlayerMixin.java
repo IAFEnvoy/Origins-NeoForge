@@ -3,8 +3,7 @@ package com.iafenvoy.origins.mixin;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyExhaustionPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyFoodPower;
-import com.iafenvoy.origins.event.common.CanFlyWithoutElytraEvent;
-import com.iafenvoy.origins.event.common.CanNaturalRegenEvent;
+import com.iafenvoy.origins.data.power.builtin.regular.DisableRegenPower;
 import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.entity.Entity;
@@ -12,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,18 +27,7 @@ public class PlayerMixin {
 
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/GameRules;getBoolean(Lnet/minecraft/world/level/GameRules$Key;)Z"))
     private boolean checkNaturalSpawn(boolean original) {
-        return original && NeoForge.EVENT_BUS.post(new CanNaturalRegenEvent(this.origins$self())).getResult().allow();
-    }
-
-    @Inject(method = "tryToStartFallFlying", at = @At("HEAD"), cancellable = true)
-    private void handleElytra(CallbackInfoReturnable<Boolean> cir) {
-        Player player = this.origins$self();
-        if (!player.onGround() && !player.isFallFlying() && !player.isInWater()) {
-            if (NeoForge.EVENT_BUS.post(new CanFlyWithoutElytraEvent(player)).getResult().allow()) {
-                player.startFallFlying();
-                cir.setReturnValue(true);
-            }
-        }
+        return original && !OriginDataHolder.get(this.origins$self()).hasActivePower(DisableRegenPower.class);
     }
 
     @ModifyVariable(method = "causeFoodExhaustion", at = @At("HEAD"), ordinal = 0, name = "exhaustion", argsOnly = true)

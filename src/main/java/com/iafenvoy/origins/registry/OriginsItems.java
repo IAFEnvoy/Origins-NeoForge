@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.registry;
 
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.item.OrbOfOriginItem;
+import com.iafenvoy.origins.content.OrbOfOriginItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

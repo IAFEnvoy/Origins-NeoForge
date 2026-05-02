@@ -1,8 +1,10 @@
 {
   "type": "origins:prevent_entity_render",
   "bientity_condition": {
-    "type": "origins:equal",
-    "inverted": true
+    "type": "origins:not",
+    "condition": {
+      "type": "origins:equal"
+    }
   },
   "entity_condition": {
     "type": "origins:equipped_item",

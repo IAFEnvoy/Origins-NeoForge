@@ -82,7 +82,7 @@ public class RestrictArmorPower extends IntervalPower {
 
     private static void checkSingle(LivingEntity entity, EquipmentSlot slot, ItemCondition condition) {
         ItemStack stack = entity.getItemBySlot(slot);
-        if (!condition.test(entity.level(), stack))
+        if (condition.test(entity.level(), stack))
             Block.popResource(entity.level(), entity.blockPosition(), stack.split(stack.getCount()));
     }
 }

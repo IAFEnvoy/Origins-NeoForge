@@ -4,11 +4,13 @@
     "type": "origins:and",
     "conditions": [
       {
-        "type": "origins:ingredient",
-        "ingredient": {
-          "tag": "origins:ignore_diet"
-        },
-        "inverted": true
+        "type": "origins:not",
+        "condition": {
+          "type": "origins:ingredient",
+          "ingredient": {
+            "tag": "origins:ignore_diet"
+          }
+        }
       },
       {
         "type": "origins:ingredient",

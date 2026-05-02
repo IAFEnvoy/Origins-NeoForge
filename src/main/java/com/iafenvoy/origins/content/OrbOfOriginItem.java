@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.item;
+package com.iafenvoy.origins.content;
 
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.network.LoginHelper;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class OrbOfOriginItem extends Item {
     public OrbOfOriginItem() {
-        super(new Properties().stacksTo(1).rarity(Rarity.RARE).component(OriginsDataComponents.ORB_LAYERS, List.of()));
+        super(new Properties().stacksTo(16).rarity(Rarity.RARE).component(OriginsDataComponents.ORB_LAYERS, List.of()));
     }
 
     @Override
@@ -27,7 +27,8 @@ public class OrbOfOriginItem extends Item {
         if (player instanceof ServerPlayer serverPlayer) {
             List<Holder<Layer>> layers = stack.getOrDefault(OriginsDataComponents.ORB_LAYERS, List.of());
             if (layers.isEmpty()) LoginHelper.openGuiForLayer(serverPlayer, null);
-            else for (Holder<Layer> layer : layers) LoginHelper.openGuiForLayer(serverPlayer, layer);
+            else for (Holder<Layer> layer : layers) LoginHelper.openGuiForLayer(serverPlayer, layer);//FIXME::Rewrite
+            stack.shrink(1);
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }

@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.prevent;
 
+import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.config.OriginsConfig;
 import com.iafenvoy.origins.data.condition.ItemCondition;
@@ -69,12 +70,12 @@ public class PreventItemUsePower extends Power {
         //TODO::Config
         Player player = event.getEntity();
         if (player == null) return;
-        List<PreventItemUsePower> powers = OriginDataHolder.get(player).streamActivePowers(PreventItemUsePower.class).collect(Collectors.toList());
+        List<PreventItemUsePower> powers = OriginDataHolder.get(player).streamActivePowers(PreventItemUsePower.class).filter(x -> x.itemCondition.test(player.level(), event.getItemStack())).collect(Collectors.toList());
         int size = powers.size();
         if (!powers.isEmpty()) {
             RegistryAccess access = player.registryAccess();
             powers.removeIf(x -> x.getSettings().hidden());
-            String key = "tooltip.apoli.unusable." + event.getItemStack().getUseAnimation().name().toLowerCase(Locale.ROOT);
+            String key = String.format(Locale.ROOT, "tooltip.%s.unusable.%s", Origins.MOD_ID, event.getItemStack().getUseAnimation().name().toLowerCase(Locale.ROOT));
             ChatFormatting textColor = ChatFormatting.GRAY;
             ChatFormatting powerColor = ChatFormatting.RED;
             if (OriginsConfig.INSTANCE.general.compactUsabilityHints.getValue() || powers.isEmpty()) {
@@ -84,12 +85,12 @@ public class PreventItemUsePower extends Power {
                 } else
                     event.getToolTip().add(Component.translatable(key + ".multiple", Component.literal((powers.isEmpty() ? size : powers.size()) + "").withStyle(powerColor)).withStyle(textColor));
             } else {
-                MutableComponent powerNameList = powers.getFirst().getName(access).withStyle(powerColor);
+                MutableComponent component = powers.getFirst().getName(access).withStyle(powerColor);
                 for (int i = 1; i < powers.size(); i++) {
-                    powerNameList = powerNameList.append(Component.literal(", ").withStyle(textColor));
-                    powerNameList = powerNameList.append(powers.get(i).getName(access).withStyle(powerColor));
+                    component = component.append(Component.literal(", ").withStyle(textColor));
+                    component = component.append(powers.get(i).getName(access).withStyle(powerColor));
                 }
-                MutableComponent preventText = Component.translatable(key + ".single", powerNameList).withStyle(textColor);
+                MutableComponent preventText = Component.translatable(key + ".single", component).withStyle(textColor);
                 event.getToolTip().add(preventText);
             }
         }

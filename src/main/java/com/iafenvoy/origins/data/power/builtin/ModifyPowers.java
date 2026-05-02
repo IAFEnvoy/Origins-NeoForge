@@ -34,8 +34,6 @@ public final class ModifyPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyJumpPower>> MODIFY_JUMP = REGISTRY.register("modify_jump", () -> ModifyJumpPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyPlayerSpawnPower>> MODIFY_PLAYER_SPAWN = REGISTRY.register("modify_player_spawn", () -> ModifyPlayerSpawnPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyProjectileDamagePower>> MODIFY_PROJECTILE_DAMAGE = REGISTRY.register("modify_projectile_damage", () -> ModifyProjectileDamagePower.CODEC);
-    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyValueBlockPower>> MODIFY_VALUE_BLOCK = REGISTRY.register("modify_value_block", () -> ModifyValueBlockPower.CODEC);
-    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyValuePower>> MODIFY_VALUE = REGISTRY.register("modify_value", () -> ModifyValuePower.CODEC);
-    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyVelocityPower>> MODIFY_VELOCITY = REGISTRY.register("modify_velocity", () -> ModifyVelocityPower.CODEC);
+     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyVelocityPower>> MODIFY_VELOCITY = REGISTRY.register("modify_velocity", () -> ModifyVelocityPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyXPGainPower>> MODIFY_XP_GAIN = REGISTRY.register("modify_xp_gain", () -> ModifyXPGainPower.CODEC);
 }

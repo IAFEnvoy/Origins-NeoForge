@@ -34,14 +34,7 @@ public record InventoryCondition(ProcessMode processMode, ItemCondition itemCond
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        int matches = 0;
-        if (this.power.isEmpty())
-            matches += this.checkInventory(entity, this.processMode.getProcessor());
-        else {
-            Holder<Power> targetPower = this.power.get();
-            if (!(targetPower.value() instanceof InventoryPower)) return false;
-            matches += this.checkInventory(entity, this.processMode.getProcessor());
-        }
-        return this.comparison().compare(matches);
+        if (this.power.isPresent() && !(this.power.get().value() instanceof InventoryPower)) return false;
+        return this.comparison().compare(this.checkInventory(entity, this.processMode.getProcessor()));
     }
 }

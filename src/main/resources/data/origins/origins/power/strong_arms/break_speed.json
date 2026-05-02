@@ -5,8 +5,10 @@
     "tag": "origins:natural_stone"
   },
   "condition": {
-    "type": "origins:using_effective_tool",
-    "inverted": true
+    "type": "origins:not",
+    "condition": {
+      "type": "origins:using_effective_tool"
+    }
   },
   "modifier": {
     "value": 0.06,

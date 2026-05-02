@@ -3,7 +3,6 @@ package com.iafenvoy.origins.util;
 import com.mojang.serialization.Codec;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
-import net.minecraft.advancements.AdvancementTree;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;

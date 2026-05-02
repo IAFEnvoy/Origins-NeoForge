@@ -78,9 +78,9 @@ public class ConditionedRestrictArmorPower extends IntervalPower {
     @Override
     public void intervalTick(@NotNull Entity entity) {
         if (!(entity instanceof LivingEntity living)) return;
-        this.conditions.forEach((slot, predicate) -> {
+        this.conditions.forEach((slot, condition) -> {
             ItemStack equippedItem = living.getItemBySlot(slot);
-            if (!equippedItem.isEmpty() && predicate.test(living.level(), equippedItem)) {
+            if (!equippedItem.isEmpty() && condition.test(living.level(), equippedItem)) {
                 if (entity instanceof Player player) {
                     if (!player.getInventory().add(equippedItem))
                         player.drop(equippedItem, true);

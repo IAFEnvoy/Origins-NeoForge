@@ -6,7 +6,6 @@ import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
 import com.iafenvoy.origins.util.wrapper.ContainerWrapper;
 import com.mojang.serialization.Codec;
-import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
