@@ -2,11 +2,10 @@ package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
-import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,8 +23,8 @@ public record IfElseAction(ItemCondition condition, ItemAction ifAction,
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
-        if (this.condition.test(level, stack.get())) this.ifAction.execute(level, source, stack);
-        else this.elseAction.execute(level, source, stack);
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull SlotAccess access) {
+        if (this.condition.test(level, access.get())) this.ifAction.execute(level, source, access);
+        else this.elseAction.execute(level, source, access);
     }
 }

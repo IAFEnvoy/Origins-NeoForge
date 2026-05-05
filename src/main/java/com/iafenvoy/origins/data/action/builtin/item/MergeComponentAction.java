@@ -1,15 +1,13 @@
 package com.iafenvoy.origins.data.action.builtin.item;
 
 import com.iafenvoy.origins.data.action.ItemAction;
-import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 public record MergeComponentAction(DataComponentPatch components) implements ItemAction {
     public static final MapCodec<MergeComponentAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -22,7 +20,7 @@ public record MergeComponentAction(DataComponentPatch components) implements Ite
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, @UnknownNullability Mutable<ItemStack> stack) {
-        stack.get().applyComponents(this.components);
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull SlotAccess access) {
+        access.get().applyComponents(this.components);
     }
 }

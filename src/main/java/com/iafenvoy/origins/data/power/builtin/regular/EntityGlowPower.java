@@ -1,30 +1,22 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data._common.helper.GlowPowerHelper;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.builtin.RegularPowers;
-import com.iafenvoy.origins.event.client.ClientGlowingColorEvent;
-import com.iafenvoy.origins.event.client.ClientShouldGlowingEvent;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityGlowPower extends Power {
+public class EntityGlowPower extends Power implements GlowPowerHelper {
     public static final MapCodec<EntityGlowPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             EntityCondition.optionalCodec("entity_condition").forGetter(EntityGlowPower::getEntityCondition),
             BiEntityCondition.optionalCodec("bientity_condition").forGetter(EntityGlowPower::getBiEntityCondition),
-            Codec.BOOL.optionalFieldOf("use_teams", true).forGetter(EntityGlowPower::isUseTeam),
+            Codec.BOOL.optionalFieldOf("use_teams", true).forGetter(EntityGlowPower::shouldUseTeam),
             Codec.INT.optionalFieldOf("color", 0xFFFFFFFF).forGetter(EntityGlowPower::getColor)
     ).apply(i, EntityGlowPower::new));
     private final EntityCondition entityCondition;
@@ -40,18 +32,22 @@ public class EntityGlowPower extends Power {
         this.color = color;
     }
 
+    @Override
     public EntityCondition getEntityCondition() {
         return this.entityCondition;
     }
 
+    @Override
     public BiEntityCondition getBiEntityCondition() {
         return this.biEntityCondition;
     }
 
-    public boolean isUseTeam() {
+    @Override
+    public boolean shouldUseTeam() {
         return this.useTeam;
     }
 
+    @Override
     public int getColor() {
         return this.color;
     }
@@ -61,27 +57,8 @@ public class EntityGlowPower extends Power {
         return CODEC;
     }
 
-    @ApiStatus.Internal
-    @EventBusSubscriber(Dist.CLIENT)
-    public static final class ClientEvents {
-        @SubscribeEvent
-        public static void handleGlowingColor(ClientGlowingColorEvent event) {
-            Player player = Minecraft.getInstance().player;
-            Entity entity = event.getEntity();
-            if (player != null)
-                for (EntityGlowPower power : OriginDataHolder.get(player).getPowers(RegularPowers.ENTITY_GLOW, EntityGlowPower.class))
-                    if (!power.useTeam && power.entityCondition.test(entity) && power.biEntityCondition.test(player, entity))
-                        event.setColor(power.color);
-        }
-
-        @SubscribeEvent
-        public static void enableGlowing(ClientShouldGlowingEvent event) {
-            Player player = Minecraft.getInstance().player;
-            Entity entity = event.getEntity();
-            if (player != null)
-                for (EntityGlowPower power : OriginDataHolder.get(player).getPowers(RegularPowers.ENTITY_GLOW, EntityGlowPower.class))
-                    if (power.entityCondition.test(entity) && power.biEntityCondition.test(player, entity))
-                        event.allow();
-        }
+    @Override
+    public boolean canGlow(Player player, Entity entity) {
+        return this.entityCondition.test(entity) && this.biEntityCondition.test(player, entity);
     }
 }

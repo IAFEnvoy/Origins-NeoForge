@@ -105,15 +105,15 @@ public class ItemOnItemPower extends Power {
     }
 
     public void apply(Entity entity, Slot self, SlotAccess other) {
-        this.execute(entity, Mutable.access(other::get, other::set), Mutable.access(self::getItem, self::set), self);
+        this.execute(entity, SlotAccess.of(other::get, other::set), SlotAccess.of(self::getItem, self::set), self);
     }
 
-    public void execute(Entity entity, Mutable<ItemStack> using, Mutable<ItemStack> on, Slot slot) {
-        Mutable<ItemStack> stack = Mutable.of(ItemStack.EMPTY);
+    public void execute(Entity entity, SlotAccess using, SlotAccess on, Slot slot) {
+        Mutable.Stack stack = Mutable.stack(ItemStack.EMPTY);
         if (this.result.isPresent()) stack.set(this.result.get().copy());
         else if (this.resultFromOnStack > 0) stack.set(on.get().split(this.resultFromOnStack));
         else stack.set(on.get());
-        this.resultItemAction.execute(entity.level(), entity, stack);
+        this.resultItemAction.execute(entity.level(), entity, stack.toSlotAccess());
         this.usingItemAction.execute(entity.level(), entity, using);
         this.onItemAction.execute(entity.level(), entity, on);
         if (this.result.isPresent()) {

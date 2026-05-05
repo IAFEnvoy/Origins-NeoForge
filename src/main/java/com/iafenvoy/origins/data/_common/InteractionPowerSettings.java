@@ -8,6 +8,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -39,10 +40,10 @@ public record InteractionPowerSettings(ItemCondition itemCondition, List<Interac
     }
 
     public void performActorItemStuff(LivingEntity actor, InteractionHand hand) {
-        Mutable<ItemStack> heldStack = Mutable.access(() -> actor.getItemInHand(hand), stack -> actor.setItemInHand(hand, stack));
+        SlotAccess heldStack = SlotAccess.of(() -> actor.getItemInHand(hand), stack -> actor.setItemInHand(hand, stack));
         this.heldItemAction().execute(actor.level(), actor, heldStack);
-        Mutable<ItemStack> resultingStack = this.resultStack.map(ItemStack::copy).map(Mutable::of).orElse(heldStack);
-        this.resultItemAction().execute(actor.level(), actor, resultingStack);
+        Mutable.Stack resultingStack = Mutable.stack(this.resultStack.map(ItemStack::copy).orElse(heldStack.get()));
+        this.resultItemAction().execute(actor.level(), actor, resultingStack.toSlotAccess());
         if (this.resultStack().isPresent())
             if (resultingStack.get().isEmpty())
                 actor.setItemInHand(hand, resultingStack.get());

@@ -2,19 +2,20 @@ package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
-import com.iafenvoy.origins.util.codec.ExtraEnumCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @NotImplementedYet
@@ -24,7 +25,7 @@ public class ModifyPlayerSpawnPower extends Power {
             ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(ModifyPlayerSpawnPower::getDimension),
             Codec.FLOAT.optionalFieldOf("dimension_distance_multiplier", 0F).forGetter(ModifyPlayerSpawnPower::getDistanceMultiplier),
             ResourceKey.codec(Registries.BIOME).optionalFieldOf("biome").forGetter(ModifyPlayerSpawnPower::getBiome),
-            ExtraEnumCodecs.enumCodec(SpawnStrategy::valueOf).optionalFieldOf("spawn_strategy", SpawnStrategy.DEFAULT).forGetter(ModifyPlayerSpawnPower::getSpawnStrategy),
+            SpawnStrategy.CODEC.optionalFieldOf("spawn_strategy", SpawnStrategy.DEFAULT).forGetter(ModifyPlayerSpawnPower::getSpawnStrategy),
             ResourceKey.codec(Registries.STRUCTURE).optionalFieldOf("structure").forGetter(ModifyPlayerSpawnPower::getStructure)
     ).apply(i, ModifyPlayerSpawnPower::new));
     private final ResourceKey<Level> dimension;
@@ -67,7 +68,7 @@ public class ModifyPlayerSpawnPower extends Power {
         return CODEC;
     }
 
-    public enum SpawnStrategy {
+    public enum SpawnStrategy implements StringRepresentable {
         CENTER((blockPos, center, multiplier) -> new BlockPos(0, center, 0)),
         DEFAULT(
                 (blockPos, center, multiplier) -> {
@@ -76,11 +77,10 @@ public class ModifyPlayerSpawnPower extends Power {
                         mut.set(blockPos.getX() * multiplier, blockPos.getY(), blockPos.getZ() * multiplier);
                     else mut.set(blockPos);
                     return mut;
-
                 }
         );
-
-        final TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier;
+        public static final Codec<SpawnStrategy> CODEC = StringRepresentable.fromValues(SpawnStrategy::values);
+        private final TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier;
 
         SpawnStrategy(TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier) {
             this.strategyApplier = strategyApplier;
@@ -88,6 +88,11 @@ public class ModifyPlayerSpawnPower extends Power {
 
         public BlockPos apply(BlockPos blockPos, int center, float multiplier) {
             return this.strategyApplier.apply(blockPos, center, multiplier);
+        }
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return this.name().toLowerCase(Locale.ROOT);
         }
     }
 }

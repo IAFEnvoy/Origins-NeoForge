@@ -1,11 +1,10 @@
 package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
-import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +21,7 @@ public record AndAction(List<ItemAction> actions) implements ItemAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
-        this.actions.forEach(x -> x.execute(level, source, stack));
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull SlotAccess access) {
+        this.actions.forEach(x -> x.execute(level, source, access));
     }
 }

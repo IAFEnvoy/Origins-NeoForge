@@ -1,11 +1,10 @@
 package com.iafenvoy.origins.data.action;
 
-import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +18,7 @@ public enum NoOpAction implements BiEntityAction, BlockAction, EntityAction, Ite
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull SlotAccess access) {
     }
 
     @Override

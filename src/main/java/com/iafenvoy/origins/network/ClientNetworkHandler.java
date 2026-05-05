@@ -3,6 +3,7 @@ package com.iafenvoy.origins.network;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
+import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import com.iafenvoy.origins.network.payload.ReapplyShadersS2CPayload;
@@ -12,6 +13,7 @@ import com.iafenvoy.origins.screen.ChooseOriginScreen;
 import com.iafenvoy.origins.screen.WaitForNextLayerScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -23,6 +25,7 @@ public final class ClientNetworkHandler {
         Player player = context.player();
         OriginDataHolder holder = OriginDataHolder.get(player);
         holder.setOrigin(packet.layer(), packet.origin());
+        player.sendSystemMessage(Component.translatable("commands.origin.set.success.single", player.getDisplayName(), Layer.getName(packet.layer()), Origin.getName(packet.origin())));
         if (Minecraft.getInstance().screen instanceof WaitForNextLayerScreen nextLayerScreen)
             nextLayerScreen.openSelection();
     }

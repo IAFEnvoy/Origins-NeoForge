@@ -2,15 +2,14 @@ package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.accessor.MovingEntity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data._common.helper.GlowPowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyVelocityPower;
-import com.iafenvoy.origins.data.power.builtin.regular.GroundedPower;
-import com.iafenvoy.origins.data.power.builtin.regular.InvisibilityPower;
-import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
-import com.iafenvoy.origins.event.client.ClientGlowingColorEvent;
-import com.iafenvoy.origins.event.common.EntityFireImmuneEvent;
+import com.iafenvoy.origins.data.power.builtin.regular.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -18,7 +17,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,9 +27,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.OptionalInt;
+import java.util.stream.Stream;
 
-@OnlyIn(Dist.CLIENT)
 @Mixin(Entity.class)
 public class EntityMixin implements MovingEntity {
     @Shadow
@@ -53,15 +50,9 @@ public class EntityMixin implements MovingEntity {
         return this.origins$isMoving;
     }
 
-    @Inject(method = "getTeamColor", at = @At("HEAD"), cancellable = true)
-    private void handleGlowColor(CallbackInfoReturnable<Integer> cir) {
-        OptionalInt color = NeoForge.EVENT_BUS.post(new ClientGlowingColorEvent(this.origins$self())).getColor();
-        if (color.isPresent()) cir.setReturnValue(color.getAsInt());
-    }
-
     @Inject(method = "fireImmune", at = @At("HEAD"), cancellable = true)
     private void handleFireImmune(CallbackInfoReturnable<Boolean> cir) {
-        if (NeoForge.EVENT_BUS.post(new EntityFireImmuneEvent(this.origins$self())).getResult().allow())
+        if (OriginDataHolder.get(this.origins$self()).streamActivePowers(FireImmunityPower.class).findAny().isPresent())
             cir.setReturnValue(true);
     }
 
@@ -105,5 +96,25 @@ public class EntityMixin implements MovingEntity {
     private void phantomInvisibility(CallbackInfoReturnable<Boolean> info) {
         if (OriginDataHolder.get(this.origins$self()).hasActivePower(InvisibilityPower.class))
             info.setReturnValue(true);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Mixin(Entity.class)
+    public static class Client {
+        @Unique
+        private Entity origins$self() {
+            return (Entity) (Object) this;
+        }
+
+        @Inject(method = "getTeamColor", at = @At("HEAD"), cancellable = true)
+        private void handleGlowColor(CallbackInfoReturnable<Integer> cir) {
+            Player player = Minecraft.getInstance().player;
+            if (player == null) return;
+            Entity entity = this.origins$self();
+            Stream.concat(
+                    OriginDataHolder.get(player).streamActivePowers(EntityGlowPower.class),
+                    OriginDataHolder.get(entity).streamActivePowers(SelfGlowPower.class)
+            ).filter(power -> !power.shouldUseTeam() && power.canGlow(player, entity)).mapToInt(GlowPowerHelper::getColor).forEach(cir::setReturnValue);
+        }
     }
 }

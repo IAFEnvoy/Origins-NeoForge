@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.data.power.builtin.regular.WaterBreathingPower;
 import com.iafenvoy.origins.util.WaterBreathingHelper;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -25,8 +24,7 @@ public final class WaterBreathingMixin {
 
         @ModifyReturnValue(method = "canBreatheUnderwater", at = @At("RETURN"))
         private boolean origins$breatheUnderwater(boolean original) {
-            return original
-                    || !OriginDataHolder.get(this).getPowers(RegularPowers.WATER_BREATHING, WaterBreathingPower.class).isEmpty();
+            return original || OriginDataHolder.get(this).hasActivePower(WaterBreathingPower.class);
         }
 
         @Inject(method = "baseTick", at = @At("TAIL"))
@@ -43,7 +41,7 @@ public final class WaterBreathingMixin {
 
         @ModifyExpressionValue(method = "turtleHelmetTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isEyeInFluid(Lnet/minecraft/tags/TagKey;)Z"))
         private boolean origins$submergedProxy(boolean original) {
-            return OriginDataHolder.get(this).getPowers(RegularPowers.WATER_BREATHING, WaterBreathingPower.class).isEmpty() == original;
+            return original ^ OriginDataHolder.get(this).hasActivePower(WaterBreathingPower.class);
         }
     }
 }

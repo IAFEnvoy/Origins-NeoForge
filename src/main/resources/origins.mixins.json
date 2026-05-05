@@ -9,11 +9,14 @@
     "BlockStateBaseMixin",
     "CommonHooksMixin",
     "ConduitPowerOnLandMixin",
+    "EntityMixin",
     "FoodDataMixin",
     "IBlockStateExtensionMixin",
+    "ItemEntityMixin",
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
+    "MobMixin",
     "PhantomSpawnerMixin",
     "PlayerMixin",
     "PreventArmorEquipMixin",
@@ -34,18 +37,18 @@
   "client": [
     "CapeLayerMixin",
     "ElytraLayerMixin",
-    "EntityMixin",
+    "EntityMixin$Client",
     "EntityRenderDispatcherMixin",
     "FogRendererMixin",
     "GameRendererMixin",
     "GuiMixin",
     "LevelRendererMixin",
     "LightTextureMixin",
+    "LivingEntityMixin$Client",
     "LivingEntityRendererMixin",
     "LocalPlayerMixin",
     "PlayerRendererMixin",
-    "RenderChunkRegionMixin",
-    "WaterVisionMixin"
+    "RenderChunkRegionMixin"
   ],
   "injectors": {
     "defaultRequire": 1

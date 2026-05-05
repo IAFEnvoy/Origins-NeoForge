@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.entity;
+package com.iafenvoy.origins.content;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,16 +27,13 @@ public class EnderianPearlEntity extends ThrowableItemProjectile {
         super.onHit(result);
         Entity owner = this.getOwner();
 
-        for (int i = 0; i < 32; ++i) {
+        for (int i = 0; i < 32; ++i)
             this.level().addParticle(ParticleTypes.PORTAL, this.getX(), this.getY() + this.random.nextDouble() * 2.0D, this.getZ(), this.random.nextGaussian(), 0.0D, this.random.nextGaussian());
-        }
 
         if (!this.level().isClientSide && !this.isRemoved()) {
             if (owner instanceof ServerPlayer serverPlayer) {
                 if (serverPlayer.connection.isAcceptingMessages() && serverPlayer.level() == this.level() && !serverPlayer.isSleeping()) {
-                    if (owner.isPassenger()) {
-                        owner.stopRiding();
-                    }
+                    if (owner.isPassenger()) owner.stopRiding();
                     owner.teleportTo(this.getX(), this.getY(), this.getZ());
                     owner.fallDistance = 0.0F;
                 }

@@ -28,12 +28,10 @@ public record GiveItemAction(ItemStack stack, ItemAction itemAction,
     @Override
     public void execute(@NotNull Entity source) {
         if (source instanceof Player player) {
-            ItemStack stack = this.stack.copy();
-            this.itemAction.execute(player.level(), source, stack);
+            ItemStack stack = this.itemAction.execute(player.level(), source, this.stack.copy());
             if (this.preferredSlot.isPresent() && player.getItemBySlot(this.preferredSlot.get()).isEmpty())
                 player.setItemSlot(this.preferredSlot.get(), stack);
             else player.getInventory().placeItemBackInInventory(stack);
         }
-
     }
 }

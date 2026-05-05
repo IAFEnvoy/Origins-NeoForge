@@ -45,6 +45,5 @@ public final class MiscUtil {
                 null
         );
         return Optional.of(entityToSpawn);
-
     }
 }

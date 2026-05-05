@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.registry;
 
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.entity.EnderianPearlEntity;
+import com.iafenvoy.origins.content.EnderianPearlEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;

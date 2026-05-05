@@ -34,13 +34,11 @@ public record RevokeAdvancementAction(ResourceLocation advancement, List<String>
         if (source instanceof ServerPlayer player) {
             ServerAdvancementManager manager = player.server.getAdvancements();
             PlayerAdvancements playerAdvancements = player.getAdvancements();
-            AdvancementHolder base = manager.get(this.advancement);
-            List<AdvancementHolder> advancements = AdvancementUtil.getAdvancements(manager, base, this.selection);
-            for (AdvancementHolder holder : advancements) {
+            for (AdvancementHolder holder : AdvancementUtil.getAdvancements(manager, manager.get(this.advancement), this.selection)) {
                 if (this.criterion.isEmpty()) {
-                    AdvancementProgress advancementProgress = playerAdvancements.getOrStartProgress(holder);
-                    if (advancementProgress.hasProgress())
-                        for (String c : advancementProgress.getCompletedCriteria())
+                    AdvancementProgress progress = playerAdvancements.getOrStartProgress(holder);
+                    if (progress.hasProgress())
+                        for (String c : progress.getCompletedCriteria())
                             playerAdvancements.revoke(holder, c);
                 } else for (String c : this.criterion) playerAdvancements.revoke(holder, c);
             }

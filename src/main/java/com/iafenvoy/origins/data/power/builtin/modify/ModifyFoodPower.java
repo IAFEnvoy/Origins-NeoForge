@@ -90,10 +90,10 @@ public class ModifyFoodPower extends Power {
         return CODEC;
     }
 
-    public static void modifyStack(Level level, Entity entity, Mutable<ItemStack> input) {
+    public static void modifyStack(Level level, Entity entity, Mutable.Stack input) {
         OriginDataHolder.get(entity).streamActivePowers(ModifyFoodPower.class).filter(x -> x.itemCondition.test(level, input.get())).forEach(power -> {
             power.replaceStack.ifPresent(stack -> input.set(stack.copy()));
-            power.itemAction.execute(level, entity, input);
+            power.itemAction.execute(level, entity, input.toSlotAccess());
         });
     }
 }

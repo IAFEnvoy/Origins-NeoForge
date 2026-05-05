@@ -2,12 +2,11 @@ package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.util.Timeout;
-import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +22,7 @@ public record DelayAction(ItemAction action, int ticks) implements ItemAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
-        Timeout.create(this.ticks, () -> this.action.execute(level, source, stack));
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull SlotAccess access) {
+        Timeout.create(this.ticks, () -> this.action.execute(level, source, access));
     }
 }

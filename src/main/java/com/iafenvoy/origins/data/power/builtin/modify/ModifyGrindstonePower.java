@@ -7,17 +7,15 @@ import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.annotation.NotImplementedYet;
-import com.iafenvoy.origins.util.codec.ExtraEnumCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @NotImplementedYet
@@ -33,7 +31,7 @@ public class ModifyGrindstonePower extends Power {
             ItemAction.optionalCodec("item_action_after_grinding").forGetter(ModifyGrindstonePower::getLateItemAction),
             EntityAction.optionalCodec("entity_action").forGetter(ModifyGrindstonePower::getEntityAction),
             BlockAction.optionalCodec("block_action").forGetter(ModifyGrindstonePower::getBlockAction),
-            ExtraEnumCodecs.enumCodec(ResultType::valueOf).optionalFieldOf("result_type", ResultType.UNCHANGED).forGetter(ModifyGrindstonePower::getResultType),
+            ResultType.CODEC.optionalFieldOf("result_type", ResultType.UNCHANGED).forGetter(ModifyGrindstonePower::getResultType),
             Modifier.CODEC.optionalFieldOf("xp_modifier").forGetter(ModifyGrindstonePower::getXpModifier)
     ).apply(i, ModifyGrindstonePower::new));
 
@@ -113,20 +111,13 @@ public class ModifyGrindstonePower extends Power {
         return CODEC;
     }
 
-    public void tryExecute(ModifyGrindstonePower power, Entity entity, ItemStack itemStack, Optional<BlockPos> pos) {
-        power.lateItemAction.execute(entity.level(), entity, itemStack);
-        power.entityAction.execute(entity);
-        pos.ifPresent(blockPos -> power.blockAction.execute(entity.level(), blockPos, Direction.UP));
-    }
+    public enum ResultType implements StringRepresentable {
+        UNCHANGED, SPECIFIED, FROM_TOP, FROM_BOTTOM;
+        public static final Codec<ResultType> CODEC = StringRepresentable.fromValues(ResultType::values);
 
-    public boolean doesApply(ModifyGrindstonePower power, Level level, ItemStack top, ItemStack bottom, ItemStack original, Optional<BlockPos> pos) {
-        return power.topItemCondition.test(level, top) &&
-                power.bottomItemCondition.test(level, bottom) &&
-                power.outputItemCondition.test(level, original) &&
-                (pos.isEmpty() || power.blockCondition.test(level, pos.get()));
-    }
-
-    public enum ResultType {
-        UNCHANGED, SPECIFIED, FROM_TOP, FROM_BOTTOM
+        @Override
+        public @NotNull String getSerializedName() {
+            return this.name().toLowerCase(Locale.ROOT);
+        }
     }
 }

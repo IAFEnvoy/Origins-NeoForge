@@ -95,12 +95,12 @@ public final class OriginDataHolder {
         this.data.getPowers().values().remove(power);
     }
 
-    @NotNull
+    @NotNull//FIXME::Do not use this unless necessary
     public <T extends Power> List<T> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder, Class<T> clazz) {
         return this.getPowers(holder.getId(), clazz);
     }
 
-    @NotNull
+    @NotNull//FIXME::Do not use this unless necessary
     public <T extends Power> List<T> getPowers(ResourceLocation id, Class<T> clazz) {
         List<T> results = this.data.getPowers().values().stream().filter(x -> x.unwrapKey().map(ResourceKey::location).map(id::equals).orElse(false)).map(Holder::value).toList().stream().filter(power -> power != null && clazz.isAssignableFrom(power.getClass())).map(clazz::cast).collect(Collectors.toCollection(LinkedList::new));
         return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast).toList() : results;
@@ -130,10 +130,6 @@ public final class OriginDataHolder {
         return this.data.getPowers().values().stream().map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
     }
 
-    public <T extends Power> boolean isPowerActive(Class<T> clazz) {
-        return this.streamActivePowers(clazz).findAny().isPresent();
-    }
-
     public ResourceLocation getPowerId(Power power) {
         return this.access.registryOrThrow(PowerRegistries.POWER_KEY).getKey(power);
     }
@@ -142,9 +138,6 @@ public final class OriginDataHolder {
     public void setOrigin(@NotNull Holder<Layer> layer, @NotNull Holder<Origin> origin) {
         this.clearOrigin(layer);
         if (origin.value() == Origin.EMPTY) return;
-        if (this.entity.level().isClientSide)
-            //TODO::Move message outside
-            this.entity.sendSystemMessage(Component.translatable("commands.origin.set.success.single", this.entity.getDisplayName(), Layer.getName(layer), Origin.getName(origin)));
         this.data.getOrigins().put(layer, origin);
         ResourceLocation id = RLHelper.id(origin);
         origin.value().powers().forEach(x -> this.grantPower(id, x));

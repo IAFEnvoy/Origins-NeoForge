@@ -33,8 +33,8 @@ public interface InventoryActionHelper extends InventoryConditionHelper {
                 this.entityAction().execute(entity);
                 int amount = processor.apply(stack);
                 for (int i = 0; i < amount; i++) {
-                    Mutable<ItemStack> newStack = Mutable.of(stack);
-                    this.itemAction().execute(entity.level(), entity, newStack);
+                    Mutable.Stack newStack = Mutable.stack(stack);
+                    this.itemAction().execute(entity.level(), entity, newStack.toSlotAccess());
                     access.set(newStack.get());
                     counter++;
                     if (counter >= limit) break;
@@ -53,10 +53,10 @@ public interface InventoryActionHelper extends InventoryConditionHelper {
             ItemStack stack = access.get();
             if (this.itemCondition().test(entity.level(), stack)) {
                 this.entityAction().execute(entity);
-                Mutable<ItemStack> newStack = Mutable.of(replacementStack.copy());
+                Mutable.Stack newStack = Mutable.stack(replacementStack.copy());
                 if (mergeComponent && !newStack.get().isComponentsPatchEmpty())
                     newStack.get().applyComponents(replacementStack.getComponents());
-                this.itemAction().execute(entity.level(), entity, newStack);
+                this.itemAction().execute(entity.level(), entity, newStack.toSlotAccess());
                 access.set(newStack.get());
             }
         }
@@ -71,8 +71,8 @@ public interface InventoryActionHelper extends InventoryConditionHelper {
             ItemStack stack = access.get();
             if (!stack.isEmpty() && this.itemCondition().test(entity.level(), stack)) {
                 this.entityAction().execute(entity);
-                Mutable<ItemStack> newStack = Mutable.of(stack.copy());
-                this.itemAction().execute(entity.level(), entity, newStack);
+                Mutable.Stack newStack = Mutable.stack(stack.copy());
+                this.itemAction().execute(entity.level(), entity, newStack.toSlotAccess());
                 if (amount != 0) {
                     int newAmount = amount > 0 ? amount * -1 : amount;
                     newStack.set(newStack.get().split(newAmount));

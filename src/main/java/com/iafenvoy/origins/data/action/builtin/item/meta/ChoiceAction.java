@@ -2,12 +2,11 @@ package com.iafenvoy.origins.data.action.builtin.item.meta;
 
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.util.WeightedRandomSelector;
-import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,9 +23,9 @@ public record ChoiceAction(List<WeightedActionHolder> actions) implements ItemAc
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull Entity source, Mutable<ItemStack> stack) {
+    public void execute(@NotNull Level level, @NotNull Entity source, @NotNull SlotAccess access) {
         WeightedActionHolder holder = WeightedRandomSelector.selectRandomByWeight(this.actions);
-        if (holder != null) holder.element.execute(level, source, stack);
+        if (holder != null) holder.element.execute(level, source, access);
     }
 
     private record WeightedActionHolder(ItemAction element, int weight) implements WeightedRandomSelector.WeightGetter {
