@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record NotCondition(EntityCondition condition) implements EntityCondition {
     public static final MapCodec<NotCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            EntityCondition.CODEC.fieldOf("condition").forGetter(NotCondition::new)
+            EntityCondition.CODEC.fieldOf("condition").forGetter(NotCondition::condition)
     ).apply(i, NotCondition::new));
 
     @Override

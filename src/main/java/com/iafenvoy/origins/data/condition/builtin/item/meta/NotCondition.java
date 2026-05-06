@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record NotCondition(ItemCondition condition) implements ItemCondition {
     public static final MapCodec<NotCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ItemCondition.CODEC.fieldOf("condition").forGetter(NotCondition::new)
+            ItemCondition.CODEC.fieldOf("condition").forGetter(NotCondition::condition)
     ).apply(i, NotCondition::new));
 
     @Override

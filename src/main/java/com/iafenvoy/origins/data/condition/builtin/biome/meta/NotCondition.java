@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record NotCondition(BiomeCondition condition) implements BiomeCondition {
     public static final MapCodec<NotCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BiomeCondition.CODEC.fieldOf("condition").forGetter(NotCondition::new)
+            BiomeCondition.CODEC.fieldOf("condition").forGetter(NotCondition::condition)
     ).apply(i, NotCondition::new));
 
     @Override
