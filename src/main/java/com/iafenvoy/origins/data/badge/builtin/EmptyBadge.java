@@ -15,7 +15,7 @@ public enum EmptyBadge implements Badge {
     }
 
     @Override
-    public ResourceLocation spriteId() {
+    public ResourceLocation sprite() {
         return ResourceLocation.withDefaultNamespace("missingno");
     }
 }

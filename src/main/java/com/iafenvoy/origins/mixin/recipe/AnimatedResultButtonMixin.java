@@ -30,35 +30,24 @@ import java.util.List;
 public abstract class AnimatedResultButtonMixin {
     @Shadow
     public abstract RecipeHolder<?> getRecipe();
-
     @Shadow
     private RecipeBook book;
 
     @WrapOperation(method = {"renderWidget", "getTooltipText", "updateWidgetNarration"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/RecipeHolder;value()Lnet/minecraft/world/item/crafting/Recipe;"))
     private Recipe<?> origins$modifyEntryQuery(RecipeHolder<?> entry, Operation<Recipe<?>> original, @Share("originalEntry") LocalRef<RecipeHolder<?>> sharedOriginalEntry) {
-
         sharedOriginalEntry.set(entry);
-
         ResourceLocation id = entry.id();
         Recipe<?> recipe = entry.value();
-
-        if (recipe instanceof CraftingRecipe craftingRecipe && ModifiedCraftingRecipe.canModify(id, craftingRecipe, this.book)) {
+        if (recipe instanceof CraftingRecipe craftingRecipe && ModifiedCraftingRecipe.canModify(id, craftingRecipe, this.book))
             return new ModifiedCraftingRecipe(id, craftingRecipe);
-        } else {
-            return original.call(entry);
-        }
-
+        else return original.call(entry);
     }
 
     @WrapOperation(method = {"renderWidget", "getTooltipText", "updateWidgetNarration"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/Recipe;getResultItem(Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;"))
     private ItemStack origins$modifyResultQuery(Recipe<?> recipe, HolderLookup.Provider wrapperLookup, Operation<ItemStack> original) {
-
-        if (recipe instanceof ModifiedCraftingRecipe modifiedCraftingRecipe && this.book instanceof PowerCraftingObject pco) {
+        if (recipe instanceof ModifiedCraftingRecipe modifiedCraftingRecipe && this.book instanceof PowerCraftingObject pco)
             return modifiedCraftingRecipe.getModifiedResult(wrapperLookup, pco.origins$getPlayer()).getFirst();
-        } else {
-            return original.call(recipe, wrapperLookup);
-        }
-
+        else return original.call(recipe, wrapperLookup);
     }
 
     @ModifyReturnValue(method = "getTooltipText", at = @At("RETURN"))
@@ -72,10 +61,7 @@ public abstract class AnimatedResultButtonMixin {
                 original.add(Component.empty());
                 original.add(powerTooltip);
             });
-
         }
         return original;
-
     }
-
 }

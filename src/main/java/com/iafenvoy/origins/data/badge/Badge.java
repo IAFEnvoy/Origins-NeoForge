@@ -18,5 +18,5 @@ public interface Badge {
     @NotNull
     MapCodec<? extends Badge> codec();
 
-    ResourceLocation spriteId();
+    ResourceLocation sprite();
 }

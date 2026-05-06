@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.render;
+package com.iafenvoy.origins.screen.badge;
 
 import com.iafenvoy.origins.data.badge.Badge;
 import com.iafenvoy.origins.data.power.Power;

@@ -1,0 +1,7 @@
+{
+  "type": "origins:crafting_recipe",
+  "sprite": "origins:textures/gui/badge/recipe.png",
+  "recipe": "origins:master_of_webs/web_crafting",
+  "from_power": true,
+  "prefix": "origins.gui.badge.recipe.crafting.shapeless"
+}

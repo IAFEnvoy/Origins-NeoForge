@@ -15,9 +15,4 @@ public record SpriteBadge(ResourceLocation sprite) implements Badge {
     public @NotNull MapCodec<? extends Badge> codec() {
         return CODEC;
     }
-
-    @Override
-    public ResourceLocation spriteId() {
-        return this.sprite;
-    }
 }

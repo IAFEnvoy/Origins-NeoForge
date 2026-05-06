@@ -7,7 +7,7 @@ import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Impact;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.render.BadgeTooltipManager;
+import com.iafenvoy.origins.screen.badge.BadgeTooltipManager;
 import com.iafenvoy.origins.util.math.TextAlignment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -322,7 +322,7 @@ public class OriginDisplayScreen extends Screen {
                     RenderedBadge renderedBadge = new RenderedBadge(power, badge, badgeX, badgeY);
                     this.renderedBadges.add(renderedBadge);
 
-                    graphics.blit(badge.spriteId(), renderedBadge.x, renderedBadge.y, 0, 0, 9, 9, 9, 9);
+                    graphics.blit(badge.sprite(), renderedBadge.x, renderedBadge.y, 0, 0, 9, 9, 9, 9);
                     badgeOffsetX++;
                 }
 

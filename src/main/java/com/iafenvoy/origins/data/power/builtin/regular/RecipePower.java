@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.data._common.helper.RecipeHelper;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.Prioritized;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Map;
 
-public class RecipePower extends Power implements Prioritized {
+public class RecipePower extends Power implements Prioritized, RecipeHelper {
     public static final MapCodec<RecipePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             MiscCodecs.DATAPACK_RECIPES_ONLY_CODEC.fieldOf("recipe").forGetter(RecipePower::getRecipe),

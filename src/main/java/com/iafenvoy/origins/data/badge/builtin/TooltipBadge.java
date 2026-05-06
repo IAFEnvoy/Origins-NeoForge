@@ -18,9 +18,4 @@ public record TooltipBadge(ResourceLocation sprite, Component text) implements B
     public @NotNull MapCodec<? extends Badge> codec() {
         return CODEC;
     }
-
-    @Override
-    public ResourceLocation spriteId() {
-        return this.sprite;
-    }
 }
