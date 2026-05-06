@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemStack.class)
-public class ItemStackMixin {
+public abstract class ItemStackMixin {
     @Inject(method = "overrideOtherStackedOnMe", at = @At("RETURN"), cancellable = true)
     public void onItemOnItem(ItemStack other, Slot slot, ClickAction action, Player pPlayer, SlotAccess otherAccess, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValue()) return;

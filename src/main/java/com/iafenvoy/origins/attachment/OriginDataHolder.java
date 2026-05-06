@@ -95,6 +95,7 @@ public final class OriginDataHolder {
         this.data.getPowers().values().remove(power);
     }
 
+    //FIXME::Too many stream
     @NotNull//FIXME::Do not use this unless necessary
     public <T extends Power> List<T> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder, Class<T> clazz) {
         return this.getPowers(holder.getId(), clazz);
@@ -126,12 +127,20 @@ public final class OriginDataHolder {
         return this.data.getPowers().entries().stream().anyMatch(e -> e.getKey().equals(source) && e.getValue().equals(power));
     }
 
+    public <T extends Power> boolean hasActivePower(ResourceLocation id, Class<T> clazz) {
+        return this.data.getPowers().values().stream().filter(x -> Objects.equals(RLHelper.id(x), id)).map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
+    }
+
     public <T extends Power> boolean hasActivePower(Class<T> clazz) {
         return this.data.getPowers().values().stream().map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
     }
 
     public ResourceLocation getPowerId(Power power) {
         return this.access.registryOrThrow(PowerRegistries.POWER_KEY).getKey(power);
+    }
+
+    public Optional<Power> getPowerById(ResourceLocation id) {
+        return Optional.ofNullable(this.access.registryOrThrow(PowerRegistries.POWER_KEY).get(id));
     }
 
     //Origin Related

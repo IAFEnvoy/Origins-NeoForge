@@ -2,7 +2,7 @@ package com.iafenvoy.origins.data.action.builtin.item;
 
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
-import com.iafenvoy.origins.util.codec.OptionalCodecs;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -23,7 +23,7 @@ public record RemoveEnchantmentAction(List<Holder<Enchantment>> enchantment, Opt
                                       boolean resetRepairCost) implements ItemAction {
     public static final MapCodec<RemoveEnchantmentAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             CombinedCodecs.ENCHANTMENT.optionalFieldOf("enchantment", List.of()).forGetter(RemoveEnchantmentAction::enchantment),
-            OptionalCodecs.integer("level").forGetter(RemoveEnchantmentAction::level),
+            MiscCodecs.integer("level").forGetter(RemoveEnchantmentAction::level),
             Codec.BOOL.optionalFieldOf("reset_repair_cost", false).forGetter(RemoveEnchantmentAction::resetRepairCost)
     ).apply(i, RemoveEnchantmentAction::new));
 

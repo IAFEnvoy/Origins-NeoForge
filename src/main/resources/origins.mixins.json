@@ -32,7 +32,24 @@
     "accessor.LivingEntityAccessor",
     "accessor.MobAccessor",
     "accessor.MobEffectInstanceAccessor",
-    "integration.CaelusApiImplMixin"
+    "integration.CaelusApiImplMixin",
+    "recipe.CraftingInventoryAccessor",
+    "recipe.CraftingInventoryMixin",
+    "recipe.CraftingRecipeInputMixin",
+    "recipe.CraftingResultSlotAccessor",
+    "recipe.CraftingScreenHandlerAccessor",
+    "recipe.CraftingScreenHandlerMixin",
+    "recipe.DataPackContentsMixin",
+    "recipe.GrindstoneScreenHandlerBottomInputSlotMixin",
+    "recipe.GrindstoneScreenHandlerMixin",
+    "recipe.GrindstoneScreenHandlerOutputSlotMixin",
+    "recipe.GrindstoneScreenHandlerTopInputSlotMixin",
+    "recipe.PlayerScreenHandlerMixin",
+    "recipe.RecipeBookMixin",
+    "recipe.RecipeInputInventoryMixin",
+    "recipe.RecipeManagerAccessor",
+    "recipe.RecipeManagerMixin",
+    "recipe.ScreenHandlerMixin"
   ],
   "client": [
     "CapeLayerMixin",
@@ -48,7 +65,9 @@
     "LivingEntityRendererMixin",
     "LocalPlayerMixin",
     "PlayerRendererMixin",
-    "RenderChunkRegionMixin"
+    "RenderChunkRegionMixin",
+    "recipe.AnimatedResultButtonMixin",
+    "recipe.RecipeResultCollectionMixin"
   ],
   "injectors": {
     "defaultRequire": 1

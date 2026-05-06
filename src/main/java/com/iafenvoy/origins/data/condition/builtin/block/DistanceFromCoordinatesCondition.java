@@ -2,7 +2,7 @@ package com.iafenvoy.origins.data.condition.builtin.block;
 
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.util.LevelUtil;
-import com.iafenvoy.origins.util.codec.OptionalCodecs;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.iafenvoy.origins.util.math.Comparison;
 import com.iafenvoy.origins.util.math.ReferencePoint;
 import com.iafenvoy.origins.util.math.Shape;
@@ -31,7 +31,7 @@ public record DistanceFromCoordinatesCondition(ReferencePoint reference, Optiona
             Shape.CODEC.optionalFieldOf("shape", Shape.CUBE).forGetter(DistanceFromCoordinatesCondition::shape),
             Codec.BOOL.optionalFieldOf("scale_reference_to_dimension", true).forGetter(DistanceFromCoordinatesCondition::scaleReferenceToDimension),
             Codec.BOOL.optionalFieldOf("result_on_wrong_dimension").forGetter(DistanceFromCoordinatesCondition::resultOnWrongDimension),
-            OptionalCodecs.integer("round_to_digit").forGetter(DistanceFromCoordinatesCondition::roundToDigit),
+            MiscCodecs.integer("round_to_digit").forGetter(DistanceFromCoordinatesCondition::roundToDigit),
             Comparison.CODEC.forGetter(DistanceFromCoordinatesCondition::comparison)
     ).apply(instance, DistanceFromCoordinatesCondition::new));
 

@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.block;
 
 import com.iafenvoy.origins.data.action.BlockAction;
-import com.iafenvoy.origins.util.codec.OptionalCodecs;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.iafenvoy.origins.util.math.ResourceOperation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -23,7 +23,7 @@ public record ModifyBlockStateAction(String property, ResourceOperation operatio
     public static final MapCodec<ModifyBlockStateAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("property").forGetter(ModifyBlockStateAction::property),
             ResourceOperation.CODEC.optionalFieldOf("operation", ResourceOperation.ADD).forGetter(ModifyBlockStateAction::operation),
-            OptionalCodecs.integer("change").forGetter(ModifyBlockStateAction::change),
+            MiscCodecs.integer("change").forGetter(ModifyBlockStateAction::change),
             Codec.BOOL.optionalFieldOf("value").forGetter(ModifyBlockStateAction::value),
             Codec.STRING.optionalFieldOf("enum").forGetter(ModifyBlockStateAction::enumValue),
             Codec.BOOL.optionalFieldOf("change", false).forGetter(ModifyBlockStateAction::cycle)

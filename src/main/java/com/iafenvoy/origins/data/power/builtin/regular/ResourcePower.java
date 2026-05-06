@@ -7,7 +7,7 @@ import com.iafenvoy.origins.data.power.HudRenderable;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.ResourceComponent;
-import com.iafenvoy.origins.util.codec.OptionalCodecs;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -22,7 +22,7 @@ public class ResourcePower extends Power implements HudRenderable {
             Codec.INT.fieldOf("min").forGetter(ResourcePower::getMin),
             Codec.INT.fieldOf("max").forGetter(ResourcePower::getMax),
             HudRender.CODEC.optionalFieldOf("hud_render").forGetter(ResourcePower::getHudRender),
-            OptionalCodecs.integer("start_value").forGetter(ResourcePower::getStartValue),
+            MiscCodecs.integer("start_value").forGetter(ResourcePower::getStartValue),
             EntityAction.optionalCodec("min_action").forGetter(ResourcePower::getMinAction),
             EntityAction.optionalCodec("max_action").forGetter(ResourcePower::getMaxAction)
     ).apply(i, ResourcePower::new));

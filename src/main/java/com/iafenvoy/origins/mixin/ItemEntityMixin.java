@@ -20,7 +20,7 @@ public class ItemEntityMixin {
     }
 
     @WrapOperation(method = "playerTouch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;add(Lnet/minecraft/world/item/ItemStack;)Z"))
-    private boolean apoli$onItemPickup(Inventory playerInventory, ItemStack stack, Operation<Boolean> original, @Local(argsOnly = true) Player player) {
+    private boolean origins$onItemPickup(Inventory playerInventory, ItemStack stack, Operation<Boolean> original, @Local(argsOnly = true) Player player) {
         if (PreventItemPickupPower.doesPrevent(this.origins$self(), player)) return false;
         else return original.call(playerInventory, stack);
     }

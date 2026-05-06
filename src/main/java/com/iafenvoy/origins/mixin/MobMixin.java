@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(Mob.class)
 public class MobMixin {
     @WrapWithCondition(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;pickUpItem(Lnet/minecraft/world/entity/item/ItemEntity;)V"))
-    private boolean apoli$preventItemPickup(Mob instance, ItemEntity itemEntity) {
+    private boolean origins$preventItemPickup(Mob instance, ItemEntity itemEntity) {
         return !PreventItemPickupPower.doesPrevent(itemEntity, instance);
     }
 }

@@ -2,7 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.data.power.IntervalPower;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.codec.OptionalCodecs;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -21,7 +21,7 @@ public class DamageOverTimePower extends IntervalPower {
     public static final MapCodec<DamageOverTimePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             Codec.INT.optionalFieldOf("interval", 20).forGetter(DamageOverTimePower::getInterval),
-            OptionalCodecs.integer("onset_delay").forGetter(DamageOverTimePower::getOnSetDelay),
+            MiscCodecs.integer("onset_delay").forGetter(DamageOverTimePower::getOnSetDelay),
             Codec.FLOAT.fieldOf("damage").forGetter(DamageOverTimePower::getDamage),
             Codec.FLOAT.optionalFieldOf("damage_easy").forGetter(DamageOverTimePower::getDamageEasy),
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageOverTimePower::getDamageType)

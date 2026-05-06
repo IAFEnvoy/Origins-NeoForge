@@ -3,7 +3,7 @@ package com.iafenvoy.origins.data.action.builtin.entity;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
-import com.iafenvoy.origins.util.codec.OptionalCodecs;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -33,7 +33,7 @@ public record RandomTeleportAction(float areaWidth, float areaHeight, Optional<H
             Codec.FLOAT.optionalFieldOf("area_width", 8f).forGetter(RandomTeleportAction::areaWidth),
             Codec.FLOAT.optionalFieldOf("area_height", 8f).forGetter(RandomTeleportAction::areaHeight),
             Heightmap.Types.CODEC.optionalFieldOf("heightmap").forGetter(RandomTeleportAction::heightmap),
-            OptionalCodecs.integer("attempts").forGetter(RandomTeleportAction::attempts),
+            MiscCodecs.integer("attempts").forGetter(RandomTeleportAction::attempts),
             BlockCondition.CODEC.optionalFieldOf("landing_block_condition").forGetter(RandomTeleportAction::landingBlockCondition),
             EntityCondition.CODEC.optionalFieldOf("landing_condition").forGetter(RandomTeleportAction::landingCondition),
             Vec3.CODEC.optionalFieldOf("landing_offset", Vec3.ZERO).forGetter(RandomTeleportAction::landingOffset),

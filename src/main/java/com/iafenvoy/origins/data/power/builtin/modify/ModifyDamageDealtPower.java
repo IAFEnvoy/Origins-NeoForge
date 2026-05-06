@@ -12,6 +12,7 @@ import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -89,7 +90,8 @@ public class ModifyDamageDealtPower extends Power implements ModifierPowerHelper
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent.Pre event) {
         Entity source = event.getSource().getEntity(), target = event.getEntity();
-        if (source == null) return;
+        if (source == null || event.getSource().is(DamageTypeTags.IS_PROJECTILE))// projectile is handled by ModifyProjectileDamagePower
+            return;
         OriginDataHolder holder = OriginDataHolder.get(source);
         holder.streamActivePowers(ModifyDamageDealtPower.class).forEach(power -> {
             float baseValue = event.getNewDamage();

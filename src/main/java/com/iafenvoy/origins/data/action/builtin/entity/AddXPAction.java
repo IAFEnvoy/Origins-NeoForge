@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.util.codec.OptionalCodecs;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
@@ -12,8 +12,8 @@ import java.util.OptionalInt;
 
 public record AddXPAction(OptionalInt points, OptionalInt levels) implements EntityAction {
     public static final MapCodec<AddXPAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            OptionalCodecs.integer("points").forGetter(AddXPAction::points),
-            OptionalCodecs.integer("levels").forGetter(AddXPAction::levels)
+            MiscCodecs.integer("points").forGetter(AddXPAction::points),
+            MiscCodecs.integer("levels").forGetter(AddXPAction::levels)
     ).apply(i, AddXPAction::new));
 
     @Override

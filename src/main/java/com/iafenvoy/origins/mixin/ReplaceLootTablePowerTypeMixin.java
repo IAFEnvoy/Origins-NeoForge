@@ -91,20 +91,20 @@ public class ReplaceLootTablePowerTypeMixin {
     public static abstract class LootTableCache implements KeyableLootTable {
 
         @Unique
-        private ResourceKey<LootTable> apoli$key;
+        private ResourceKey<LootTable> origins$key;
 
         @Unique
-        private ReloadableServerRegistries.Holder apoli$lookup;
+        private ReloadableServerRegistries.Holder origins$lookup;
 
         @Override
         public ResourceKey<LootTable> getKey() {
-            return this.apoli$key;
+            return this.origins$key;
         }
 
         @Override
         public void setup(ResourceKey<LootTable> lootTableKey, ReloadableServerRegistries.Holder lookup) {
-            this.apoli$key = lootTableKey;
-            this.apoli$lookup = lookup;
+            this.origins$key = lootTableKey;
+            this.origins$lookup = lookup;
         }
 
         @Inject(method = "getRandomItemsRaw(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V", at = @At("HEAD"), cancellable = true)
@@ -112,7 +112,7 @@ public class ReplaceLootTablePowerTypeMixin {
             if (!(context instanceof ReplacingLootContext replacingContext)) return;
 
             LootContextParamSet contextType = replacingContext.origins$getType();
-            ResourceKey<LootTable> key = this.apoli$key;
+            ResourceKey<LootTable> key = this.origins$key;
 
             if (key == null || replacingContext.origins$isReplaced(key) || !context.hasParam(LootContextParams.THIS_ENTITY)) {
                 return;
@@ -148,7 +148,7 @@ public class ReplaceLootTablePowerTypeMixin {
             Optional<LootTable> replacementTable = OriginDataHolder.get(holder).streamActivePowers(ReplaceLootTablePower.class)
                     .filter(power -> power.hasReplacement(key) && power.doesApply(finalHolder, context))
                     .map(power -> power.getReplacement(key)
-                            .map(id -> this.apoli$lookup.getLootTable(id))
+                            .map(id -> this.origins$lookup.getLootTable(id))
                             .filter(table -> !LootTable.EMPTY.equals(table))
                     )
                     .filter(Optional::isPresent)
@@ -196,7 +196,7 @@ public class ReplaceLootTablePowerTypeMixin {
         @Final
         private LootParams params;
         @Unique
-        private final Set<ResourceKey<LootTable>> apoli$replacedTables = new ObjectOpenHashSet<>();
+        private final Set<ResourceKey<LootTable>> origins$replacedTables = new ObjectOpenHashSet<>();
 
         @Override
         public LootContextParamSet origins$getType() {
@@ -205,12 +205,12 @@ public class ReplaceLootTablePowerTypeMixin {
 
         @Override
         public boolean origins$isReplaced(ResourceKey<LootTable> key) {
-            return this.apoli$replacedTables.contains(key);
+            return this.origins$replacedTables.contains(key);
         }
 
         @Override
         public void origins$setReplaced(ResourceKey<LootTable> key) {
-            this.apoli$replacedTables.add(key);
+            this.origins$replacedTables.add(key);
         }
 
     }
@@ -219,16 +219,16 @@ public class ReplaceLootTablePowerTypeMixin {
     public static abstract class LootContextParametersCache implements LootContextTypeHolder {
 
         @Unique
-        private LootContextParamSet apoli$contextType;
+        private LootContextParamSet origins$contextType;
 
         @Override
         public LootContextParamSet origins$getType() {
-            return Objects.requireNonNull(this.apoli$contextType, "Loot context parameters are not initialized properly!");
+            return Objects.requireNonNull(this.origins$contextType, "Loot context parameters are not initialized properly!");
         }
 
         @Override
         public void origins$setType(LootContextParamSet type) {
-            this.apoli$contextType = type;
+            this.origins$contextType = type;
         }
 
     }
