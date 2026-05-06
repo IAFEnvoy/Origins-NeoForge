@@ -3,8 +3,6 @@ package com.iafenvoy.origins.util.codec;
 import com.iafenvoy.origins.util.RecipeUtil;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 

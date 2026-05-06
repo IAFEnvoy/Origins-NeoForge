@@ -57,7 +57,7 @@ public class ModifyJumpPower extends Power implements ModifierPowerHelper {
         OriginDataHolder holder = OriginDataHolder.get(player);
         double modified = holder.streamActivePowers(ModifyJumpPower.class).reduce(event.getEntity().getDeltaMovement().y, (value, power) -> {
             power.entityAction.execute(player);
-            return Modifier.applyModifiers(holder, power.modifier, value);
+            return power.modify(holder, value);
         }, Double::sum);
         Vec3 vel = player.getDeltaMovement();
         double delta = modified - vel.y;

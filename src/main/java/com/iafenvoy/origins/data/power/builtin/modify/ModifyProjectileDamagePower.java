@@ -82,7 +82,7 @@ public class ModifyProjectileDamagePower extends Power implements ModifierPowerH
                 x.selfAction.execute(source);
                 x.targetAction.execute(target);
             });
-            event.setNewDamage(powers.stream().reduce(amount, (p, c) -> Modifier.applyModifiers(holder, c.modifier, p), Float::sum));
+            event.setNewDamage(powers.stream().reduce(amount, (p, c) -> c.modify(holder, p), Float::sum));
         }
     }
 }

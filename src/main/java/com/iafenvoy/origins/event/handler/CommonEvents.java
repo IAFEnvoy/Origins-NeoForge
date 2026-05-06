@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.event;
+package com.iafenvoy.origins.event.handler;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.action.ActionOnBeingUsedPower;

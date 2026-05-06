@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -28,6 +29,7 @@ public record Modifier(double value, ModifierOperation operation, Optional<Resou
                 .orElse(this.value);
     }
 
+    //Event only invoke when call with ModifierPowerHelper
     public static int applyModifiers(OriginDataHolder holder, List<Modifier> modifiers, int value) {
         return (int) applyModifiers(holder, modifiers, (double) value);
     }
@@ -43,6 +45,14 @@ public record Modifier(double value, ModifierOperation operation, Optional<Resou
             if (modifierMap.containsKey(operation))
                 value = operation.getOperator().applyAsDouble(value, modifierMap.get(operation));
         return value;
+    }
+
+    public static Modifier fromAttributeModifier(AttributeModifier attributeModifier) {
+        return new Modifier(attributeModifier.amount(), switch (attributeModifier.operation()) {
+            case ADD_VALUE -> ModifierOperation.ADD_BASE_EARLY;
+            case ADD_MULTIPLIED_BASE -> ModifierOperation.MULTIPLY_BASE_MULTIPLICATIVE;
+            case ADD_MULTIPLIED_TOTAL -> ModifierOperation.MULTIPLY_TOTAL_MULTIPLICATIVE;
+        }, Optional.empty(), Optional.empty());
     }
 
     public enum ModifierOperation implements StringRepresentable {

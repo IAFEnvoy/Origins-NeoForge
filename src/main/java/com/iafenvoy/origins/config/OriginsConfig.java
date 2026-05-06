@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 public class OriginsConfig extends AutoInitConfigContainer {
     public static final OriginsConfig INSTANCE = new OriginsConfig();
     public final General general = new General();
+    public final ModifyPlayerSpawnPower modifyPlayerSpawnPower = new ModifyPlayerSpawnPower();
 
     public OriginsConfig() {
         super(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "config"), "config.origins.title", "./config/origins.json");
@@ -23,6 +24,16 @@ public class OriginsConfig extends AutoInitConfigContainer {
 
         public General() {
             super("general", "category.origins.general.title");
+        }
+    }
+
+    public static class ModifyPlayerSpawnPower extends AutoInitConfigCategoryBase {
+        public final IntegerEntry radius = IntegerEntry.builder("config.origins.modifyPlayerSpawnPower.radius", 6400).key("radius").min(1).build();
+        public final IntegerEntry horizontalBlockCheckInterval = IntegerEntry.builder("config.origins.modifyPlayerSpawnPower.horizontalBlockCheckInterval", 64).min(0).key("horizontalBlockCheckInterval").build();
+        public final IntegerEntry verticalBlockCheckInterval = IntegerEntry.builder("config.origins.modifyPlayerSpawnPower.verticalBlockCheckInterval", 64).min(0).key("verticalBlockCheckInterval").build();
+
+        public ModifyPlayerSpawnPower() {
+            super("modifyPlayerSpawnPower", "category.origins.modifyPlayerSpawnPower.title");
         }
     }
 }

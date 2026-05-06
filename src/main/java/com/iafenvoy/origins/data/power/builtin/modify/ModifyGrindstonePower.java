@@ -132,17 +132,12 @@ public class ModifyGrindstonePower extends Power {
     }
 
     public void setOutput(Entity entity, ItemStack inputTop, ItemStack inputBottom, SlotAccess currentOutputStackReference) {
-
         switch (this.resultType) {
-            case SPECIFIED -> this.resultStack
-                    .map(ItemStack::copy)
-                    .ifPresent(currentOutputStackReference::set);
+            case SPECIFIED -> this.resultStack.map(ItemStack::copy).ifPresent(currentOutputStackReference::set);
             case FROM_BOTTOM -> currentOutputStackReference.set(inputBottom.copy());
             case FROM_TOP -> currentOutputStackReference.set(inputTop.copy());
         }
-
         this.itemAction.execute(entity.level(), entity, currentOutputStackReference);
-
     }
 
     public void executeActions(Entity entity, @Nullable BlockPos pos, SlotAccess outputStackRef) {
