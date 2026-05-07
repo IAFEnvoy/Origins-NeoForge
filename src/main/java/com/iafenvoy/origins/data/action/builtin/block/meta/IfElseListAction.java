@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public record IfElseListAction(List<ConditionedActionHolder> actions) implements BlockAction {
     public static final MapCodec<IfElseListAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -23,7 +24,7 @@ public record IfElseListAction(List<ConditionedActionHolder> actions) implements
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         for (ConditionedActionHolder holder : this.actions)
             if (holder.condition.test(level, pos)) {
                 holder.action.execute(level, pos, direction);

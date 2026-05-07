@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public record ChoiceAction(List<WeightedActionHolder> actions) implements BlockAction {
     public static final MapCodec<ChoiceAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -23,7 +24,7 @@ public record ChoiceAction(List<WeightedActionHolder> actions) implements BlockA
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         WeightedActionHolder holder = WeightedRandomSelector.selectRandomByWeight(this.actions);
         if (holder != null) holder.element.execute(level, pos, direction);
     }

@@ -20,6 +20,7 @@ public final class ItemActions {
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<DamageAction>> DAMAGE = REGISTRY.register("damage", () -> DamageAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<HolderActionAction>> HOLDER_ACTION = REGISTRY.register("holder_action", () -> HolderActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<MergeComponentAction>> MERGE_COMPONENT = REGISTRY.register("merge_component", () -> MergeComponentAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ModifyAction>> MODIFY = REGISTRY.register("modify", () -> ModifyAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<RemoveEnchantmentAction>> REMOVE_ENCHANTMENT = REGISTRY.register("remove_enchantment", () -> RemoveEnchantmentAction.CODEC);
     //Meta
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<AndAction>> AND = REGISTRY.register("and", () -> AndAction.CODEC);

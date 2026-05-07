@@ -11,6 +11,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public record ExecuteCommandAction(String command) implements BlockAction {
     public static final MapCodec<ExecuteCommandAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.STRING.fieldOf("command").forGetter(ExecuteCommandAction::command)
@@ -22,7 +24,7 @@ public record ExecuteCommandAction(String command) implements BlockAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         if (level instanceof ServerLevel serverLevel)
             CommandHelper.executeCommand(serverLevel.getServer(), this.command);
     }

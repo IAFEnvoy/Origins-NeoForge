@@ -36,7 +36,7 @@ public record ModifyBlockStateAction(String property, ResourceOperation operatio
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         BlockState state = level.getBlockState(pos);
         Collection<Property<?>> properties = state.getProperties();
         String desiredPropertyName = this.property();

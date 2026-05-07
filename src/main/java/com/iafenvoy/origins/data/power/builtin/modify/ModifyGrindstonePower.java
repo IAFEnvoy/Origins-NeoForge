@@ -13,7 +13,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
@@ -147,7 +146,7 @@ public class ModifyGrindstonePower extends Power {
 
     public void executeActions(Entity entity, @Nullable BlockPos pos) {
         this.entityAction.execute(entity);
-        if (pos != null) this.blockAction.execute(entity.level(), pos, Direction.UP);
+        if (pos != null) this.blockAction.execute(entity.level(), pos, Optional.empty());
     }
 
     public void applyAfterGrindingItemAction(Entity entity, SlotAccess outputStackReference) {

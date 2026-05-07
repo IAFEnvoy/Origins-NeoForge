@@ -4,9 +4,10 @@ import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public record BlockActionAction(BlockAction action) implements EntityAction {
     public static final MapCodec<BlockActionAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -20,6 +21,6 @@ public record BlockActionAction(BlockAction action) implements EntityAction {
 
     @Override
     public void execute(@NotNull Entity source) {
-        this.action.execute(source.level(), source.blockPosition(), Direction.DOWN);
+        this.action.execute(source.level(), source.blockPosition(), Optional.empty());
     }
 }

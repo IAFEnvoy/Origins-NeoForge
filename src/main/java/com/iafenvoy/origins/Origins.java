@@ -1,5 +1,8 @@
 package com.iafenvoy.origins;
 
+import com.iafenvoy.jupiter.ConfigManager;
+import com.iafenvoy.jupiter.ServerConfigManager;
+import com.iafenvoy.origins.config.OriginsConfig;
 import com.iafenvoy.origins.data.action.builtin.BiEntityActions;
 import com.iafenvoy.origins.data.action.builtin.BlockActions;
 import com.iafenvoy.origins.data.action.builtin.EntityActions;
@@ -23,6 +26,8 @@ public final class Origins {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public Origins(IEventBus bus) {
+        ConfigManager.getInstance().registerServerConfigHandler(OriginsConfig.INSTANCE, ServerConfigManager.PermissionChecker.IS_OPERATOR);
+
         OriginsAttachments.REGISTRY.register(bus);
         OriginsBlocks.REGISTRY.register(bus);
         OriginsDataComponents.REGISTRY.register(bus);

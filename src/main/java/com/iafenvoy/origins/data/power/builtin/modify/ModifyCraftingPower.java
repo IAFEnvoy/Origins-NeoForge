@@ -11,7 +11,6 @@ import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
@@ -102,11 +101,10 @@ public class ModifyCraftingPower extends Power {
         this.result.map(ItemStack::copy).ifPresent(resultStackReference::set);
         this.itemAction.execute(entity.level(), entity, resultStackReference);
         return resultStackReference;
-
     }
 
     public void executeActions(Entity entity, Optional<BlockPos> craftingBlockPos) {
-        craftingBlockPos.ifPresent(pos -> this.blockAction.execute(entity.level(), pos, Direction.UP));
+        craftingBlockPos.ifPresent(pos -> this.blockAction.execute(entity.level(), pos, Optional.empty()));
         this.entityAction.execute(entity);
     }
 

@@ -9,6 +9,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public record AbsoluteOffsetAction(BlockAction action, int x, int y, int z) implements BlockAction {
     public static final MapCodec<AbsoluteOffsetAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BlockAction.CODEC.fieldOf("action").forGetter(AbsoluteOffsetAction::action),
@@ -23,7 +25,7 @@ public record AbsoluteOffsetAction(BlockAction action, int x, int y, int z) impl
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         this.action.execute(level, pos.offset(this.x, this.y, this.z), direction);
     }
 }

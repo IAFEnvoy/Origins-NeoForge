@@ -31,7 +31,7 @@ public record SpawnEntityAction(EntityType<?> entityType, Optional<CompoundTag> 
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         if (level instanceof ServerLevel serverLevel) {
             Entity entity = this.entityType.spawn(serverLevel, x -> this.tag.ifPresent(x::load), pos, MobSpawnType.MOB_SUMMONED, false, false);
             if (entity != null) this.entityAction.execute(entity);

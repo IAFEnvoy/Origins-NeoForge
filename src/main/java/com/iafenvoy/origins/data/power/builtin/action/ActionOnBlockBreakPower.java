@@ -14,6 +14,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 @EventBusSubscriber
 public class ActionOnBlockBreakPower extends Power {
     public static final MapCodec<ActionOnBlockBreakPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -63,7 +65,7 @@ public class ActionOnBlockBreakPower extends Power {
             if (power.onlyWheSuccess && event.isCanceled()) return;
             if (!power.blockCondition.test(event.getPlayer().level(), event.getPos())) return;
             power.entityAction.execute(event.getPlayer());
-            power.blockAction.execute(event.getPlayer().level(), event.getPos(), event.getPlayer().getDirection());
+            power.blockAction.execute(event.getPlayer().level(), event.getPos(), Optional.of(event.getPlayer().getDirection()));
         });
     }
 }

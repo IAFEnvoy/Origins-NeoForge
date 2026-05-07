@@ -4,6 +4,7 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data._common.AttributeEntry;
 import com.iafenvoy.origins.data._common.helper.AttributePowerHelper;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,7 +15,7 @@ import java.util.List;
 public class AttributePower extends Power implements AttributePowerHelper {
     public static final MapCodec<AttributePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            AttributeEntry.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(AttributePower::getModifiers),
+            CombinedCodecs.ATTRIBUTE.optionalFieldOf("modifiers", List.of()).forGetter(AttributePower::getModifiers),
             Codec.BOOL.optionalFieldOf("update_health", true).forGetter(AttributePower::shouldUpdateHealth)
     ).apply(i, AttributePower::new));
     private final List<AttributeEntry> modifiers;

@@ -33,7 +33,7 @@ public record ExplodeAction(float power, DestructionType destructionType,
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         if (level.isClientSide()) return;
         ExplosionDamageCalculator calculator = this.indestructible().isEmpty()
                 ? new ExplosionDamageCalculator()

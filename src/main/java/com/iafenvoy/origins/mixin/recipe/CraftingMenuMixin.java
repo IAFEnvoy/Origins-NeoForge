@@ -68,5 +68,4 @@ public abstract class CraftingMenuMixin extends RecipeBookMenu<CraftingInput, Cr
     private ItemStack modifyResultStackOnQuickMove(ItemStack original, Player player, int slotId, @Local Slot slot) {
         return ModifyCraftingPower.executeAfterCraftingAction(player, this.craftSlots, slot, original);
     }
-
 }

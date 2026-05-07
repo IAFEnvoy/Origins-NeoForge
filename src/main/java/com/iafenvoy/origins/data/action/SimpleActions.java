@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -29,7 +30,7 @@ public final class SimpleActions {
         }.codec();
     }
 
-    public static MapCodec<? extends BlockAction> createBlock(TriConsumer<Level, BlockPos, Direction> action) {
+    public static MapCodec<? extends BlockAction> createBlock(TriConsumer<Level, BlockPos, Optional<Direction>> action) {
         return new BlockAction() {
             final MapCodec<? extends BlockAction> codec = MapCodec.unit(this);
 
@@ -39,7 +40,7 @@ public final class SimpleActions {
             }
 
             @Override
-            public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+            public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
                 action.accept(level, pos, direction);
             }
         }.codec();

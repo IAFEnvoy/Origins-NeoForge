@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public record AndAction(List<BlockAction> actions) implements BlockAction {
     public static final MapCodec<AndAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -21,7 +22,7 @@ public record AndAction(List<BlockAction> actions) implements BlockAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         this.actions.forEach(x -> x.execute(level, pos, direction));
     }
 }

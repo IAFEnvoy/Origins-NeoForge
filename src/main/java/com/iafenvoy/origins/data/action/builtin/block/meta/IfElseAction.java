@@ -9,6 +9,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public record IfElseAction(BlockCondition condition, BlockAction ifAction,
                            BlockAction elseAction) implements BlockAction {
     public static final MapCodec<IfElseAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
@@ -23,7 +25,7 @@ public record IfElseAction(BlockCondition condition, BlockAction ifAction,
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         if (this.condition.test(level, pos)) this.ifAction.execute(level, pos, direction);
         else this.elseAction.execute(level, pos, direction);
     }

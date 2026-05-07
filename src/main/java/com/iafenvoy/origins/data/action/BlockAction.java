@@ -10,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 public interface BlockAction {
@@ -23,5 +24,5 @@ public interface BlockAction {
     @NotNull
     MapCodec<? extends BlockAction> codec();
 
-    void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction);
+    void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction);
 }

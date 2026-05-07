@@ -26,7 +26,7 @@ public final class ItemConditions {
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<DurabilityCondition>> DURABILITY = REGISTRY.register("durability", () -> DurabilityCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<? extends ItemCondition>> EMPTY = REGISTRY.register("empty", () -> createItem((level, stack) -> stack.isEmpty()));
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<? extends ItemCondition>> ENCHANTABLE = REGISTRY.register("enchantable", () -> createItem((level, stack) -> stack.isEnchantable()));
-    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<FoodItemCondition>> FOOD = REGISTRY.register("food", () -> FoodItemCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<? extends ItemCondition>> FOOD = REGISTRY.register("food", () -> createItem((level, stack) -> stack.getFoodProperties(null) != null));
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<FuelCondition>> FUEL = REGISTRY.register("fuel", () -> FuelCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<HasComponentCondition>> HAS_COMPONENT = REGISTRY.register("has_component", () -> HasComponentCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<HasPowerCondition>> HAS_POWER = REGISTRY.register("has_power", () -> HasPowerCondition.CODEC);

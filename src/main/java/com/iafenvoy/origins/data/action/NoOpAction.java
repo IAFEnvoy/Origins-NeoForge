@@ -8,6 +8,8 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public enum NoOpAction implements BiEntityAction, BlockAction, EntityAction, ItemAction {
     INSTANCE;
     public static final MapCodec<NoOpAction> CODEC = MapCodec.unit(INSTANCE);
@@ -26,7 +28,7 @@ public enum NoOpAction implements BiEntityAction, BlockAction, EntityAction, Ite
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
     }
 
     @Override

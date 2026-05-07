@@ -9,6 +9,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public record AddBlockAction(BlockState block) implements BlockAction {
     public static final MapCodec<AddBlockAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BlockState.CODEC.fieldOf("block").forGetter(AddBlockAction::block)
@@ -20,7 +22,7 @@ public record AddBlockAction(BlockState block) implements BlockAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         level.setBlockAndUpdate(pos, this.block);
     }
 }

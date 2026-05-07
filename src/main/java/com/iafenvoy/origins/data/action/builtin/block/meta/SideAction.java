@@ -11,6 +11,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforgespi.Environment;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public record SideAction(BlockAction action, Dist side) implements BlockAction {
     public static final MapCodec<SideAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BlockAction.CODEC.fieldOf("action").forGetter(SideAction::action),
@@ -23,7 +25,7 @@ public record SideAction(BlockAction action, Dist side) implements BlockAction {
     }
 
     @Override
-    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
+    public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
         if (Environment.get().getDist() == this.side) this.action.execute(level, pos, direction);
     }
 }

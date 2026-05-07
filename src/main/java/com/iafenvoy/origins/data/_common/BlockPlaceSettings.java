@@ -50,8 +50,8 @@ public record BlockPlaceSettings(EntityAction entityAction, ItemAction heldItemA
 
     public void executeOtherActions(Entity entity, BlockPos toPos, BlockPos onPos, Direction direction) {
         Level level = entity.level();
-        this.placeOnAction.execute(level, onPos, direction);
-        this.placeToAction.execute(level, toPos, direction);
+        this.placeOnAction.execute(level, onPos, Optional.ofNullable(direction));
+        this.placeToAction.execute(level, toPos, Optional.ofNullable(direction));
         this.entityAction.execute(entity);
     }
 

@@ -60,7 +60,7 @@ public class ActionOnWakeUpPower extends Power {
         OriginDataHolder.get(player).streamActivePowers(ActionOnWakeUpPower.class).forEach(power -> {
             if (power.blockCondition.test(player.level(), pos.get())) {
                 power.entityAction.execute(player);
-                power.blockAction.execute(player.level(), pos.get(), player.getDirection());
+                power.blockAction.execute(player.level(), pos.get(), Optional.of(player.getDirection()));
             }
         });
 

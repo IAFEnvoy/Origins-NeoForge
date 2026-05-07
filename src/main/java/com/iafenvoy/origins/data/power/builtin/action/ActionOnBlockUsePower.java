@@ -97,7 +97,7 @@ public class ActionOnBlockUsePower extends Power {
     }
 
     public InteractionResult executeAction(Entity entity, BlockPos blockPos, Direction direction, InteractionHand hand) {
-        this.blockAction.execute(entity.level(), blockPos, direction);
+        this.blockAction.execute(entity.level(), blockPos, Optional.ofNullable(direction));
         this.entityAction.execute(entity);
         if (entity instanceof LivingEntity living) this.interactionSettings.performActorItemStuff(living, hand);
         return this.interactionResult;

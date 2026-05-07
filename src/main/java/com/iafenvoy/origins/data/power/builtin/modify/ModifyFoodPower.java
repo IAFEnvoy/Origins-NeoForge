@@ -22,8 +22,8 @@ import java.util.Optional;
 public class ModifyFoodPower extends Power {
     public static final MapCodec<ModifyFoodPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            CombinedCodecs.MODIFIER.fieldOf("food_modifier").forGetter(ModifyFoodPower::getFoodModifiers),
-            CombinedCodecs.MODIFIER.fieldOf("saturation_modifier").forGetter(ModifyFoodPower::getSaturationModifiers),
+            CombinedCodecs.MODIFIER.optionalFieldOf("food_modifier", List.of()).forGetter(ModifyFoodPower::getFoodModifiers),
+            CombinedCodecs.MODIFIER.optionalFieldOf("saturation_modifier", List.of()).forGetter(ModifyFoodPower::getSaturationModifiers),
             ItemCondition.optionalCodec("item_condition").forGetter(ModifyFoodPower::getItemCondition),
             EntityAction.optionalCodec("entity_action").forGetter(ModifyFoodPower::getEntityAction),
             ItemStack.CODEC.optionalFieldOf("replace_stack").forGetter(ModifyFoodPower::getReplaceStack),

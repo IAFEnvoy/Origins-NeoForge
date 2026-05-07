@@ -72,7 +72,7 @@ public record RaycastAction(RaycastSettings settings, EntityAction beforeAction,
                 executeStepCommands(source, origin, hitResult.getLocation(), commandInfo.commandAlongRay().get(), commandInfo.commandStep());
             }
             if (hitResult instanceof BlockHitResult bhr)
-                actions.blockAction().execute(source.level(), bhr.getBlockPos(), bhr.getDirection());
+                actions.blockAction().execute(source.level(), bhr.getBlockPos(), Optional.of(bhr.getDirection()));
             if (hitResult instanceof EntityHitResult ehr)
                 actions.biEntityAction().execute(source, ehr.getEntity());
             actions.hitAction().execute(source);
