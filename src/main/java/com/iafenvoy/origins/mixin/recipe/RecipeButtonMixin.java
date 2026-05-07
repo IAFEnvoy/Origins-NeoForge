@@ -30,6 +30,7 @@ import java.util.List;
 public abstract class RecipeButtonMixin {
     @Shadow
     public abstract RecipeHolder<?> getRecipe();
+
     @Shadow
     private RecipeBook book;
 

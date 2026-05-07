@@ -11,6 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.biome.Biome;
@@ -32,6 +33,7 @@ public final class CombinedCodecs {
     public static final Codec<List<AttributeEntry>> ATTRIBUTE = combineCodec(AttributeEntry.CODEC);
     public static final Codec<List<AttributeModifier>> ATTRIBUTE_MODIFIER = combineCodec(AttributeModifier.CODEC);
     public static final Codec<List<PositionedItemStackSettings>> POSITIONED_ITEM_STACK = combineCodec(PositionedItemStackSettings.COMBINED_CODEC);
+    public static final Codec<List<EquipmentSlotGroup>> EQUIPMENT_SLOT_GROUP = combineCodec(EquipmentSlotGroup.CODEC);
 
     public static <T> Codec<List<T>> combineCodec(Codec<T> codec) {
         return Codec.either(codec, codec.listOf()).xmap(x -> x.map(List::of, l -> l), l -> l.size() == 1 ? Either.left(l.getFirst()) : Either.right(l));

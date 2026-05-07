@@ -33,6 +33,8 @@ public final class Origins {
         OriginsDataComponents.REGISTRY.register(bus);
         OriginsEntities.REGISTRY.register(bus);
         OriginsItems.REGISTRY.register(bus);
+        OriginsLootItemConditions.REGISTRY.register(bus);
+        OriginsLootItemFunctions.REGISTRY.register(bus);
         OriginsRecipeSerializers.REGISTRY.register(bus);
         //Action
         BiEntityActions.REGISTRY.register(bus);

@@ -27,7 +27,7 @@ public final class CommandHelper {
 
     public static void executeAt(Entity entity, Vec3 position, String command) {
         MinecraftServer server = entity.level().getServer();
-        if (server != null && entity.level() instanceof ServerLevel level&& !StringUtil.isNullOrEmpty(command))
+        if (server != null && entity.level() instanceof ServerLevel level && !StringUtil.isNullOrEmpty(command))
             server.getCommands().performPrefixedCommand(new CommandSourceStack(CommandSource.NULL, position, entity.getRotationVector(), level, OriginsConfig.INSTANCE.general.permissionLevel.getValue(), entity.getName().getString(), entity.getDisplayName(), server, entity), command);
     }
 }

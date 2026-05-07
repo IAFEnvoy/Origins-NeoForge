@@ -305,11 +305,11 @@ public class ModifyPlayerSpawnPower extends Power {
     public enum SpawnStrategy implements StringRepresentable {
         CENTER((blockPos, center, multiplier) -> new BlockPos(0, center, 0)),
         DEFAULT((blockPos, center, multiplier) -> {
-                    BlockPos.MutableBlockPos mut = new BlockPos.MutableBlockPos();
-                    if (multiplier != 0)
-                        mut.set(blockPos.getX() * multiplier, blockPos.getY(), blockPos.getZ() * multiplier);
-                    else mut.set(blockPos);
-                    return mut;
+            BlockPos.MutableBlockPos mut = new BlockPos.MutableBlockPos();
+            if (multiplier != 0)
+                mut.set(blockPos.getX() * multiplier, blockPos.getY(), blockPos.getZ() * multiplier);
+            else mut.set(blockPos);
+            return mut;
         });
         public static final Codec<SpawnStrategy> CODEC = StringRepresentable.fromValues(SpawnStrategy::values);
         private final TriFunction<BlockPos, Integer, Float, BlockPos> strategyApplier;

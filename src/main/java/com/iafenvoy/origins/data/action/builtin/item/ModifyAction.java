@@ -4,7 +4,6 @@ import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
