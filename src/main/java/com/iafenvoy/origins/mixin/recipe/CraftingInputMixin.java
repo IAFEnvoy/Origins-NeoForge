@@ -12,14 +12,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 @Mixin(CraftingInput.class)
-public abstract class CraftingRecipeInputMixin implements PowerCraftingInventory {
-
+public abstract class CraftingInputMixin implements PowerCraftingInventory {
     @Unique
     private Collection<? extends Power> origins$cachedPowerTypes = new LinkedList<>();
-
     @Unique
     private Player origins$cachedPlayer;
-
     @Unique
     private TransientCraftingContainer origins$inventory;
 
@@ -30,13 +27,9 @@ public abstract class CraftingRecipeInputMixin implements PowerCraftingInventory
 
     @Override
     public void origins$setPowerTypes(Collection<? extends Power> powerType) {
-
         this.origins$cachedPowerTypes = powerType;
-
-        if (this.origins$getInventory() instanceof PowerCraftingInventory pci) {
+        if (this.origins$getInventory() instanceof PowerCraftingInventory pci)
             pci.origins$setPowerTypes(this.origins$getPowerTypes());
-        }
-
     }
 
     @Override
@@ -46,13 +39,9 @@ public abstract class CraftingRecipeInputMixin implements PowerCraftingInventory
 
     @Override
     public void origins$setPlayer(Player player) {
-
         this.origins$cachedPlayer = player;
-
-        if (this.origins$getInventory() instanceof PowerCraftingInventory pci) {
+        if (this.origins$getInventory() instanceof PowerCraftingInventory pci)
             pci.origins$setPlayer(this.origins$getPlayer());
-        }
-
     }
 
     @Override
@@ -64,5 +53,4 @@ public abstract class CraftingRecipeInputMixin implements PowerCraftingInventory
     public void origins$setInventory(TransientCraftingContainer inventory) {
         this.origins$inventory = inventory;
     }
-
 }

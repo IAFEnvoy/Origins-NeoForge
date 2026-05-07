@@ -12,5 +12,4 @@ import java.util.Map;
 public interface RecipeManagerAccessor {
     @Accessor
     Map<ResourceLocation, RecipeHolder<?>> getByName();
-
 }

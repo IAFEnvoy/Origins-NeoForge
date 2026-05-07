@@ -6,6 +6,7 @@ import com.iafenvoy.origins.data.power.builtin.regular.InvisibilityPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ModelColorPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ShakingPower;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -19,10 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
@@ -57,9 +55,8 @@ public abstract class LivingEntityRendererMixin extends EntityRenderer<LivingEnt
         return original;
     }
 
-    @Redirect(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"))
-    private void renderColorChangedModel(EntityModel<LivingEntity> model, PoseStack postStack, VertexConsumer vertexConsumer, int p1, int overlay, int color, LivingEntity living) {
-        Optional<ColorSettings> opt = ModelColorPower.getColor(living);
-        model.renderToBuffer(postStack, vertexConsumer, p1, overlay, opt.map(x -> x.merge(color)).map(ColorSettings::getIntValue).orElse(color));
+    @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), index = 2)
+    private int renderColorChangedModel(int original, @Local(argsOnly = true) LivingEntity living) {
+        return ModelColorPower.getColor(living).map(x -> x.merge(original)).map(ColorSettings::getIntValue).orElse(original);
     }
 }

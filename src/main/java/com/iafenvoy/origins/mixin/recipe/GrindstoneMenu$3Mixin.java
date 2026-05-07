@@ -12,19 +12,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(targets = "net/minecraft/world/inventory/GrindstoneMenu$3")
-public class GrindstoneScreenHandlerBottomInputSlotMixin {
-
+public class GrindstoneMenu$3Mixin {
     @Unique
     private GrindstoneMenu origins$grindstoneHandler;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void origins$cacheGrindstone(GrindstoneMenu grindstoneScreenHandler, Container inventory, int i, int j, int k, CallbackInfo ci) {
+    private void cacheGrindstone(GrindstoneMenu grindstoneScreenHandler, Container inventory, int i, int j, int k, CallbackInfo ci) {
         this.origins$grindstoneHandler = grindstoneScreenHandler;
     }
 
     @ModifyReturnValue(method = "mayPlace", at = @At("RETURN"))
-    private boolean origins$allowPowerStacks(boolean original, ItemStack stack) {
+    private boolean allowPowerStacks(boolean original, ItemStack stack) {
         return original || ModifyGrindstonePower.allowsInBottomSlot(this.origins$grindstoneHandler, stack);
     }
-
 }

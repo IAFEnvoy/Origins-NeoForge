@@ -96,12 +96,7 @@ public final class OriginDataHolder {
     }
 
     //FIXME::Too many stream
-    @NotNull//FIXME::Do not use this unless necessary
-    public <T extends Power> List<T> getPowers(DeferredHolder<MapCodec<? extends Power>, MapCodec<T>> holder, Class<T> clazz) {
-        return this.getPowers(holder.getId(), clazz);
-    }
-
-    @NotNull//FIXME::Do not use this unless necessary
+    @NotNull
     public <T extends Power> List<T> getPowers(ResourceLocation id, Class<T> clazz) {
         List<T> results = this.data.getPowers().values().stream().filter(x -> x.unwrapKey().map(ResourceKey::location).map(id::equals).orElse(false)).map(Holder::value).toList().stream().filter(power -> power != null && clazz.isAssignableFrom(power.getClass())).map(clazz::cast).collect(Collectors.toCollection(LinkedList::new));
         return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast).toList() : results;

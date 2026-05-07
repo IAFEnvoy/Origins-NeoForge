@@ -20,53 +20,34 @@ import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @Mixin(AbstractContainerMenu.class)
-public class ScreenHandlerMixin {
-
+public class AbstractContainerMenuMixin {
     @ModifyExpressionValue(method = "doClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;tryRemove(IILnet/minecraft/world/entity/player/Player;)Ljava/util/Optional;"))
-    private Optional<ItemStack> origins$performAfterCraftingActions(Optional<ItemStack> original, int slotIndex, int button, ClickType actionType, Player player, @Local Slot slot) {
-
+    private Optional<ItemStack> performAfterCraftingActions(Optional<ItemStack> original, int slotIndex, int button, ClickType actionType, Player player, @Local Slot slot) {
         if ((AbstractContainerMenu) (Object) this instanceof PowerModifiedGrindstone pmg && original.isPresent() && slotIndex == 2) {
-
             List<ModifyGrindstonePower> applyingPowers = pmg.origins$getAppliedPowers();
-            if (applyingPowers == null || applyingPowers.isEmpty()) {
-                return original;
-            }
+            if (applyingPowers == null || applyingPowers.isEmpty()) return original;
 
             SlotAccess stackReference = Mutable.stack(original.get()).toSlotAccess();
             applyingPowers.forEach(mgpt -> mgpt.executeActions(player, pmg.origins$getPos(), stackReference));
 
             return Optional.of(stackReference.get());
-
         } else if (original.isPresent() && slot instanceof ResultSlot resultSlot) {
-
-            if (!(((CraftingResultSlotAccessor) resultSlot).getCraftSlots() instanceof TransientCraftingContainer craftingInventory)) {
+            if (!(((ResultSlotAccessor) resultSlot).getCraftSlots() instanceof TransientCraftingContainer craftingInventory) || !(craftingInventory instanceof PowerCraftingInventory pci))
                 return original;
-            }
-
-            if (!(craftingInventory instanceof PowerCraftingInventory pci)) {
-                return original;
-            }
 
             List<ModifyCraftingPower> modifyCraftingPowers = pci.origins$getPowerTypes()
                     .stream()
                     .filter(ModifyCraftingPower.class::isInstance)
                     .map(ModifyCraftingPower.class::cast)
                     .toList();
-
-            if (modifyCraftingPowers.isEmpty()) {
-                return original;
-            }
+            if (modifyCraftingPowers.isEmpty()) return original;
 
             modifyCraftingPowers.forEach(mcpt -> mcpt.executeActions(player, ModifiedCraftingRecipe.getBlockFromInventory(craftingInventory)));
             SlotAccess stackReference = Mutable.stack(original.get()).toSlotAccess();
 
             modifyCraftingPowers.forEach(mcpt -> mcpt.applyAfterCraftingItemAction(player, stackReference));
             return Optional.of(stackReference.get());
-
         }
-
         return original;
-
     }
-
 }

@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(CraftingMenu.class)
-public interface CraftingScreenHandlerAccessor {
+public interface CraftingMenuAccessor {
     @Accessor
     Player getPlayer();
 

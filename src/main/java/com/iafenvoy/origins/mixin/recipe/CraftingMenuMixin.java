@@ -27,14 +27,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.LinkedList;
 
 @Mixin(CraftingMenu.class)
-public abstract class CraftingScreenHandlerMixin extends RecipeBookMenu<CraftingInput, CraftingRecipe> implements ScreenHandlerUsabilityOverride {
+public abstract class CraftingMenuMixin extends RecipeBookMenu<CraftingInput, CraftingRecipe> implements ScreenHandlerUsabilityOverride {
     @Shadow
     @Final
     private CraftingContainer craftSlots;
-
-    @Shadow
-    @Final
-    private Player player;
     @Unique
     private boolean origins$canUse = false;
 
@@ -48,37 +44,28 @@ public abstract class CraftingScreenHandlerMixin extends RecipeBookMenu<Crafting
         this.origins$canUse = canUse;
     }
 
-    private CraftingScreenHandlerMixin(MenuType screenHandlerType, int i) {
+    private CraftingMenuMixin(MenuType screenHandlerType, int i) {
         super(screenHandlerType, i);
     }
 
     @ModifyExpressionValue(method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V", at = @At(value = "NEW", target = "(Lnet/minecraft/world/inventory/AbstractContainerMenu;II)Lnet/minecraft/world/inventory/TransientCraftingContainer;"))
-    private TransientCraftingContainer origins$cachePlayerToCraftingInventory(TransientCraftingContainer original, int syncId, Inventory playerInventory) {
-
-        if (original instanceof PowerCraftingInventory pci) {
-            pci.origins$setPlayer(playerInventory.player);
-        }
-
+    private TransientCraftingContainer cachePlayerToCraftingInventory(TransientCraftingContainer original, int syncId, Inventory playerInventory) {
+        if (original instanceof PowerCraftingInventory pci) pci.origins$setPlayer(playerInventory.player);
         return original;
-
     }
 
     @Inject(method = "slotChangedCraftingGrid", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/RecipeManager;getRecipeFor(Lnet/minecraft/world/item/crafting/RecipeType;Lnet/minecraft/world/item/crafting/RecipeInput;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/crafting/RecipeHolder;)Ljava/util/Optional;"))
-    private static void origins$clearPowerCraftingInventory(AbstractContainerMenu handler, Level world, Player player, CraftingContainer craftingInventory, ResultContainer resultInventory, @Nullable RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci) {
-
-        if (craftingInventory instanceof PowerCraftingInventory pci) {
-            pci.origins$setPowerTypes(new LinkedList<>());
-        }
-
+    private static void clearPowerCraftingInventory(AbstractContainerMenu handler, Level world, Player player, CraftingContainer craftingInventory, ResultContainer resultInventory, @Nullable RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci) {
+        if (craftingInventory instanceof PowerCraftingInventory pci) pci.origins$setPowerTypes(new LinkedList<>());
     }
 
     @ModifyReturnValue(method = "stillValid", at = @At("RETURN"))
-    private boolean origins$allowUsingViaPower(boolean original, Player playerEntity) {
+    private boolean allowUsingViaPower(boolean original, Player playerEntity) {
         return original || this.origins$canUse();
     }
 
     @ModifyVariable(method = "quickMoveStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/CraftingMenu;moveItemStackTo(Lnet/minecraft/world/item/ItemStack;IIZ)Z", ordinal = 0), ordinal = 1)
-    private ItemStack origins$modifyResultStackOnQuickMove(ItemStack original, Player player, int slotId, @Local Slot slot) {
+    private ItemStack modifyResultStackOnQuickMove(ItemStack original, Player player, int slotId, @Local Slot slot) {
         return ModifyCraftingPower.executeAfterCraftingAction(player, this.craftSlots, slot, original);
     }
 

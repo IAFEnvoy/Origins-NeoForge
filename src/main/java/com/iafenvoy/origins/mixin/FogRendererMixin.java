@@ -4,6 +4,8 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCameraSubmersionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.NightVisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.Holder;
@@ -41,10 +43,8 @@ public class FogRendererMixin {
         return original;
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/core/Holder;)Z", ordinal = 0), method = "setupColor")
-    private static boolean hasStatusEffectProxy(LivingEntity instance, Holder<MobEffect> effect) {
-        if (instance instanceof Player && effect == MobEffects.NIGHT_VISION && !instance.hasEffect(MobEffects.NIGHT_VISION))
-            return OriginDataHolder.get(instance).streamActivePowers(NightVisionPower.class).map(NightVisionPower::getStrength).max(Float::compareTo).isPresent();
-        return instance.hasEffect(effect);
+    @ModifyExpressionValue(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/core/Holder;)Z", ordinal = 0))
+    private static boolean hasStatusEffectProxy(boolean original, @Local LivingEntity living) {
+        return original || OriginDataHolder.get(living).streamActivePowers(NightVisionPower.class).map(NightVisionPower::getStrength).findAny().isPresent();
     }
 }

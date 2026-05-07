@@ -44,7 +44,7 @@ public final class ClientNetworkHandler {
         LevelRenderHelper.reload();
     }
 
-    //FIXME::If I don't call in a single class server will crash
+    //If I don't call in a single class server will crash
     private static final class ClientCall {
         public static void openOriginScreen(List<Holder<Layer>> layers, boolean showBackground) {
             Minecraft.getInstance().setScreen(new ChooseOriginScreen(layers, 0, showBackground));

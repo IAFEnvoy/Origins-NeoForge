@@ -1,16 +1,23 @@
 package com.iafenvoy.origins.util.math;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
 
+import java.util.Locale;
+
 //FIXME::?
-public enum Space {
+public enum Space implements StringRepresentable {
     WORLD,
     LOCAL, LOCAL_HORIZONTAL, LOCAL_HORIZONTAL_NORMALIZED,
     VELOCITY, VELOCITY_NORMALIZED, VELOCITY_HORIZONTAL, VELOCITY_HORIZONTAL_NORMALIZED;
+    public static final Codec<Space> CODEC = StringRepresentable.fromValues(Space::values);
 
     /**
      * Provides the matrix transform from the base specified by the input vector to the cardinal base.
@@ -124,5 +131,10 @@ public enum Space {
                 transformVectorToBase(baseForwardVector, vector, entity.getYRot(), this == VELOCITY_NORMALIZED || this == VELOCITY_HORIZONTAL_NORMALIZED);
                 break;
         }
+    }
+
+    @Override
+    public @NotNull String getSerializedName() {
+        return this.name().toLowerCase(Locale.ROOT);
     }
 }

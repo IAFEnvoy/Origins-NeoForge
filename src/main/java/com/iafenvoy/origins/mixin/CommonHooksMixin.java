@@ -2,6 +2,7 @@ package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.regular.ClimbingPower;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -16,9 +17,8 @@ import java.util.Optional;
 
 @Mixin(CommonHooks.class)
 public class CommonHooksMixin {
-    @Inject(method = "isLivingOnLadder", at = @At("RETURN"), cancellable = true)
-    private static void ladder(BlockState state, Level level, BlockPos pos, LivingEntity entity, CallbackInfoReturnable<Optional<BlockPos>> info) {
-        if (info.getReturnValue().isEmpty() && OriginDataHolder.get(entity).streamActivePowers(ClimbingPower.class).findAny().isPresent())
-            info.setReturnValue(Optional.of(pos));
+    @ModifyReturnValue(method = "isLivingOnLadder", at = @At("RETURN"))
+    private static Optional<BlockPos> ladder(Optional<BlockPos> original, BlockState state, Level level, BlockPos pos, LivingEntity entity) {
+        return original.isEmpty() && OriginDataHolder.get(entity).streamActivePowers(ClimbingPower.class).findAny().isPresent() ? Optional.of(pos) : original;
     }
 }

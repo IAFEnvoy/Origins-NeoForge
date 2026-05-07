@@ -30,7 +30,7 @@ public final class WaterBreathingHelper {
     }
 
     public static void tick(LivingEntity entity) {
-        List<WaterBreathingPower> powers = OriginDataHolder.get(entity).getPowers(RegularPowers.WATER_BREATHING, WaterBreathingPower.class);
+        List<WaterBreathingPower> powers = OriginDataHolder.get(entity).streamActivePowers(WaterBreathingPower.class).toList();
         if (powers.isEmpty()) return;
 
         LivingEntityAccessor entityAccess = (LivingEntityAccessor) entity;

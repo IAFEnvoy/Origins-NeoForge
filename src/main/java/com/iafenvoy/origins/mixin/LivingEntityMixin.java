@@ -9,6 +9,7 @@ import com.iafenvoy.origins.data.power.builtin.modify.ModifyFoodPower;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventEntityCollisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.*;
 import com.iafenvoy.origins.mixin.accessor.MobEffectInstanceAccessor;
+import com.iafenvoy.origins.util.WaterBreathingHelper;
 import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -127,10 +128,9 @@ public abstract class LivingEntityMixin extends Entity {
         return effect;
     }
 
-    @Inject(method = "getFrictionInfluencedSpeed(F)F", at = @At("RETURN"), cancellable = true)
-    private void modifyFlySpeed(float slipperiness, CallbackInfoReturnable<Float> cir) {
-        if (!this.onGround())
-            cir.setReturnValue(OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyAirSpeedPower.class, this.getFlyingSpeed()));
+    @ModifyExpressionValue(method = "getFrictionInfluencedSpeed(F)F", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getFlyingSpeed()F"))
+    private float modifyFlySpeed(float original) {
+        return OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyAirSpeedPower.class, original);
     }
 
     @Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true)
@@ -145,6 +145,16 @@ public abstract class LivingEntityMixin extends Entity {
         if (OriginDataHolder.get(self).streamActivePowers(PreventEntityCollisionPower.class).anyMatch(x -> x.getBiEntityCondition().test(self, target)) ||
                 OriginDataHolder.get(target).streamActivePowers(PreventEntityCollisionPower.class).anyMatch(x -> x.getBiEntityCondition().test(target, self)))
             ci.cancel();
+    }
+
+    @ModifyReturnValue(method = "canBreatheUnderwater", at = @At("RETURN"))
+    private boolean origins$breatheUnderwater(boolean original) {
+        return original || OriginDataHolder.get(this).hasActivePower(WaterBreathingPower.class);
+    }
+
+    @Inject(method = "baseTick", at = @At("TAIL"))
+    private void origins$waterBreathingTick(CallbackInfo ci) {
+        WaterBreathingHelper.tick((LivingEntity) (Object) this);
     }
 
     @OnlyIn(Dist.CLIENT)

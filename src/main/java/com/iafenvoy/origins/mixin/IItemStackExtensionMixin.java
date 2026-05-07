@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.stream.Stream;
 
 @Mixin(IItemStackExtension.class)
-public interface PreventArmorEquipMixin {
+public interface IItemStackExtensionMixin {
     @SuppressWarnings("ShadowModifiers")
     @Shadow
     ItemStack self();

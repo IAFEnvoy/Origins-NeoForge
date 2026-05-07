@@ -92,7 +92,7 @@ public class EntityMixin implements MovingEntity {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "isInvisible", cancellable = true)
+    @Inject(method = "isInvisible", at = @At("HEAD"), cancellable = true)
     private void phantomInvisibility(CallbackInfoReturnable<Boolean> info) {
         if (OriginDataHolder.get(this.origins$self()).hasActivePower(InvisibilityPower.class))
             info.setReturnValue(true);

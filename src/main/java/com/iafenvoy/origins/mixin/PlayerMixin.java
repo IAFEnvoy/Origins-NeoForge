@@ -1,11 +1,14 @@
 package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.power.builtin.modify.ModifyAirSpeedPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyExhaustionPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyFoodPower;
 import com.iafenvoy.origins.data.power.builtin.regular.DisableRegenPower;
+import com.iafenvoy.origins.data.power.builtin.regular.WaterBreathingPower;
 import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -48,8 +51,13 @@ public class PlayerMixin {
         OriginDataHolder.get(entity).streamActivePowers(ModifyFoodPower.class).filter(x -> x.getItemCondition().test(level, food)).map(ModifyFoodPower::getEntityAction).forEach(x -> x.execute(entity));
     }
 
-    @Inject(method = "getFlyingSpeed", at = @At("RETURN"), cancellable = true)
-    private void modifyFlySpeed(CallbackInfoReturnable<Float> cir) {
-        cir.setReturnValue(OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyExhaustionPower.class, cir.getReturnValue()));
+    @ModifyReturnValue(method = "getFlyingSpeed", at = @At("RETURN"))
+    private float modifyFlySpeed(float original) {
+        return OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyAirSpeedPower.class, original);
+    }
+
+    @ModifyExpressionValue(method = "turtleHelmetTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isEyeInFluid(Lnet/minecraft/tags/TagKey;)Z"))
+    private boolean origins$submergedProxy(boolean original) {
+        return original ^ OriginDataHolder.get(this.origins$self()).hasActivePower(WaterBreathingPower.class);
     }
 }

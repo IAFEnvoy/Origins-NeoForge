@@ -27,14 +27,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.List;
 
 @Mixin(RecipeButton.class)
-public abstract class AnimatedResultButtonMixin {
+public abstract class RecipeButtonMixin {
     @Shadow
     public abstract RecipeHolder<?> getRecipe();
     @Shadow
     private RecipeBook book;
 
     @WrapOperation(method = {"renderWidget", "getTooltipText", "updateWidgetNarration"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/RecipeHolder;value()Lnet/minecraft/world/item/crafting/Recipe;"))
-    private Recipe<?> origins$modifyEntryQuery(RecipeHolder<?> entry, Operation<Recipe<?>> original, @Share("originalEntry") LocalRef<RecipeHolder<?>> sharedOriginalEntry) {
+    private Recipe<?> modifyEntryQuery(RecipeHolder<?> entry, Operation<Recipe<?>> original, @Share("originalEntry") LocalRef<RecipeHolder<?>> sharedOriginalEntry) {
         sharedOriginalEntry.set(entry);
         ResourceLocation id = entry.id();
         Recipe<?> recipe = entry.value();
@@ -44,14 +44,14 @@ public abstract class AnimatedResultButtonMixin {
     }
 
     @WrapOperation(method = {"renderWidget", "getTooltipText", "updateWidgetNarration"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/crafting/Recipe;getResultItem(Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack origins$modifyResultQuery(Recipe<?> recipe, HolderLookup.Provider wrapperLookup, Operation<ItemStack> original) {
+    private ItemStack modifyResultQuery(Recipe<?> recipe, HolderLookup.Provider wrapperLookup, Operation<ItemStack> original) {
         if (recipe instanceof ModifiedCraftingRecipe modifiedCraftingRecipe && this.book instanceof PowerCraftingObject pco)
             return modifiedCraftingRecipe.getModifiedResult(wrapperLookup, pco.origins$getPlayer()).getFirst();
         else return original.call(recipe, wrapperLookup);
     }
 
     @ModifyReturnValue(method = "getTooltipText", at = @At("RETURN"))
-    private List<Component> origins$appendRequiredRecipePowerTooltip(List<Component> original, @Share("originalEntry") LocalRef<RecipeHolder<?>> sharedOriginalEntry) {
+    private List<Component> appendRequiredRecipePowerTooltip(List<Component> original, @Share("originalEntry") LocalRef<RecipeHolder<?>> sharedOriginalEntry) {
         RecipeHolder<?> recipeEntry = sharedOriginalEntry.get() != null ? sharedOriginalEntry.get() : this.getRecipe();
 
         if (recipeEntry.value() instanceof PowerCraftingRecipe pcr && this.book instanceof PowerCraftingObject pco && pco.origins$getPlayer() != null) {

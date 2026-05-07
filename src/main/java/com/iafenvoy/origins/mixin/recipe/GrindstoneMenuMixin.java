@@ -27,38 +27,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Mixin(GrindstoneMenu.class)
-public abstract class GrindstoneScreenHandlerMixin extends AbstractContainerMenu implements PowerModifiedGrindstone {
+public abstract class GrindstoneMenuMixin extends AbstractContainerMenu implements PowerModifiedGrindstone {
     @Shadow
     @Final
     Container repairSlots;
-
     @Shadow
     @Final
     private Container resultSlots;
-
     @Shadow
     @Final
     public static int INPUT_SLOT;
-
     @Shadow
     @Final
     public static int ADDITIONAL_SLOT;
-
     @Shadow
     @Final
     public static int RESULT_SLOT;
-
     @Shadow
     @Final
     private ContainerLevelAccess access;
-
     @Unique
     private Player origins$cachedPlayer;
-
     @Unique
     private List<ModifyGrindstonePower> origins$appliedPowers;
 
-    private GrindstoneScreenHandlerMixin(@Nullable MenuType<?> type, int syncId) {
+    private GrindstoneMenuMixin(@Nullable MenuType<?> type, int syncId) {
         super(type, syncId);
     }
 
@@ -84,23 +77,13 @@ public abstract class GrindstoneScreenHandlerMixin extends AbstractContainerMenu
 
     @ModifyVariable(method = "quickMoveStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;copy()Lnet/minecraft/world/item/ItemStack;"), ordinal = 1)
     private ItemStack performAfterGrindstoneActionsQuickMove(ItemStack original, Player player, int slotIndex, @Local Slot slot) {
-
         List<ModifyGrindstonePower> applyingPowers = this.origins$getAppliedPowers();
         SlotAccess stackReference = Mutable.stack(original).toSlotAccess();
-
-        if (slotIndex != RESULT_SLOT || applyingPowers == null || applyingPowers.isEmpty()) {
-            return original;
-        }
-
+        if (slotIndex != RESULT_SLOT || applyingPowers == null || applyingPowers.isEmpty()) return original;
         ItemStack copy = original.copy();
         applyingPowers.forEach(mgpt -> mgpt.executeActions(player, this.origins$getPos(), stackReference));
-
-        if (stackReference.get().isEmpty()) {
-            this.getSlot(slotIndex).onTake(player, copy);
-        }
-
+        if (stackReference.get().isEmpty()) this.getSlot(slotIndex).onTake(player, copy);
         return stackReference.get();
-
     }
 
     @Override
@@ -118,5 +101,4 @@ public abstract class GrindstoneScreenHandlerMixin extends AbstractContainerMenu
     public BlockPos origins$getPos() {
         return this.access.evaluate((world, pos) -> pos, BlockPos.ZERO);
     }
-
 }

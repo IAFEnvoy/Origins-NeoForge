@@ -8,11 +8,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ReloadableServerResources.class)
-public abstract class DataPackContentsMixin {
-
+public abstract class ReloadableServerResourcesMixin {
     @Inject(method = "updateRegistryTags()V", at = @At("HEAD"))
     private void onRefresh(CallbackInfo ci) {
         RecipePower.registerPowerRecipes((ReloadableServerResources) (Object) this);
     }
-
 }

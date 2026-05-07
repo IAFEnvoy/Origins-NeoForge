@@ -11,18 +11,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerGamePacketListenerImpl.class)
-public class ServerPlayNetworkHandlerMixin {
-
+public class ServerGamePacketListenerImplMixin {
     @Shadow
     public ServerPlayer player;
 
     @Inject(method = "handleClientCommand", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;respawn(Lnet/minecraft/server/level/ServerPlayer;ZLnet/minecraft/world/entity/Entity$RemovalReason;)Lnet/minecraft/server/level/ServerPlayer;", ordinal = 0))
     private void saveEndRespawnStatus(ServerboundClientCommandPacket packet, CallbackInfo ci) {
-        ((EndRespawningEntity)this.player).apoli$setEndRespawning(true);
+        ((EndRespawningEntity)this.player).origins$setEndRespawning(true);
     }
 
     @Inject(method = "handleClientCommand", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/critereon/ChangeDimensionTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;)V"))
     private void undoEndRespawnStatus(ServerboundClientCommandPacket packet, CallbackInfo ci) {
-        ((EndRespawningEntity)this.player).apoli$setEndRespawning(false);
+        ((EndRespawningEntity)this.player).origins$setEndRespawning(false);
     }
 }

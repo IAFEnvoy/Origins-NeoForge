@@ -1,9 +1,9 @@
 package com.iafenvoy.origins.accessor;
 
 public interface EndRespawningEntity {
-    void apoli$setEndRespawning(boolean endSpawn);
+    void origins$setEndRespawning(boolean endSpawn);
 
-    boolean apoli$isEndRespawning();
+    boolean origins$isEndRespawning();
 
-    boolean apoli$hasRealRespawnPoint();
+    boolean origins$hasRealRespawnPoint();
 }

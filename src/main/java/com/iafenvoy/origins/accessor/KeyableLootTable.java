@@ -5,7 +5,7 @@ import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 public interface KeyableLootTable {
-    ResourceKey<LootTable> getKey();
+    ResourceKey<LootTable> origins$getKey();
 
-    void setup(ResourceKey<LootTable> lootTableKey, ReloadableServerRegistries.Holder lookup);
+    void origins$setup(ResourceKey<LootTable> lootTableKey, ReloadableServerRegistries.Holder lookup);
 }

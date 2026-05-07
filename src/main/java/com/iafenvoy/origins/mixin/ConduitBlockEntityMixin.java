@@ -10,9 +10,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ConduitBlockEntity.class)
-public class ConduitPowerOnLandMixin {
+public class ConduitBlockEntityMixin {
     @ModifyExpressionValue(method = "applyEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isInWaterOrRain()Z"))
-    private static boolean origins$applyConduitPower(boolean original, @Local Player player) {
+    private static boolean applyConduitPower(boolean original, @Local Player player) {
         return original || OriginDataHolder.get(player).hasActivePower(ConduitPowerOnLandPower.class);
     }
 }

@@ -24,30 +24,24 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import java.util.Optional;
 
 @Mixin(InventoryMenu.class)
-public abstract class PlayerScreenHandlerMixin {
+public abstract class InventoryMenuMixin {
     @Shadow
     @Final
     private CraftingContainer craftSlots;
 
     @ModifyExpressionValue(method = "<init>", at = @At(value = "NEW", target = "(Lnet/minecraft/world/inventory/AbstractContainerMenu;II)Lnet/minecraft/world/inventory/TransientCraftingContainer;"))
-    private TransientCraftingContainer origins$cachePlayerToCraftingInventory(TransientCraftingContainer original, Inventory playerInventory) {
-
-        if (original instanceof PowerCraftingInventory pci) {
-            pci.origins$setPlayer(playerInventory.player);
-        }
-
+    private TransientCraftingContainer cachePlayerToCraftingInventory(TransientCraftingContainer original, Inventory playerInventory) {
+        if (original instanceof PowerCraftingInventory pci) pci.origins$setPlayer(playerInventory.player);
         return original;
-
     }
 
     @ModifyExpressionValue(method = "quickMoveStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;hasItem()Z", ordinal = 0), slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/EquipmentSlot$Type;HUMANOID_ARMOR:Lnet/minecraft/world/entity/EquipmentSlot$Type;")))
-    private boolean origins$disallowQuickMovingRestrictedWearables(boolean original, Player player, @Local(ordinal = 1) ItemStack stackToInsert, @Local EquipmentSlot slot) {
+    private boolean disallowQuickMovingRestrictedWearables(boolean original, Player player, @Local(ordinal = 1) ItemStack stackToInsert, @Local EquipmentSlot slot) {
         return original || OriginDataHolder.get(player).streamActivePowers(RestrictArmorPower.class).anyMatch(x -> Optional.ofNullable(x.getConditions().get(slot)).map(c -> c.test(player.level(), stackToInsert)).orElse(false));
     }
 
     @ModifyVariable(method = "quickMoveStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/InventoryMenu;moveItemStackTo(Lnet/minecraft/world/item/ItemStack;IIZ)Z", ordinal = 0), ordinal = 1)
-    private ItemStack origins$modifyResultStackOnQuickMove(ItemStack original, Player player, int slotId, @Local Slot slot) {
+    private ItemStack modifyResultStackOnQuickMove(ItemStack original, Player player, int slotId, @Local Slot slot) {
         return ModifyCraftingPower.executeAfterCraftingAction(player, this.craftSlots, slot, original);
     }
-
 }

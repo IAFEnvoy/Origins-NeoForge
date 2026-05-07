@@ -4,6 +4,7 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyAirSpeedPower;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventSprintingPower;
 import com.iafenvoy.origins.data.power.builtin.regular.WaterVisionPower;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Abilities;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,9 +22,9 @@ public class LocalPlayerMixin {
         return (LocalPlayer) (Object) this;
     }
 
-    @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Abilities;getFlyingSpeed()F"))
-    private float modifyFlySpeed(Abilities abilities) {
-        return OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyAirSpeedPower.class, abilities.getFlyingSpeed());
+    @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Abilities;getFlyingSpeed()F"))
+    private float modifyFlySpeed(float original) {
+        return OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyAirSpeedPower.class, original);
     }
 
     @ModifyVariable(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;onGround()Z"), ordinal = 4)

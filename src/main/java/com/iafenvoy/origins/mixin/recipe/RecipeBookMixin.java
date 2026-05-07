@@ -11,7 +11,6 @@ import java.util.Objects;
 
 @Mixin(RecipeBook.class)
 public abstract class RecipeBookMixin implements PowerCraftingObject {
-
     @Unique
     private WeakReference<Player> origins$player;
 
@@ -24,5 +23,4 @@ public abstract class RecipeBookMixin implements PowerCraftingObject {
     public void origins$setPlayer(Player player) {
         this.origins$player = new WeakReference<>(player);
     }
-
 }

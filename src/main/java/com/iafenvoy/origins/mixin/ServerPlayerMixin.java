@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.Optional;
 
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerEntityMixin extends Player implements ContainerListener, EndRespawningEntity {
+public abstract class ServerPlayerMixin extends Player implements ContainerListener, EndRespawningEntity {
     @Shadow
     private ResourceKey<Level> respawnDimension;
     @Shadow
@@ -51,58 +51,49 @@ public abstract class ServerPlayerEntityMixin extends Player implements Containe
         throw new AssertionError();
     }
 
-    private ServerPlayerEntityMixin(Level world, BlockPos pos, float yaw, GameProfile gameProfile) {
+    private ServerPlayerMixin(Level world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
     }
 
     @ModifyReturnValue(method = "getRespawnDimension", at = @At("RETURN"))
-    private ResourceKey<Level> apoli$modifySpawnPointDimension(ResourceKey<Level> original) {
-        if (!this.apoli$isEndRespawning() && (this.respawnPosition == null || this.apoli$hasObstructedOriginalSpawnPoint())) {
+    private ResourceKey<Level> origins$modifySpawnPointDimension(ResourceKey<Level> original) {
+        if (!this.origins$isEndRespawning() && (this.respawnPosition == null || this.origins$hasObstructedOriginalSpawnPoint()))
             return OriginDataHolder.get(this).streamActivePowers(ModifyPlayerSpawnPower.class)
                     .findFirst()
                     .map(ModifyPlayerSpawnPower::getDimension)
                     .orElse(original);
-        } else return original;
+        else return original;
     }
 
     @ModifyReturnValue(method = "getRespawnPosition", at = @At("RETURN"))
-    private BlockPos apoli$modifySpawnPointPosition(BlockPos original) {
-
-        if (this.apoli$isEndRespawning() || !OriginDataHolder.get(this).hasActivePower(ModifyPlayerSpawnPower.class)) {
+    private BlockPos origins$modifySpawnPointPosition(BlockPos original) {
+        if (this.origins$isEndRespawning() || !OriginDataHolder.get(this).hasActivePower(ModifyPlayerSpawnPower.class))
             return original;
-        } else if (original == null) {
-            return this.apoli$findPowerSpawnPoint();
-        } else if (this.apoli$hasObstructedOriginalSpawnPoint()) {
+        else if (original == null)
+            return this.origins$findPowerSpawnPoint();
+        else if (this.origins$hasObstructedOriginalSpawnPoint()) {
             this.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.NO_RESPAWN_BLOCK_AVAILABLE, 0.0F));
-            return this.apoli$findPowerSpawnPoint();
-        } else {
-            return original;
-        }
-
+            return this.origins$findPowerSpawnPoint();
+        } else return original;
     }
 
     @ModifyReturnValue(method = "isRespawnForced", at = @At("RETURN"))
-    private boolean apoli$modifySpawnForced(boolean original) {
-        return original || (!this.apoli$isEndRespawning() && (this.respawnPosition == null || this.apoli$hasObstructedOriginalSpawnPoint()) && OriginDataHolder.get(this).hasActivePower(ModifyPlayerSpawnPower.class));
+    private boolean origins$modifySpawnForced(boolean original) {
+        return original || (!this.origins$isEndRespawning() && (this.respawnPosition == null || this.origins$hasObstructedOriginalSpawnPoint()) && OriginDataHolder.get(this).hasActivePower(ModifyPlayerSpawnPower.class));
     }
 
     @WrapOperation(method = "findRespawnPositionAndUseSpawnBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;findRespawnAndUseSpawnBlock(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;FZZ)Ljava/util/Optional;"))
-    private Optional<ServerPlayer.RespawnPosAngle> apoli$retryObstructedSpawnPointIfFailed(ServerLevel world, BlockPos pos, float spawnAngle, boolean spawnForced, boolean alive, Operation<Optional<ServerPlayer.RespawnPosAngle>> original) {
-
+    private Optional<ServerPlayer.RespawnPosAngle> origins$retryObstructedSpawnPointIfFailed(ServerLevel world, BlockPos pos, float spawnAngle, boolean spawnForced, boolean alive, Operation<Optional<ServerPlayer.RespawnPosAngle>> original) {
         Optional<ServerPlayer.RespawnPosAngle> originalRespawnPos = original.call(world, pos, spawnAngle, spawnForced, alive);
-
         if (originalRespawnPos.isEmpty() && OriginDataHolder.get(this).hasActivePower(ModifyPlayerSpawnPower.class)) {
             return Optional
                     .ofNullable(DismountHelper.findSafeDismountLocation(this.getType(), world, pos, spawnForced))
                     .map(newPos -> ServerPlayer.RespawnPosAngle.of(newPos, pos));
-        } else {
-            return originalRespawnPos;
-        }
-
+        } else return originalRespawnPos;
     }
 
     @Unique
-    private boolean apoli$hasObstructedOriginalSpawnPoint() {
+    private boolean origins$hasObstructedOriginalSpawnPoint() {
         ServerLevel spawnPointWorld = this.server.getLevel(this.respawnDimension);
         return this.respawnPosition != null
                 && spawnPointWorld != null
@@ -110,7 +101,7 @@ public abstract class ServerPlayerEntityMixin extends Player implements Containe
     }
 
     @Unique
-    private BlockPos apoli$findPowerSpawnPoint() {
+    private BlockPos origins$findPowerSpawnPoint() {
         return OriginDataHolder.get(this).streamActivePowers(ModifyPlayerSpawnPower.class)
                 .findFirst()
                 .flatMap(x -> x.getSpawn(this))
@@ -119,25 +110,25 @@ public abstract class ServerPlayerEntityMixin extends Player implements Containe
     }
 
     @Unique
-    private boolean apoli$isEndRespawning;
+    private boolean origins$isEndRespawning;
 
     @Override
-    public void apoli$setEndRespawning(boolean endSpawn) {
-        this.apoli$isEndRespawning = endSpawn;
+    public void origins$setEndRespawning(boolean endSpawn) {
+        this.origins$isEndRespawning = endSpawn;
     }
 
     @Override
-    public boolean apoli$isEndRespawning() {
-        return this.apoli$isEndRespawning;
+    public boolean origins$isEndRespawning() {
+        return this.origins$isEndRespawning;
     }
 
     @Override
-    public boolean apoli$hasRealRespawnPoint() {
-        return this.respawnPosition != null && !this.apoli$hasObstructedOriginalSpawnPoint();
+    public boolean origins$hasRealRespawnPoint() {
+        return this.respawnPosition != null && !this.origins$hasObstructedOriginalSpawnPoint();
     }
 
     @ModifyExpressionValue(method = "<init>", at = @At(value = "NEW", target = "()Lnet/minecraft/stats/ServerRecipeBook;"))
-    private ServerRecipeBook apoli$cachePlayerToRecipeBook(ServerRecipeBook original) {
+    private ServerRecipeBook origins$cachePlayerToRecipeBook(ServerRecipeBook original) {
         if (original instanceof PowerCraftingObject pco) pco.origins$setPlayer(this);
         return original;
     }

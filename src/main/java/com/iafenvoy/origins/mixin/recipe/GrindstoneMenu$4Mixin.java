@@ -19,13 +19,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Mixin(targets = "net/minecraft/world/inventory/GrindstoneMenu$4")
-public abstract class GrindstoneScreenHandlerOutputSlotMixin {
+public abstract class GrindstoneMenu$4Mixin {
     @Shadow
     @Final
     GrindstoneMenu this$0;
 
     @ModifyReturnValue(method = "getExperienceAmount", at = @At("RETURN"))
-    private int origins$modifyExperience(int original, Level world) {
+    private int modifyExperience(int original, Level world) {
         if (!(this.this$0 instanceof PowerModifiedGrindstone powerModifiedGrindstone)) return original;
         List<Modifier> modifiers = powerModifiedGrindstone.origins$getAppliedPowers()
                 .stream()

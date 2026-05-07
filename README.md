@@ -14,10 +14,11 @@ This mod provide an "origin" system. Each of them have special effects, and you 
 NeoForge and Additional Entity Attributes provides some attributes which can replace them, just use AttributePowers
 instead.
 
-### When the game is loading saves, this mod is spam in the console?
+Also following powers are not implemented:
 
-This mod is incomplete. What you see in console is the datapack loading system cannot find the specific power types
-since they are not implemented yet. After some updates I will implement them and these errors will disappear.
+- `ModifyEnchantmentLevelPower`, `EdiableItemPower`: Original implementation are too complex, I will find better way to
+  implement them later.
+- `MultiplePower`: This is not very good design, you can put multiple powers in one folder to manage them.
 
 ### Are datapacks for Fabric version capable with this mod?
 

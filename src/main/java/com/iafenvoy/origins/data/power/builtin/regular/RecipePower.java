@@ -54,14 +54,13 @@ public class RecipePower extends Power implements Prioritized, RecipeHelper {
         return CODEC;
     }
 
-    public static void registerPowerRecipes(ReloadableServerResources dataPackContents) {
-
-        RecipeManager recipeManager = dataPackContents.getRecipeManager();
+    public static void registerPowerRecipes(ReloadableServerResources resources) {
+        RecipeManager recipeManager = resources.getRecipeManager();
 
         Map<ResourceLocation, RecipeHolder<?>> recipeEntriesById = new Object2ObjectOpenHashMap<>(((RecipeManagerAccessor) recipeManager).getByName());
         Object2IntMap<ResourceLocation> priorityEntries = new Object2IntOpenHashMap<>();
 
-        List<Holder.Reference<Power>> powers = dataPackContents.getRegistryLookup().lookupOrThrow(PowerRegistries.POWER_KEY).filterElements(RecipePower.class::isInstance).listElements().toList();
+        List<Holder.Reference<Power>> powers = resources.getRegistryLookup().lookupOrThrow(PowerRegistries.POWER_KEY).filterElements(RecipePower.class::isInstance).listElements().toList();
 
         for (Holder<Power> power : powers) {
             if (!(power.value() instanceof RecipePower recipePower)) continue;

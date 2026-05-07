@@ -4,8 +4,8 @@ import com.iafenvoy.origins.accessor.PowerCraftingInventory;
 import com.iafenvoy.origins.accessor.PowerCraftingObject;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCraftingPower;
-import com.iafenvoy.origins.mixin.recipe.CraftingInventoryAccessor;
-import com.iafenvoy.origins.mixin.recipe.CraftingScreenHandlerAccessor;
+import com.iafenvoy.origins.mixin.recipe.TransientCraftingContainerAccessor;
+import com.iafenvoy.origins.mixin.recipe.CraftingMenuAccessor;
 import com.iafenvoy.origins.registry.OriginsRecipeSerializers;
 import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.iafenvoy.origins.util.wrapper.Mutable;
@@ -126,8 +126,8 @@ public record ModifiedCraftingRecipe(ResourceLocation id, CraftingRecipe delegat
     }
 
     public static Optional<BlockPos> getBlockFromInventory(TransientCraftingContainer craftingInventory) {
-        if (((CraftingInventoryAccessor) craftingInventory).getMenu() instanceof CraftingMenu craftingScreenHandler)
-            return ((CraftingScreenHandlerAccessor) craftingScreenHandler).getAccess().evaluate((world, pos) -> pos);
+        if (((TransientCraftingContainerAccessor) craftingInventory).getMenu() instanceof CraftingMenu craftingScreenHandler)
+            return ((CraftingMenuAccessor) craftingScreenHandler).getAccess().evaluate((world, pos) -> pos);
         else return Optional.empty();
     }
 

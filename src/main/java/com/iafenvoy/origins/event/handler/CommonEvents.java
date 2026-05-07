@@ -27,7 +27,6 @@ public final class CommonEvents {
             event.setInvulnerable(true);
     }
 
-    //TODO::Move to power class
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void preventEntityInteraction(PlayerInteractEvent.EntityInteract event) {
         Player player = event.getEntity();
@@ -44,7 +43,6 @@ public final class CommonEvents {
         });
     }
 
-    //TODO::Move to power class
     //If the interaction isn't canceled, let other mod interaction play, as this can cancel interactions.
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void playerEntityInteraction(PlayerInteractEvent.EntityInteract event) {

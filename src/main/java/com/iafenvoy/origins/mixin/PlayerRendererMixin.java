@@ -28,6 +28,7 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
         super(context, model, shadowRadius);
     }
 
+    //FIXME::Low capability
     @Unique
     private static void origins$colorizeHand(ModelPart modelPart, PoseStack matrices, VertexConsumer vertices, int light, int overlay, MultiBufferSource vertexConsumers, AbstractClientPlayer player) {
         Optional<ColorSettings> color = ModelColorPower.getColor(player);

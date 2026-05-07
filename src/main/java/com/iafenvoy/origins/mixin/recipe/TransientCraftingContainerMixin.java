@@ -11,11 +11,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 @Mixin(TransientCraftingContainer.class)
-public abstract class CraftingInventoryMixin implements PowerCraftingInventory {
-
+public abstract class TransientCraftingContainerMixin implements PowerCraftingInventory {
     @Unique
     private Collection<? extends Power> origins$CachedPowerTypes = new LinkedList<>();
-
     @Unique
     private Player origins$cachedPlayer;
 
@@ -43,5 +41,4 @@ public abstract class CraftingInventoryMixin implements PowerCraftingInventory {
     public void origins$setPlayer(Player player) {
         this.origins$cachedPlayer = player;
     }
-
 }
