@@ -22,8 +22,8 @@ import java.util.Optional;
 public class ModifyFoodPower extends Power {
     public static final MapCodec<ModifyFoodPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            CombinedCodecs.MODIFIER.optionalFieldOf("food_modifier", List.of()).forGetter(ModifyFoodPower::getFoodModifiers),
-            CombinedCodecs.MODIFIER.optionalFieldOf("saturation_modifier", List.of()).forGetter(ModifyFoodPower::getSaturationModifiers),
+            CombinedCodecs.MODIFIER.optionalFieldOf("food_modifier", List.of()).forGetter(ModifyFoodPower::getFoodModifier),
+            CombinedCodecs.MODIFIER.optionalFieldOf("saturation_modifier", List.of()).forGetter(ModifyFoodPower::getSaturationModifier),
             ItemCondition.optionalCodec("item_condition").forGetter(ModifyFoodPower::getItemCondition),
             EntityAction.optionalCodec("entity_action").forGetter(ModifyFoodPower::getEntityAction),
             ItemStack.CODEC.optionalFieldOf("replace_stack").forGetter(ModifyFoodPower::getReplaceStack),
@@ -32,8 +32,8 @@ public class ModifyFoodPower extends Power {
             Codec.BOOL.optionalFieldOf("prevent_effects", false).forGetter(ModifyFoodPower::shouldPreventEffects)
     ).apply(i, ModifyFoodPower::new));
 
-    private final List<Modifier> foodModifiers;
-    private final List<Modifier> saturationModifiers;
+    private final List<Modifier> foodModifier;
+    private final List<Modifier> saturationModifier;
     private final ItemCondition itemCondition;
     private final EntityAction entityAction;
     private final Optional<ItemStack> replaceStack;
@@ -41,10 +41,10 @@ public class ModifyFoodPower extends Power {
     private final boolean alwaysEdible;
     private final boolean preventEffects;
 
-    public ModifyFoodPower(BaseSettings settings, List<Modifier> foodModifiers, List<Modifier> saturationModifiers, ItemCondition itemCondition, EntityAction entityAction, Optional<ItemStack> replaceStack, ItemAction itemAction, boolean alwaysEdible, boolean preventEffects) {
+    public ModifyFoodPower(BaseSettings settings, List<Modifier> foodModifier, List<Modifier> saturationModifier, ItemCondition itemCondition, EntityAction entityAction, Optional<ItemStack> replaceStack, ItemAction itemAction, boolean alwaysEdible, boolean preventEffects) {
         super(settings);
-        this.foodModifiers = foodModifiers;
-        this.saturationModifiers = saturationModifiers;
+        this.foodModifier = foodModifier;
+        this.saturationModifier = saturationModifier;
         this.itemCondition = itemCondition;
         this.entityAction = entityAction;
         this.replaceStack = replaceStack;
@@ -53,12 +53,12 @@ public class ModifyFoodPower extends Power {
         this.preventEffects = preventEffects;
     }
 
-    public List<Modifier> getFoodModifiers() {
-        return this.foodModifiers;
+    public List<Modifier> getFoodModifier() {
+        return this.foodModifier;
     }
 
-    public List<Modifier> getSaturationModifiers() {
-        return this.saturationModifiers;
+    public List<Modifier> getSaturationModifier() {
+        return this.saturationModifier;
     }
 
     public ItemCondition getItemCondition() {

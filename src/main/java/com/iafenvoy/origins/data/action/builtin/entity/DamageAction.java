@@ -17,11 +17,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public record DamageAction(Holder<DamageType> damageType, float amount,
-                           List<Modifier> modifiers) implements EntityAction {
+                           List<Modifier> modifier) implements EntityAction {
     public static final MapCodec<DamageAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageAction::damageType),
             Codec.FLOAT.fieldOf("amount").forGetter(DamageAction::amount),
-            CombinedCodecs.MODIFIER.optionalFieldOf("modifier", List.of()).forGetter(DamageAction::modifiers)
+            CombinedCodecs.MODIFIER.optionalFieldOf("modifier", List.of()).forGetter(DamageAction::modifier)
     ).apply(i, DamageAction::new));
 
     @Override
@@ -32,8 +32,8 @@ public record DamageAction(Holder<DamageType> damageType, float amount,
     @Override
     public void execute(@NotNull Entity source) {
         float amount = this.amount;
-        if (!this.modifiers.isEmpty() && source instanceof LivingEntity living)
-            amount = Modifier.applyModifiers(OriginDataHolder.get(living), this.modifiers, living.getMaxHealth());
+        if (!this.modifier.isEmpty() && source instanceof LivingEntity living)
+            amount = Modifier.applyModifiers(OriginDataHolder.get(living), this.modifier, living.getMaxHealth());
         source.hurt(new DamageSource(this.damageType), amount);
     }
 }

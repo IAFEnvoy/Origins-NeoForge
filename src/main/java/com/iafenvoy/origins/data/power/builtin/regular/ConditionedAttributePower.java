@@ -15,21 +15,21 @@ import java.util.List;
 public class ConditionedAttributePower extends Power implements AttributePowerHelper {
     public static final MapCodec<ConditionedAttributePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            CombinedCodecs.ATTRIBUTE.optionalFieldOf("modifiers", List.of()).forGetter(ConditionedAttributePower::getModifiers),
+            CombinedCodecs.ATTRIBUTE.optionalFieldOf("modifier", List.of()).forGetter(ConditionedAttributePower::getModifier),
             Codec.BOOL.optionalFieldOf("update_health", true).forGetter(ConditionedAttributePower::shouldUpdateHealth)
     ).apply(i, ConditionedAttributePower::new));
-    private final List<AttributeEntry> modifiers;
+    private final List<AttributeEntry> modifier;
     private final boolean updateHealth;
 
-    public ConditionedAttributePower(BaseSettings settings, List<AttributeEntry> modifiers, boolean updateHealth) {
+    public ConditionedAttributePower(BaseSettings settings, List<AttributeEntry> modifier, boolean updateHealth) {
         super(settings);
-        this.modifiers = modifiers;
+        this.modifier = modifier;
         this.updateHealth = updateHealth;
     }
 
     @Override
-    public List<AttributeEntry> getModifiers() {
-        return this.modifiers;
+    public List<AttributeEntry> getModifier() {
+        return this.modifier;
     }
 
     @Override

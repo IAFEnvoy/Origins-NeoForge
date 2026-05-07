@@ -65,7 +65,7 @@ public class AttributeModifyTransferPower extends Power {
         Entity entity = event.getEntity();
         if (!(entity instanceof LivingEntity livingEntity)) return;
         Class<? extends Power> powerClass = event.getPowerClass();
-        List<Modifier> modifiers = event.getModifiers();
+        List<Modifier> modifiers = event.getModifier();
         OriginDataHolder holder = OriginDataHolder.get(livingEntity);
         for (AttributeModifyTransferPower p : holder.streamActivePowers(AttributeModifyTransferPower.class).toList()) {
             Optional<Holder.Reference<Power>> power = holder.getAccess().registryOrThrow(PowerRegistries.POWER_KEY).getHolder(p.target);

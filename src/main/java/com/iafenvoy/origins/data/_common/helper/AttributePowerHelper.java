@@ -14,7 +14,7 @@ import java.util.List;
 
 @Comment("Only for power, or will crash")
 public interface AttributePowerHelper {
-    List<AttributeEntry> getModifiers();
+    List<AttributeEntry> getModifier();
 
     boolean shouldUpdateHealth();
 
@@ -23,7 +23,7 @@ public interface AttributePowerHelper {
         if (!(entity instanceof LivingEntity living) || entity.level().isClientSide()) return;
         float previousMaxHealth = living.getMaxHealth();
         float previousHealthPercent = living.getHealth() / previousMaxHealth;
-        this.getModifiers().stream().filter(x -> living.getAttributes().hasAttribute(x.attribute())).forEach(mod -> {
+        this.getModifier().stream().filter(x -> living.getAttributes().hasAttribute(x.attribute())).forEach(mod -> {
             AttributeInstance instance = living.getAttribute(mod.attribute());
             ResourceLocation id = holder.getPowerId((Power) this);// HERE
             if (instance != null)

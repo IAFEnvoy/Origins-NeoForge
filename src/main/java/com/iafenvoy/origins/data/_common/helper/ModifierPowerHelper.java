@@ -30,6 +30,6 @@ public interface ModifierPowerHelper {
     default List<Modifier> collectModifiers(OriginDataHolder holder, double baseValue) {
         OriginsModifierCollectEvent event = new OriginsModifierCollectEvent(holder.getEntity(), (Class<? extends Power>) this.getClass(), baseValue, new LinkedList<>(this.getModifier()));
         NeoForge.EVENT_BUS.post(event);
-        return event.getModifiers();
+        return event.getModifier();
     }
 }

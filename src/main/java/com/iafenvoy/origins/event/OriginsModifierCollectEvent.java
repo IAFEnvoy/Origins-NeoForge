@@ -11,13 +11,13 @@ public class OriginsModifierCollectEvent extends Event {
     private final Entity entity;
     private final Class<? extends Power> powerClass;
     private final double baseValue;
-    private final List<Modifier> modifiers;
+    private final List<Modifier> modifier;
 
-    public OriginsModifierCollectEvent(Entity entity, Class<? extends Power> powerClass, double baseValue, List<Modifier> modifiers) {
+    public OriginsModifierCollectEvent(Entity entity, Class<? extends Power> powerClass, double baseValue, List<Modifier> modifier) {
         this.entity = entity;
         this.powerClass = powerClass;
         this.baseValue = baseValue;
-        this.modifiers = modifiers;
+        this.modifier = modifier;
     }
 
     public Entity getEntity() {
@@ -32,7 +32,7 @@ public class OriginsModifierCollectEvent extends Event {
         return this.baseValue;
     }
 
-    public List<Modifier> getModifiers() {
-        return this.modifiers;
+    public List<Modifier> getModifier() {
+        return this.modifier;
     }
 }

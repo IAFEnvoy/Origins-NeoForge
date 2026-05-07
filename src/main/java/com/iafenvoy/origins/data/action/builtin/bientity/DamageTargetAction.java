@@ -16,11 +16,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public record DamageTargetAction(Holder<DamageType> damageType, float amount,
-                                 List<Modifier> modifiers) implements BiEntityAction {
+                                 List<Modifier> modifier) implements BiEntityAction {
     public static final MapCodec<DamageTargetAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageTargetAction::damageType),
             Codec.FLOAT.fieldOf("amount").forGetter(DamageTargetAction::amount),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(DamageTargetAction::modifiers)
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(DamageTargetAction::modifier)
     ).apply(i, DamageTargetAction::new));
 
     @Override
@@ -30,7 +30,7 @@ public record DamageTargetAction(Holder<DamageType> damageType, float amount,
 
     @Override
     public void execute(@NotNull Entity source, @NotNull Entity target) {
-        float finalAmount = Modifier.applyModifiers(OriginDataHolder.get(source), this.modifiers, this.amount);
+        float finalAmount = Modifier.applyModifiers(OriginDataHolder.get(source), this.modifier, this.amount);
         target.hurt(new DamageSource(this.damageType, source), finalAmount);
     }
 }
