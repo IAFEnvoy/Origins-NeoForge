@@ -2,7 +2,6 @@ package com.iafenvoy.origins.util;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.power.builtin.RegularPowers;
 import com.iafenvoy.origins.data.power.builtin.regular.WaterBreathingPower;
 import com.iafenvoy.origins.mixin.accessor.LivingEntityAccessor;
 import net.minecraft.core.particles.ParticleTypes;

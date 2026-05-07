@@ -40,6 +40,7 @@ public class RecipePower extends Power implements Prioritized, RecipeHelper {
         this.priority = priority;
     }
 
+    @Override
     public CraftingRecipe getRecipe() {
         return this.recipe;
     }

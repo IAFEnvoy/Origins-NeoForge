@@ -12,7 +12,6 @@ import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.util.RLHelper;
 import com.iafenvoy.origins.util.RandomHelper;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -22,7 +21,6 @@ import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 

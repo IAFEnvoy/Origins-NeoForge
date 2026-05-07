@@ -20,7 +20,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,7 +33,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
@@ -112,8 +110,8 @@ public abstract class GameRendererMixin {
     }
 
     @ModifyArgs(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setup(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/world/entity/Entity;ZZF)V"))
-    private void modifyCameraSetupArgs(Args args, @Local Camera camera) {
-        if (PhasingPower.hasRenderMethod(camera.getEntity(), PhasingPower.PhasingRenderType.REMOVE_BLOCKS)) {
+    private void modifyCameraSetupArgs(Args args, @Local Entity entity) {
+        if (PhasingPower.hasRenderMethod(entity, PhasingPower.PhasingRenderType.REMOVE_BLOCKS)) {
             args.set(2, false);
             args.set(3, false);
         }

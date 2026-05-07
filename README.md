@@ -23,7 +23,7 @@ Also following powers are not implemented:
 ### Are datapacks for Fabric version capable with this mod?
 
 Sadly not, Fabric version use their own logic to load datapacks but this mod load them with vanilla methods. They have
-different data structure.
+different data structure. Also, a lot of powers changed parameters, so you need extra changes to make them work.
 
 ## Credit
 
