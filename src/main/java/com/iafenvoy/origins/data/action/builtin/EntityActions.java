@@ -8,8 +8,11 @@ import com.iafenvoy.origins.data.action.NoOpAction;
 import com.iafenvoy.origins.data.action.builtin.entity.*;
 import com.iafenvoy.origins.data.action.builtin.entity.meta.*;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import static com.iafenvoy.origins.data.action.SimpleActions.createEntity;
 
 @SuppressWarnings("unused")
 public final class EntityActions {
@@ -25,7 +28,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ChangeResourceAction>> CHANGE_RESOURCE = REGISTRY.register("change_resource", () -> ChangeResourceAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<CraftingTableAction>> CRAFTING_TABLE = REGISTRY.register("crafting_table", () -> CraftingTableAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<DamageAction>> DAMAGE = REGISTRY.register("damage", () -> DamageAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<DismountAction>> DISMOUNT = REGISTRY.register("dismount", () -> DismountAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<? extends EntityAction>> DISMOUNT = REGISTRY.register("dismount", () -> createEntity(Entity::stopRiding));
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<DropInventoryAction>> DROP_INVENTORY = REGISTRY.register("drop_inventory", () -> DropInventoryAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EmitGameEventAction>> EMIT_GAME_EVENT = REGISTRY.register("emit_game_event", () -> EmitGameEventAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<EnderChestAction>> ENDER_CHEST = REGISTRY.register("ender_chest", () -> EnderChestAction.CODEC);
@@ -33,7 +36,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ExecuteCommandAction>> EXECUTE_COMMAND = REGISTRY.register("execute_command", () -> ExecuteCommandAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ExhaustAction>> EXHAUST = REGISTRY.register("exhaust", () -> ExhaustAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ExplodeAction>> EXPLODE = REGISTRY.register("explode", () -> ExplodeAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ExtinguishAction>> EXTINGUISH = REGISTRY.register("extinguish", () -> ExtinguishAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<? extends EntityAction>> EXTINGUISH = REGISTRY.register("extinguish", () -> createEntity(Entity::extinguishFire));
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<FeedAction>> FEED = REGISTRY.register("feed", () -> FeedAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<GainAirAction>> GAIN_AIR = REGISTRY.register("gain_air", () -> GainAirAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<GiveItemAction>> GIVE_ITEM = REGISTRY.register("give_item", () -> GiveItemAction.CODEC);

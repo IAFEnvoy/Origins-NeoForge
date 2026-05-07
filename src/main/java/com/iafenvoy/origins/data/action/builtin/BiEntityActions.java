@@ -8,8 +8,14 @@ import com.iafenvoy.origins.data.action.NoOpAction;
 import com.iafenvoy.origins.data.action.builtin.bientity.*;
 import com.iafenvoy.origins.data.action.builtin.bientity.meta.*;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import static com.iafenvoy.origins.data.action.SimpleActions.createBiEntity;
 
 @SuppressWarnings("unused")
 public final class BiEntityActions {
@@ -19,10 +25,15 @@ public final class BiEntityActions {
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<AddToSetAction>> ADD_TO_SET = REGISTRY.register("add_to_set", () -> AddToSetAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<AddVelocityAction>> ADD_VELOCITY = REGISTRY.register("add_velocity", () -> AddVelocityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<DamageTargetAction>> DAMAGE_TARGET = REGISTRY.register("damage_target", () -> DamageTargetAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<MountAction>> MOUNT = REGISTRY.register("mount", () -> MountAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<? extends BiEntityAction>> MOUNT = REGISTRY.register("mount", () -> createBiEntity(Entity::startRiding));
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<RemoveFromSetAction>> REMOVE_FROM_SET = REGISTRY.register("remove_from_set", () -> RemoveFromSetAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<SetInLoveAction>> SET_IN_LOVE = REGISTRY.register("set_in_love", () -> SetInLoveAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<TameAction>> TAME = REGISTRY.register("tame", () -> TameAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<? extends BiEntityAction>> SET_IN_LOVE = REGISTRY.register("set_in_love", () -> createBiEntity((Entity source, Entity target) -> {
+        if (target instanceof Animal animal) animal.setInLove(source instanceof Player player ? player : null);
+    }));
+    public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<? extends BiEntityAction>> TAME = REGISTRY.register("tame", () -> createBiEntity((source, target) -> {
+        if (source instanceof Player player && target instanceof TamableAnimal ownable)
+            ownable.tame(player);
+    }));
     //Meta
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<AndAction>> AND = REGISTRY.register("and", () -> AndAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityAction>, MapCodec<ChanceAction>> CHANCE = REGISTRY.register("chance", () -> ChanceAction.CODEC);

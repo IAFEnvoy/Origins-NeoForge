@@ -2,14 +2,24 @@ package com.iafenvoy.origins.data.condition.builtin;
 
 import com.iafenvoy.origins.Constants;
 import com.iafenvoy.origins.Origins;
+import com.iafenvoy.origins.accessor.MovingEntity;
 import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.condition.builtin.entity.*;
 import com.iafenvoy.origins.data.condition.builtin.entity.meta.*;
+import com.iafenvoy.origins.util.LevelUtil;
+import com.iafenvoy.origins.util.MiscUtil;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import static com.iafenvoy.origins.data.condition.SimpleConditions.createEntity;
 
 @SuppressWarnings("unused")
 public final class EntityConditions {
@@ -24,21 +34,21 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BlockCollisionCondition>> BLOCK_COLLISION = REGISTRY.register("block_collision", () -> BlockCollisionCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BlockInRadiusCondition>> BLOCK_IN_RADIUS = REGISTRY.register("block_in_radius", () -> BlockInRadiusCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BrightnessCondition>> BRIGHTNESS = REGISTRY.register("brightness", () -> BrightnessCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ClimbingCondition>> CLIMBING = REGISTRY.register("climbing", () -> ClimbingCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<CollidedHorizontallyCondition>> COLLIDED_HORIZONTALLY = REGISTRY.register("collided_horizontally", () -> CollidedHorizontallyCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<CreativeFlyingCondition>> CREATIVE_FLYING = REGISTRY.register("creative_flying", () -> CreativeFlyingCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<DaytimeCondition>> DAYTIME = REGISTRY.register("daytime", () -> DaytimeCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> CLIMBING = REGISTRY.register("climbing", () -> createEntity(entity -> entity instanceof LivingEntity living && living.onClimbable()));
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> COLLIDED_HORIZONTALLY = REGISTRY.register("collided_horizontally", () -> createEntity(entity -> entity.horizontalCollision));
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> CREATIVE_FLYING = REGISTRY.register("creative_flying", () -> createEntity(entity -> entity instanceof Player player && player.getAbilities().flying));
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> DAYTIME = REGISTRY.register("daytime", () -> createEntity(entity -> entity.level().getDayTime() % 24000L < 13000L));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<DimensionCondition>> DIMENSION = REGISTRY.register("dimension", () -> DimensionCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<DistanceFromCoordinatesCondition>> DISTANCE_FROM_COORDINATES = REGISTRY.register("distance_from_coordinates", () -> DistanceFromCoordinatesCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ElytraFlightPossibleCondition>> ELYTRA_FLIGHT_POSSIBLE = REGISTRY.register("elytra_flight_possible", () -> ElytraFlightPossibleCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EnchantmentCondition>> ENCHANTMENT = REGISTRY.register("enchantment", () -> EnchantmentCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EntityTypeCondition>> ENTITY_TYPE = REGISTRY.register("entity_type", () -> EntityTypeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EquippedItemCondition>> EQUIPPED_ITEM = REGISTRY.register("equipped_item", () -> EquippedItemCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ExistsCondition>> EXISTS = REGISTRY.register("exists", () -> ExistsCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> EXISTS = REGISTRY.register("exists", () -> createEntity(entity -> !entity.isRemoved()));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ExposedToSkyCondition>> EXPOSED_TO_SKY = REGISTRY.register("exposed_to_sky", () -> ExposedToSkyCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ExposedToSunCondition>> EXPOSED_TO_SUN = REGISTRY.register("exposed_to_sun", () -> ExposedToSunCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<FallDistanceCondition>> FALL_DISTANCE = REGISTRY.register("fall_distance", () -> FallDistanceCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<FallFlyingCondition>> FALL_FLYING = REGISTRY.register("fall_flying", () -> FallFlyingCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> FALL_FLYING = REGISTRY.register("fall_flying", () -> createEntity(entity -> entity instanceof LivingEntity living && living.isFallFlying()));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<FluidHeightCondition>> FLUID_HEIGHT = REGISTRY.register("fluid_height", () -> FluidHeightCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<FoodLevelCondition>> FOOD_LEVEL = REGISTRY.register("food_level", () -> FoodLevelCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<GamemodeCondition>> GAMEMODE = REGISTRY.register("gamemode", () -> GamemodeCondition.CODEC);
@@ -46,18 +56,18 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<HealthCondition>> HEALTH = REGISTRY.register("health", () -> HealthCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InBlockCondition>> IN_BLOCK = REGISTRY.register("in_block", () -> InBlockCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InBlockAnywhereCondition>> IN_BLOCK_ANYWHERE = REGISTRY.register("in_block_anywhere", () -> InBlockAnywhereCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InRainCondition>> IN_RAIN = REGISTRY.register("in_rain", () -> InRainCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InSnowCondition>> IN_SNOW = REGISTRY.register("in_snow", () -> InSnowCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> IN_RAIN = REGISTRY.register("in_rain", () -> createEntity(Entity::isInRain));
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> IN_SNOW = REGISTRY.register("in_snow", () -> createEntity(entity -> LevelUtil.inSnow(entity.level(), BlockPos.containing(MiscUtil.getPoseDependentEyePos(entity)), entity.blockPosition())));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> InTagCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InThunderstormCondition>> IN_THUNDERSTORM = REGISTRY.register("in_thunderstorm", () -> InThunderstormCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> IN_THUNDERSTORM = REGISTRY.register("in_thunderstorm", () -> createEntity(entity -> LevelUtil.inThunderstorm(entity.level(), BlockPos.containing(MiscUtil.getPoseDependentEyePos(entity)), entity.blockPosition())));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InventoryCondition>> INVENTORY = REGISTRY.register("inventory", () -> InventoryCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<InvisibleCondition>> INVISIBLE = REGISTRY.register("invisible", () -> InvisibleCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<LivingCondition>> LIVING = REGISTRY.register("living", () -> LivingCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> INVISIBLE = REGISTRY.register("invisible", () -> createEntity(Entity::isInvisible));
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> LIVING = REGISTRY.register("living", () -> createEntity(LivingEntity.class::isInstance));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<MobEffectCondition>> MOB_EFFECT = REGISTRY.register("mob_effect", () -> MobEffectCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<MovingCondition>> MOVING = REGISTRY.register("moving", () -> MovingCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> MOVING = REGISTRY.register("moving", () -> createEntity(entity -> ((MovingEntity) entity).origins$isMoving()));//FIXME::Bad implementation?
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<NbtCondition>> NBT = REGISTRY.register("nbt", () -> NbtCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<OnBlockCondition>> ON_BLOCK = REGISTRY.register("on_block", () -> OnBlockCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<OnFireCondition>> ON_FIRE = REGISTRY.register("on_fire", () -> OnFireCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> ON_FIRE = REGISTRY.register("on_fire", () -> createEntity(Entity::isOnFire));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<OriginCondition>> ORIGIN = REGISTRY.register("origin", () -> OriginCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<PassengerCondition>> PASSENGER = REGISTRY.register("passenger", () -> PassengerCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<PassengerRecursiveCondition>> PASSENGER_RECURSIVE = REGISTRY.register("passenger_recursive", () -> PassengerRecursiveCondition.CODEC);
@@ -74,10 +84,10 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ScoreboardCondition>> SCOREBOARD = REGISTRY.register("scoreboard", () -> ScoreboardCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<SetSizeCondition>> SET_SIZE = REGISTRY.register("set_size", () -> SetSizeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<SneakingCondition>> SNEAKING = REGISTRY.register("sneaking", () -> SneakingCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<SprintingCondition>> SPRINTING = REGISTRY.register("sprinting", () -> SprintingCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> SPRINTING = REGISTRY.register("sprinting", () -> createEntity(Entity::isSprinting));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<SubmergedInCondition>> SUBMERGED_IN = REGISTRY.register("submerged_in", () -> SubmergedInCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<SwimmingCondition>> SWIMMING = REGISTRY.register("swimming", () -> SwimmingCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<TamedCondition>> TAMED = REGISTRY.register("tamed", () -> TamedCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> SWIMMING = REGISTRY.register("swimming", () -> createEntity(Entity::isSwimming));
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> TAMED = REGISTRY.register("tamed", () -> createEntity(entity -> entity instanceof OwnableEntity ownable && ownable.getOwnerUUID() != null));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<TimeOfDayCondition>> TIME_OF_DAY = REGISTRY.register("time_of_day", () -> TimeOfDayCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<UsingEffectiveToolCondition>> USING_EFFECTIVE_TOOL = REGISTRY.register("using_effective_tool", () -> UsingEffectiveToolCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<UsingItemCondition>> USING_ITEM = REGISTRY.register("using_item", () -> UsingItemCondition.CODEC);

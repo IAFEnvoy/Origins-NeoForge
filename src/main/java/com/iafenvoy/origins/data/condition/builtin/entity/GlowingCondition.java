@@ -17,6 +17,7 @@ public enum GlowingCondition implements EntityCondition {
 
     @Override
     public boolean test(@NotNull Entity entity) {
+        //FIXME::Direct client call???
         return !entity.level().isClientSide ? entity.isCurrentlyGlowing() : Minecraft.getInstance().shouldEntityAppearGlowing(entity);
     }
 }

@@ -19,7 +19,7 @@ public enum ExposedToSkyCondition implements EntityCondition {
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        Level world = entity.level();
-        return world.canSeeSky(BlockPos.containing(MiscUtil.getPoseDependentEyePos(entity))) || world.canSeeSky(entity.blockPosition());
+        Level level = entity.level();
+        return level.canSeeSky(BlockPos.containing(MiscUtil.getPoseDependentEyePos(entity))) || level.canSeeSky(entity.blockPosition());
     }
 }
