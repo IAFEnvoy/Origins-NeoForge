@@ -14,6 +14,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -42,6 +44,12 @@ public final class OriginsRenderers {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(OriginsEntities.ENDERIAN_PEARL.get(), ThrownItemRenderer::new);
+    }
+
+    @SuppressWarnings("deprecation")
+    @SubscribeEvent
+    public static void registerRenderTypes(FMLClientSetupEvent event){
+        ItemBlockRenderTypes.setRenderLayer(OriginsBlocks.TEMPORARY_COBWEB.get(), RenderType.cutout());
     }
 
     @SubscribeEvent

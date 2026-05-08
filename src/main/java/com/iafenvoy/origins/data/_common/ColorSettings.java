@@ -12,13 +12,13 @@ public record ColorSettings(Optional<Float> r, Optional<Float> g, Optional<Float
             Codec.FLOAT.optionalFieldOf("green").forGetter(ColorSettings::g),
             Codec.FLOAT.optionalFieldOf("blue").forGetter(ColorSettings::b),
             Codec.FLOAT.optionalFieldOf("alpha").forGetter(ColorSettings::a),
-            Codec.INT.optionalFieldOf("color").forGetter(x -> Optional.of(x.getIntValue()))
+            Codec.INT.optionalFieldOf("color").forGetter(x -> Optional.empty())
     ).apply(i, ColorSettings::of));
     public static final MapCodec<ColorSettings> NO_ALPHA_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.FLOAT.optionalFieldOf("red").forGetter(ColorSettings::r),
             Codec.FLOAT.optionalFieldOf("green").forGetter(ColorSettings::g),
             Codec.FLOAT.optionalFieldOf("blue").forGetter(ColorSettings::b),
-            Codec.INT.optionalFieldOf("color").forGetter(x -> Optional.of(x.getIntValue()))
+            Codec.INT.optionalFieldOf("color").forGetter(x -> Optional.empty())
     ).apply(i, ColorSettings::of));
 
     private static ColorSettings of(Optional<Float> r, Optional<Float> g, Optional<Float> b, Optional<Float> a, Optional<Integer> color) {
@@ -42,11 +42,11 @@ public record ColorSettings(Optional<Float> r, Optional<Float> g, Optional<Float
     }
 
     public static ColorSettings of(int color) {
-        return new ColorSettings(
-                Optional.of(((color >> 16) & 0xFF) / 255f),
-                Optional.of(((color >> 8) & 0xFF) / 255f),
-                Optional.of((color & 0xFF) / 255f),
-                Optional.of(((color >> 24) & 0xFF) / 255f)
+        return of(
+                ((color >> 16) & 0xFF) / 255f,
+                ((color >> 8) & 0xFF) / 255f,
+                (color & 0xFF) / 255f,
+                ((color >> 24) & 0xFF) / 255f
         );
     }
 
@@ -73,7 +73,6 @@ public record ColorSettings(Optional<Float> r, Optional<Float> g, Optional<Float
     private static Optional<Float> mergeComponent(Optional<Float> c1, Optional<Float> c2) {
         if (c1.isPresent() && c2.isPresent()) return Optional.of(c1.get() * c2.get());
         else if (c1.isPresent()) return c1;
-        else if (c2.isPresent()) return c2;
         else return c2;
     }
 

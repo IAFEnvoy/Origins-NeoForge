@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.loot.function;
 
-import com.iafenvoy.origins.content.ItemPowersComponent;
+import com.iafenvoy.origins.data.ItemPowersComponent;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
 import com.iafenvoy.origins.registry.OriginsLootItemFunctions;

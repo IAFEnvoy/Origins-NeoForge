@@ -50,11 +50,11 @@ public abstract class LivingEntityRendererMixin extends EntityRenderer<LivingEnt
     private RenderType changeRenderLayerWhenTranslucent(RenderType original, LivingEntity entity) {
         if (entity instanceof Player)
             return ModelColorPower.getColor(entity).filter(x -> x.a().map(a -> a < 1F).orElse(false))
-                    .map(x -> RenderType.itemEntityTranslucentCull(this.getTextureLocation(entity))).orElse(original);
+                    .map(x -> RenderType.entityTranslucent(this.getTextureLocation(entity))).orElse(original);
         return original;
     }
 
-    @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), index = 2)
+    @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), index = 4)
     private int renderColorChangedModel(int original, @Local(argsOnly = true) LivingEntity living) {
         return ModelColorPower.getColor(living).map(x -> x.merge(original)).map(ColorSettings::getIntValue).orElse(original);
     }

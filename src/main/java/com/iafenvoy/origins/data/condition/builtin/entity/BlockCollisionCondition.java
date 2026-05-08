@@ -26,7 +26,7 @@ public record BlockCollisionCondition(float offsetX, float offsetY, float offset
     @Override
     public boolean test(@NotNull Entity entity) {
         Level level = entity.level();
-        AABB bb = entity.getBoundingBox().move(this.offsetX, this.offsetY, this.offsetZ);
+        AABB bb = entity.getBoundingBox().move(this.offsetX, this.offsetY, this.offsetZ).deflate(0.001);
         BlockPos min = BlockPos.containing(bb.minX, bb.minY, bb.minZ);
         BlockPos max = BlockPos.containing(bb.maxX, bb.maxY, bb.maxZ);
         for (BlockPos pos : BlockPos.betweenClosed(min, max)) {

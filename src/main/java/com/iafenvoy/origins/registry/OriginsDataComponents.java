@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.registry;
 
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.content.ItemPowersComponent;
+import com.iafenvoy.origins.data.ItemPowersComponent;
 import com.iafenvoy.origins.data.layer.Layer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;

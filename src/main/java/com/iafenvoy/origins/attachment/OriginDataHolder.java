@@ -80,8 +80,8 @@ public final class OriginDataHolder {
 
     public void revokePower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().remove(source, power);
-        this.data.getComponents().remove(RLHelper.id(power));
         power.value().revoke(this);
+        this.data.getComponents().remove(RLHelper.id(power));
         this.sync();
     }
 

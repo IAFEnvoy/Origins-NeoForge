@@ -2,6 +2,8 @@ package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyBreakSpeedPower;
+import com.iafenvoy.origins.util.math.Modifier;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -13,16 +15,17 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(BlockBehaviour.class)
 public class BlockBehaviourMixin {
-    /*
-    This is done exclusively when the destroyProgress is 0.0 or less, which handles breaking blocks
-    that are unbreakable. This method is the same as Origins Fabric.
+    @ModifyExpressionValue(method = "getDestroyProgress", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getDestroySpeed(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)F"))
+    private float modifyBlockHardness(float original, BlockState state, Player player, BlockGetter world, BlockPos pos) {
+        OriginDataHolder holder = OriginDataHolder.get(player);
+        return Math.max(Modifier.applyModifiers(holder, holder.streamActivePowers(ModifyBreakSpeedPower.class)
+                .filter(p -> p.getBlockCondition().test(player.level(), pos))
+                .flatMap(p -> p.getHardnessModifier().stream())
+                .toList(), original), -1.0F);
+    }
 
-    I don't think that I'm able to handle it within the forge event, so it has to go here instead.
-     */
-    @ModifyReturnValue(method = "getDestroyProgress", at = @At(value = "RETURN"))
-    private float allowUnbreakableBreaking(float original, BlockState state, Player player, BlockGetter getter, BlockPos pos) {
-        if (state.getDestroySpeed(getter, pos) <= 0)
-            return OriginDataHolder.get(player).getHelper().modify(ModifyBreakSpeedPower.class, p -> p.getBlockCondition().test(player.level(), pos), original);
-        return original;
+    @ModifyReturnValue(method = "getDestroyProgress", at = @At("RETURN"))
+    private float modifyBlockBreakSpeed(float original, BlockState state, Player player, BlockGetter getter, BlockPos pos) {
+        return OriginDataHolder.get(player).getHelper().modify(ModifyBreakSpeedPower.class, p -> p.getBlockCondition().test(player.level(), pos), original);
     }
 }

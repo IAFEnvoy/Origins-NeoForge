@@ -1,11 +1,7 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.accessor.AttributeInstanceAccessor;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.power.builtin.modify.ModifyAirSpeedPower;
-import com.iafenvoy.origins.data.power.builtin.modify.ModifyEffectAmplifierPower;
-import com.iafenvoy.origins.data.power.builtin.modify.ModifyEffectDurationPower;
-import com.iafenvoy.origins.data.power.builtin.modify.ModifyFoodPower;
+import com.iafenvoy.origins.data.power.builtin.modify.*;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventEntityCollisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.*;
 import com.iafenvoy.origins.mixin.accessor.MobEffectInstanceAccessor;
@@ -23,8 +19,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -51,9 +45,6 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     private Optional<BlockPos> lastClimbablePos;
 
-    @Shadow
-    protected abstract float getFlyingSpeed();
-
     public LivingEntityMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
@@ -63,16 +54,15 @@ public abstract class LivingEntityMixin extends Entity {
         return (LivingEntity) (Object) this;
     }
 
-    @Inject(method = "getAttribute", at = @At("RETURN"))
-    private void setEntityToAttributeInstance(Holder<Attribute> attribute, CallbackInfoReturnable<AttributeInstance> cir) {
-        AttributeInstance instance = cir.getReturnValue();
-        if (instance != null) ((AttributeInstanceAccessor) instance).origins$setEntity(this.origins$self());
-    }
-
     @Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getTicksFrozen()I"))
     private void handleFrozen(CallbackInfo ci) {
         if (OriginDataHolder.get(this.origins$self()).streamActivePowers(FreezePower.class).findAny().isPresent())
             this.isInPowderSnow = true;
+    }
+
+    @ModifyVariable(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getFluidState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/material/FluidState;"), name = "d0")
+    private double modifyFalling(double d0) {
+        return ModifyFallingPower.apply(this.origins$self(), d0);
     }
 
     @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/core/Holder;)D", ordinal = 0))

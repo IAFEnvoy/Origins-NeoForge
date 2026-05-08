@@ -62,7 +62,7 @@ public class ElytraFlightPower extends Power {
         super.inactive(holder);
         if (holder.getEntity() instanceof LivingEntity living && living.getAttributes().hasAttribute(FLIGHT_ATTRIBUTE)) {
             AttributeInstance instance = living.getAttribute(FLIGHT_ATTRIBUTE);
-            if (instance != null && instance.hasModifier(MODIFIER_ID)) instance.removeModifier(MODIFIER_ID);
+            if (instance != null) instance.removeModifier(FLIGHT_MODIFIER);
         }
     }
 }

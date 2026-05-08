@@ -70,8 +70,7 @@ public record Modifier(double value, ModifierOperation operation, Optional<Resou
         private final MultiDoubleBinaryOperator operator;
 
         ModifierOperation(DoubleBinaryOperator operator, boolean sum) {
-            this.operator = sum ? (v, l) -> operator.applyAsDouble(v, l.doubleStream().sum()) : (v, l) -> l.doubleStream().collect(() -> v, operator::applyAsDouble, (v1, v2) -> {
-            });
+            this.operator = sum ? (v, l) -> operator.applyAsDouble(v, l.doubleStream().sum()) : (v, l) -> l.doubleStream().reduce(v, operator);
         }
 
         public MultiDoubleBinaryOperator getOperator() {

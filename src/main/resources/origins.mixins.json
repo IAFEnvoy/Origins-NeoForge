@@ -3,7 +3,6 @@
   "package": "com.iafenvoy.origins.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AttributeInstanceMixin",
     "BlockBehaviour$BlockStateBaseMixin",
     "BlockBehaviourMixin",
     "BlockItemMixin",

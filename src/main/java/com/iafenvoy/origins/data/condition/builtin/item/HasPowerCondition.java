@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.condition.builtin.item;
 
-import com.iafenvoy.origins.content.ItemPowersComponent;
+import com.iafenvoy.origins.data.ItemPowersComponent;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.registry.OriginsDataComponents;

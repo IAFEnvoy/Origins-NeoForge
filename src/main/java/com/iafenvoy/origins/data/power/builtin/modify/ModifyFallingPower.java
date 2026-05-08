@@ -56,8 +56,7 @@ public class ModifyFallingPower extends Power implements ModifierPowerHelper {
     }
 
     public static double apply(LivingEntity living, double originalValue) {
-        AttributeInstance attribute = living.getAttribute(Attributes.GRAVITY);
-        if (attribute != null) {
+        if (living.getAttribute(Attributes.GRAVITY) != null) {
             double modifier = OriginDataHolder.get(living).getHelper().modify(ModifyFallingPower.class, originalValue);
             if (modifier != originalValue && modifier >= 0.0) return modifier;
         }

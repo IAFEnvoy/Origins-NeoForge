@@ -54,6 +54,7 @@ public class ActionOnWakeUpPower extends Power {
 
     @SubscribeEvent
     public static void onWakeup(PlayerWakeUpEvent event) {
+        if (event.updateLevel() || event.wakeImmediately()) return;
         Player player = event.getEntity();
         Optional<BlockPos> pos = player.getSleepingPos();
         if (pos.isEmpty()) return;

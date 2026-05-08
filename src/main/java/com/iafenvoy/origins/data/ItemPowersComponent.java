@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.content;
+package com.iafenvoy.origins.data;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
