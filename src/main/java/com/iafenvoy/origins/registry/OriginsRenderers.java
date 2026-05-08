@@ -48,7 +48,7 @@ public final class OriginsRenderers {
 
     @SuppressWarnings("deprecation")
     @SubscribeEvent
-    public static void registerRenderTypes(FMLClientSetupEvent event){
+    public static void registerRenderTypes(FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(OriginsBlocks.TEMPORARY_COBWEB.get(), RenderType.cutout());
     }
 

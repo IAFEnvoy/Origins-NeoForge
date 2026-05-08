@@ -83,11 +83,19 @@ public abstract class Power {
     }
 
     public MutableComponent getName(RegistryAccess access) {
-        return this.settings.name().map(Component::copy).orElse(Component.translatable(this.getId(access).toLanguageKey("power", "name")));
+        return this.getName(this.getId(access));
+    }
+
+    public MutableComponent getName(ResourceLocation id) {
+        return this.settings.name().map(Component::copy).orElse(Component.translatable(id.toLanguageKey("power", "name")));
     }
 
     public MutableComponent getDescription(RegistryAccess access) {
-        return this.settings.description().map(Component::copy).orElse(Component.translatable(this.getId(access).toLanguageKey("power", "description")));
+        return this.getDescription(this.getId(access));
+    }
+
+    public MutableComponent getDescription(ResourceLocation id) {
+        return this.settings.description().map(Component::copy).orElse(Component.translatable(id.toLanguageKey("power", "description")));
     }
 
     public record BaseSettings(Optional<Component> name, Optional<Component> description, boolean hidden,

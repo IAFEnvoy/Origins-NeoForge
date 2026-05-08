@@ -1,5 +1,9 @@
 package com.iafenvoy.origins.attachment;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+import com.iafenvoy.origins.data.ItemPowersComponent;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
@@ -10,14 +14,16 @@ import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.registry.OriginsAttachments;
+import com.iafenvoy.origins.registry.OriginsDataComponents;
 import com.iafenvoy.origins.util.RLHelper;
 import com.iafenvoy.origins.util.RandomHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -31,10 +37,13 @@ import java.util.stream.Stream;
 @EventBusSubscriber
 public final class OriginDataHolder {
     public static final ResourceLocation DEFAULT_SOURCE = ResourceLocation.withDefaultNamespace("command");
+    public static final ResourceLocation ITEM = ResourceLocation.withDefaultNamespace("item");
     private final Entity entity;
     private final EntityOriginAttachment data;
     private final RegistryAccess access;
     private final PowerHelper helper;
+    // Cache, should clear on each tick end
+    private final Multimap<ResourceLocation, Holder<Power>> powerCache = HashMultimap.create();
 
     public OriginDataHolder(Entity entity, EntityOriginAttachment data) {
         this.entity = entity;
@@ -93,17 +102,27 @@ public final class OriginDataHolder {
         this.data.getPowers().values().remove(power);
     }
 
+    public Multimap<ResourceLocation, Holder<Power>> getPowers() {
+        //TODO::Cache?
+        ImmutableMultimap.Builder<ResourceLocation, Holder<Power>> builder = ImmutableMultimap.builder();
+        builder.putAll(this.data.getPowers());
+        if (this.entity instanceof LivingEntity living)
+            for (EquipmentSlot slot : EquipmentSlot.values())
+                living.getItemBySlot(slot).getOrDefault(OriginsDataComponents.ITEM_POWERS, ItemPowersComponent.EMPTY).powers().values().stream().map(ItemPowersComponent.Entry::power).forEach(h -> builder.put(ITEM, h));
+        return builder.build();
+    }
+
     //FIXME::Too many stream
     @NotNull
     public <T extends Power> List<T> getPowers(ResourceLocation id, Class<T> clazz) {
-        List<T> results = this.data.getPowers().values().stream().filter(x -> x.unwrapKey().map(ResourceKey::location).map(id::equals).orElse(false)).map(Holder::value).toList().stream().filter(power -> power != null && clazz.isAssignableFrom(power.getClass())).map(clazz::cast).collect(Collectors.toCollection(LinkedList::new));
+        List<T> results = this.getPowers().values().stream().filter(x -> RLHelper.id(x).equals(id)).map(Holder::value).toList().stream().filter(power -> power != null && clazz.isAssignableFrom(power.getClass())).map(clazz::cast).collect(Collectors.toCollection(LinkedList::new));
         return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast).toList() : results;
     }
 
     //Only for toggle and hud render, which need to bypass active logic
     @NotNull
     public <T> Stream<T> streamPowers(Class<T> clazz) {
-        Stream<T> results = this.data.getPowers().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
+        Stream<T> results = this.getPowers().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast) : results;
     }
 
@@ -113,27 +132,19 @@ public final class OriginDataHolder {
     }
 
     public boolean hasPower(Holder<Power> power) {
-        return this.data.getPowers().values().stream().anyMatch(p -> p.equals(power));
+        return this.getPowers().values().stream().anyMatch(p -> p.equals(power));
     }
 
     public boolean hasPower(ResourceLocation source, Holder<Power> power) {
-        return this.data.getPowers().entries().stream().anyMatch(e -> e.getKey().equals(source) && e.getValue().equals(power));
+        return this.getPowers().entries().stream().anyMatch(e -> e.getKey().equals(source) && e.getValue().equals(power));
     }
 
     public <T extends Power> boolean hasActivePower(ResourceLocation id, Class<T> clazz) {
-        return this.data.getPowers().values().stream().filter(x -> Objects.equals(RLHelper.id(x), id)).map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
+        return this.getPowers().values().stream().filter(x -> Objects.equals(RLHelper.id(x), id)).map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
     }
 
     public <T extends Power> boolean hasActivePower(Class<T> clazz) {
-        return this.data.getPowers().values().stream().map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
-    }
-
-    public ResourceLocation getPowerId(Power power) {
-        return this.access.registryOrThrow(PowerRegistries.POWER_KEY).getKey(power);
-    }
-
-    public Optional<Power> getPowerById(ResourceLocation id) {
-        return Optional.ofNullable(this.access.registryOrThrow(PowerRegistries.POWER_KEY).get(id));
+        return this.getPowers().values().stream().map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
     }
 
     //Origin Related
@@ -235,7 +246,7 @@ public final class OriginDataHolder {
     }
 
     public void tick() {
-        this.data.getPowers().values().stream().map(Holder::value).forEach(p -> p.tick(this));
+        this.getPowers().values().stream().map(Holder::value).forEach(p -> p.tick(this));
         this.data.getComponents().forEach((id, map) -> map.values().forEach(c -> c.tick(this, id)));
         //Check components and update
         if (this.data.getComponents().values().stream().flatMap(x -> x.values().stream()).map(PowerComponent::isDirty).reduce(false, (p, c) -> p | c))

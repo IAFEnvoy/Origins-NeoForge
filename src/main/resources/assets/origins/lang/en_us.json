@@ -231,6 +231,8 @@
   "power.origins.webbing.description": "When you hit an enemy in melee, they get stuck in cobweb.",
   "power.origins.webbing.name": "Webbing",
   "tooltip.origins.power_recipe.required_power": "Requires power: %s",
+  "tooltip.origins.stack_power.description": "  %s",
+  "tooltip.origins.stack_power.name": "+ %s (Power)",
   "tooltip.origins.unusable.block.multiple": "Unusable (%s)",
   "tooltip.origins.unusable.block.single": "Unusable (%s)",
   "tooltip.origins.unusable.bow.multiple": "Unusable (%s)",
