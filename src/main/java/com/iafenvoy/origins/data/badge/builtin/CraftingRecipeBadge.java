@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.badge.builtin;
 
 import com.iafenvoy.origins.data.badge.Badge;
-import com.iafenvoy.origins.util.codec.ComponentCodec;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -17,8 +17,8 @@ public record CraftingRecipeBadge(ResourceLocation sprite, ResourceLocation reci
             ResourceLocation.CODEC.fieldOf("sprite").forGetter(CraftingRecipeBadge::sprite),
             ResourceLocation.CODEC.fieldOf("recipe").forGetter(CraftingRecipeBadge::recipe),
             Codec.BOOL.optionalFieldOf("from_power", false).forGetter(CraftingRecipeBadge::fromPower),
-            ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("prefix").forGetter(CraftingRecipeBadge::prefix),
-            ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("suffix").forGetter(CraftingRecipeBadge::suffix)
+            MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("prefix").forGetter(CraftingRecipeBadge::prefix),
+            MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("suffix").forGetter(CraftingRecipeBadge::suffix)
     ).apply(i, CraftingRecipeBadge::new));
 
     @Override

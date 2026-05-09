@@ -7,7 +7,9 @@ import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Impact;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.screen.badge.BadgeTooltipManager;
+import com.iafenvoy.origins.util.codec.RegistryCodecs;
 import com.iafenvoy.origins.util.math.TextAlignment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -292,7 +294,7 @@ public class OriginDisplayScreen extends Screen {
             }
             y += 14;
         } else {
-            for (Holder<Power> holder : this.origin.value().powers()) {
+            for (Holder<Power> holder : RegistryCodecs.listAll(this.origin.value().powers(), access, PowerRegistries.POWER_KEY)) {
                 Power power = holder.value();
                 if (power.getSettings().hidden()) continue;
                 LinkedList<FormattedCharSequence> powerName = new LinkedList<>(this.font.split(power.getName(access).withStyle(ChatFormatting.UNDERLINE), textWidthLimit));

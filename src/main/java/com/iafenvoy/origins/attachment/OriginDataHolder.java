@@ -1,6 +1,5 @@
 package com.iafenvoy.origins.attachment;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.iafenvoy.origins.data.ItemPowersComponent;
@@ -15,6 +14,7 @@ import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
+import com.iafenvoy.origins.util.codec.RegistryCodecs;
 import com.iafenvoy.origins.util.RLHelper;
 import com.iafenvoy.origins.util.RandomHelper;
 import net.minecraft.core.Holder;
@@ -42,8 +42,6 @@ public final class OriginDataHolder {
     private final EntityOriginAttachment data;
     private final RegistryAccess access;
     private final PowerHelper helper;
-    // Cache, should clear on each tick end
-    private final Multimap<ResourceLocation, Holder<Power>> powerCache = HashMultimap.create();
 
     public OriginDataHolder(Entity entity, EntityOriginAttachment data) {
         this.entity = entity;
@@ -112,7 +110,6 @@ public final class OriginDataHolder {
         return builder.build();
     }
 
-    //FIXME::Too many stream
     @NotNull
     public <T extends Power> List<T> getPowers(ResourceLocation id, Class<T> clazz) {
         List<T> results = this.getPowers().values().stream().filter(x -> RLHelper.id(x).equals(id)).map(Holder::value).toList().stream().filter(power -> power != null && clazz.isAssignableFrom(power.getClass())).map(clazz::cast).collect(Collectors.toCollection(LinkedList::new));
@@ -153,7 +150,7 @@ public final class OriginDataHolder {
         if (origin.value() == Origin.EMPTY) return;
         this.data.getOrigins().put(layer, origin);
         ResourceLocation id = RLHelper.id(origin);
-        origin.value().powers().forEach(x -> this.grantPower(id, x));
+        RegistryCodecs.listAll(origin.value().powers(), this.access, PowerRegistries.POWER_KEY).forEach(x -> this.grantPower(id, x));
     }
 
     public void clearOrigin(@NotNull Holder<Layer> layer) {

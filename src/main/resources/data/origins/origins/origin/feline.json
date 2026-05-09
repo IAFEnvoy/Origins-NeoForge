@@ -1,12 +1,6 @@
 {
   "powers": [
-    "origins:fall_immunity",
-    "origins:sprint_jump",
-    "origins:velvet_paws",
-    "origins:nine_lives",
-    "origins:weak_arms",
-    "origins:scare_creepers",
-    "origins:cat_vision"
+    "#origins:feline"
   ],
   "icon": {
     "id": "minecraft:orange_wool"

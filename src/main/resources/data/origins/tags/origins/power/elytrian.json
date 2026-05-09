@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "origins:elytra",
+    "origins:launch_into_air",
+    "origins:aerial_combatant",
+    "origins:light_armor",
+    "origins:claustrophobia",
+    "origins:more_kinetic_damage"
+  ]
+}

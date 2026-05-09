@@ -1,12 +1,6 @@
 {
   "powers": [
-    "origins:throw_ender_pearl",
-    "origins:water_vulnerability",
-    "origins:pumpkin_hate/prevent_eating",
-    "origins:pumpkin_hate/prevent_seeing",
-    "origins:extra_reach",
-    "origins:ender_particles",
-    "origins:damage_from_potions"
+    "#origins:enderian"
   ],
   "icon": {
     "id": "minecraft:ender_pearl"

@@ -10,7 +10,7 @@ import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
-import com.iafenvoy.origins.util.codec.ComponentCodec;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -40,7 +40,7 @@ import java.util.Optional;
 public class InventoryPower extends Power implements Toggleable, MenuProvider {
     public static final MapCodec<InventoryPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("title", Component.translatable("container.inventory")).forGetter(InventoryPower::getTitle),
+            MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("title", Component.translatable("container.inventory")).forGetter(InventoryPower::getTitle),
             ContainerType.CODEC.optionalFieldOf("container_type", ContainerType.DISPENSER).forGetter(InventoryPower::getContainerType),
             Codec.BOOL.optionalFieldOf("drop_on_death", false).forGetter(InventoryPower::shouldDropOnDeath),
             ItemCondition.optionalCodec("drop_on_death_filter").forGetter(InventoryPower::getDropOnDeathFilter),

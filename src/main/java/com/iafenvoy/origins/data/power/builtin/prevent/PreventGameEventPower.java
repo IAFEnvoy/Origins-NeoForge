@@ -25,7 +25,7 @@ import java.util.List;
 public class PreventGameEventPower extends Power {
     public static final MapCodec<PreventGameEventPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.either(CombinedCodecs.GAME_EVENT, TagKey.codec(Registries.GAME_EVENT)).optionalFieldOf("event", Either.left(List.of())).forGetter(PreventGameEventPower::getEvent),
+            Codec.either(CombinedCodecs.GAME_EVENT, TagKey.hashedCodec(Registries.GAME_EVENT)).optionalFieldOf("event", Either.left(List.of())).forGetter(PreventGameEventPower::getEvent),
             EntityAction.optionalCodec("entity_action").forGetter(PreventGameEventPower::getEntityAction)
     ).apply(i, PreventGameEventPower::new));
     private final Either<List<Holder<GameEvent>>, TagKey<GameEvent>> event;

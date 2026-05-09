@@ -1,7 +1,10 @@
 package com.iafenvoy.origins.data.origin;
 
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.PowerRegistries;
+import com.iafenvoy.origins.util.codec.RegistryCodecs;
 import com.iafenvoy.origins.util.RLHelper;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -12,16 +15,17 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 
-public record Origin(List<Holder<Power>> powers, Optional<ItemStack> icon, boolean unchoosable, int order,
-                     Impact impact, List<Upgrade> upgrades) {
+public record Origin(List<Either<Holder<Power>, TagKey<Power>>> powers, Optional<ItemStack> icon, boolean unchoosable,
+                     int order, Impact impact, List<Upgrade> upgrades) {
     public static final Codec<Origin> DIRECT_CODEC = RecordCodecBuilder.create(i -> i.group(
-            Power.CODEC.listOf().optionalFieldOf("powers", List.of()).forGetter(Origin::powers),
+            RegistryCodecs.holderOrTag(PowerRegistries.POWER_KEY).optionalFieldOf("powers", List.of()).forGetter(Origin::powers),
             ItemStack.CODEC.optionalFieldOf("icon").forGetter(Origin::icon),
             Codec.BOOL.optionalFieldOf("unchoosable", false).forGetter(Origin::unchoosable),
             Codec.INT.optionalFieldOf("order", Integer.MAX_VALUE).forGetter(Origin::order),

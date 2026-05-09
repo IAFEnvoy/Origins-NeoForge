@@ -10,6 +10,7 @@ public class OriginsConfig extends AutoInitConfigContainer {
     public static final OriginsConfig INSTANCE = new OriginsConfig();
     public final General general = new General();
     public final ModifyPlayerSpawnPower modifyPlayerSpawnPower = new ModifyPlayerSpawnPower();
+    public final Debug debug = new Debug();
 
     public OriginsConfig() {
         super(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "config"), "config.origins.title", "./config/origins.json");
@@ -18,7 +19,6 @@ public class OriginsConfig extends AutoInitConfigContainer {
     public static class General extends AutoInitConfigCategoryBase {
         public final IntegerEntry permissionLevel = IntegerEntry.builder("config.origins.general.permissionLevel", 2).key("permissionLevel").range(0, 4).build();
         public final BooleanEntry compactUsabilityHints = BooleanEntry.builder("config.origins.general.compactUsabilityHints", false).key("compactUsabilityHints").build();
-        public final BooleanEntry separateSpawnFindingThread = BooleanEntry.builder("config.origins.general.separateSpawnFindingThread", false).key("separateSpawnFindingThread").build();
         public final IntegerEntry hudOffsetX = IntegerEntry.builder("config.origins.general.hudOffsetX", 0).key("hudOffsetX").build();
         public final IntegerEntry hudOffsetY = IntegerEntry.builder("config.origins.general.hudOffsetY", 0).key("hudOffsetY").build();
 
@@ -34,6 +34,15 @@ public class OriginsConfig extends AutoInitConfigContainer {
 
         public ModifyPlayerSpawnPower() {
             super("modifyPlayerSpawnPower", "category.origins.modifyPlayerSpawnPower.title");
+        }
+    }
+
+    public static class Debug extends AutoInitConfigCategoryBase {
+        public final BooleanEntry builtinRegistries = BooleanEntry.builder("config.origins.debug.builtinRegistries", false).key("builtinRegistries").build();
+        public final BooleanEntry dynamicRegistries = BooleanEntry.builder("config.origins.debug.dynamicRegistries", false).key("dynamicRegistries").build();
+
+        public Debug() {
+            super("debug", "category.origins.debug.title");
         }
     }
 }

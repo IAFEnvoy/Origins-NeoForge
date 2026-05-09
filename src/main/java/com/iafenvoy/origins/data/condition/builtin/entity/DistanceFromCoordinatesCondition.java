@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
+import com.iafenvoy.origins.data._common.helper.DistanceFromCoordinatesHelper;
 import com.iafenvoy.origins.data.condition.EntityCondition;
-import com.iafenvoy.origins.util.LevelUtil;
 import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.iafenvoy.origins.util.math.Comparison;
 import com.iafenvoy.origins.util.math.ReferencePoint;
@@ -20,7 +20,7 @@ public record DistanceFromCoordinatesCondition(ReferencePoint reference, Optiona
                                                boolean ignoreY, boolean ignoreZ, Shape shape,
                                                boolean scaleReferenceToDimension,
                                                Optional<Boolean> resultOnWrongDimension, OptionalInt roundToDigit,
-                                               Comparison comparison) implements EntityCondition, LevelUtil.CoordinatesConditionDataGetter {
+                                               Comparison comparison) implements EntityCondition, DistanceFromCoordinatesHelper {
     public static final MapCodec<DistanceFromCoordinatesCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ReferencePoint.CODEC.optionalFieldOf("reference", ReferencePoint.WORLD_ORIGIN).forGetter(DistanceFromCoordinatesCondition::reference),
             Vec3.CODEC.optionalFieldOf("offset").forGetter(DistanceFromCoordinatesCondition::offset),
@@ -41,6 +41,6 @@ public record DistanceFromCoordinatesCondition(ReferencePoint reference, Optiona
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return LevelUtil.testDistanceFromCoordinates(this, entity.level(), entity.position());
+        return this.testDistanceFromCoordinates(entity.level(), entity.position());
     }
 }

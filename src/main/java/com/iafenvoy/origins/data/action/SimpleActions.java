@@ -1,12 +1,12 @@
 package com.iafenvoy.origins.data.action;
 
+import com.iafenvoy.origins.util.TriConsumer;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.level.Level;
-import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

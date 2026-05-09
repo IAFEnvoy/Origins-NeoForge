@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 
 @EventBusSubscriber
@@ -24,10 +23,5 @@ public final class BadgeRegistries {
     @SubscribeEvent
     public static void newRegistries(NewRegistryEvent event) {
         event.register(BADGE_TYPE);
-    }
-
-    @SubscribeEvent
-    public static void newDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(BADGE_KEY, Badge.DIRECT_CODEC, Badge.DIRECT_CODEC);
     }
 }

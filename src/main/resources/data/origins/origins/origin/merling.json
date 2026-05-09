@@ -1,15 +1,6 @@
 {
   "powers": [
-    "origins:primary_key",
-    "origins:water_breathing",
-    "origins:water_vision/water_vision",
-    "origins:water_vision/night_vision",
-    "origins:aqua_affinity/underwater",
-    "origins:aqua_affinity/ungrounded",
-    "origins:swim_speed",
-    "origins:like_water",
-    "origins:conduit_power_on_land",
-    "origins:air_from_potions"
+    "#origins:merling"
   ],
   "icon": {
     "id": "minecraft:cod"

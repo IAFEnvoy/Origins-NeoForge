@@ -30,13 +30,12 @@ public final class ServerNetworkHandler {
         Optional<Holder<Origin>> optional = packet.origin();
         if (optional.isPresent()) {
             Holder<Origin> origin = optional.get();
-            if (origin.value().unchoosable() || !origin.is(layer.value().origins())) {
+            if (origin.value().unchoosable() || layer.value().collectOrigins(context.player().registryAccess()).noneMatch(origin::equals)) {
                 Origins.LOGGER.warn("Player {} tried to choose unchoosable origin \"{}\" from layer \"{}\"!", player.getName().getString(), RLHelper.string(origin), RLHelper.string(layer));
                 holder.clearOrigin(layer);
             } else {
                 holder.setOrigin(layer, origin);
                 Origins.LOGGER.info("Player {} chose origin \"{}\" for layer \"{}\"", player.getName().getString(), RLHelper.string(origin), RLHelper.string(layer));
-
             }
         } else randomOrigin(player, holder, layer);
         context.reply(new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));

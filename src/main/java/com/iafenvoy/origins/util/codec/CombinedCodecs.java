@@ -26,7 +26,7 @@ public final class CombinedCodecs {
     public static final Codec<List<Holder<MobEffect>>> MOB_EFFECT = combineCodec(MobEffect.CODEC);
     public static final Codec<List<MobEffectInstance>> MOB_EFFECT_INSTANCE = combineCodec(MobEffectInstance.CODEC);
     public static final Codec<List<Holder<Enchantment>>> ENCHANTMENT = combineCodec(Enchantment.CODEC);
-    public static final Codec<List<Component>> TEXT = combineCodec(ComponentCodec.TRANSLATE_FIRST);
+    public static final Codec<List<Component>> TEXT = combineCodec(MiscCodecs.TRANSLATE_FIRST);
     public static final Codec<List<Holder<Biome>>> BIOME = combineCodec(Biome.CODEC);
     public static final Codec<List<Holder<GameEvent>>> GAME_EVENT = combineCodec(GameEvent.CODEC);
     public static final Codec<List<Modifier>> MODIFIER = combineCodec(Modifier.CODEC);

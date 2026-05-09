@@ -1,8 +1,11 @@
 package com.iafenvoy.origins.util.codec;
 
 import com.iafenvoy.origins.util.RecipeUtil;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 
@@ -12,6 +15,7 @@ import java.util.function.Function;
 
 public final class MiscCodecs {
     public static final Codec<CraftingRecipe> DATAPACK_RECIPES_ONLY_CODEC = Recipe.CODEC.comapFlatMap(RecipeUtil::validateCraftingRecipe, Function.identity());
+    public static final Codec<Component> TRANSLATE_FIRST = Codec.either(Codec.STRING, ComponentSerialization.CODEC).xmap(x -> x.map(Component::translatable, Function.identity()), Either::right);
 
     public static MapCodec<OptionalInt> integer(String name) {
         return Codec.INT.optionalFieldOf(name).xmap(o -> o.map(OptionalInt::of).orElseGet(OptionalInt::empty), o -> o.isPresent() ? Optional.of(o.getAsInt()) : Optional.empty());

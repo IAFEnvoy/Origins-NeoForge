@@ -69,7 +69,7 @@ public final class OriginCommand {
         CommandSourceStack source = context.getSource();
         int processedTargets = 0;
 
-        if (origin.value().equals(Origin.EMPTY) || origin.is(layer.value().origins())) {
+        if (origin.value().equals(Origin.EMPTY) || layer.value().collectOrigins(source.registryAccess()).anyMatch(origin::equals)) {
             for (ServerPlayer target : targets) {
                 OriginDataHolder holder = OriginDataHolder.get(target);
                 holder.setOrigin(layer, origin);

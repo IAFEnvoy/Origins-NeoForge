@@ -7,8 +7,9 @@ import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.ActiveComponent;
 import com.iafenvoy.origins.util.annotation.Comment;
-import com.iafenvoy.origins.util.codec.ComponentCodec;
 import com.iafenvoy.origins.util.codec.DefaultedCodec;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
+import com.iafenvoy.origins.util.codec.RegistryCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -54,7 +55,7 @@ public abstract class Power {
     }
 
     public void collectBadges(ImmutableSet.Builder<Badge> builder) {
-        this.settings.badges().stream().map(Holder::value).forEach(builder::add);
+        this.settings.badges().forEach(builder::add);
     }
 
     public boolean isActive(OriginDataHolder holder) {
@@ -99,14 +100,14 @@ public abstract class Power {
     }
 
     public record BaseSettings(Optional<Component> name, Optional<Component> description, boolean hidden,
-                               EntityCondition condition, int loadingPriority, List<Holder<Badge>> badges) {
+                               EntityCondition condition, int loadingPriority, List<Badge> badges) {
         public static final MapCodec<BaseSettings> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-                ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("name").forGetter(BaseSettings::name),
-                ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("description").forGetter(BaseSettings::description),
+                MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("name").forGetter(BaseSettings::name),
+                MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("description").forGetter(BaseSettings::description),
                 Codec.BOOL.optionalFieldOf("hidden", false).forGetter(BaseSettings::hidden),
                 EntityCondition.optionalCodec("condition").forGetter(BaseSettings::condition),
                 Codec.INT.optionalFieldOf("loading_priority", 0).forGetter(BaseSettings::loadingPriority),
-                Badge.CODEC.listOf().optionalFieldOf("badges", List.of()).forGetter(BaseSettings::badges)
+                RegistryCodecs.referenceOrDirect(Badge.CODEC, Badge.DIRECT_CODEC).listOf().optionalFieldOf("badges", List.of()).forGetter(BaseSettings::badges)
         ).apply(i, BaseSettings::new));
     }
 }

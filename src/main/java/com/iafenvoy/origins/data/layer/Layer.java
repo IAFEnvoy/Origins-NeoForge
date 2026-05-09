@@ -2,8 +2,10 @@ package com.iafenvoy.origins.data.layer;
 
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
+import com.iafenvoy.origins.util.codec.RegistryCodecs;
 import com.iafenvoy.origins.util.RLHelper;
-import com.iafenvoy.origins.util.codec.ComponentCodec;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -22,13 +24,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public record Layer(int order, TagKey<Origin> origins, boolean enabled, Optional<GuiTitle> guiTitle,
-                    boolean allowRandom, boolean allowRandomUnchoosable, List<Holder<Origin>> excludeRandom,
-                    Optional<ResourceLocation> defaultOrigin, boolean autoChoose,
+public record Layer(int order, List<Either<Holder<Origin>, TagKey<Origin>>> origins, boolean enabled,
+                    Optional<GuiTitle> guiTitle, boolean allowRandom, boolean allowRandomUnchoosable,
+                    List<Holder<Origin>> excludeRandom, Optional<ResourceLocation> defaultOrigin, boolean autoChoose,
                     boolean hidden) implements Comparable<Layer> {
     public static final Codec<Layer> DIRECT_CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.INT.optionalFieldOf("order", Integer.MAX_VALUE).forGetter(Layer::order),
-            TagKey.codec(OriginRegistries.ORIGIN_KEY).fieldOf("origins").forGetter(Layer::origins),
+            RegistryCodecs.holderOrTag(OriginRegistries.ORIGIN_KEY).fieldOf("origins").forGetter(Layer::origins),
             Codec.BOOL.optionalFieldOf("enabled", true).forGetter(Layer::enabled),
             GuiTitle.CODEC.optionalFieldOf("gui_title").forGetter(Layer::guiTitle),
             Codec.BOOL.optionalFieldOf("allow_random", false).forGetter(Layer::allowRandom),
@@ -50,7 +52,7 @@ public record Layer(int order, TagKey<Origin> origins, boolean enabled, Optional
     }
 
     public Stream<Holder<Origin>> collectOrigins(RegistryAccess access) {
-        return access.registryOrThrow(OriginRegistries.ORIGIN_KEY).getOrCreateTag(this.origins).stream();
+        return RegistryCodecs.listAll(this.origins, access, OriginRegistries.ORIGIN_KEY).stream();
     }
 
     public Stream<Holder<Origin>> collectChoosableOrigins(RegistryAccess access) {
@@ -84,8 +86,8 @@ public record Layer(int order, TagKey<Origin> origins, boolean enabled, Optional
 
     public record GuiTitle(Optional<Component> chooseOrigin, Optional<Component> viewOrigin) {
         public static final Codec<GuiTitle> CODEC = RecordCodecBuilder.create(i -> i.group(
-                ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("choose_origin").forGetter(GuiTitle::chooseOrigin),
-                ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("view_origin").forGetter(GuiTitle::viewOrigin)
+                MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("choose_origin").forGetter(GuiTitle::chooseOrigin),
+                MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("view_origin").forGetter(GuiTitle::viewOrigin)
         ).apply(i, GuiTitle::new));
     }
 }

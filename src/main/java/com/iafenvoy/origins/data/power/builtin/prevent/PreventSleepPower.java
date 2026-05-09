@@ -4,7 +4,7 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Prioritized;
-import com.iafenvoy.origins.util.codec.ComponentCodec;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -20,7 +20,7 @@ public class PreventSleepPower extends Power implements Prioritized {
     public static final MapCodec<PreventSleepPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             BlockCondition.optionalCodec("block_condition").forGetter(PreventSleepPower::getBlockCondition),
-            ComponentCodec.TRANSLATE_FIRST.optionalFieldOf("message", Component.translatable("text.origins.cannot_sleep")).forGetter(PreventSleepPower::getMessage),
+            MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("message", Component.translatable("text.origins.cannot_sleep")).forGetter(PreventSleepPower::getMessage),
             Codec.BOOL.optionalFieldOf("set_spawn_point", false).forGetter(PreventSleepPower::shouldSetSpawnPoint),
             Codec.INT.optionalFieldOf("priority", 0).forGetter(PreventSleepPower::getPriority)
     ).apply(i, PreventSleepPower::new));

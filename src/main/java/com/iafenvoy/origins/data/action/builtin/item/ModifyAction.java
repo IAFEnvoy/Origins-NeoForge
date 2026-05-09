@@ -33,7 +33,7 @@ public record ModifyAction(ResourceLocation modifier) implements ItemAction {
     @Override
     public void execute(@NotNull Level level, @NotNull Entity source, @NotNull SlotAccess access) {
         if (level instanceof ServerLevel serverLevel) {
-            LootItemFunction function = serverLevel.getServer().registryAccess().registryOrThrow(Registries.ITEM_MODIFIER).get(this.modifier);
+            LootItemFunction function = serverLevel.getServer().reloadableRegistries().get().registryOrThrow(Registries.ITEM_MODIFIER).get(this.modifier);
             if (function == null) {
                 Origins.LOGGER.error("Unknown item modifier: {}", this.modifier);
                 return;

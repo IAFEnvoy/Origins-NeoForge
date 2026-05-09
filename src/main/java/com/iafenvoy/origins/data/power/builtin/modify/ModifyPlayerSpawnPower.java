@@ -50,8 +50,8 @@ public class ModifyPlayerSpawnPower extends Power {
             Codec.FLOAT.optionalFieldOf("dimension_distance_multiplier", 0F).forGetter(ModifyPlayerSpawnPower::getDistanceMultiplier),
             SpawnStrategy.CODEC.optionalFieldOf("spawn_strategy", SpawnStrategy.DEFAULT).forGetter(ModifyPlayerSpawnPower::getSpawnStrategy),
             //FIXME::Can work?
-            Codec.either(ResourceKey.codec(Registries.BIOME), TagKey.codec(Registries.BIOME)).optionalFieldOf("biome").forGetter(ModifyPlayerSpawnPower::getBiome),
-            Codec.either(ResourceKey.codec(Registries.STRUCTURE), TagKey.codec(Registries.STRUCTURE)).optionalFieldOf("structure").forGetter(ModifyPlayerSpawnPower::getStructure)
+            Codec.either(ResourceKey.codec(Registries.BIOME), TagKey.hashedCodec(Registries.BIOME)).optionalFieldOf("biome").forGetter(ModifyPlayerSpawnPower::getBiome),
+            Codec.either(ResourceKey.codec(Registries.STRUCTURE), TagKey.hashedCodec(Registries.STRUCTURE)).optionalFieldOf("structure").forGetter(ModifyPlayerSpawnPower::getStructure)
     ).apply(i, ModifyPlayerSpawnPower::new));
     private final ResourceKey<Level> dimension;
     private final float distanceMultiplier;
