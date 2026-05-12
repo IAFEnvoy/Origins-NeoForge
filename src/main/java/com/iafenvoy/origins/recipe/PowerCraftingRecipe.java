@@ -28,7 +28,7 @@ public record PowerCraftingRecipe(ResourceLocation powerId, CraftingRecipe deleg
 
     @Override
     public boolean matches(@NotNull CraftingInput input, @NotNull Level level) {
-        return input instanceof PowerCraftingObject pco && OriginDataHolder.get(pco.origins$getPlayer()).hasActivePower(this.powerId(), RecipePower.class) && level.getRecipeManager().byKey(this.powerId())
+        return input instanceof PowerCraftingObject pco && pco.origins$getPlayer() != null && OriginDataHolder.get(pco.origins$getPlayer()).hasActivePower(this.powerId(), RecipePower.class) && level.getRecipeManager().byKey(this.powerId())
                 .filter(entry -> Objects.equals(this, entry.value()))
                 .map(entry -> this.delegate().matches(input, level))
                 .orElse(false);

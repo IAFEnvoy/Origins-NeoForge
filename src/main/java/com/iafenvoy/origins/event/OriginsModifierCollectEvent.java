@@ -4,24 +4,21 @@ import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.math.Modifier;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.event.entity.EntityEvent;
 
+import java.util.LinkedList;
 import java.util.List;
 
-public class OriginsModifierCollectEvent extends Event {
-    private final Entity entity;
+public class OriginsModifierCollectEvent extends EntityEvent {
     private final Class<? extends Power> powerClass;
     private final double baseValue;
     private final List<Modifier> modifier;
 
     public OriginsModifierCollectEvent(Entity entity, Class<? extends Power> powerClass, double baseValue, List<Modifier> modifier) {
-        this.entity = entity;
+        super(entity);
         this.powerClass = powerClass;
         this.baseValue = baseValue;
-        this.modifier = modifier;
-    }
-
-    public Entity getEntity() {
-        return this.entity;
+        this.modifier = new LinkedList<>(modifier);
     }
 
     public Class<? extends Power> getPowerClass() {

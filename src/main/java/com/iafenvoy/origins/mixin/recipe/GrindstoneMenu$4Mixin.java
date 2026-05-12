@@ -32,7 +32,7 @@ public abstract class GrindstoneMenu$4Mixin {
                 .map(ModifyGrindstonePower::getXpModifier)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toList());
+                .toList();
         NeoForge.EVENT_BUS.post(new OriginsModifierCollectEvent(powerModifiedGrindstone.origins$getPlayer(), ModifyGrindstonePower.class, original, modifiers));
         return Modifier.applyModifiers(OriginDataHolder.get(powerModifiedGrindstone.origins$getPlayer()), modifiers, original);
     }

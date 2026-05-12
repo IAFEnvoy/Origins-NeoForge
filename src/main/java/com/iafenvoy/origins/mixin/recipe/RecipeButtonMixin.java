@@ -16,6 +16,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.RecipeBook;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -54,7 +55,6 @@ public abstract class RecipeButtonMixin {
     @ModifyReturnValue(method = "getTooltipText", at = @At("RETURN"))
     private List<Component> appendRequiredRecipePowerTooltip(List<Component> original, @Share("originalEntry") LocalRef<RecipeHolder<?>> sharedOriginalEntry) {
         RecipeHolder<?> recipeEntry = sharedOriginalEntry.get() != null ? sharedOriginalEntry.get() : this.getRecipe();
-
         if (recipeEntry.value() instanceof PowerCraftingRecipe pcr && this.book instanceof PowerCraftingObject pco && pco.origins$getPlayer() != null) {
             RegistryAccess access = pco.origins$getPlayer().registryAccess();
             access.registry(PowerRegistries.POWER_KEY).map(x -> x.get(pcr.powerId())).ifPresent(power -> {

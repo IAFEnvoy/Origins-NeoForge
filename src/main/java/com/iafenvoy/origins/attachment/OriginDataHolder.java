@@ -12,6 +12,10 @@ import com.iafenvoy.origins.data.power.Prioritized;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.event.GrantOriginEvent;
+import com.iafenvoy.origins.event.GrantPowerEvent;
+import com.iafenvoy.origins.event.RevokeOriginEvent;
+import com.iafenvoy.origins.event.RevokePowerEvent;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
 import com.iafenvoy.origins.util.codec.RegistryCodecs;
@@ -26,6 +30,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -82,6 +87,7 @@ public final class OriginDataHolder {
         power.value().createComponents(collector);
         this.data.getComponents().put(RLHelper.id(power), collector.build());
         power.value().grant(this);
+        NeoForge.EVENT_BUS.post(new GrantPowerEvent(this.entity, power, source));
         this.sync();
     }
 
@@ -89,6 +95,7 @@ public final class OriginDataHolder {
         this.data.getPowers().remove(source, power);
         power.value().revoke(this);
         this.data.getComponents().remove(RLHelper.id(power));
+        NeoForge.EVENT_BUS.post(new RevokePowerEvent(this.entity, power, source));
         this.sync();
     }
 
@@ -97,7 +104,7 @@ public final class OriginDataHolder {
     }
 
     public void revokeAllPowers(Holder<Power> power) {
-        this.data.getPowers().values().remove(power);
+        this.data.getPowers().entries().stream().filter(x -> x.getValue().equals(power)).map(Map.Entry::getKey).forEach(s -> this.revokePower(s, power));
     }
 
     public Multimap<ResourceLocation, Holder<Power>> getPowers() {
@@ -151,6 +158,7 @@ public final class OriginDataHolder {
         this.data.getOrigins().put(layer, origin);
         ResourceLocation id = RLHelper.id(origin);
         RegistryCodecs.listAll(origin.value().powers(), this.access, PowerRegistries.POWER_KEY).forEach(x -> this.grantPower(id, x));
+        NeoForge.EVENT_BUS.post(new GrantOriginEvent(this.entity, layer, origin));
     }
 
     public void clearOrigin(@NotNull Holder<Layer> layer) {
@@ -158,6 +166,7 @@ public final class OriginDataHolder {
         if (origin == null) return;
         ResourceLocation id = RLHelper.id(origin);
         this.revokeAllPowers(id);
+        NeoForge.EVENT_BUS.post(new RevokeOriginEvent(this.entity, layer, origin));
     }
 
     public boolean hasOrigin(Holder<Layer> layer, Holder<Origin> origin) {

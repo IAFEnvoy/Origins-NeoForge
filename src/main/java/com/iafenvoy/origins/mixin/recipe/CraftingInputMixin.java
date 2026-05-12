@@ -5,6 +5,7 @@ import com.iafenvoy.origins.data.power.Power;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.crafting.CraftingInput;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -32,6 +33,7 @@ public abstract class CraftingInputMixin implements PowerCraftingInventory {
             pci.origins$setPowerTypes(this.origins$getPowerTypes());
     }
 
+    @Nullable
     @Override
     public Player origins$getPlayer() {
         return this.origins$cachedPlayer;

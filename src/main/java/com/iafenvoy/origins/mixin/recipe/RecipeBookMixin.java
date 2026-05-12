@@ -3,6 +3,7 @@ package com.iafenvoy.origins.mixin.recipe;
 import com.iafenvoy.origins.accessor.PowerCraftingObject;
 import net.minecraft.stats.RecipeBook;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -14,9 +15,10 @@ public abstract class RecipeBookMixin implements PowerCraftingObject {
     @Unique
     private WeakReference<Player> origins$player;
 
+    @Nullable
     @Override
     public Player origins$getPlayer() {
-        return Objects.requireNonNull(this.origins$player.get(), "Player was cleared; recipe book: " + this);
+        return this.origins$player == null ? null : this.origins$player.get();
     }
 
     @Override

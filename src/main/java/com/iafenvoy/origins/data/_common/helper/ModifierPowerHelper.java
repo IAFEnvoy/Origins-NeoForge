@@ -28,7 +28,7 @@ public interface ModifierPowerHelper {
 
     @SuppressWarnings("unchecked")
     default List<Modifier> collectModifiers(OriginDataHolder holder, double baseValue) {
-        OriginsModifierCollectEvent event = new OriginsModifierCollectEvent(holder.getEntity(), (Class<? extends Power>) this.getClass(), baseValue, new LinkedList<>(this.getModifier()));
+        OriginsModifierCollectEvent event = new OriginsModifierCollectEvent(holder.getEntity(), (Class<? extends Power>) this.getClass(), baseValue, this.getModifier());
         NeoForge.EVENT_BUS.post(event);
         return event.getModifier();
     }

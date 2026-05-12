@@ -4,6 +4,7 @@ import com.iafenvoy.origins.accessor.PowerCraftingInventory;
 import com.iafenvoy.origins.data.power.Power;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.TransientCraftingContainer;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -32,6 +33,7 @@ public abstract class TransientCraftingContainerMixin implements PowerCraftingIn
         return (TransientCraftingContainer) (Object) this;
     }
 
+    @Nullable
     @Override
     public Player origins$getPlayer() {
         return this.origins$cachedPlayer;
