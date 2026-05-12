@@ -146,25 +146,4 @@ public abstract class LivingEntityMixin extends Entity {
     private void origins$waterBreathingTick(CallbackInfo ci) {
         WaterBreathingHelper.tick((LivingEntity) (Object) this);
     }
-
-    @OnlyIn(Dist.CLIENT)
-    @Mixin(Entity.class)
-    public static class Client {
-        @Unique
-        private Entity origins$self() {
-            return (Entity) (Object) this;
-        }
-
-        @Inject(method = "isCurrentlyGlowing", at = @At("HEAD"), cancellable = true)
-        private void handleGlowing(CallbackInfoReturnable<Boolean> cir) {
-            Player player = Minecraft.getInstance().player;
-            if (player == null) return;
-            Entity entity = this.origins$self();
-            if (Stream.concat(
-                    OriginDataHolder.get(player).streamActivePowers(EntityGlowPower.class),
-                    OriginDataHolder.get(entity).streamActivePowers(SelfGlowPower.class)
-            ).anyMatch(power -> power.canGlow(player, entity)))
-                cir.setReturnValue(true);
-        }
-    }
 }

@@ -5,6 +5,7 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data._common.helper.GlowPowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyVelocityPower;
 import com.iafenvoy.origins.data.power.builtin.regular.*;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -92,29 +93,8 @@ public class EntityMixin implements MovingEntity {
         }
     }
 
-    @Inject(method = "isInvisible", at = @At("HEAD"), cancellable = true)
-    private void phantomInvisibility(CallbackInfoReturnable<Boolean> info) {
-        if (OriginDataHolder.get(this.origins$self()).hasActivePower(InvisibilityPower.class))
-            info.setReturnValue(true);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Mixin(Entity.class)
-    public static class Client {
-        @Unique
-        private Entity origins$self() {
-            return (Entity) (Object) this;
-        }
-
-        @Inject(method = "getTeamColor", at = @At("HEAD"), cancellable = true)
-        private void handleGlowColor(CallbackInfoReturnable<Integer> cir) {
-            Player player = Minecraft.getInstance().player;
-            if (player == null) return;
-            Entity entity = this.origins$self();
-            Stream.concat(
-                    OriginDataHolder.get(player).streamActivePowers(EntityGlowPower.class),
-                    OriginDataHolder.get(entity).streamActivePowers(SelfGlowPower.class)
-            ).filter(power -> !power.shouldUseTeam() && power.canGlow(player, entity)).mapToInt(GlowPowerHelper::getColor).forEach(cir::setReturnValue);
-        }
+    @ModifyReturnValue(method = "isInvisible", at = @At("RETURN"))
+    private boolean phantomInvisibility(boolean original) {
+        return original || OriginDataHolder.get(this.origins$self()).hasActivePower(InvisibilityPower.class);
     }
 }

@@ -7,7 +7,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class OriginsLootItemConditions {
+public final class OriginsLootItemConditions {
     public static final DeferredRegister<LootItemConditionType> REGISTRY = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE, Origins.MOD_ID);
 
     public static final DeferredHolder<LootItemConditionType, LootItemConditionType> POWER = REGISTRY.register("power", () -> new LootItemConditionType(PowerLootCondition.MAP_CODEC));

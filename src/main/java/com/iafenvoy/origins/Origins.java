@@ -30,6 +30,7 @@ public final class Origins {
 
         OriginsAttachments.REGISTRY.register(bus);
         OriginsBlocks.REGISTRY.register(bus);
+        OriginsCriterionTriggers.REGISTRY.register(bus);
         OriginsDataComponents.REGISTRY.register(bus);
         OriginsEntities.REGISTRY.register(bus);
         OriginsItems.REGISTRY.register(bus);

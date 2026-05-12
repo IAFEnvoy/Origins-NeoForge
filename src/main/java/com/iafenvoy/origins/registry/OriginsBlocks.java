@@ -11,9 +11,5 @@ public final class OriginsBlocks {
     public static final DeferredRegister.Blocks REGISTRY = DeferredRegister.createBlocks(Origins.MOD_ID);
 
     public static final DeferredBlock<TemporaryCobwebBlock> TEMPORARY_COBWEB = REGISTRY.register("temporary_cobweb",
-            () -> new TemporaryCobwebBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.WOOL)
-                    .strength(4.0F)
-                    .requiresCorrectToolForDrops()
-                    .noCollission()));
+            () -> new TemporaryCobwebBlock());
 }

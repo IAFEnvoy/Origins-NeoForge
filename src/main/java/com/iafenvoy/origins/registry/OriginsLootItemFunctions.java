@@ -8,7 +8,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class OriginsLootItemFunctions {
+public final class OriginsLootItemFunctions {
     public static final DeferredRegister<LootItemFunctionType<?>> REGISTRY = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, Origins.MOD_ID);
 
     public static final DeferredHolder<LootItemFunctionType<?>, LootItemFunctionType<AddPowerLootFunction>> ADD_POWER = REGISTRY.register("add_power", () -> new LootItemFunctionType<>(AddPowerLootFunction.MAP_CODEC));
