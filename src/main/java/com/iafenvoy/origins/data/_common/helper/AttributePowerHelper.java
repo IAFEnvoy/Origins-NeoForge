@@ -29,7 +29,7 @@ public interface AttributePowerHelper {
             ResourceLocation id = holder.getAccess().registryOrThrow(PowerRegistries.POWER_KEY).getKey((Power) this);// HERE
             if (id != null && instance != null)
                 if (grant) {
-                    if (!instance.hasModifier(id)) instance.addTransientModifier(mod.buildModifier(id));
+                    if (!instance.hasModifier(id)) instance.addPermanentModifier(mod.buildModifier(id));
                 } else if (instance.hasModifier(id)) instance.removeModifier(id);
         });
         float afterMaxHealth = living.getMaxHealth();

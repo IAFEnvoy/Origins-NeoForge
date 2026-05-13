@@ -52,7 +52,7 @@ public class ModifyAttributePower extends Power {
 
     @Override
     public void active(@NotNull OriginDataHolder holder) {
-        this.getAttribute(holder.getEntity()).ifPresent(x -> this.modifier.stream().filter(mod -> !x.hasModifier(mod.id())).forEach(x::addTransientModifier));
+        this.getAttribute(holder.getEntity()).ifPresent(x -> this.modifier.stream().filter(mod -> !x.hasModifier(mod.id())).forEach(x::addPermanentModifier));
     }
 
     @Override

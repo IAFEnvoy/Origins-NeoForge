@@ -43,12 +43,12 @@ public class AttributePower extends Power implements AttributePowerHelper {
     }
 
     @Override
-    public void grant(@NotNull OriginDataHolder holder) {
+    public void active(@NotNull OriginDataHolder holder) {
         this.modify(holder, true);
     }
 
     @Override
-    public void revoke(@NotNull OriginDataHolder holder) {
+    public void inactive(@NotNull OriginDataHolder holder) {
         this.modify(holder, false);
     }
 }

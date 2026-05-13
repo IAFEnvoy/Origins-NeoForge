@@ -40,7 +40,7 @@ public class PlayerMixin {
 
     @ModifyVariable(method = "eat", at = @At("HEAD"), argsOnly = true)
     private ItemStack modifyEatenItemStack(ItemStack original) {
-        Mutable.Stack stack = Mutable.stack(original.copy());
+        Mutable.Stack stack = Mutable.stack(original);
         ModifyFoodPower.modifyStack(this.origins$self().level(), this.origins$self(), stack);
         return stack.get();
     }

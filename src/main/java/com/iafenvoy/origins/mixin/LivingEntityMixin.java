@@ -90,7 +90,7 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyVariable(method = "eat*", at = @At("HEAD"), argsOnly = true)
     private ItemStack modifyEatenItemStack(ItemStack original) {
         if (this.origins$self() instanceof Player) return original;
-        Mutable.Stack stack = Mutable.stack(original.copy());
+        Mutable.Stack stack = Mutable.stack(original);
         ModifyFoodPower.modifyStack(this.level(), this.origins$self(), stack);
         return stack.get();
     }
