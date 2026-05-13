@@ -6,7 +6,6 @@ import com.iafenvoy.origins.event.OriginsModifierCollectEvent;
 import com.iafenvoy.origins.util.math.Modifier;
 import net.neoforged.neoforge.common.NeoForge;
 
-import java.util.LinkedList;
 import java.util.List;
 
 //Only for power

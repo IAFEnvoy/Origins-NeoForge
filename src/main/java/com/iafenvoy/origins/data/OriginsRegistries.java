@@ -25,7 +25,6 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
 import java.util.List;
 
-//TODO::Configs to control prints
 @EventBusSubscriber
 public final class OriginsRegistries {
     private static final List<Registry<?>> BUILTIN_REGISTRIES = List.of(

@@ -2,11 +2,11 @@ package com.iafenvoy.origins.command;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.content.OrbOfOriginItem;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
-import com.iafenvoy.origins.network.LoginHelper;
 import com.iafenvoy.origins.util.RLHelper;
 import com.iafenvoy.origins.util.RandomHelper;
 import com.mojang.brigadier.CommandDispatcher;
@@ -88,7 +88,7 @@ public final class OriginCommand {
     }
 
     private static int get(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        ServerPlayer target = EntityArgument.getPlayer(context, "target");
+        ServerPlayer target = EntityArgument.getPlayer(context, "targets");
         Holder<Layer> layer = ResourceArgument.getResource(context, "layer", LayerRegistries.LAYER_KEY);
         CommandSourceStack source = context.getSource();
         OriginDataHolder holder = OriginDataHolder.get(target);
@@ -115,7 +115,7 @@ public final class OriginCommand {
     private static int openGuiAll(CommandContext<CommandSourceStack> context, boolean self) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
         Collection<ServerPlayer> targets = self ? List.of(source.getPlayerOrException()) : EntityArgument.getPlayers(context, "targets");
-        for (ServerPlayer target : targets) LoginHelper.openGuiForLayer(target, null);
+        for (ServerPlayer target : targets) OrbOfOriginItem.openGuiForLayer(target, null);
         source.sendSuccess(() -> Component.translatable("commands.origin.gui.all", targets.size()), true);
         return targets.size();
     }
@@ -123,7 +123,7 @@ public final class OriginCommand {
     private static int openGuiSpecific(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
         Holder<Layer> layer = ResourceArgument.getResource(context, "layer", LayerRegistries.LAYER_KEY);
-        for (ServerPlayer target : targets) LoginHelper.openGuiForLayer(target, layer);
+        for (ServerPlayer target : targets) OrbOfOriginItem.openGuiForLayer(target, layer);
         context.getSource().sendSuccess(() -> Component.translatable("commands.origin.gui.layer", targets.size(), Layer.getName(layer)), true);
         return targets.size();
 

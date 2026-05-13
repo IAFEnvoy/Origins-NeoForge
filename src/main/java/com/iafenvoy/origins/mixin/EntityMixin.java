@@ -2,22 +2,17 @@ package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.accessor.MovingEntity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data._common.helper.GlowPowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyVelocityPower;
 import com.iafenvoy.origins.data.power.builtin.regular.*;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -27,8 +22,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.stream.Stream;
 
 @Mixin(Entity.class)
 public class EntityMixin implements MovingEntity {

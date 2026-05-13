@@ -72,9 +72,9 @@ public class RemovePowerLootFunction extends LootItemConditionalFunction {
 //        Map<ResourceLocation, Collection<Power>> revokedPowers = new HashMap<>();
 //
 //        for (EquipmentSlot slot : Stream.of(EquipmentSlot.values()).filter(modifierSlot::test).toList()) {
-//            ResourceLocation sourceId = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item/" + slot.getName());
-//            if (!revokedPowers.containsKey(sourceId) && modifierSlot.test(slot))
-//                revokedPowers.computeIfAbsent(sourceId, k -> new ObjectArrayList<>()).add(power);
+//            ResourceLocation source = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item/" + slot.getName());
+//            if (!revokedPowers.containsKey(source) && modifierSlot.test(slot))
+//                revokedPowers.computeIfAbsent(source, k -> new ObjectArrayList<>()).add(power);
 //        }
 //
 //        if (!revokedPowers.isEmpty()) PowerHolderComponent.revokePowers(entity, revokedPowers, true);

@@ -10,5 +10,6 @@ public final class CommandManager {
     public static void registerCommand(RegisterCommandsEvent event) {
         OriginCommand.registerCommand(event.getDispatcher(), event.getBuildContext());
         PowerCommand.registerCommand(event.getDispatcher(), event.getBuildContext());
+        ResourceCommand.registerCommand(event.getDispatcher(), event.getBuildContext());
     }
 }

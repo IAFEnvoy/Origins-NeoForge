@@ -3,7 +3,6 @@ package com.iafenvoy.origins.event;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.math.Modifier;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.event.entity.EntityEvent;
 
 import java.util.LinkedList;

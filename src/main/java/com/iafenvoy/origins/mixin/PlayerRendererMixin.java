@@ -28,7 +28,6 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
         super(context, model, shadowRadius);
     }
 
-    //FIXME::Low capability
     @Unique
     private static void origins$colorizeHand(ModelPart modelPart, PoseStack matrices, VertexConsumer vertices, int light, int overlay, MultiBufferSource vertexConsumers, AbstractClientPlayer player) {
         Optional<ColorSettings> color = ModelColorPower.getColor(player);
@@ -38,13 +37,11 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
             modelPart.render(matrices, vertices, light, overlay);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Redirect(method = "renderHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/geom/ModelPart;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;II)V", ordinal = 0))
     private void makeArmTranslucent(ModelPart modelPart, PoseStack matrices, VertexConsumer vertices, int light, int overlay, PoseStack matrices2, MultiBufferSource vertexConsumers, int light2, AbstractClientPlayer player) {
         origins$colorizeHand(modelPart, matrices, vertices, light, overlay, vertexConsumers, player);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Redirect(method = "renderHand", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/geom/ModelPart;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;II)V", ordinal = 1))
     private void makeSleeveTranslucent(ModelPart modelPart, PoseStack matrices, VertexConsumer vertices, int light, int overlay, PoseStack matrices2, MultiBufferSource vertexConsumers, int light2, AbstractClientPlayer player) {
         origins$colorizeHand(modelPart, matrices, vertices, light, overlay, vertexConsumers, player);

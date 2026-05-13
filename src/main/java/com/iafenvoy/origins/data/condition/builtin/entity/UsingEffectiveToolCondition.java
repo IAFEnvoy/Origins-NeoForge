@@ -20,7 +20,6 @@ public enum UsingEffectiveToolCondition implements EntityCondition {
         return CODEC;
     }
 
-    //FIXME::Correct logic?
     @Override
     public boolean test(@NotNull Entity entity) {
         if (!(entity instanceof Player player)) return false;

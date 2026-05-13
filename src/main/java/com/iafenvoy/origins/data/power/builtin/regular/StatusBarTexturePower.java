@@ -52,12 +52,12 @@ public class StatusBarTexturePower extends Power implements Prioritized {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTextureRegion(GuiGraphics context, ResourceLocation texture, int width, int height, int minU, int minV, int legacyMinU, int legacyMinV, int x, int y, int maxU, int maxV) {
+    public void drawTextureRegion(GuiGraphics context, ResourceLocation texture, int width, int height, int minU, int minV, int x, int y, int maxU, int maxV) {
         context.blitSprite(this.textureMap.getOrDefault(texture, texture), width, height, minU, minV, x, y, maxU, maxV);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTexture(GuiGraphics context, ResourceLocation texture, int x, int y, int legacyU, int legacyV, int width, int height) {
+    public void drawTexture(GuiGraphics context, ResourceLocation texture, int x, int y, int width, int height) {
         context.blitSprite(this.textureMap.getOrDefault(texture, texture), x, y, width, height);
     }
 }

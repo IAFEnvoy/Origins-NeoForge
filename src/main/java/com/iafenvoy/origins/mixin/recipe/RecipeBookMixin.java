@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.lang.ref.WeakReference;
-import java.util.Objects;
 
 @Mixin(RecipeBook.class)
 public abstract class RecipeBookMixin implements PowerCraftingObject {

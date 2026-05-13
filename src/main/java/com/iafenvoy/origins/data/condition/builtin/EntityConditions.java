@@ -64,7 +64,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> INVISIBLE = REGISTRY.register("invisible", () -> createEntity(Entity::isInvisible));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> LIVING = REGISTRY.register("living", () -> createEntity(LivingEntity.class::isInstance));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<MobEffectCondition>> MOB_EFFECT = REGISTRY.register("mob_effect", () -> MobEffectCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> MOVING = REGISTRY.register("moving", () -> createEntity(entity -> ((MovingEntity) entity).origins$isMoving()));//FIXME::Bad implementation?
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> MOVING = REGISTRY.register("moving", () -> createEntity(entity -> ((MovingEntity) entity).origins$isMoving()));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<NbtCondition>> NBT = REGISTRY.register("nbt", () -> NbtCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<OnBlockCondition>> ON_BLOCK = REGISTRY.register("on_block", () -> OnBlockCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> ON_FIRE = REGISTRY.register("on_fire", () -> createEntity(Entity::isOnFire));

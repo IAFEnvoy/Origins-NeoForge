@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Mixin(targets = "net/minecraft/world/inventory/GrindstoneMenu$4")
 public abstract class GrindstoneMenu$4Mixin {

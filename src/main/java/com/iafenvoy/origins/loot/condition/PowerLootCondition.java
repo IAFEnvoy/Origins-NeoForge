@@ -7,7 +7,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
@@ -16,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public record PowerLootCondition(LootContext.EntityTarget target, Holder<Power> power,
-                                 Optional<ResourceLocation> sourceId) implements LootItemCondition {
-    public static final MapCodec<PowerLootCondition> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                                 Optional<ResourceLocation> source) implements LootItemCondition {
+    public static final MapCodec<PowerLootCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             LootContext.EntityTarget.CODEC.optionalFieldOf("entity", LootContext.EntityTarget.THIS).forGetter(PowerLootCondition::target),
             Power.CODEC.fieldOf("power").forGetter(PowerLootCondition::power),
-            ResourceLocation.CODEC.optionalFieldOf("source").forGetter(PowerLootCondition::sourceId)
+            ResourceLocation.CODEC.optionalFieldOf("source").forGetter(PowerLootCondition::source)
     ).apply(instance, PowerLootCondition::new));
 
     @Override
@@ -30,7 +29,6 @@ public record PowerLootCondition(LootContext.EntityTarget target, Holder<Power> 
 
     @Override
     public boolean test(LootContext lootContext) {
-        Entity entity = lootContext.getParamOrNull(this.target.getParam());
-        return OriginDataHolder.get(entity).hasPower(this.power);
+        return OriginDataHolder.get(lootContext.getParamOrNull(this.target.getParam())).hasPower(this.power);
     }
 }

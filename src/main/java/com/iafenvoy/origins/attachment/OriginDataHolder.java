@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.attachment;
 
+import carpet.patches.EntityPlayerMPFake;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.iafenvoy.origins.data.ItemPowersComponent;
@@ -16,6 +17,7 @@ import com.iafenvoy.origins.event.GrantOriginEvent;
 import com.iafenvoy.origins.event.GrantPowerEvent;
 import com.iafenvoy.origins.event.RevokeOriginEvent;
 import com.iafenvoy.origins.event.RevokePowerEvent;
+import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
 import com.iafenvoy.origins.util.codec.RegistryCodecs;
@@ -25,13 +27,17 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -216,6 +222,10 @@ public final class OriginDataHolder {
         return true;
     }
 
+    public Stream<Holder<Layer>> streamEmptyLayers() {
+        return LayerRegistries.streamAvailableLayers(this.access).filter(l -> !this.data.getOrigins().containsKey(l));
+    }
+
     //Component Related
     public <T> List<T> getComponents(Class<T> clazz) {
         return this.data.getComponents().values().stream().map(x -> x.get(clazz)).filter(Objects::nonNull).map(clazz::cast).toList();
@@ -263,5 +273,29 @@ public final class OriginDataHolder {
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         OriginDataHolder.get(event.getEntity()).tick();
+    }
+
+    @SubscribeEvent
+    public static void onSyncDatapack(OnDatapackSyncEvent event) {
+        if (event.getPlayer() != null) forEachPlayer(event.getPlayer());
+        else for (ServerPlayer player : event.getPlayerList().getPlayers()) forEachPlayer(player);
+    }
+
+    private static void forEachPlayer(@NotNull ServerPlayer player) {
+        OriginDataHolder holder = OriginDataHolder.get(player);
+        holder.sync();
+        if (holder.hasAllOrigins()) return;
+        holder.fillAutoChoosing();
+        if (!holder.hasAllOrigins() && !isFakePlayer(player)) {
+            holder.data.setSelecting(true);
+            holder.sync();
+            PacketDistributor.sendToPlayer(player, new OpenChooseOriginScreenS2CPayload(true));
+            return;
+        }
+        holder.sync();
+    }
+
+    private static boolean isFakePlayer(ServerPlayer player) {
+        return ModList.get().isLoaded("bedsheet") && player instanceof EntityPlayerMPFake;
     }
 }
