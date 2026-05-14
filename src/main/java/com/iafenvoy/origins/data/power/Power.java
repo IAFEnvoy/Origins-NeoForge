@@ -63,6 +63,7 @@ public abstract class Power {
     }
 
     public void grant(@NotNull OriginDataHolder holder) {
+        this.tick(holder);
     }
 
     public void revoke(@NotNull OriginDataHolder holder) {
@@ -77,6 +78,9 @@ public abstract class Power {
 
     public void tick(@NotNull OriginDataHolder holder) {
         holder.getComponentFor(this, ActiveComponent.class).ifPresent(x -> x.tick(holder, this));
+    }
+
+    public void respawn(OriginDataHolder holder,boolean backFromEnd){
     }
 
     public ResourceLocation getId(RegistryAccess access) {

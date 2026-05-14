@@ -10,15 +10,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.OptionalInt;
 
-@EventBusSubscriber
 public class StartingEquipmentPower extends Power {
     public static final MapCodec<StartingEquipmentPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
@@ -49,15 +45,14 @@ public class StartingEquipmentPower extends Power {
 
     @Override
     public void grant(@NotNull OriginDataHolder holder) {
-        super.grant(holder);
         if (holder.getEntity() instanceof Player player)
             this.giveStacks(player);
+        super.grant(holder);
     }
 
-    @SubscribeEvent
-    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        Player player = event.getEntity();
-        OriginDataHolder.get(player).streamActivePowers(StartingEquipmentPower.class).filter(StartingEquipmentPower::shouldRecurrent).forEach(x -> x.giveStacks(player));
+    @Override
+    public void respawn(OriginDataHolder holder, boolean backFromEnd) {
+        if (!backFromEnd && this.recurrent && holder.getEntity() instanceof Player player) this.giveStacks(player);
     }
 
     private void giveStacks(Player player) {

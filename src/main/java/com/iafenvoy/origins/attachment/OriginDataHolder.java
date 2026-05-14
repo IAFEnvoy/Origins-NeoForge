@@ -36,6 +36,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.ApiStatus;
@@ -275,6 +276,14 @@ public final class OriginDataHolder {
         OriginDataHolder.get(event.getEntity()).tick();
     }
 
+    @ApiStatus.Internal
+    @SubscribeEvent
+    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        OriginDataHolder holder = OriginDataHolder.get(event.getEntity());
+        holder.streamActivePowers(Power.class).forEach(x -> x.respawn(holder, event.isEndConquered()));
+    }
+
+    @ApiStatus.Internal
     @SubscribeEvent
     public static void onSyncDatapack(OnDatapackSyncEvent event) {
         if (event.getPlayer() != null) forEachPlayer(event.getPlayer());

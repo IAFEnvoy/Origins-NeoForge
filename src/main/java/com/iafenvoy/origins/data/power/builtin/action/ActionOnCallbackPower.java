@@ -5,13 +5,8 @@ import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-@EventBusSubscriber
 public class ActionOnCallbackPower extends Power {
     public static final MapCodec<ActionOnCallbackPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
@@ -64,6 +59,7 @@ public class ActionOnCallbackPower extends Power {
     @Override
     public void grant(@NotNull OriginDataHolder holder) {
         this.entityActionGained.execute(holder.getEntity());
+        super.grant(holder);
     }
 
     @Override
@@ -81,10 +77,8 @@ public class ActionOnCallbackPower extends Power {
         this.entityActionRemoved.execute(holder.getEntity());
     }
 
-    @SubscribeEvent
-    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        Player player = event.getEntity();
-        if (!event.isEndConquered())
-            OriginDataHolder.get(player).streamActivePowers(ActionOnCallbackPower.class).map(ActionOnCallbackPower::getEntityActionRespawned).forEach(x -> x.execute(player));
+    @Override
+    public void respawn(OriginDataHolder holder, boolean backFromEnd) {
+        if (!backFromEnd) this.entityActionRespawned.execute(holder.getEntity());
     }
 }

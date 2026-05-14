@@ -174,9 +174,8 @@ public final class ResourceCommand {
                 case SUB -> targetValue - sourceValue;
                 case DIV -> sourceValue == 0 ? 0 : targetValue / sourceValue;
                 case MIN -> Math.min(targetValue, sourceValue);
-                case SET -> sourceValue;
+                case SET, SWAP -> sourceValue;
                 case MAX -> Math.max(targetValue, sourceValue);
-                case SWAP -> sourceValue;
             };
         }
     }

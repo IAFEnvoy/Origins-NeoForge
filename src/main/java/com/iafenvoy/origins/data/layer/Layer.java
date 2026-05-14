@@ -46,7 +46,7 @@ public record Layer(int order, List<Either<Holder<Origin>, TagKey<Origin>>> orig
     public int getOriginOptionCount(RegistryAccess access) {
         List<Holder<Origin>> choosableOrigins = this.collectChoosableOrigins(access).toList();
         int count = choosableOrigins.size();
-        if (count > 1 && (this.allowRandom && choosableOrigins.stream().anyMatch(x -> !this.excludeRandom.contains(x))))
+        if (count > 1 && this.allowRandom && choosableOrigins.stream().anyMatch(x -> !this.excludeRandom.contains(x)))
             count++;
         return count;
     }
