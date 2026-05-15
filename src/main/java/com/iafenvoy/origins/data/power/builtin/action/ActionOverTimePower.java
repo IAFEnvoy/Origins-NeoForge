@@ -2,33 +2,31 @@ package com.iafenvoy.origins.data.power.builtin.action;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.data.power.IntervalPower;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public class ActionOverTimePower extends IntervalPower {
+public class ActionOverTimePower extends Power {
     public static final MapCodec<ActionOverTimePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             EntityAction.optionalCodec("entity_action").forGetter(ActionOverTimePower::getEntityAction),
-            EntityAction.optionalCodec("rising_action").forGetter(ActionOverTimePower::getRisingAction),
-            EntityAction.optionalCodec("falling_action").forGetter(ActionOverTimePower::getFallingAction),
+            EntityAction.optionalCodec("active_action").forGetter(ActionOverTimePower::getActiveAction),
+            EntityAction.optionalCodec("inactive_action").forGetter(ActionOverTimePower::getInactiveAction),
             Codec.INT.optionalFieldOf("interval", 20).forGetter(ActionOverTimePower::getInterval)
     ).apply(i, ActionOverTimePower::new));
     private final EntityAction entityAction;
-    private final EntityAction risingAction;
-    private final EntityAction fallingAction;
+    private final EntityAction activeAction;
+    private final EntityAction inactiveAction;
     private final int interval;
     private boolean lastValue;
 
-    public ActionOverTimePower(BaseSettings settings, EntityAction entityAction, EntityAction risingAction, EntityAction fallingAction, int interval) {
+    public ActionOverTimePower(BaseSettings settings, EntityAction entityAction, EntityAction activeAction, EntityAction inactiveAction, int interval) {
         super(settings);
         this.entityAction = entityAction;
-        this.risingAction = risingAction;
-        this.fallingAction = fallingAction;
+        this.activeAction = activeAction;
+        this.inactiveAction = inactiveAction;
         this.interval = interval;
     }
 
@@ -36,12 +34,16 @@ public class ActionOverTimePower extends IntervalPower {
         return this.entityAction;
     }
 
-    public EntityAction getRisingAction() {
-        return this.risingAction;
+    public EntityAction getActiveAction() {
+        return this.activeAction;
     }
 
-    public EntityAction getFallingAction() {
-        return this.fallingAction;
+    public EntityAction getInactiveAction() {
+        return this.inactiveAction;
+    }
+
+    public int getInterval() {
+        return this.interval;
     }
 
     @Override
@@ -50,22 +52,25 @@ public class ActionOverTimePower extends IntervalPower {
     }
 
     @Override
-    public int getInterval() {
+    public void active(@NotNull OriginDataHolder holder) {
+        super.active(holder);
+        this.activeAction.execute(holder.getEntity());
+    }
+
+    @Override
+    public void inactive(@NotNull OriginDataHolder holder) {
+        super.inactive(holder);
+        this.inactiveAction.execute(holder.getEntity());
+    }
+
+    @Override
+    public void activeTick(@NotNull OriginDataHolder holder) {
+        super.activeTick(holder);
+        this.entityAction.execute(holder.getEntity());
+    }
+
+    @Override
+    public int tickInterval() {
         return this.interval;
-    }
-
-    @Override
-    public void intervalTick(@NotNull Entity entity) {
-        this.entityAction.execute(entity);
-        boolean value = this.getSettings().condition().test(entity);
-        if (value ^ this.lastValue) {
-            this.lastValue = value;
-            (value ? this.risingAction : this.fallingAction).execute(entity);
-        }
-    }
-
-    @Override
-    public boolean isActive(OriginDataHolder holder) {
-        return true;
     }
 }

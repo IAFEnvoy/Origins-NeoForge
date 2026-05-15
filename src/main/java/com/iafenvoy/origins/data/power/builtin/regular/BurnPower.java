@@ -1,14 +1,13 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.data.power.IntervalPower;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public class BurnPower extends IntervalPower {
+public class BurnPower extends Power {
     public static final MapCodec<BurnPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             Codec.INT.fieldOf("interval").forGetter(BurnPower::getInterval),
@@ -26,18 +25,23 @@ public class BurnPower extends IntervalPower {
         return this.burnDuration;
     }
 
+    public int getInterval() {
+        return this.interval;
+    }
+
     @Override
     public @NotNull MapCodec<? extends Power> codec() {
         return CODEC;
     }
 
     @Override
-    public void intervalTick(@NotNull Entity entity) {
-        entity.setRemainingFireTicks(this.burnDuration);
+    public int tickInterval() {
+        return this.interval;
     }
 
     @Override
-    public int getInterval() {
-        return this.interval;
+    public void activeTick(@NotNull OriginDataHolder holder) {
+        super.activeTick(holder);
+        holder.getEntity().setRemainingFireTicks(this.burnDuration);
     }
 }

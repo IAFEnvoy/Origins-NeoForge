@@ -1,8 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.data.power.IntervalPower;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,40 +13,31 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-public class DamageOverTimePower extends IntervalPower {
+public class DamageOverTimePower extends Power {
     public static final MapCodec<DamageOverTimePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             Codec.INT.optionalFieldOf("interval", 20).forGetter(DamageOverTimePower::getInterval),
-            MiscCodecs.integer("onset_delay").forGetter(DamageOverTimePower::getOnSetDelay),
             Codec.FLOAT.fieldOf("damage").forGetter(DamageOverTimePower::getDamage),
             Codec.FLOAT.optionalFieldOf("damage_easy").forGetter(DamageOverTimePower::getDamageEasy),
             DamageType.CODEC.fieldOf("damage_type").forGetter(DamageOverTimePower::getDamageType)
     ).apply(i, DamageOverTimePower::new));
 
     private final int interval;
-    private final OptionalInt onSetDelay;
     private final float damage, damageEasy;
     private final Holder<DamageType> damageType;
 
-    public DamageOverTimePower(BaseSettings settings, int interval, OptionalInt onSetDelay, float damage, Optional<Float> damageEasy, Holder<DamageType> damageType) {
-        super(settings, onSetDelay.orElse(0));
+    public DamageOverTimePower(BaseSettings settings, int interval, float damage, Optional<Float> damageEasy, Holder<DamageType> damageType) {
+        super(settings);
         this.interval = interval;
-        this.onSetDelay = onSetDelay;
         this.damage = damage;
         this.damageEasy = damageEasy.orElse(this.damage);
         this.damageType = damageType;
     }
 
-    @Override
     public int getInterval() {
         return this.interval;
-    }
-
-    public OptionalInt getOnSetDelay() {
-        return this.onSetDelay;
     }
 
     public float getDamage() {
@@ -68,7 +58,14 @@ public class DamageOverTimePower extends IntervalPower {
     }
 
     @Override
-    public void intervalTick(@NotNull Entity entity) {
+    public int tickInterval() {
+        return this.interval;
+    }
+
+    @Override
+    public void activeTick(OriginDataHolder holder) {
+        super.activeTick(holder);
+        Entity entity = holder.getEntity();
         entity.hurt(new DamageSource(this.damageType), entity.level().getDifficulty() == Difficulty.EASY ? this.damageEasy : this.damage);
     }
 }

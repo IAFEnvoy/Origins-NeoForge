@@ -26,6 +26,7 @@ import net.minecraft.world.scores.Scoreboard;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
+//FIXME::Recheck
 public final class ResourceCommand {
     public static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
         dispatcher.register(literal("resource")

@@ -3,6 +3,7 @@ package com.iafenvoy.origins.attachment;
 import carpet.patches.EntityPlayerMPFake;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import com.iafenvoy.origins.Proxies;
 import com.iafenvoy.origins.data.ItemPowersComponent;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
@@ -263,7 +264,8 @@ public final class OriginDataHolder {
     }
 
     public void tick() {
-        this.getPowers().values().stream().map(Holder::value).forEach(p -> p.tick(this));
+        long currentTick = Proxies.TICK_COUNT.getAsLong();
+        this.getPowers().values().stream().map(Holder::value).filter(p -> p.tickInterval() <= 0 || currentTick % p.tickInterval() == 0).forEach(p -> p.tick(this));
         this.data.getComponents().forEach((id, map) -> map.values().forEach(c -> c.tick(this, id)));
         //Check components and update
         if (this.data.getComponents().values().stream().flatMap(x -> x.values().stream()).map(PowerComponent::isDirty).reduce(false, (p, c) -> p | c))

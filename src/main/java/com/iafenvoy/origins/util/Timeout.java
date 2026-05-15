@@ -42,8 +42,8 @@ public final class Timeout {
     @ApiStatus.Internal
     @SubscribeEvent
     public static void runTimeout(ServerTickEvent.Post event) {
-        TIMEOUTS.forEach(x -> x.tick(event.getServer()));
-        TIMEOUTS.removeAll(TIMEOUTS.stream().filter(timeout -> timeout.shouldRemove).toList());
+        TIMEOUTS.forEach(t -> t.tick(event.getServer()));
+        TIMEOUTS.removeIf(t -> t.shouldRemove);
     }
 
     public void tick(MinecraftServer server) {

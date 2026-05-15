@@ -1,12 +1,11 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.ItemCondition;
-import com.iafenvoy.origins.data.power.IntervalPower;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -15,14 +14,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
 
-public class RestrictArmorPower extends IntervalPower {
+public class RestrictArmorPower extends Power {
     public static final MapCodec<RestrictArmorPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             ItemCondition.optionalCodec("head").forGetter(RestrictArmorPower::getHeadCondition),
             ItemCondition.optionalCodec("chest").forGetter(RestrictArmorPower::getChestCondition),
             ItemCondition.optionalCodec("legs").forGetter(RestrictArmorPower::getLegsCondition),
             ItemCondition.optionalCodec("feet").forGetter(RestrictArmorPower::getFeetCondition),
-            Codec.INT.optionalFieldOf("tick_rate", 20).forGetter(RestrictArmorPower::getInterval)
+            Codec.INT.optionalFieldOf("tick_rate", 20).forGetter(RestrictArmorPower::getTickRate)
     ).apply(i, RestrictArmorPower::new));
     private final ItemCondition head;
     private final ItemCondition chest;
@@ -60,6 +59,10 @@ public class RestrictArmorPower extends IntervalPower {
         return this.feet;
     }
 
+    public int getTickRate() {
+        return this.tickRate;
+    }
+
     public EnumMap<EquipmentSlot, ItemCondition> getConditions() {
         return this.conditions;
     }
@@ -70,14 +73,15 @@ public class RestrictArmorPower extends IntervalPower {
     }
 
     @Override
-    public int getInterval() {
-        return this.tickRate;
+    public void activeTick(OriginDataHolder holder) {
+        super.activeTick(holder);
+        if (!(holder.getEntity() instanceof LivingEntity living)) return;
+        this.conditions.forEach((slot, condition) -> checkSingle(living, slot, condition));
     }
 
     @Override
-    public void intervalTick(@NotNull Entity entity) {
-        if (!(entity instanceof LivingEntity living)) return;
-        this.conditions.forEach((slot, condition) -> checkSingle(living, slot, condition));
+    public int tickInterval() {
+        return this.tickRate;
     }
 
     private static void checkSingle(LivingEntity entity, EquipmentSlot slot, ItemCondition condition) {

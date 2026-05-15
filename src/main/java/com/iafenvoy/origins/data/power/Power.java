@@ -78,9 +78,18 @@ public abstract class Power {
 
     public void tick(@NotNull OriginDataHolder holder) {
         holder.getComponentFor(this, ActiveComponent.class).ifPresent(x -> x.tick(holder, this));
+        if (this.isActive(holder)) this.activeTick(holder);
     }
 
-    public void respawn(OriginDataHolder holder,boolean backFromEnd){
+    public void activeTick(OriginDataHolder holder) {
+    }
+
+    @Comment("Interval for tick(), related with active() and inactive()")
+    public int tickInterval() {
+        return 1;
+    }
+
+    public void respawn(OriginDataHolder holder, boolean backFromEnd) {
     }
 
     public ResourceLocation getId(RegistryAccess access) {
