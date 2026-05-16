@@ -43,7 +43,6 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     private int currentPage = 0;
     private static final int COUNT_PER_PAGE = 35;
     private int pages;
-    private float tickTime = 0.0F;
 
     public ChooseOriginScreen(List<Holder<Layer>> layers, int currentLayerIndex, boolean showDirtBackground) {
         super(Component.empty(), showDirtBackground);
@@ -78,7 +77,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     }
 
     private void initRandomOrigin() {
-        this.randomOrigin = Holder.direct(Origin.special(OriginsItems.ORB_OF_ORIGIN.toStack(), Impact.NONE, -1));
+        this.randomOrigin = Holder.direct(Origin.special(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "random"), OriginsItems.ORB_OF_ORIGIN.toStack(), Impact.NONE, -1));
         MutableComponent randomOriginText = Component.empty();
         assert Minecraft.getInstance().player != null;
         this.layers.get(this.currentLayerIndex).value().collectRandomizableOrigins(Minecraft.getInstance().player.registryAccess()).sorted((ia, ib) -> {
@@ -160,15 +159,9 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     }
 
     @Override
-    public ResourceLocation getCurrentOriginId() {
-        return Objects.equals(this.getCurrentOrigin(), this.randomOrigin) ? ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "random") : super.getCurrentOriginId();
-    }
-
-    @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         if (this.maxSelection == 0) this.openNextLayerScreen();
         else super.render(graphics, mouseX, mouseY, delta);
-        this.tickTime += delta;
     }
 
     @Override
@@ -206,31 +199,31 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
         graphics.drawCenteredString(this.font, Component.literal((this.currentPage + 1) + "/" + this.pages).getVisualOrderText(), this.calculatedLeft + 109, this.guiTop + CHOICES_HEIGHT + 9, 16777215);
     }
 
-    public void renderOriginWidget(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, boolean selected, Holder<Origin> origin) {
-        RenderSystem.setShaderTexture(0, ORIGINS_CHOICES);
+    private boolean renderOriginBase(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, boolean selected, Holder<Origin> origin) {
         boolean mouseHovering = mouseX >= x && mouseY >= y && mouseX < x + ORIGIN_ICON_SIZE && mouseY < y + ORIGIN_ICON_SIZE;
-        boolean guiSelected = this.getFocused() instanceof Button buttonWidget && buttonWidget.getX() == x && (buttonWidget.getY() == y || mouseHovering);
+        boolean guiSelected = this.getFocused() instanceof Button buttonWidget && buttonWidget.getX() == x && buttonWidget.getY() == y || mouseHovering;
         graphics.blit(ORIGINS_CHOICES, x, y, 230, (selected ? ORIGIN_ICON_SIZE : 0) + (guiSelected ? 52 : 0), ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
+        if (mouseHovering) {
+            Component text = Layer.getName(this.getCurrentLayer()).copy().append(": ").append(Origin.getName(origin));
+            graphics.renderTooltip(this.font, text, mouseX, mouseY);
+        }
+        return guiSelected;
+    }
 
+    public void renderOriginWidget(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, boolean selected, Holder<Origin> origin) {
+        boolean guiSelected = this.renderOriginBase(graphics, mouseX, mouseY, x, y, selected, origin);
         switch (origin.value().impact()) {
             case NONE -> graphics.blit(ORIGINS_CHOICES, x, y, 224, guiSelected ? 112 : 104, 8, 8);
             case LOW -> graphics.blit(ORIGINS_CHOICES, x, y, 232, guiSelected ? 112 : 104, 8, 8);
             case MEDIUM -> graphics.blit(ORIGINS_CHOICES, x, y, 240, guiSelected ? 112 : 104, 8, 8);
             case HIGH -> graphics.blit(ORIGINS_CHOICES, x, y, 248, guiSelected ? 112 : 104, 8, 8);
         }
-        if (mouseHovering) {
-            Component text = Layer.getName(this.getCurrentLayer()).copy().append(": ").append(Origin.getName(origin));
-            graphics.renderTooltip(this.font, text, mouseX, mouseY);
-        }
     }
 
     public void renderRandomOrigin(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, boolean selected) {
-        boolean mouseHovering = mouseX >= x && mouseY >= y && mouseX < x + ORIGIN_ICON_SIZE && mouseY < y + ORIGIN_ICON_SIZE;
-        boolean guiSelected = this.getFocused() instanceof Button buttonWidget && buttonWidget.getX() == x && (buttonWidget.getY() == y || mouseHovering);
-        graphics.blit(ORIGINS_CHOICES, x, y, 230, (selected ? ORIGIN_ICON_SIZE : 0) + (guiSelected ? 52 : 0), ORIGIN_ICON_SIZE, ORIGIN_ICON_SIZE);
-
+        boolean guiSelected = this.renderOriginBase(graphics, mouseX, mouseY, x, y, selected, this.randomOrigin);
         graphics.blit(ORIGINS_CHOICES, x + 6, y + 5, 243, 120, 13, 16);
-        int impact = (int) ((double) this.tickTime / (double) 15.0F) % 4;
+        int impact = (int) (Minecraft.getInstance().clientTickCount / 15) % 4;
         graphics.blit(ORIGINS_CHOICES, x, y, 224 + impact * 8, guiSelected ? 112 : 104, 8, 8);
     }
 }

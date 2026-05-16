@@ -158,11 +158,8 @@ public class OriginDisplayScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double x, double y, double horizontal, double vertical) {
-        int newScrollPos = this.scrollPos - (int) vertical * 10;
-        this.scrollPos = Mth.clamp(newScrollPos, 0, this.currentMaxScroll);
-
+        this.scrollPos = Mth.clamp(this.scrollPos - (int) vertical * 10, 0, this.currentMaxScroll);
         return super.mouseScrolled(x, y, horizontal, vertical);
-
     }
 
     public Holder<Origin> getCurrentOrigin() {
@@ -171,10 +168,6 @@ public class OriginDisplayScreen extends Screen {
 
     public Holder<Layer> getCurrentLayer() {
         return this.layer;
-    }
-
-    public ResourceLocation getCurrentOriginId() {
-        return this.getCurrentOrigin().unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace(""));
     }
 
     protected void renderScrollbar(GuiGraphics graphics, int mouseX, int mouseY) {
@@ -189,7 +182,6 @@ public class OriginDisplayScreen extends Screen {
 
         ResourceLocation scrollBarTexture = this.dragScrolling || this.canDragScroll(mouseX, mouseY, scrollbarY) ? WINDOW_SCROLL_BAR_PRESSED : WINDOW_SCROLL_BAR;
         graphics.blitSprite(scrollBarTexture, this.guiLeft + 156, this.guiTop + scrollbarY, 6, 27);
-
     }
 
     protected boolean cannotScroll() {
@@ -259,7 +251,7 @@ public class OriginDisplayScreen extends Screen {
 
     protected void renderOriginName(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         if (this.refreshOriginNameWidget || (this.origin != this.prevOrigin || this.layer != this.prevLayer)) {
-            this.originNameWidget = new ScrollingTextWidget(this.guiLeft + 38, this.guiTop + 18, WINDOW_WIDTH - (62 + 3 * 8), 9, Origin.getName(this.getCurrentOriginId()), true, this.font);
+            this.originNameWidget = new ScrollingTextWidget(this.guiLeft + 38, this.guiTop + 18, WINDOW_WIDTH - (62 + 3 * 8), 9, Origin.getName(this.getCurrentOrigin()), true, this.font);
             this.originNameWidget.setAlignment(TextAlignment.LEFT);
             this.refreshOriginNameWidget = false;
 
@@ -281,7 +273,7 @@ public class OriginDisplayScreen extends Screen {
 
         y -= this.scrollPos;
 
-        for (FormattedCharSequence descriptionLine : this.font.split(Origin.getDescription(this.getCurrentOriginId()), textWidthLimit)) {
+        for (FormattedCharSequence descriptionLine : this.font.split(Origin.getDescription(this.getCurrentOrigin()), textWidthLimit)) {
             graphics.drawString(this.font, descriptionLine, x + 2, y, 0xCCCCCC);
             y += 12;
         }
