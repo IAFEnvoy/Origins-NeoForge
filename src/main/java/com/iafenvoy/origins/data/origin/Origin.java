@@ -27,6 +27,7 @@ import java.util.Optional;
 public record Origin(Optional<Component> name, Optional<Component> description,
                      List<Either<Holder<Power>, TagKey<Power>>> powers, Optional<ItemStack> icon, boolean unchoosable,
                      int order, Impact impact, List<Upgrade> upgrades) implements Comparable<Origin> {
+    public static final Codec<Holder<Origin>> CODEC = RegistryFixedCodec.create(OriginRegistries.ORIGIN_KEY);//Loading error if init direct codec first
     public static final Codec<Origin> DIRECT_CODEC = RecordCodecBuilder.create(i -> i.group(
             MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("name").forGetter(Origin::name),
             MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("description").forGetter(Origin::description),
@@ -37,7 +38,6 @@ public record Origin(Optional<Component> name, Optional<Component> description,
             Impact.CODEC.optionalFieldOf("impact", Impact.NONE).forGetter(Origin::impact),
             Upgrade.CODEC.listOf().optionalFieldOf("upgrades", List.of()).forGetter(Origin::upgrades)
     ).apply(i, Origin::new));
-    public static final Codec<Holder<Origin>> CODEC = RegistryFixedCodec.create(OriginRegistries.ORIGIN_KEY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Origin>> STREAM_CODEC = ByteBufCodecs.holderRegistry(OriginRegistries.ORIGIN_KEY);
     public static final Origin EMPTY = special(RLHelper.EMPTY, null, Impact.NONE, 0);
 

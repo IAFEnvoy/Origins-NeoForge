@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 
 public interface Badge {
-    Codec<Badge> DIRECT_CODEC = DefaultedCodec.registryDispatch(BadgeRegistries.BADGE_TYPE, Badge::codec, Function.identity(), () -> EmptyBadge.INSTANCE);
     Codec<Holder<Badge>> CODEC = RegistryFixedCodec.create(BadgeRegistries.BADGE_KEY);
+    Codec<Badge> DIRECT_CODEC = DefaultedCodec.registryDispatch(BadgeRegistries.BADGE_TYPE, Badge::codec, Function.identity(), () -> EmptyBadge.INSTANCE);
 
     @NotNull
     MapCodec<? extends Badge> codec();

@@ -26,6 +26,7 @@ public record Layer(Optional<Component> name, int order, ConditionedOriginList o
                     Optional<GuiTitle> guiTitle, boolean allowRandom, boolean allowRandomUnchoosable,
                     List<Holder<Origin>> excludeRandom, Optional<ResourceLocation> defaultOrigin, boolean autoChoose,
                     boolean hidden) implements Comparable<Layer> {
+    public static final Codec<Holder<Layer>> CODEC = RegistryFixedCodec.create(LayerRegistries.LAYER_KEY);
     public static final Codec<Layer> DIRECT_CODEC = RecordCodecBuilder.create(i -> i.group(
             MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("name").forGetter(Layer::name),
             Codec.INT.optionalFieldOf("order", Integer.MAX_VALUE).forGetter(Layer::order),
@@ -39,7 +40,6 @@ public record Layer(Optional<Component> name, int order, ConditionedOriginList o
             Codec.BOOL.optionalFieldOf("auto_choose", false).forGetter(Layer::autoChoose),
             Codec.BOOL.optionalFieldOf("hidden", false).forGetter(Layer::hidden)
     ).apply(i, Layer::new));
-    public static final Codec<Holder<Layer>> CODEC = RegistryFixedCodec.create(LayerRegistries.LAYER_KEY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Layer>> STREAM_CODEC = ByteBufCodecs.holderRegistry(LayerRegistries.LAYER_KEY);
 
     public int getOriginOptionCount(@NotNull Entity entity) {
