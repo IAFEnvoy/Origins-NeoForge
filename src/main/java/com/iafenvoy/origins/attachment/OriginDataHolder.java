@@ -3,8 +3,10 @@ package com.iafenvoy.origins.attachment;
 import carpet.patches.EntityPlayerMPFake;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.Proxies;
 import com.iafenvoy.origins.data.ItemPowersComponent;
+import com.iafenvoy.origins.data.global_powers.GlobalPowersRegistries;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
@@ -24,6 +26,7 @@ import com.iafenvoy.origins.registry.OriginsDataComponents;
 import com.iafenvoy.origins.util.codec.RegistryCodecs;
 import com.iafenvoy.origins.util.RLHelper;
 import com.iafenvoy.origins.util.RandomHelper;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -32,11 +35,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -49,8 +54,9 @@ import java.util.stream.Stream;
 
 @EventBusSubscriber
 public final class OriginDataHolder {
-    public static final ResourceLocation DEFAULT_SOURCE = ResourceLocation.withDefaultNamespace("command");
-    public static final ResourceLocation ITEM = ResourceLocation.withDefaultNamespace("item");
+    public static final ResourceLocation DEFAULT_SOURCE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "command");
+    public static final ResourceLocation GLOBAL = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "global");
+    public static final ResourceLocation ITEM = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item");
     private final Entity entity;
     private final EntityOriginAttachment data;
     private final RegistryAccess access;
@@ -88,6 +94,70 @@ public final class OriginDataHolder {
         return this.data.getOrigins().get(layer);
     }
 
+    //Origin Related
+    public void setOrigin(@NotNull Holder<Layer> layer, @NotNull Holder<Origin> origin) {
+        this.clearOrigin(layer);
+        if (origin.value() == Origin.EMPTY) return;
+        this.data.getOrigins().put(layer, origin);
+        ResourceLocation id = RLHelper.id(origin);
+        RegistryCodecs.listAll(origin.value().powers(), this.access, PowerRegistries.POWER_KEY).forEach(x -> this.grantPower(id, x));
+        NeoForge.EVENT_BUS.post(new GrantOriginEvent(this.entity, layer, origin));
+    }
+
+    public void clearOrigin(@NotNull Holder<Layer> layer) {
+        Holder<Origin> origin = this.data.getOrigins().remove(layer);
+        if (origin == null) return;
+        this.revokeAllPowers(RLHelper.id(origin));
+        NeoForge.EVENT_BUS.post(new RevokeOriginEvent(this.entity, layer, origin));
+    }
+
+    public boolean hasOrigin(Holder<Layer> layer, Holder<Origin> origin) {
+        return this.data.getOrigins().containsKey(layer) && this.data.getOrigins().get(layer).value().equals(origin.value());
+    }
+
+    public boolean hasOrigin(Holder<Origin> origin) {
+        return this.data.getOrigins().containsValue(origin);
+    }
+
+    public boolean hasOriginInLayer(Holder<Layer> layer) {
+        return this.data.getOrigins().containsKey(layer) && this.data.getOrigins().get(layer).value() != Origin.EMPTY;
+    }
+
+    public boolean fillAutoChoosing() {
+        boolean changed = false;
+        List<Holder<Layer>> layers = LayerRegistries.streamAutoChooseLayers(this.entity.registryAccess()).toList();
+        for (Holder<Layer> layer : layers) {
+            if (this.data.getOrigins().containsKey(layer)) continue;
+            changed |= this.randomOrigin(layer);
+        }
+        if (changed) this.sync();
+        return changed;
+    }
+
+    public boolean randomOrigin(Holder<Layer> layer) {
+        List<Holder<Origin>> available = layer.value().collectRandomizableOrigins(this.entity).toList();
+        if (!available.isEmpty()) {
+            @NotNull Holder<Origin> origin = RandomHelper.randomOne(available);
+            this.clearOrigin(layer);
+            if (origin.value() != Origin.EMPTY) {
+                if (this.entity.level().isClientSide)
+                    this.entity.sendSystemMessage(Component.translatable("commands.origin.set.success.single", this.entity.getDisplayName(), Layer.getName(layer), Origin.getName(origin)));
+                this.setOrigin(layer, origin);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasAllOrigins() {
+        List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(this.access).toList();
+        for (Holder<Layer> layer : layers) {
+            if (this.data.getOrigins().containsKey(layer)) continue;
+            return false;
+        }
+        return true;
+    }
+
     //Power Related
     public void grantPower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().put(source, power);
@@ -119,6 +189,9 @@ public final class OriginDataHolder {
         //TODO::Cache?
         ImmutableMultimap.Builder<ResourceLocation, Holder<Power>> builder = ImmutableMultimap.builder();
         builder.putAll(this.data.getPowers());
+        //Global
+        GlobalPowersRegistries.streamPowersForType(this.access, this.entity.getType()).forEach(h -> builder.put(GLOBAL, h));
+        //Item
         if (this.entity instanceof LivingEntity living)
             for (EquipmentSlot slot : EquipmentSlot.values())
                 living.getItemBySlot(slot).getOrDefault(OriginsDataComponents.ITEM_POWERS, ItemPowersComponent.EMPTY).powers().values().stream().map(ItemPowersComponent.Entry::power).forEach(h -> builder.put(ITEM, h));
@@ -159,80 +232,7 @@ public final class OriginDataHolder {
         return this.getPowers().values().stream().map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
     }
 
-    //Origin Related
-    public void setOrigin(@NotNull Holder<Layer> layer, @NotNull Holder<Origin> origin) {
-        this.clearOrigin(layer);
-        if (origin.value() == Origin.EMPTY) return;
-        this.data.getOrigins().put(layer, origin);
-        ResourceLocation id = RLHelper.id(origin);
-        RegistryCodecs.listAll(origin.value().powers(), this.access, PowerRegistries.POWER_KEY).forEach(x -> this.grantPower(id, x));
-        NeoForge.EVENT_BUS.post(new GrantOriginEvent(this.entity, layer, origin));
-    }
-
-    public void clearOrigin(@NotNull Holder<Layer> layer) {
-        Holder<Origin> origin = this.data.getOrigins().remove(layer);
-        if (origin == null) return;
-        ResourceLocation id = RLHelper.id(origin);
-        this.revokeAllPowers(id);
-        NeoForge.EVENT_BUS.post(new RevokeOriginEvent(this.entity, layer, origin));
-    }
-
-    public boolean hasOrigin(Holder<Layer> layer, Holder<Origin> origin) {
-        return this.data.getOrigins().containsKey(layer) && this.data.getOrigins().get(layer).value().equals(origin.value());
-    }
-
-    public boolean hasOrigin(Holder<Origin> origin) {
-        return this.data.getOrigins().containsValue(origin);
-    }
-
-    public boolean hasOriginInLayer(Holder<Layer> layer) {
-        return this.data.getOrigins().containsKey(layer) && this.data.getOrigins().get(layer).value() != Origin.EMPTY;
-    }
-
-    public boolean fillAutoChoosing() {
-        boolean changed = false;
-        List<Holder<Layer>> layers = LayerRegistries.streamAutoChooseLayers(this.entity.registryAccess()).toList();
-        for (Holder<Layer> layer : layers) {
-            if (this.data.getOrigins().containsKey(layer)) continue;
-            changed |= this.randomOrigin(layer);
-        }
-        if (changed) this.sync();
-        return changed;
-    }
-
-    public boolean randomOrigin(Holder<Layer> layer) {
-        List<Holder<Origin>> available = layer.value().collectRandomizableOrigins(this.entity.registryAccess()).toList();
-        if (!available.isEmpty()) {
-            @NotNull Holder<Origin> origin = RandomHelper.randomOne(available);
-            this.clearOrigin(layer);
-            if (origin.value() != Origin.EMPTY) {
-                if (this.entity.level().isClientSide)
-                    this.entity.sendSystemMessage(Component.translatable("commands.origin.set.success.single", this.entity.getDisplayName(), Layer.getName(layer), Origin.getName(origin)));
-                this.setOrigin(layer, origin);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public boolean hasAllOrigins() {
-        List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(this.access).toList();
-        for (Holder<Layer> layer : layers) {
-            if (this.data.getOrigins().containsKey(layer)) continue;
-            return false;
-        }
-        return true;
-    }
-
-    public Stream<Holder<Layer>> streamEmptyLayers() {
-        return LayerRegistries.streamAvailableLayers(this.access).filter(l -> !this.data.getOrigins().containsKey(l));
-    }
-
     //Component Related
-    public <T> List<T> getComponents(Class<T> clazz) {
-        return this.data.getComponents().values().stream().map(x -> x.get(clazz)).filter(Objects::nonNull).map(clazz::cast).toList();
-    }
-
     public <T> Optional<T> getComponent(ResourceLocation id, Class<T> clazz) {
         return Optional.ofNullable(this.data.getComponents().get(id).get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast);
     }
@@ -243,10 +243,6 @@ public final class OriginDataHolder {
 
     public <T> Optional<T> getComponentFor(Holder<Power> power, Class<T> clazz) {
         return Optional.ofNullable(this.data.getComponents().get(RLHelper.id(power))).map(x -> x.get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast);
-    }
-
-    public <H, T extends ComponentHolderProvider<H>> List<H> getComponentHolders(Class<T> clazz) {
-        return this.data.getComponents().values().stream().map(x -> x.get(clazz)).filter(Objects::nonNull).map(clazz::cast).map(x -> x.constructHolder(this)).toList();
     }
 
     public <H, T extends ComponentHolderProvider<H>> Optional<H> getComponentHolder(ResourceLocation id, Class<T> clazz) {
@@ -285,6 +281,7 @@ public final class OriginDataHolder {
         holder.streamActivePowers(Power.class).forEach(x -> x.respawn(holder, event.isEndConquered()));
     }
 
+    //FIXME::Should remove?
     @ApiStatus.Internal
     @SubscribeEvent
     public static void onSyncDatapack(OnDatapackSyncEvent event) {
@@ -308,5 +305,25 @@ public final class OriginDataHolder {
 
     private static boolean isFakePlayer(ServerPlayer player) {
         return ModList.get().isLoaded("bedsheet") && player instanceof EntityPlayerMPFake;
+    }
+
+    @ApiStatus.Internal
+    @SubscribeEvent
+    public static void onGrantAdvancement(AdvancementEvent.AdvancementEarnEvent event) {
+        Player player = event.getEntity();
+        AdvancementHolder advancement = event.getAdvancement();
+        OriginDataHolder holder = OriginDataHolder.get(player);
+        Map<Holder<Layer>, Origin.Upgrade> upgrades = new LinkedHashMap<>();
+        for (Map.Entry<Holder<Layer>, Holder<Origin>> origin : holder.getOrigins().entrySet())
+            for (Origin.Upgrade x : origin.getValue().value().upgrades())
+                if (Objects.equals(advancement.id(), x.condition())) {
+                    upgrades.put(origin.getKey(), x);
+                    break;
+                }
+        for (Map.Entry<Holder<Layer>, Origin.Upgrade> entry : upgrades.entrySet()) {
+            Origin.Upgrade upgrade = entry.getValue();
+            holder.setOrigin(entry.getKey(), upgrade.origin());
+            upgrade.announcement().ifPresent(player::sendSystemMessage);
+        }
     }
 }

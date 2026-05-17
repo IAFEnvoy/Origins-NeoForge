@@ -29,7 +29,6 @@ import java.util.Map;
 public class ViewOriginScreen extends OriginDisplayScreen {
     private final List<Pair<Holder<Layer>, Holder<Origin>>> originLayers;
     private Button chooseOriginButton;
-
     private int currentLayerIndex = 0;
 
     public ViewOriginScreen() {
@@ -43,18 +42,16 @@ public class ViewOriginScreen extends OriginDisplayScreen {
 
         Map<Holder<Layer>, Holder<Origin>> origins = OriginDataHolder.get(player).getOrigins();
         this.originLayers = new LinkedList<>();
-
         origins.forEach((layer, origin) -> {
             ItemStack iconStack = origin.value().icon().orElse(ItemStack.EMPTY);
             if (iconStack.is(Items.PLAYER_HEAD) && !iconStack.has(DataComponents.PROFILE))
                 iconStack.set(DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
-            if (!layer.value().hidden() && (origin.value() != Origin.EMPTY || layer.value().getOriginOptionCount(player.registryAccess()) > 0))
+            if (!layer.value().hidden() && (origin.value() != Origin.EMPTY || layer.value().getOriginOptionCount(player) > 0))
                 this.originLayers.add(Pair.of(layer, origin));
         });
 
         this.originLayers.sort(Comparator.comparing(x -> x.getFirst().value()));
-        if (this.originLayers.isEmpty())
-            this.showOrigin(null, null, false);
+        if (this.originLayers.isEmpty()) this.showOrigin(null, null, false);
         else {
             Pair<Holder<Layer>, Holder<Origin>> currentOriginAndLayer = this.originLayers.get(this.currentLayerIndex);
             this.showOrigin(currentOriginAndLayer.getSecond(), currentOriginAndLayer.getFirst(), false);
@@ -70,46 +67,28 @@ public class ViewOriginScreen extends OriginDisplayScreen {
     protected void init() {
         super.init();
         Minecraft client = Minecraft.getInstance();
-
-        this.addRenderableWidget(Button.builder(
-                Component.translatable(Origins.MOD_ID + ".gui.close"),
-                button -> client.setScreen(null)
-        ).bounds(this.guiLeft + WINDOW_WIDTH / 2 - 50, this.guiTop + WINDOW_HEIGHT + 5, 100, 20).build());
-
+        this.addRenderableWidget(Button.builder(Component.translatable(Origins.MOD_ID + ".gui.close"), button -> client.setScreen(null)).bounds(this.guiLeft + WINDOW_WIDTH / 2 - 50, this.guiTop + WINDOW_HEIGHT + 5, 100, 20).build());
         if (this.originLayers.isEmpty()) return;
-
-        this.addRenderableWidget(this.chooseOriginButton = Button.builder(
-                Component.translatable(Origins.MOD_ID + ".gui.choose"),
-                button -> client.setScreen(new ChooseOriginScreen(Lists.newArrayList(this.getCurrentLayer()), 0, false))
-        ).bounds(this.guiLeft + WINDOW_WIDTH / 2 - 50, this.guiTop + WINDOW_HEIGHT - 40, 100, 20).build());
+        this.addRenderableWidget(this.chooseOriginButton = Button.builder(Component.translatable(Origins.MOD_ID + ".gui.choose"), button -> client.setScreen(new ChooseOriginScreen(Lists.newArrayList(this.getCurrentLayer()), 0, false))).bounds(this.guiLeft + WINDOW_WIDTH / 2 - 50, this.guiTop + WINDOW_HEIGHT - 40, 100, 20).build());
 
         Player player = client.player;
         assert player != null;
-        this.chooseOriginButton.active = this.chooseOriginButton.visible = this.getCurrentOrigin().value() == Origin.EMPTY && this.getCurrentLayer().value().getOriginOptionCount(player.registryAccess()) > 0;
-
+        this.chooseOriginButton.active = this.chooseOriginButton.visible = this.getCurrentOrigin().value() == Origin.EMPTY && this.getCurrentLayer().value().getOriginOptionCount(player) > 0;
         if (this.originLayers.size() <= 1) return;
-
         //	Draw previous layer button
-        this.addRenderableWidget(Button.builder(
-                Component.literal("<"),
-                button -> {
-                    this.currentLayerIndex = (this.currentLayerIndex - 1 + this.originLayers.size()) % this.originLayers.size();
-                    this.showOrigin(this.getCurrentOrigin(), this.getCurrentLayer(), false);
+        this.addRenderableWidget(Button.builder(Component.literal("<"), button -> {
+            this.currentLayerIndex = (this.currentLayerIndex - 1 + this.originLayers.size()) % this.originLayers.size();
+            this.showOrigin(this.getCurrentOrigin(), this.getCurrentLayer(), false);
 
-                    this.chooseOriginButton.active = this.chooseOriginButton.visible = this.getCurrentOrigin().value() == Origin.EMPTY && this.getCurrentLayer().value().getOriginOptionCount(player.registryAccess()) > 0;
-                }
-        ).bounds(this.guiLeft - 40, this.height / 2 - 10, 20, 20).build());
-
+            this.chooseOriginButton.active = this.chooseOriginButton.visible = this.getCurrentOrigin().value() == Origin.EMPTY && this.getCurrentLayer().value().getOriginOptionCount(player) > 0;
+        }).bounds(this.guiLeft - 40, this.height / 2 - 10, 20, 20).build());
         //	Draw next layer button
-        this.addRenderableWidget(Button.builder(
-                Component.literal(">"),
-                button -> {
-                    this.currentLayerIndex = (this.currentLayerIndex + 1) % this.originLayers.size();
-                    this.showOrigin(this.getCurrentOrigin(), this.getCurrentLayer(), false);
+        this.addRenderableWidget(Button.builder(Component.literal(">"), button -> {
+            this.currentLayerIndex = (this.currentLayerIndex + 1) % this.originLayers.size();
+            this.showOrigin(this.getCurrentOrigin(), this.getCurrentLayer(), false);
 
-                    this.chooseOriginButton.active = this.chooseOriginButton.visible = this.getCurrentOrigin().value() == Origin.EMPTY && this.getCurrentLayer().value().getOriginOptionCount(player.registryAccess()) > 0;
-                }
-        ).bounds(this.guiLeft + WINDOW_WIDTH + 20, this.height / 2 - 10, 20, 20).build());
+            this.chooseOriginButton.active = this.chooseOriginButton.visible = this.getCurrentOrigin().value() == Origin.EMPTY && this.getCurrentLayer().value().getOriginOptionCount(player) > 0;
+        }).bounds(this.guiLeft + WINDOW_WIDTH + 20, this.height / 2 - 10, 20, 20).build());
     }
 
     @Override

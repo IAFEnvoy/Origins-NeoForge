@@ -52,7 +52,7 @@ public class OrbOfOriginItem extends Item {
 
         boolean automaticallyAssigned = holder.fillAutoChoosing();
         int options = Optional.ofNullable(layer)
-                .map(l -> l.value().getOriginOptionCount(target.registryAccess()))
+                .map(l -> l.value().getOriginOptionCount(target))
                 .orElseGet(() -> OriginRegistries.streamAvailableOrigins(target.registryAccess()).toList().size());
 
         holder.getData().setSelecting(!automaticallyAssigned || options > 0);

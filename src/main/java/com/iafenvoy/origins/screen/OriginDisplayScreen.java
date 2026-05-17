@@ -22,7 +22,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
@@ -42,31 +41,17 @@ public class OriginDisplayScreen extends Screen {
     private static final ResourceLocation WINDOW_SCROLL_BAR = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "choose_origin/scroll_bar");
     private static final ResourceLocation WINDOW_SCROLL_BAR_PRESSED = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "choose_origin/scroll_bar/pressed");
     private static final ResourceLocation WINDOW_SCROLL_BAR_SLOT = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "choose_origin/scroll_bar/slot");
-
-    protected static final int WINDOW_WIDTH = 176;
-    protected static final int WINDOW_HEIGHT = 182;
-
+    protected static final int WINDOW_WIDTH = 176, WINDOW_HEIGHT = 182;
     private final LinkedList<RenderedBadge> renderedBadges = new LinkedList<>();
-
     protected final boolean showDirtBackground;
-
     private Holder<Origin> origin, prevOrigin;
     private Holder<Layer> layer, prevLayer;
     private Component randomOriginText;
     private ScrollingTextWidget originNameWidget;
-
-    private boolean refreshOriginNameWidget = false;
-
-    private boolean isOriginRandom;
-    private boolean dragScrolling = false;
-
+    private boolean refreshOriginNameWidget = false, isOriginRandom, dragScrolling = false;
     private double mouseDragStart = 0;
-
-    private int currentMaxScroll = 0;
-    private int scrollDragStart = 0;
-
+    private int currentMaxScroll = 0, scrollDragStart = 0, scrollPos = 0;
     protected int guiTop, guiLeft;
-    protected int scrollPos = 0;
 
     public OriginDisplayScreen(Component title, boolean showDirtBackground) {
         super(title);
@@ -93,7 +78,6 @@ public class OriginDisplayScreen extends Screen {
 
         this.originNameWidget = new ScrollingTextWidget(this.guiLeft + 38, this.guiTop + 18, WINDOW_WIDTH - (62 + 3 * 8), 9, Component.empty(), true, this.font);
         this.refreshOriginNameWidget = true;
-
     }
 
     @Override
@@ -138,7 +122,6 @@ public class OriginDisplayScreen extends Screen {
         this.mouseDragStart = mouseY;
 
         return true;
-
     }
 
     @Override
@@ -153,7 +136,6 @@ public class OriginDisplayScreen extends Screen {
         this.scrollPos = (int) (part * this.currentMaxScroll);
 
         return mouseDragged;
-
     }
 
     @Override
@@ -269,9 +251,7 @@ public class OriginDisplayScreen extends Screen {
         RegistryAccess access = Minecraft.getInstance().level.registryAccess();
         int textWidthLimit = WINDOW_WIDTH - 48;
         int x = this.guiLeft + 18;
-        int y = this.guiTop + 45;
-
-        y -= this.scrollPos;
+        int y = this.guiTop + 45 - this.scrollPos;
 
         for (FormattedCharSequence descriptionLine : this.font.split(Origin.getDescription(this.getCurrentOrigin()), textWidthLimit)) {
             graphics.drawString(this.font, descriptionLine, x + 2, y, 0xCCCCCC);
@@ -304,7 +284,6 @@ public class OriginDisplayScreen extends Screen {
                 for (Badge badge : badgeBuilder.build()) {
                     int badgeX = badgeStartX + 10 * badgeOffsetX;
                     int badgeY = (y - 1) + 10 * badgeOffsetY;
-
                     if (badgeX >= badgeEndX) {
                         badgeOffsetX = 0;
                         badgeOffsetY++;
@@ -312,21 +291,16 @@ public class OriginDisplayScreen extends Screen {
                         badgeX = badgeStartX = x;
                         badgeY = (y - 1) + 10 * badgeOffsetY;
                     }
-
                     RenderedBadge renderedBadge = new RenderedBadge(power, badge, badgeX, badgeY);
                     this.renderedBadges.add(renderedBadge);
-
                     graphics.blit(badge.sprite(), renderedBadge.x, renderedBadge.y, 0, 0, 9, 9, 9, 9);
                     badgeOffsetX++;
                 }
-
                 y += badgeOffsetY * 10;
-
                 for (FormattedCharSequence powerDescriptionLine : this.font.split(power.getDescription(access), textWidthLimit)) {
                     y += 12;
                     graphics.drawString(this.font, powerDescriptionLine, x + 2, y, 0xCCCCCC);
                 }
-
                 y += 20;
             }
         }

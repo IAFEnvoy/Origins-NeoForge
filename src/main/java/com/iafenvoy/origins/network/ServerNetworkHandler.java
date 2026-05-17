@@ -30,7 +30,7 @@ public final class ServerNetworkHandler {
         Optional<Holder<Origin>> optional = packet.origin();
         if (optional.isPresent()) {
             Holder<Origin> origin = optional.get();
-            if (origin.value().unchoosable() || layer.value().collectOrigins(context.player().registryAccess()).noneMatch(origin::equals)) {
+            if (origin.value().unchoosable() || layer.value().collectOrigins(context.player()).noneMatch(origin::equals)) {
                 Origins.LOGGER.warn("Player {} tried to choose unchoosable origin \"{}\" from layer \"{}\"!", player.getName().getString(), RLHelper.string(origin), RLHelper.string(layer));
                 holder.clearOrigin(layer);
             } else {
@@ -60,7 +60,7 @@ public final class ServerNetworkHandler {
     }
 
     private static void randomOrigin(ServerPlayer player, OriginDataHolder holder, Holder<Layer> layer) {
-        List<Holder<Origin>> randomOriginIds = layer.value().collectRandomizableOrigins(player.registryAccess()).toList();
+        List<Holder<Origin>> randomOriginIds = layer.value().collectRandomizableOrigins(player).toList();
         if (!layer.value().allowRandom() || randomOriginIds.isEmpty()) {
             Origins.LOGGER.warn("Player {} tried to choose a random origin for layer \"{}\", which is not allowed!", player.getName().getString(), RLHelper.string(layer));
             holder.clearOrigin(layer);

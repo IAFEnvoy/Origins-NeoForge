@@ -69,7 +69,7 @@ public final class OriginCommand {
         CommandSourceStack source = context.getSource();
         int processedTargets = 0;
 
-        if (origin.value().equals(Origin.EMPTY) || layer.value().collectOrigins(source.registryAccess()).anyMatch(origin::equals)) {
+        if (origin.value().equals(Origin.EMPTY) || layer.value().collectOrigins(source.registryAccess(), null).anyMatch(origin::equals)) {
             for (ServerPlayer target : targets) {
                 OriginDataHolder holder = OriginDataHolder.get(target);
                 holder.setOrigin(layer, origin);
@@ -162,7 +162,7 @@ public final class OriginCommand {
     }
 
     private static Holder<Origin> setAndGetRandomOrigin(ServerPlayer target, Holder<Layer> layer) {
-        List<Holder<Origin>> origins = layer.value().collectRandomizableOrigins(target.registryAccess()).toList();
+        List<Holder<Origin>> origins = layer.value().collectRandomizableOrigins(target).toList();
         OriginDataHolder holder = OriginDataHolder.get(target);
         Holder<Origin> origin = RandomHelper.randomOne(origins);
         holder.setOrigin(layer, origin);

@@ -6,7 +6,6 @@ import com.iafenvoy.origins.data.origin.Impact;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.network.payload.ChooseOriginC2SPayload;
 import com.iafenvoy.origins.registry.OriginsItems;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -28,21 +27,15 @@ import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 public class ChooseOriginScreen extends OriginDisplayScreen {
+    private static final ResourceLocation ORIGINS_CHOICES = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "textures/gui/origin_choices.png");
+    private static final int CHOICES_WIDTH = 219, CHOICES_HEIGHT = 182, ORIGIN_ICON_SIZE = 26, COUNT_PER_PAGE = 35;
     private final List<Holder<Layer>> layers;
     private final List<Holder<Origin>> origins;
     private final int currentLayerIndex;
     private Holder<Origin> randomOrigin;
-    private int currentOriginIndex = 0;
-    private int maxSelection = 0;
-    private static final ResourceLocation ORIGINS_CHOICES = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "textures/gui/origin_choices.png");
-    private static final int CHOICES_WIDTH = 219;
-    private static final int CHOICES_HEIGHT = 182;
-    private static final int ORIGIN_ICON_SIZE = 26;
-    private int calculatedTop;
-    private int calculatedLeft;
-    private int currentPage = 0;
-    private static final int COUNT_PER_PAGE = 35;
-    private int pages;
+    private int currentOriginIndex = 0, maxSelection = 0;
+    private int calculatedTop, calculatedLeft;
+    private int currentPage = 0, pages;
 
     public ChooseOriginScreen(List<Holder<Layer>> layers, int currentLayerIndex, boolean showDirtBackground) {
         super(Component.empty(), showDirtBackground);
@@ -53,8 +46,8 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
         Player player = Minecraft.getInstance().player;
         if (player != null) {
             Layer currentLayer = this.getCurrentLayer().value();
-            currentLayer.collectOrigins(player.registryAccess()).forEach(holder -> {
-                if (holder.value().choosable()) {
+            currentLayer.collectOrigins(player).forEach(holder -> {
+                if (!holder.value().unchoosable()) {
                     ItemStack iconStack = holder.value().icon().orElse(ItemStack.EMPTY);
                     if (iconStack.is(Items.PLAYER_HEAD) && !iconStack.has(DataComponents.PROFILE))
                         iconStack.set(DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
@@ -62,7 +55,7 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
                 }
             });
             this.origins.sort(Comparator.<Holder<Origin>>comparingInt(o -> o.value().impact().getImpactValue()).thenComparingInt(x -> x.value().order()));
-            this.maxSelection = currentLayer.getOriginOptionCount(player.registryAccess());
+            this.maxSelection = currentLayer.getOriginOptionCount(player);
             if (this.maxSelection == 0) {
                 this.openNextLayerScreen();
             }
@@ -79,8 +72,9 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
     private void initRandomOrigin() {
         this.randomOrigin = Holder.direct(Origin.special(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "random"), OriginsItems.ORB_OF_ORIGIN.toStack(), Impact.NONE, -1));
         MutableComponent randomOriginText = Component.empty();
-        assert Minecraft.getInstance().player != null;
-        this.layers.get(this.currentLayerIndex).value().collectRandomizableOrigins(Minecraft.getInstance().player.registryAccess()).sorted((ia, ib) -> {
+        Player player = Minecraft.getInstance().player;
+        assert player != null;
+        this.layers.get(this.currentLayerIndex).value().collectRandomizableOrigins(player).sorted((ia, ib) -> {
             Origin a = ia.value();
             Origin b = ib.value();
             int impactDelta = Integer.compare(a.impact().getImpactValue(), b.impact().getImpactValue());
@@ -180,7 +174,6 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
                 x = 0;
                 ++y;
             }
-
             int actualX = 12 + x * 28 + this.calculatedLeft;
             int actualY = 10 + y * 30 + this.calculatedTop;
             if (i >= this.origins.size()) {
@@ -192,10 +185,8 @@ public class ChooseOriginScreen extends OriginDisplayScreen {
                 this.renderOriginWidget(graphics, mouseX, mouseY, actualX, actualY, selected, origin);
                 graphics.renderItem(origin.value().icon().orElse(ItemStack.EMPTY), actualX + 5, actualY + 5);
             }
-
             ++x;
         }
-
         graphics.drawCenteredString(this.font, Component.literal((this.currentPage + 1) + "/" + this.pages).getVisualOrderText(), this.calculatedLeft + 109, this.guiTop + CHOICES_HEIGHT + 9, 16777215);
     }
 

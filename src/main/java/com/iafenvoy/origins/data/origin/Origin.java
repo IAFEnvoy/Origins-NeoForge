@@ -9,7 +9,6 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,6 +18,7 @@ import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -26,11 +26,11 @@ import java.util.Optional;
 
 public record Origin(Optional<Component> name, Optional<Component> description,
                      List<Either<Holder<Power>, TagKey<Power>>> powers, Optional<ItemStack> icon, boolean unchoosable,
-                     int order, Impact impact, List<Upgrade> upgrades) {
+                     int order, Impact impact, List<Upgrade> upgrades) implements Comparable<Origin> {
     public static final Codec<Origin> DIRECT_CODEC = RecordCodecBuilder.create(i -> i.group(
             MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("name").forGetter(Origin::name),
             MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("description").forGetter(Origin::description),
-            RegistryCodecs.holderOrTag(PowerRegistries.POWER_KEY).optionalFieldOf("powers", List.of()).forGetter(Origin::powers),
+            RegistryCodecs.holderOrTag(PowerRegistries.POWER_KEY).listOf().optionalFieldOf("powers", List.of()).forGetter(Origin::powers),
             ItemStack.CODEC.optionalFieldOf("icon").forGetter(Origin::icon),
             Codec.BOOL.optionalFieldOf("unchoosable", false).forGetter(Origin::unchoosable),
             Codec.INT.optionalFieldOf("order", Integer.MAX_VALUE).forGetter(Origin::order),
@@ -45,8 +45,9 @@ public record Origin(Optional<Component> name, Optional<Component> description,
         return new Origin(Optional.of(Component.translatable(id.toLanguageKey("origin", "name"))), Optional.of(Component.translatable(id.toLanguageKey("origin", "description"))), List.of(), Optional.ofNullable(icon), true, order, impact, List.of());
     }
 
-    public boolean choosable() {
-        return !this.unchoosable;
+    @Override
+    public int compareTo(@NotNull Origin that) {
+        return Integer.compare(this.order, that.order);
     }
 
     public static MutableComponent getName(Holder<Origin> origin) {
@@ -57,11 +58,11 @@ public record Origin(Optional<Component> name, Optional<Component> description,
         return origin.value().description.map(Component::copy).orElseGet(() -> Component.translatable(RLHelper.id(origin).toLanguageKey("origin", "description")));
     }
 
-    public record Upgrade(ResourceLocation condition, ResourceLocation origin, Optional<String> announcement) {
+    public record Upgrade(ResourceLocation condition, Holder<Origin> origin, Optional<Component> announcement) {
         public static final Codec<Upgrade> CODEC = RecordCodecBuilder.create(i -> i.group(
                 ResourceLocation.CODEC.fieldOf("condition").forGetter(Upgrade::condition),
-                ResourceLocation.CODEC.fieldOf("origin").forGetter(Upgrade::origin),
-                Codec.STRING.optionalFieldOf("announcement").forGetter(Upgrade::announcement)
+                Origin.CODEC.fieldOf("origin").forGetter(Upgrade::origin),
+                MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("announcement").forGetter(Upgrade::announcement)
         ).apply(i, Upgrade::new));
     }
 }

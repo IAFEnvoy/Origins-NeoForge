@@ -1,11 +1,8 @@
 package com.iafenvoy.origins.data.layer;
 
 import com.iafenvoy.origins.data.origin.Origin;
-import com.iafenvoy.origins.data.origin.OriginRegistries;
-import com.iafenvoy.origins.util.codec.RegistryCodecs;
 import com.iafenvoy.origins.util.RLHelper;
 import com.iafenvoy.origins.util.codec.MiscCodecs;
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -17,20 +14,22 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public record Layer(int order, List<Either<Holder<Origin>, TagKey<Origin>>> origins, boolean enabled,
+public record Layer(Optional<Component> name, int order, ConditionedOriginList origins, boolean enabled,
                     Optional<GuiTitle> guiTitle, boolean allowRandom, boolean allowRandomUnchoosable,
                     List<Holder<Origin>> excludeRandom, Optional<ResourceLocation> defaultOrigin, boolean autoChoose,
                     boolean hidden) implements Comparable<Layer> {
     public static final Codec<Layer> DIRECT_CODEC = RecordCodecBuilder.create(i -> i.group(
+            MiscCodecs.TRANSLATE_FIRST.optionalFieldOf("name").forGetter(Layer::name),
             Codec.INT.optionalFieldOf("order", Integer.MAX_VALUE).forGetter(Layer::order),
-            RegistryCodecs.holderOrTag(OriginRegistries.ORIGIN_KEY).fieldOf("origins").forGetter(Layer::origins),
+            ConditionedOriginList.CODEC.fieldOf("origins").forGetter(Layer::origins),
             Codec.BOOL.optionalFieldOf("enabled", true).forGetter(Layer::enabled),
             GuiTitle.CODEC.optionalFieldOf("gui_title").forGetter(Layer::guiTitle),
             Codec.BOOL.optionalFieldOf("allow_random", false).forGetter(Layer::allowRandom),
@@ -43,32 +42,40 @@ public record Layer(int order, List<Either<Holder<Origin>, TagKey<Origin>>> orig
     public static final Codec<Holder<Layer>> CODEC = RegistryFixedCodec.create(LayerRegistries.LAYER_KEY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Layer>> STREAM_CODEC = ByteBufCodecs.holderRegistry(LayerRegistries.LAYER_KEY);
 
-    public int getOriginOptionCount(RegistryAccess access) {
-        List<Holder<Origin>> choosableOrigins = this.collectChoosableOrigins(access).toList();
+    public int getOriginOptionCount(@NotNull Entity entity) {
+        return this.getOriginOptionCount(entity.registryAccess(), entity);
+    }
+
+    public int getOriginOptionCount(RegistryAccess access, @Nullable Entity entity) {
+        List<Holder<Origin>> choosableOrigins = this.collectOrigins(access, entity).filter(x -> !x.value().unchoosable()).toList();
         int count = choosableOrigins.size();
         if (count > 1 && this.allowRandom && choosableOrigins.stream().anyMatch(x -> !this.excludeRandom.contains(x)))
             count++;
         return count;
     }
 
-    public Stream<Holder<Origin>> collectOrigins(RegistryAccess access) {
-        return RegistryCodecs.listAll(this.origins, access, OriginRegistries.ORIGIN_KEY).stream();
+    public Stream<Holder<Origin>> collectOrigins(@NotNull Entity entity) {
+        return this.collectOrigins(entity.registryAccess(), entity);
     }
 
-    public Stream<Holder<Origin>> collectChoosableOrigins(RegistryAccess access) {
-        return this.collectOrigins(access).filter(x -> x.value().choosable());
+    public Stream<Holder<Origin>> collectOrigins(RegistryAccess access, @Nullable Entity entity) {
+        return this.origins.collectOrigins(access, entity);
     }
 
-    public Stream<Holder<Origin>> collectRandomizableOrigins(RegistryAccess access) {
-        return this.collectOrigins(access).filter(x -> !this.excludeRandom.contains(x));
+    public Stream<Holder<Origin>> collectRandomizableOrigins(@NotNull Entity entity) {
+        return this.collectRandomizableOrigins(entity.registryAccess(), entity);
+    }
+
+    public Stream<Holder<Origin>> collectRandomizableOrigins(RegistryAccess access, @Nullable Entity entity) {
+        return this.collectOrigins(access, entity).filter(x -> !this.excludeRandom.contains(x));
     }
 
     public Component getChooseOriginTitle(Component fallback) {
-        return this.guiTitle.flatMap(x -> x.chooseOrigin).orElse(fallback);
+        return this.guiTitle.flatMap(GuiTitle::chooseOrigin).orElse(fallback);
     }
 
     public Component getViewOriginTitle(Component fallback) {
-        return this.guiTitle.flatMap(x -> x.viewOrigin).orElse(fallback);
+        return this.guiTitle.flatMap(GuiTitle::viewOrigin).orElse(fallback);
     }
 
     @Override
@@ -77,11 +84,7 @@ public record Layer(int order, List<Either<Holder<Origin>, TagKey<Origin>>> orig
     }
 
     public static MutableComponent getName(Holder<Layer> layer) {
-        return getName(RLHelper.id(layer));
-    }
-
-    public static MutableComponent getName(ResourceLocation id) {
-        return Component.translatable(id.toLanguageKey("layer", "name"));
+        return layer.value().name.map(Component::copy).orElse(Component.translatable(RLHelper.id(layer).toLanguageKey("layer", "name")));
     }
 
     public record GuiTitle(Optional<Component> chooseOrigin, Optional<Component> viewOrigin) {

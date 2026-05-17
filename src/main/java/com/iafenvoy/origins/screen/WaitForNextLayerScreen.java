@@ -29,7 +29,7 @@ public class WaitForNextLayerScreen extends Screen {
         Player player = Minecraft.getInstance().player;
         assert player != null;
         Holder<Layer> currentLayer = layers.get(currentLayerIndex);
-        this.maxSelection = currentLayer.value().getOriginOptionCount(player.registryAccess());
+        this.maxSelection = currentLayer.value().getOriginOptionCount(player);
     }
 
     public void openSelection() {
@@ -39,7 +39,7 @@ public class WaitForNextLayerScreen extends Screen {
             Holder<Layer> layer;
             for (int index = this.currentLayerIndex + 1; index < this.layerList.size(); index++) {
                 layer = this.layerList.get(index);
-                if (!holder.hasOriginInLayer(layer) && layer.value().collectOrigins(client.player.registryAccess()).findAny().isPresent()) {
+                if (!holder.hasOriginInLayer(layer) && layer.value().collectOrigins(client.player).findAny().isPresent()) {
                     client.setScreen(new ChooseOriginScreen(this.layerList, index, this.showDirtBackground));
                     return;
                 }

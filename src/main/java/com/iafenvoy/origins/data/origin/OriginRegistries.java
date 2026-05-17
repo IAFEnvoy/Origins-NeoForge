@@ -13,6 +13,6 @@ public final class OriginRegistries {
     public static final ResourceKey<Registry<Origin>> ORIGIN_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "origin"));
 
     public static Stream<Holder.Reference<Origin>> streamAvailableOrigins(RegistryAccess access) {
-        return access.registryOrThrow(ORIGIN_KEY).holders().filter(x -> x.value().choosable());
+        return access.registryOrThrow(ORIGIN_KEY).holders().filter(x -> !x.value().unchoosable());
     }
 }

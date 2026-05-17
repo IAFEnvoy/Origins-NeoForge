@@ -18,8 +18,8 @@ public final class RegistryCodecs {
         return Codec.either(referenceCodec, directCodec).xmap(x -> x.map(Holder::value, Function.identity()), Either::right);
     }
 
-    public static <T> Codec<List<Either<Holder<T>, TagKey<T>>>> holderOrTag(ResourceKey<Registry<T>> key) {
-        return Codec.either(RegistryFixedCodec.create(key), TagKey.hashedCodec(key)).listOf();
+    public static <T> Codec<Either<Holder<T>, TagKey<T>>> holderOrTag(ResourceKey<Registry<T>> key) {
+        return Codec.either(RegistryFixedCodec.create(key), TagKey.hashedCodec(key));
     }
 
     public static <T> List<Holder<T>> listAll(List<Either<Holder<T>, TagKey<T>>> eitherList, RegistryAccess access, ResourceKey<Registry<T>> registry) {

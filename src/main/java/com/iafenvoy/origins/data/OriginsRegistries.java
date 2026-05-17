@@ -6,6 +6,8 @@ import com.iafenvoy.origins.data.action.ActionRegistries;
 import com.iafenvoy.origins.data.badge.Badge;
 import com.iafenvoy.origins.data.badge.BadgeRegistries;
 import com.iafenvoy.origins.data.condition.ConditionRegistries;
+import com.iafenvoy.origins.data.global_powers.GlobalPowers;
+import com.iafenvoy.origins.data.global_powers.GlobalPowersRegistries;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
@@ -44,6 +46,7 @@ public final class OriginsRegistries {
         event.dataPackRegistry(PowerRegistries.POWER_KEY, Power.DIRECT_CODEC, Power.DIRECT_CODEC);
         event.dataPackRegistry(OriginRegistries.ORIGIN_KEY, Origin.DIRECT_CODEC, Origin.DIRECT_CODEC);
         event.dataPackRegistry(LayerRegistries.LAYER_KEY, Layer.DIRECT_CODEC, Layer.DIRECT_CODEC);
+        event.dataPackRegistry(GlobalPowersRegistries.GLOBAL_POWERS_LEY, GlobalPowers.DIRECT_CODEC, GlobalPowers.DIRECT_CODEC);
     }
 
     @SubscribeEvent
