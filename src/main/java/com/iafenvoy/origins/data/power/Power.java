@@ -27,12 +27,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public abstract class Power {
     public static final Codec<Holder<Power>> CODEC = RegistryFixedCodec.create(PowerRegistries.POWER_KEY);
     public static final Codec<Power> DIRECT_CODEC = DefaultedCodec.registryDispatch(PowerRegistries.POWER_TYPE, Power::codec, Function.identity(), Power::createEmpty);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Power>> STREAM_CODEC = ByteBufCodecs.holderRegistry(PowerRegistries.POWER_KEY);
     private final BaseSettings settings;
+    private Optional<Power> parent = Optional.empty();
 
     private static Power createEmpty() {
         return new EmptyPower();
@@ -44,6 +46,14 @@ public abstract class Power {
 
     public BaseSettings getSettings() {
         return this.settings;
+    }
+
+    public void setParent(Optional<Power> parent) {
+        this.parent = parent;
+    }
+
+    public boolean isHidden() {
+        return this.settings.hidden || this.parent.isPresent();
     }
 
     @NotNull
@@ -59,7 +69,7 @@ public abstract class Power {
     }
 
     public boolean isActive(OriginDataHolder holder) {
-        return holder.getComponentFor(this, ActiveComponent.class).map(ActiveComponent::isLastActive).orElse(false);
+        return holder.getComponentFor(this, ActiveComponent.class).map(ActiveComponent::isLastActive).orElse(false) && this.parent.map(x -> x.isActive(holder)).orElse(true);
     }
 
     public void grant(@NotNull OriginDataHolder holder) {

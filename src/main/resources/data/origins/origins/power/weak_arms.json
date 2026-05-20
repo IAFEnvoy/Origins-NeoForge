@@ -1,8 +1,8 @@
 {
   "type": "origins:modify_break_speed",
-  "hardness_modifier": {
+  "modifier": {
     "value": -1,
-    "operation": "set_total"
+    "operation": "multiply_total_multiplicative"
   },
   "block_condition": {
     "type": "origins:and",
@@ -23,8 +23,10 @@
     ]
   },
   "condition": {
-    "type": "origins:mob_effect",
-    "effect": "minecraft:strength",
-    "inverted": true
+    "type": "origins:not",
+    "condition": {
+      "type": "origins:mob_effect",
+      "effect": "minecraft:strength"
+    }
   }
 }

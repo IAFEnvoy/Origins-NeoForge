@@ -3,7 +3,7 @@ package com.iafenvoy.origins.command;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
-import com.iafenvoy.origins.util.RLHelper;
+import com.iafenvoy.origins.util.HolderHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -105,7 +105,7 @@ public final class PowerCommand {
         holder.grantPower(source, power);
         holder.sync();
 
-        src.sendSuccess(() -> Component.translatable("commands.power.grant.success", target.getName(), RLHelper.string(power), source.toString()), true);
+        src.sendSuccess(() -> Component.translatable("commands.power.grant.success", target.getName(), HolderHelper.string(power), source.toString()), true);
         return 1;
     }
 
@@ -123,14 +123,14 @@ public final class PowerCommand {
 
         CommandSourceStack src = context.getSource();
         OriginDataHolder holder = OriginDataHolder.get(target);
-        if (!holder.hasPower(source, power)) {
-            src.sendFailure(Component.translatable("commands.power.revoke.failure", target.getName(), RLHelper.string(power), source.toString()));
+        if (!holder.getEntityPowers().containsEntry(source, power)) {
+            src.sendFailure(Component.translatable("commands.power.revoke.failure", target.getName(), HolderHelper.string(power), source.toString()));
             return 0;
         }
         holder.revokePower(source, power);
         holder.sync();
 
-        src.sendSuccess(() -> Component.translatable("commands.power.revoke.success", target.getName(), RLHelper.string(power), source.toString()), true);
+        src.sendSuccess(() -> Component.translatable("commands.power.revoke.success", target.getName(), HolderHelper.string(power), source.toString()), true);
         return 1;
     }
 
@@ -152,15 +152,15 @@ public final class PowerCommand {
         OriginDataHolder holder = OriginDataHolder.get(target);
         try {
             ResourceLocation source = ResourceLocationArgument.getId(context, "source");
-            if (holder.hasPower(source, power))
-                src.sendSuccess(() -> Component.translatable("commands.power.has.success.source", target.getName(), RLHelper.string(power), source.toString()), false);
+            if (holder.getEntityPowers().containsEntry(source, power))
+                src.sendSuccess(() -> Component.translatable("commands.power.has.success.source", target.getName(), HolderHelper.string(power), source.toString()), false);
             else
-                src.sendFailure(Component.translatable("commands.power.has.failure.source", target.getName(), RLHelper.string(power), source.toString()));
+                src.sendFailure(Component.translatable("commands.power.has.failure.source", target.getName(), HolderHelper.string(power), source.toString()));
         } catch (Exception e) {
             if (holder.hasPower(power))
-                src.sendSuccess(() -> Component.translatable("commands.power.has.success", target.getName(), RLHelper.string(power)), false);
+                src.sendSuccess(() -> Component.translatable("commands.power.has.success", target.getName(), HolderHelper.string(power)), false);
             else
-                src.sendFailure(Component.translatable("commands.power.has.failure", target.getName(), RLHelper.string(power)));
+                src.sendFailure(Component.translatable("commands.power.has.failure", target.getName(), HolderHelper.string(power)));
         }
         return 1;
     }
@@ -168,7 +168,7 @@ public final class PowerCommand {
     private static int list(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer target = EntityArgument.getPlayer(context, "target");
         OriginDataHolder holder = OriginDataHolder.get(target);
-        String list = holder.getData().getPowers().entries().stream().map(e -> RLHelper.string(e.getValue()) + " (" + e.getKey().toString() + ")").reduce((a, b) -> a + ", " + b).orElse("(none)");
+        String list = holder.getData().getPowers().entries().stream().map(e -> HolderHelper.string(e.getValue()) + " (" + e.getKey().toString() + ")").reduce((a, b) -> a + ", " + b).orElse("(none)");
         context.getSource().sendSuccess(() -> Component.translatable("commands.power.list.result", target.getName(), list), false);
         return 1;
     }
@@ -188,7 +188,7 @@ public final class PowerCommand {
         Holder<Power> power = ResourceArgument.getResource(context, "power", PowerRegistries.POWER_KEY);
         OriginDataHolder holder = OriginDataHolder.get(target);
         String list = holder.getData().getPowers().entries().stream().filter(e -> e.getValue().equals(power)).map(Map.Entry::getKey).map(ResourceLocation::toString).reduce((a, b) -> a + ", " + b).orElse("(none)");
-        context.getSource().sendSuccess(() -> Component.translatable("commands.power.sources.result", target.getName(), RLHelper.string(power), list), false);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.power.sources.result", target.getName(), HolderHelper.string(power), list), false);
         return 1;
     }
 }

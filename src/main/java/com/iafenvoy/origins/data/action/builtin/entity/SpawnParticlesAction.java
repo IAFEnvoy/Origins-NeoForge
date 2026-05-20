@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.action.builtin.entity;
 
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -17,7 +18,7 @@ public record SpawnParticlesAction(ParticleOptions particle, BiEntityCondition b
                                    float speed, boolean force, Vec3 spread, float offsetX, float offsetY,
                                    float offsetZ) implements EntityAction {
     public static final MapCodec<SpawnParticlesAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ParticleTypes.CODEC.fieldOf("particle").forGetter(SpawnParticlesAction::particle),
+            MiscCodecs.PARTICLE_OPTION_OR_SINGLE.fieldOf("particle").forGetter(SpawnParticlesAction::particle),
             BiEntityCondition.optionalCodec("bientity_condition").forGetter(SpawnParticlesAction::biEntityCondition),
             Codec.intRange(0, Integer.MAX_VALUE).fieldOf("count").forGetter(SpawnParticlesAction::count),
             Codec.FLOAT.optionalFieldOf("speed", 0F).forGetter(SpawnParticlesAction::speed),

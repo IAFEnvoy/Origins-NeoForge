@@ -4,7 +4,7 @@ import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.iafenvoy.origins.util.codec.RegistryCodecs;
-import com.iafenvoy.origins.util.RLHelper;
+import com.iafenvoy.origins.util.HolderHelper;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -39,7 +39,7 @@ public record Origin(Optional<Component> name, Optional<Component> description,
             Upgrade.CODEC.listOf().optionalFieldOf("upgrades", List.of()).forGetter(Origin::upgrades)
     ).apply(i, Origin::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Origin>> STREAM_CODEC = ByteBufCodecs.holderRegistry(OriginRegistries.ORIGIN_KEY);
-    public static final Origin EMPTY = special(RLHelper.EMPTY, null, Impact.NONE, 0);
+    public static final Origin EMPTY = special(HolderHelper.EMPTY, null, Impact.NONE, 0);
 
     public static Origin special(ResourceLocation id, @Nullable ItemStack icon, Impact impact, int order) {
         return new Origin(Optional.of(Component.translatable(id.toLanguageKey("origin", "name"))), Optional.of(Component.translatable(id.toLanguageKey("origin", "description"))), List.of(), Optional.ofNullable(icon), true, order, impact, List.of());
@@ -51,11 +51,11 @@ public record Origin(Optional<Component> name, Optional<Component> description,
     }
 
     public static MutableComponent getName(Holder<Origin> origin) {
-        return origin.value().name.map(Component::copy).orElseGet(() -> Component.translatable(RLHelper.id(origin).toLanguageKey("origin", "name")));
+        return origin.value().name.map(Component::copy).orElseGet(() -> Component.translatable(HolderHelper.id(origin).toLanguageKey("origin", "name")));
     }
 
     public static MutableComponent getDescription(Holder<Origin> origin) {
-        return origin.value().description.map(Component::copy).orElseGet(() -> Component.translatable(RLHelper.id(origin).toLanguageKey("origin", "description")));
+        return origin.value().description.map(Component::copy).orElseGet(() -> Component.translatable(HolderHelper.id(origin).toLanguageKey("origin", "description")));
     }
 
     public record Upgrade(ResourceLocation condition, Holder<Origin> origin, Optional<Component> announcement) {

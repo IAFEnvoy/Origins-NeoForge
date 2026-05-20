@@ -268,7 +268,7 @@ public class OriginDisplayScreen extends Screen {
         } else {
             for (Holder<Power> holder : RegistryCodecs.listAll(this.origin.value().powers(), access, PowerRegistries.POWER_KEY)) {
                 Power power = holder.value();
-                if (power.getSettings().hidden()) continue;
+                if (power.isHidden()) continue;
                 LinkedList<FormattedCharSequence> powerName = new LinkedList<>(this.font.split(power.getName(access).withStyle(ChatFormatting.UNDERLINE), textWidthLimit));
                 int powerNameWidth = this.font.width(powerName.getLast());
 

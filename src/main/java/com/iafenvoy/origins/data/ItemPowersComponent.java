@@ -4,7 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
-import com.iafenvoy.origins.util.RLHelper;
+import com.iafenvoy.origins.util.HolderHelper;
 import com.iafenvoy.origins.util.codec.CollectionCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -49,7 +49,7 @@ public record ItemPowersComponent(Multimap<EquipmentSlotGroup, Entry> powers) {
         boolean advanced = event.getContext().flag().isAdvanced();
         for (Entry entry : component.powers.values()) {
             Power power = entry.power.value();
-            ResourceLocation id = RLHelper.id(entry.power);
+            ResourceLocation id = HolderHelper.id(entry.power);
             if (entry.hidden()) continue;
             event.addTooltipLines(Component.translatable("tooltip.origins.stack_power.name", power.getName(id)).withStyle(entry.negative() ? ChatFormatting.RED : ChatFormatting.YELLOW));
             if (!advanced) continue;

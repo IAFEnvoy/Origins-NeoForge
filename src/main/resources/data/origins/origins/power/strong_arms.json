@@ -4,6 +4,5 @@
   "block_condition": {
     "type": "origins:in_tag",
     "tag": "origins:natural_stone"
-  },
-  "hidden": true
+  }
 }

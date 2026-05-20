@@ -21,7 +21,7 @@ public class ModifyFallingPower extends Power implements ModifierPowerHelper {
     public static final MapCodec<ModifyFallingPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             Codec.BOOL.optionalFieldOf("take_fall_damage", true).forGetter(ModifyFallingPower::shouldTakeFallDamage),
-            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyFallingPower::getModifier)
+            CombinedCodecs.MODIFIER.optionalFieldOf("modifier", List.of()).forGetter(ModifyFallingPower::getModifier)
     ).apply(i, ModifyFallingPower::new));
     private final boolean takeFallDamage;
     private final List<Modifier> modifier;

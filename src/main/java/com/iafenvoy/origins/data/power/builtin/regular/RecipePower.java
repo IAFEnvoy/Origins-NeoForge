@@ -6,7 +6,7 @@ import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.Prioritized;
 import com.iafenvoy.origins.mixin.recipe.RecipeManagerAccessor;
 import com.iafenvoy.origins.recipe.PowerCraftingRecipe;
-import com.iafenvoy.origins.util.RLHelper;
+import com.iafenvoy.origins.util.HolderHelper;
 import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -65,7 +65,7 @@ public class RecipePower extends Power implements Prioritized, RecipeHelper {
 
         for (Holder<Power> power : powers) {
             if (!(power.value() instanceof RecipePower recipePower)) continue;
-            ResourceLocation powerId = RLHelper.id(power);
+            ResourceLocation powerId = HolderHelper.id(power);
 
             //  Only register the power recipe if no other recipes have the same ID
             if (!priorityEntries.containsKey(powerId) || priorityEntries.getInt(powerId) < recipePower.priority) {

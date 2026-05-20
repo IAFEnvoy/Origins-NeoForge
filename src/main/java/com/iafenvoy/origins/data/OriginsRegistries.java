@@ -15,6 +15,7 @@ import com.iafenvoy.origins.data.origin.OriginRegistries;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.component.PowerComponentRegistries;
+import com.iafenvoy.origins.event.internal.ElementPostRegisterEvent;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;

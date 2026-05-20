@@ -1,9 +1,6 @@
 {
   "type": "origins:modify_falling",
-  "modifier": {
-    "operation": "min_total",
-    "value": 0.01
-  },
+  "velocity": 0.01,
   "take_fall_damage": false,
   "condition": {
     "type": "origins:or",
@@ -23,8 +20,10 @@
         "type": "origins:and",
         "conditions": [
           {
-            "type": "origins:sneaking",
-            "inverted": true
+            "type": "origins:not",
+            "condition": {
+              "type": "origins:sneaking"
+            }
           },
           {
             "type": "origins:not",

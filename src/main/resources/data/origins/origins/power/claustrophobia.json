@@ -3,7 +3,7 @@
   "min_stacks": -20,
   "max_stacks": 361,
   "duration_per_stack": 10,
-  "effect": [
+  "effects": [
     {
       "id": "minecraft:weakness",
       "ambient": true,

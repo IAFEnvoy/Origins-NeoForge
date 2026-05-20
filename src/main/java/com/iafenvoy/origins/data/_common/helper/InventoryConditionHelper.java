@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data._common.helper;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.PowerReference;
 import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
 import com.iafenvoy.origins.util.wrapper.ContainerWrapper;
 import com.mojang.serialization.Codec;
@@ -26,7 +27,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 public interface InventoryConditionHelper {
-    Optional<Holder<Power>> power();
+    Optional<PowerReference> power();
 
     ItemCondition itemCondition();
 
@@ -47,7 +48,7 @@ public interface InventoryConditionHelper {
     }
 
     default ContainerWrapper getWrappedContainer(Entity entity) {
-        return this.power().flatMap(power -> OriginDataHolder.get(entity).getComponentFor(power, InventoryComponent.class))
+        return this.power().flatMap(PowerReference::get).flatMap(power -> OriginDataHolder.get(entity).getComponentFor(power, InventoryComponent.class))
                 .map(InventoryComponent::getContainer)
                 .map(ContainerWrapper::container)
                 .orElseGet(() -> ContainerWrapper.entity(entity));

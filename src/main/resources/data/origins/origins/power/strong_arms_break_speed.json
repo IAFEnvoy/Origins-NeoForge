@@ -14,6 +14,5 @@
     "value": 0.06,
     "operation": "add_base_early"
   },
-  "name": "power.origins.strong_arms.name",
-  "description": "power.origins.strong_arms.description"
+  "hidden": true
 }

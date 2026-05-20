@@ -3,8 +3,8 @@
   "values": [
     "origins:shulker_inventory",
     "origins:natural_armor",
-    "origins:strong_arms/break_speed",
-    "origins:strong_arms/break_stone",
+    "origins:strong_arms",
+    "origins:strong_arms_break_speed",
     "origins:no_shield",
     "origins:more_exhaustion"
   ]

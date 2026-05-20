@@ -5,9 +5,8 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public enum EmptyBadge implements Badge {
-    INSTANCE;
-    public static final MapCodec<EmptyBadge> CODEC = MapCodec.unit(INSTANCE);
+public class EmptyBadge implements Badge {
+    public static final MapCodec<EmptyBadge> CODEC = MapCodec.unit(EmptyBadge::new);
 
     @Override
     public @NotNull MapCodec<? extends Badge> codec() {

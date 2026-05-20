@@ -1,7 +1,6 @@
 {
   "type": "origins:modify_damage_dealt",
   "modifier": {
-    "resource": "origins:aerial_combatant",
     "value": 1,
     "operation": "multiply_base_multiplicative"
   },

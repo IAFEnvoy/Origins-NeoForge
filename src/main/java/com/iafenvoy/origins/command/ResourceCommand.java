@@ -4,7 +4,7 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.component.builtin.ResourceComponent;
-import com.iafenvoy.origins.util.RLHelper;
+import com.iafenvoy.origins.util.HolderHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -74,9 +74,9 @@ public final class ResourceCommand {
         boolean has = OriginDataHolder.get(target).getComponentFor(power, ResourceComponent.class).isPresent();
 
         if (has)
-            source.sendSuccess(() -> Component.translatable("commands.origins.resource.has.success", target.getName(), RLHelper.string(power)), false);
+            source.sendSuccess(() -> Component.translatable("commands.origins.resource.has.success", target.getName(), HolderHelper.string(power)), false);
         else
-            source.sendFailure(Component.translatable("commands.origins.resource.has.failure", target.getName(), RLHelper.string(power)));
+            source.sendFailure(Component.translatable("commands.origins.resource.has.failure", target.getName(), HolderHelper.string(power)));
         return has ? 1 : 0;
     }
 
@@ -88,7 +88,7 @@ public final class ResourceCommand {
         ResourceComponent component = getResourceComponent(target, power, context);
         if (component == null) return 0;
 
-        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.get.result", target.getName(), RLHelper.string(power), component.getValue()), false);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.get.result", target.getName(), HolderHelper.string(power), component.getValue()), false);
         return 1;
     }
 
@@ -104,7 +104,7 @@ public final class ResourceCommand {
         OriginDataHolder holder = OriginDataHolder.get(target);
         component.updateResource(Integer::sum, value);
         holder.sync();
-        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.change.success", target.getName(), RLHelper.string(power), value, component.getValue()), true);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.change.success", target.getName(), HolderHelper.string(power), value, component.getValue()), true);
         return 1;
     }
 
@@ -132,7 +132,7 @@ public final class ResourceCommand {
         else
             scoreboard.getOrCreatePlayerScore(holder, objective).set(sourceValue);
 
-        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.operation.success", target.getName(), RLHelper.string(power), operation.symbol, sourceEntity.getName(), objective.getName(), newValue), true);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.operation.success", target.getName(), HolderHelper.string(power), operation.symbol, sourceEntity.getName(), objective.getName(), newValue), true);
         return 1;
     }
 
@@ -146,7 +146,7 @@ public final class ResourceCommand {
     private static ResourceComponent getResourceComponent(LivingEntity target, Holder<Power> power, CommandContext<CommandSourceStack> context) {
         ResourceComponent component = OriginDataHolder.get(target).getComponentFor(power, ResourceComponent.class).orElse(null);
         if (component != null) return component;
-        context.getSource().sendFailure(Component.translatable("commands.origins.resource.missing_power", target.getName(), RLHelper.string(power)));
+        context.getSource().sendFailure(Component.translatable("commands.origins.resource.missing_power", target.getName(), HolderHelper.string(power)));
         return null;
     }
 

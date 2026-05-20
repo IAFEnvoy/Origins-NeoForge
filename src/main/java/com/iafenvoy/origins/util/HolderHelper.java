@@ -4,7 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
-public final class RLHelper {
+public final class HolderHelper {
     public static final ResourceLocation EMPTY = ResourceLocation.withDefaultNamespace("");
 
     public static ResourceLocation id(Holder<?> holder) {

@@ -3,15 +3,16 @@ package com.iafenvoy.origins.data.condition.builtin.entity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.PowerReference;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record PowerActiveCondition(Holder<Power> power) implements EntityCondition {
+public record PowerActiveCondition(PowerReference power) implements EntityCondition {
     public static final MapCodec<PowerActiveCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Power.CODEC.fieldOf("power").forGetter(PowerActiveCondition::power)
+            PowerReference.CODEC.fieldOf("power").forGetter(PowerActiveCondition::power)
     ).apply(i, PowerActiveCondition::new));
 
     @Override
@@ -21,6 +22,6 @@ public record PowerActiveCondition(Holder<Power> power) implements EntityConditi
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return this.power.value().isActive(OriginDataHolder.get(entity));
+        return this.power.get().map(Holder.Reference::value).map(x -> x.isActive(OriginDataHolder.get(entity))).orElse(false);
     }
 }

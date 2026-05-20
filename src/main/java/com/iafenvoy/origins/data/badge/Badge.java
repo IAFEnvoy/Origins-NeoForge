@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 public interface Badge {
     Codec<Holder<Badge>> CODEC = RegistryFixedCodec.create(BadgeRegistries.BADGE_KEY);
-    Codec<Badge> DIRECT_CODEC = DefaultedCodec.registryDispatch(BadgeRegistries.BADGE_TYPE, Badge::codec, Function.identity(), () -> EmptyBadge.INSTANCE);
+    Codec<Badge> DIRECT_CODEC = DefaultedCodec.registryDispatch(BadgeRegistries.BADGE_TYPE, Badge::codec, Function.identity(), EmptyBadge::new);
 
     @NotNull
     MapCodec<? extends Badge> codec();

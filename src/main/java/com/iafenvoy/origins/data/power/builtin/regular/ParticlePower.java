@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class ParticlePower extends Power {
     public static final MapCodec<ParticlePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            ParticleTypes.CODEC.fieldOf("particle").forGetter(ParticlePower::getParticle),
+            MiscCodecs.PARTICLE_OPTION_OR_SINGLE.fieldOf("particle").forGetter(ParticlePower::getParticle),
             Codec.INT.optionalFieldOf("frequency", 4).forGetter(ParticlePower::getFrequency)
     ).apply(i, ParticlePower::new));
     private final ParticleOptions particle;

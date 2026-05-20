@@ -6,12 +6,12 @@
       "type": "origins:not",
       "condition": {
         "type": "origins:power_active",
-        "power": "origins:phantomize/toggle"
+        "power": "origins:phantomize"
       }
     },
     "if_action": {
       "type": "origins:toggle",
-      "power": "origins:phantomize/toggle"
+      "power": "origins:phantomize"
     }
   },
   "hidden": true

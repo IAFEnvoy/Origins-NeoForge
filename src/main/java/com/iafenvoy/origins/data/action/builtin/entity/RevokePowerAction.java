@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.action.builtin.entity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.PowerReference;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -12,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record RevokePowerAction(Optional<Holder<Power>> power,
+public record RevokePowerAction(Optional<PowerReference> power,
                                 Optional<ResourceLocation> source) implements EntityAction {
     public static final MapCodec<RevokePowerAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Power.CODEC.optionalFieldOf("power").forGetter(RevokePowerAction::power),
+            PowerReference.CODEC.optionalFieldOf("power").forGetter(RevokePowerAction::power),
             ResourceLocation.CODEC.optionalFieldOf("source").forGetter(RevokePowerAction::source)
     ).apply(i, RevokePowerAction::new));
 
@@ -28,9 +29,9 @@ public record RevokePowerAction(Optional<Holder<Power>> power,
     public void execute(@NotNull Entity source) {
         OriginDataHolder holder = OriginDataHolder.get(source);
         if (this.power.isPresent() && this.source.isPresent())
-            OriginDataHolder.get(source).revokePower(this.source.get(), this.power.get());
+            this.power.flatMap(PowerReference::get).ifPresent(power -> OriginDataHolder.get(source).revokePower(this.source.get(), power));
         else {
-            this.power.ifPresent(holder::revokeAllPowers);
+            this.power.flatMap(PowerReference::get).ifPresent(holder::revokeAllPowers);
             this.source.ifPresent(holder::revokeAllPowers);
         }
     }

@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.power.builtin;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.power.EmptyPower;
+import com.iafenvoy.origins.data.power.MultiplePower;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.builtin.regular.*;
@@ -14,6 +15,7 @@ public final class RegularPowers {
     public static final DeferredRegister<MapCodec<? extends Power>> REGISTRY = DeferredRegister.create(PowerRegistries.POWER_TYPE, Origins.MOD_ID);
 
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<EmptyPower>> EMPTY = REGISTRY.register("empty", () -> EmptyPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<MultiplePower>> MULTIPLE = REGISTRY.register("multiple", () -> MultiplePower.CODEC);
 
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<AttributePower>> ATTRIBUTE = REGISTRY.register("attribute", () -> AttributePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<AttributeModifyTransferPower>> ATTRIBUTE_MODIFY_TRANSFER = REGISTRY.register("attribute_modify_transfer", () -> AttributeModifyTransferPower.CODEC);

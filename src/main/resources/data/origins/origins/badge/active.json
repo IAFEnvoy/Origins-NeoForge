@@ -1,5 +1,5 @@
 {
-  "type": "origins:keybind",
   "sprite": "origins:textures/gui/badge/active.png",
-  "text": "origins.gui.badge.active"
+  "text": "origins.gui.badge.active",
+  "type": "origins:keybind"
 }

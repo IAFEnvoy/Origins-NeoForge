@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.layer;
 
 import com.iafenvoy.origins.data.origin.Origin;
-import com.iafenvoy.origins.util.RLHelper;
+import com.iafenvoy.origins.util.HolderHelper;
 import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -88,7 +88,7 @@ public record Layer(Optional<Component> name, int order, ConditionedOriginList o
     }
 
     public static MutableComponent getName(Holder<Layer> layer) {
-        return layer.value().name.map(Component::copy).orElse(Component.translatable(RLHelper.id(layer).toLanguageKey("layer", "name")));
+        return layer.value().name.map(Component::copy).orElse(Component.translatable(HolderHelper.id(layer).toLanguageKey("layer", "name")));
     }
 
     public record GuiTitle(Optional<Component> chooseOrigin, Optional<Component> viewOrigin) {

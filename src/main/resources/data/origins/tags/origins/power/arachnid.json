@@ -1,14 +1,8 @@
 {
   "replace": false,
   "values": [
-    "origins:primary_key",
     "origins:climbing",
-    "origins:master_of_webs/climbing",
-    "origins:master_of_webs/no_slowdown",
-    "origins:master_of_webs/punch_through",
-    "origins:master_of_webs/sense",
-    "origins:master_of_webs/web_crafting",
-    "origins:master_of_webs/webbing",
+    "origins:master_of_webs",
     "origins:carnivore",
     "origins:fragile"
   ]

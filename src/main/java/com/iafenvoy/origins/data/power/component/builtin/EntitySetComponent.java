@@ -51,11 +51,12 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
                 if (entity.level() instanceof ServerLevel serverLevel) {
                     Entity l = serverLevel.getEntity(e.getKey());
                     if (l != null)
-                        holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(entity, l));
+                        holder.streamPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(entity, l));
                 }
             } else if (value > 0) this.set.computeIfPresent(e.getKey(), (u, i) -> i - 1);
         }
         removal.forEach(this.set::remove);
+        if (!removal.isEmpty()) this.markDirty();
     }
 
     public Map<UUID, Integer> getSet() {
@@ -83,13 +84,13 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
         }
 
         public void postAdd(ResourceLocation id, Entity target) {
-            this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnAdd().execute(this.holder.getEntity(), target));
+            this.holder.streamPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnAdd().execute(this.holder.getEntity(), target));
             this.component.markDirty();
         }
 
         public void postRemove(ResourceLocation id, Entity target) {
             if (target != null)
-                this.holder.getPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(this.holder.getEntity(), target));
+                this.holder.streamPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(this.holder.getEntity(), target));
             this.component.markDirty();
         }
 

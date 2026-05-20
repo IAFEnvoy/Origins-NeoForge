@@ -28,6 +28,7 @@ public class ActiveComponent extends PowerComponent {
             if (result) power.active(holder);
             else power.inactive(holder);
             this.lastActive = result;
+            this.markDirty();
         }
     }
 

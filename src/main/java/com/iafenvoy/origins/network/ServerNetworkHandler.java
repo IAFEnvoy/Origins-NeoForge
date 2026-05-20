@@ -8,7 +8,7 @@ import com.iafenvoy.origins.network.payload.ChooseOriginC2SPayload;
 import com.iafenvoy.origins.network.payload.ChooseRandomOriginC2SPayload;
 import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
 import com.iafenvoy.origins.network.payload.PowerToggleC2SPayload;
-import com.iafenvoy.origins.util.RLHelper;
+import com.iafenvoy.origins.util.HolderHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -23,7 +23,7 @@ public final class ServerNetworkHandler {
         OriginDataHolder holder = OriginDataHolder.get(player);
         Holder<Layer> layer = packet.layer();
         if (holder.hasOriginInLayer(layer)) {
-            Origins.LOGGER.warn("Player {} tried to choose origin for layer \"{}\" while having one already.", player.getName().getString(), RLHelper.string(layer));
+            Origins.LOGGER.warn("Player {} tried to choose origin for layer \"{}\" while having one already.", player.getName().getString(), HolderHelper.string(layer));
             return;
         }
 
@@ -31,11 +31,11 @@ public final class ServerNetworkHandler {
         if (optional.isPresent()) {
             Holder<Origin> origin = optional.get();
             if (origin.value().unchoosable() || layer.value().collectOrigins(context.player()).noneMatch(origin::equals)) {
-                Origins.LOGGER.warn("Player {} tried to choose unchoosable origin \"{}\" from layer \"{}\"!", player.getName().getString(), RLHelper.string(origin), RLHelper.string(layer));
+                Origins.LOGGER.warn("Player {} tried to choose unchoosable origin \"{}\" from layer \"{}\"!", player.getName().getString(), HolderHelper.string(origin), HolderHelper.string(layer));
                 holder.clearOrigin(layer);
             } else {
                 holder.setOrigin(layer, origin);
-                Origins.LOGGER.info("Player {} chose origin \"{}\" for layer \"{}\"", player.getName().getString(), RLHelper.string(origin), RLHelper.string(layer));
+                Origins.LOGGER.info("Player {} chose origin \"{}\" for layer \"{}\"", player.getName().getString(), HolderHelper.string(origin), HolderHelper.string(layer));
             }
         } else randomOrigin(player, holder, layer);
         context.reply(new ConfirmOriginS2CPayload(layer, holder.getOrigin(layer)));
@@ -49,7 +49,7 @@ public final class ServerNetworkHandler {
         OriginDataHolder holder = OriginDataHolder.get(player);
         Holder<Layer> layer = packet.layer();
         if (holder.hasOriginInLayer(layer)) {
-            Origins.LOGGER.warn("Player {} tried to choose random origin for layer \"{}\" while having one already.", player.getName().getString(), RLHelper.string(layer));
+            Origins.LOGGER.warn("Player {} tried to choose random origin for layer \"{}\" while having one already.", player.getName().getString(), HolderHelper.string(layer));
             return;
         }
 
@@ -62,12 +62,12 @@ public final class ServerNetworkHandler {
     private static void randomOrigin(ServerPlayer player, OriginDataHolder holder, Holder<Layer> layer) {
         List<Holder<Origin>> randomOriginIds = layer.value().collectRandomizableOrigins(player).toList();
         if (!layer.value().allowRandom() || randomOriginIds.isEmpty()) {
-            Origins.LOGGER.warn("Player {} tried to choose a random origin for layer \"{}\", which is not allowed!", player.getName().getString(), RLHelper.string(layer));
+            Origins.LOGGER.warn("Player {} tried to choose a random origin for layer \"{}\", which is not allowed!", player.getName().getString(), HolderHelper.string(layer));
             holder.clearOrigin(layer);
         } else {
             Holder<Origin> origin = randomOriginIds.get(player.getRandom().nextInt(randomOriginIds.size()));
             holder.setOrigin(layer, origin);
-            Origins.LOGGER.info("Player {} was randomly assigned the following origin: {}", player.getName().getString(), RLHelper.string(origin));
+            Origins.LOGGER.info("Player {} was randomly assigned the following origin: {}", player.getName().getString(), HolderHelper.string(origin));
         }
     }
 

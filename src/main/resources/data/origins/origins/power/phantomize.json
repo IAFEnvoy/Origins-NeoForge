@@ -9,7 +9,5 @@
     "type": "origins:food_level",
     "comparison": ">",
     "compare_to": 6
-  },
-  "name": "power.origins.phantomize.name",
-  "description": "power.origins.phantomize.description"
+  }
 }

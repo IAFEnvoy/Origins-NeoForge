@@ -1,7 +1,7 @@
 {
   "type": "origins:attribute",
   "modifier": {
-    "attribute": "neoforge:swim_speed",
+    "attribute": "additionalentityattributes:generic.water_speed",
     "value": 1.5,
     "operation": "add_multiplied_base"
   }

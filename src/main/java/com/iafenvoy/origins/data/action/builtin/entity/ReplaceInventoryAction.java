@@ -5,6 +5,7 @@ import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.PowerReference;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -18,14 +19,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public record ReplaceInventoryAction(EntityAction entityAction, ItemAction itemAction, ItemCondition itemCondition,
-                                     IntList slot, Optional<Holder<Power>> power, ItemStack stack,
+                                     IntList slot, Optional<PowerReference> power, ItemStack stack,
                                      boolean mergeComponent) implements EntityAction, InventoryActionHelper {
     public static final MapCodec<ReplaceInventoryAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             EntityAction.optionalCodec("entity_action").forGetter(ReplaceInventoryAction::entityAction),
             ItemAction.CODEC.fieldOf("item_action").forGetter(ReplaceInventoryAction::itemAction),
             ItemCondition.optionalCodec("item_condition").forGetter(ReplaceInventoryAction::itemCondition),
             CombinedCodecs.INT.optionalFieldOf("slot", IntList.of()).forGetter(ReplaceInventoryAction::slot),
-            Power.CODEC.optionalFieldOf("power").forGetter(ReplaceInventoryAction::power),
+            PowerReference.CODEC.optionalFieldOf("power").forGetter(ReplaceInventoryAction::power),
             ItemStack.OPTIONAL_CODEC.fieldOf("stack").forGetter(ReplaceInventoryAction::stack),
             Codec.BOOL.optionalFieldOf("merge_component", false).forGetter(ReplaceInventoryAction::mergeComponent)
     ).apply(i, ReplaceInventoryAction::new));

@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.attachment;
 
 import carpet.patches.EntityPlayerMPFake;
-import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.Proxies;
@@ -13,6 +13,7 @@ import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.Prioritized;
+import com.iafenvoy.origins.data.power.MultiplePower;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
@@ -24,7 +25,7 @@ import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
 import com.iafenvoy.origins.util.codec.RegistryCodecs;
-import com.iafenvoy.origins.util.RLHelper;
+import com.iafenvoy.origins.util.HolderHelper;
 import com.iafenvoy.origins.util.RandomHelper;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.Holder;
@@ -49,7 +50,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @EventBusSubscriber
@@ -99,7 +100,7 @@ public final class OriginDataHolder {
         this.clearOrigin(layer);
         if (origin.value() == Origin.EMPTY) return;
         this.data.getOrigins().put(layer, origin);
-        ResourceLocation id = RLHelper.id(origin);
+        ResourceLocation id = HolderHelper.id(origin);
         RegistryCodecs.listAll(origin.value().powers(), this.access, PowerRegistries.POWER_KEY).forEach(x -> this.grantPower(id, x));
         NeoForge.EVENT_BUS.post(new GrantOriginEvent(this.entity, layer, origin));
     }
@@ -107,7 +108,7 @@ public final class OriginDataHolder {
     public void clearOrigin(@NotNull Holder<Layer> layer) {
         Holder<Origin> origin = this.data.getOrigins().remove(layer);
         if (origin == null) return;
-        this.revokeAllPowers(RLHelper.id(origin));
+        this.revokeAllPowers(HolderHelper.id(origin));
         NeoForge.EVENT_BUS.post(new RevokeOriginEvent(this.entity, layer, origin));
     }
 
@@ -161,20 +162,32 @@ public final class OriginDataHolder {
     //Power Related
     public void grantPower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().put(source, power);
-        ComponentCollector collector = ComponentCollector.create();
-        power.value().createComponents(collector);
-        this.data.getComponents().put(RLHelper.id(power), collector.build());
-        power.value().grant(this);
+        this.grantPower(power);
         NeoForge.EVENT_BUS.post(new GrantPowerEvent(this.entity, power, source));
         this.sync();
     }
 
+    private void grantPower(Holder<Power> power) {
+        ComponentCollector collector = ComponentCollector.create();
+        power.value().createComponents(collector);
+        this.data.getComponents().put(HolderHelper.id(power), collector.build());
+        power.value().grant(this);
+        if (power.value() instanceof MultiplePower multiple)
+            multiple.getPowers(this.access).forEach(this::grantPower);
+    }
+
     public void revokePower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().remove(source, power);
-        power.value().revoke(this);
-        this.data.getComponents().remove(RLHelper.id(power));
+        this.revokePower(power);
         NeoForge.EVENT_BUS.post(new RevokePowerEvent(this.entity, power, source));
         this.sync();
+    }
+
+    private void revokePower(Holder<Power> power) {
+        power.value().revoke(this);
+        this.data.getComponents().remove(HolderHelper.id(power));
+        if (power.value() instanceof MultiplePower multiple)
+            multiple.getPowers(this.access).forEach(this::revokePower);
     }
 
     public void revokeAllPowers(ResourceLocation source) {
@@ -185,51 +198,57 @@ public final class OriginDataHolder {
         this.data.getPowers().entries().stream().filter(x -> x.getValue().equals(power)).map(Map.Entry::getKey).forEach(s -> this.revokePower(s, power));
     }
 
-    public Multimap<ResourceLocation, Holder<Power>> getPowers() {
+    public Multimap<ResourceLocation, Holder<Power>> getEntityPowers() {
+        return this.data.getPowers();
+    }
+
+    public Set<Holder<Power>> getAllPowers() {
         //TODO::Cache?
-        ImmutableMultimap.Builder<ResourceLocation, Holder<Power>> builder = ImmutableMultimap.builder();
-        builder.putAll(this.data.getPowers());
+        ImmutableSet.Builder<Holder<Power>> builder = ImmutableSet.builder();
+        for (Holder<Power> power : this.data.getPowers().values())
+            if (power.value() instanceof MultiplePower multiple) builder.addAll(multiple.getPowers(this.access));
+            else builder.add(power);
         //Global
-        GlobalPowersRegistries.streamPowersForType(this.access, this.entity.getType()).forEach(h -> builder.put(GLOBAL, h));
+        GlobalPowersRegistries.streamPowersForType(this.access, this.entity.getType()).forEach(builder::add);
         //Item
         if (this.entity instanceof LivingEntity living)
             for (EquipmentSlot slot : EquipmentSlot.values())
-                living.getItemBySlot(slot).getOrDefault(OriginsDataComponents.ITEM_POWERS, ItemPowersComponent.EMPTY).powers().values().stream().map(ItemPowersComponent.Entry::power).forEach(h -> builder.put(ITEM, h));
+                living.getItemBySlot(slot).getOrDefault(OriginsDataComponents.ITEM_POWERS, ItemPowersComponent.EMPTY).powers().values().stream().map(ItemPowersComponent.Entry::power).forEach(builder::add);
         return builder.build();
     }
 
-    @NotNull
-    public <T extends Power> List<T> getPowers(ResourceLocation id, Class<T> clazz) {
-        List<T> results = this.getPowers().values().stream().filter(x -> RLHelper.id(x).equals(id)).map(Holder::value).toList().stream().filter(power -> power != null && clazz.isAssignableFrom(power.getClass())).map(clazz::cast).collect(Collectors.toCollection(LinkedList::new));
-        return Prioritized.class.isAssignableFrom(clazz) ? results.stream().map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast).toList() : results;
-    }
-
     //Only for toggle and hud render, which need to bypass active logic
-    @NotNull
-    public <T> Stream<T> streamPowers(Class<T> clazz) {
-        Stream<T> results = this.getPowers().values().stream().map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
+    private <T> Stream<T> streamPowers(Class<T> clazz, Predicate<ResourceLocation> idChecker) {
+        Stream<T> results = this.getAllPowers().stream().filter(x -> idChecker.test(HolderHelper.id(x))).map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast) : results;
     }
 
-    @NotNull
+    public <T> Stream<T> streamPowers(Class<T> clazz) {
+        return this.streamPowers(clazz, id -> true);
+    }
+
+    public <T extends Power> Stream<T> streamPowers(ResourceLocation id, Class<T> clazz) {
+        return this.streamPowers(clazz, i -> Objects.equals(i, id));
+    }
+
     public <T extends Power> Stream<T> streamActivePowers(Class<T> clazz) {
         return this.streamPowers(clazz).filter(x -> x.isActive(this));
     }
 
     public boolean hasPower(Holder<Power> power) {
-        return this.getPowers().values().stream().anyMatch(p -> p.equals(power));
+        return this.getAllPowers().stream().anyMatch(p -> p.equals(power));
     }
 
-    public boolean hasPower(ResourceLocation source, Holder<Power> power) {
-        return this.getPowers().entries().stream().anyMatch(e -> e.getKey().equals(source) && e.getValue().equals(power));
-    }
-
-    public <T extends Power> boolean hasActivePower(ResourceLocation id, Class<T> clazz) {
-        return this.getPowers().values().stream().filter(x -> Objects.equals(RLHelper.id(x), id)).map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
+    public boolean hasPower(ResourceLocation id, Class<Power> clazz) {
+        return this.streamPowers(id, clazz).findAny().isPresent();
     }
 
     public <T extends Power> boolean hasActivePower(Class<T> clazz) {
-        return this.getPowers().values().stream().map(Holder::value).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
+        return this.streamPowers(clazz).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
+    }
+
+    public <T extends Power> boolean hasActivePower(ResourceLocation id, Class<T> clazz) {
+        return this.streamPowers(id, clazz).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
     }
 
     //Component Related
@@ -242,7 +261,7 @@ public final class OriginDataHolder {
     }
 
     public <T> Optional<T> getComponentFor(Holder<Power> power, Class<T> clazz) {
-        return this.getComponent(RLHelper.id(power), clazz);
+        return this.getComponent(HolderHelper.id(power), clazz);
     }
 
     public <H, T extends ComponentHolderProvider<H>> Optional<H> getComponentHolder(ResourceLocation id, Class<T> clazz) {
@@ -261,7 +280,7 @@ public final class OriginDataHolder {
 
     public void tick() {
         long currentTick = Proxies.TICK_COUNT.getAsLong();
-        this.getPowers().values().stream().map(Holder::value).filter(p -> p.tickInterval() <= 0 || currentTick % p.tickInterval() == 0).forEach(p -> p.tick(this));
+        this.streamPowers(Power.class).filter(p -> p.tickInterval() <= 0 || currentTick % p.tickInterval() == 0).forEach(p -> p.tick(this));
         this.data.getComponents().forEach((id, map) -> map.values().forEach(c -> c.tick(this, id)));
         //Check components and update
         if (this.data.getComponents().values().stream().flatMap(x -> x.values().stream()).map(PowerComponent::isDirty).reduce(false, (p, c) -> p | c))

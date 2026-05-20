@@ -58,9 +58,8 @@ public abstract class RecipeButtonMixin {
         if (recipeEntry.value() instanceof PowerCraftingRecipe pcr && this.book instanceof PowerCraftingObject pco && pco.origins$getPlayer() != null) {
             RegistryAccess access = Objects.requireNonNull(pco.origins$getPlayer()).registryAccess();
             access.registry(PowerRegistries.POWER_KEY).map(x -> x.get(pcr.powerId())).ifPresent(power -> {
-                Component powerTooltip = Component.translatable("tooltip.origins.power_recipe.required_power", power.getName(access)).withStyle(ChatFormatting.RED);
                 original.add(Component.empty());
-                original.add(powerTooltip);
+                original.add(Component.translatable("tooltip.origins.power_recipe.required_power", power.getName(access)).withStyle(ChatFormatting.RED));
             });
         }
         return original;

@@ -19,6 +19,7 @@
     "MobMixin",
     "PhantomSpawnerMixin",
     "PlayerMixin",
+    "RegistryDataLoaderMixin",
     "ScareCreepersMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerMixin",

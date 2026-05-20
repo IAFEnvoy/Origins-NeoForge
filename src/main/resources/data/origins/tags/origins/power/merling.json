@@ -1,12 +1,9 @@
 {
   "replace": false,
   "values": [
-    "origins:primary_key",
     "origins:water_breathing",
-    "origins:water_vision/water_vision",
-    "origins:water_vision/night_vision",
-    "origins:aqua_affinity/underwater",
-    "origins:aqua_affinity/ungrounded",
+    "origins:water_vision",
+    "origins:aqua_affinity",
     "origins:swim_speed",
     "origins:like_water",
     "origins:conduit_power_on_land",

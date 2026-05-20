@@ -74,7 +74,7 @@ public class PreventItemUsePower extends Power {
         int size = powers.size();
         if (!powers.isEmpty()) {
             RegistryAccess access = player.registryAccess();
-            powers.removeIf(x -> x.getSettings().hidden());
+            powers.removeIf(Power::isHidden);
             String key = String.format(Locale.ROOT, "tooltip.%s.unusable.%s", Origins.MOD_ID, event.getItemStack().getUseAnimation().name().toLowerCase(Locale.ROOT));
             ChatFormatting textColor = ChatFormatting.GRAY;
             ChatFormatting powerColor = ChatFormatting.RED;

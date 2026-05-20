@@ -7,7 +7,7 @@ import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
-import com.iafenvoy.origins.util.RLHelper;
+import com.iafenvoy.origins.util.HolderHelper;
 import com.iafenvoy.origins.util.RandomHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -83,7 +83,7 @@ public final class OriginCommand {
                 source.sendSuccess(() -> Component.translatable("commands.origin.set.success.multiple", finalProcessedTargets, Layer.getName(layer), Origin.getName(origin)), true);
             }
         } else
-            source.sendFailure(Component.translatableEscape("commands.origin.unregistered_in_layer", RLHelper.string(origin), RLHelper.string(layer)));
+            source.sendFailure(Component.translatableEscape("commands.origin.unregistered_in_layer", HolderHelper.string(origin), HolderHelper.string(layer)));
         return processedTargets;
     }
 
@@ -93,7 +93,7 @@ public final class OriginCommand {
         CommandSourceStack source = context.getSource();
         OriginDataHolder holder = OriginDataHolder.get(target);
         Holder<Origin> origin = holder.getOrigin(layer);
-        source.sendSuccess(() -> Component.translatable("commands.origin.get.result", target.getName(), Layer.getName(layer), Origin.getName(origin), RLHelper.string(origin)), false);
+        source.sendSuccess(() -> Component.translatable("commands.origin.get.result", target.getName(), Layer.getName(layer), Origin.getName(origin), HolderHelper.string(origin)), false);
         return 1;
     }
 
@@ -168,7 +168,7 @@ public final class OriginCommand {
         holder.setOrigin(layer, origin);
         holder.fillAutoChoosing();
         holder.sync();
-        Origins.LOGGER.info("Player {} was randomly assigned the origin {} for layer {}", target.getName().getString(), RLHelper.id(origin), RLHelper.id(layer));
+        Origins.LOGGER.info("Player {} was randomly assigned the origin {} for layer {}", target.getName().getString(), HolderHelper.id(origin), HolderHelper.id(layer));
         return origin;
     }
 }
