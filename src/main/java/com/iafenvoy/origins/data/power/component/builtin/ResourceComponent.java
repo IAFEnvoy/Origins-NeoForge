@@ -11,12 +11,17 @@ import java.util.function.IntBinaryOperator;
 
 public class ResourceComponent extends PowerComponent {
     public static final MapCodec<ResourceComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.INT.fieldOf("value").forGetter(ResourceComponent::getValue)
-    ).apply(i, ResourceComponent::new));
+            Codec.INT.fieldOf("value").forGetter(ResourceComponent::getValue),
+            Codec.INT.fieldOf("min").forGetter(ResourceComponent::getMin),
+            Codec.INT.fieldOf("max").forGetter(ResourceComponent::getMax)).apply(i, ResourceComponent::new));
     private int value;
+    private final int min;
+    private final int max;
 
-    public ResourceComponent(int value) {
-        this.value = value;
+    public ResourceComponent(int value, int min, int max) {
+        this.value = Math.clamp(value, min, max);
+        this.min = min;
+        this.max = max;
     }
 
     @Override
@@ -28,13 +33,21 @@ public class ResourceComponent extends PowerComponent {
         return this.value;
     }
 
+    public int getMin() {
+        return this.min;
+    }
+
+    public int getMax() {
+        return this.max;
+    }
+
     public void updateResource(Int2IntFunction operation) {
-        this.value = operation.applyAsInt(this.value);
+        this.value = Math.clamp(operation.applyAsInt(this.value), this.min, this.max);
         this.markDirty();
     }
 
     public void updateResource(IntBinaryOperator operation, int value) {
-        this.value = operation.applyAsInt(this.value, value);
+        this.value = Math.clamp(operation.applyAsInt(this.value, value), this.min, this.max);
         this.markDirty();
     }
 }

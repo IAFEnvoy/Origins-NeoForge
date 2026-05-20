@@ -75,7 +75,7 @@ public class ResourcePower extends Power implements HudRenderable {
     @Override
     public void createComponents(ComponentCollector collector) {
         super.createComponents(collector);
-        collector.add(new ResourceComponent(this.startValue.orElse(this.min)));
+        collector.add(new ResourceComponent(this.startValue.orElse(this.min), this.min, this.max));
     }
 
     @Override
