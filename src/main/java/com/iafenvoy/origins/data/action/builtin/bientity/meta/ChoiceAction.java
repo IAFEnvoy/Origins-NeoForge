@@ -30,7 +30,7 @@ public record ChoiceAction(List<WeightedActionHolder> actions) implements BiEnti
                                         int weight) implements WeightedRandomSelector.WeightGetter {
         public static final Codec<WeightedActionHolder> CODEC = RecordCodecBuilder.create(i -> i.group(
                 BiEntityAction.CODEC.fieldOf("element").forGetter(WeightedActionHolder::element),
-                Codec.INT.optionalFieldOf("weight", 0).forGetter(WeightedActionHolder::weight)
+                Codec.INT.optionalFieldOf("weight", 1).forGetter(WeightedActionHolder::weight)
         ).apply(i, WeightedActionHolder::new));
     }
 }

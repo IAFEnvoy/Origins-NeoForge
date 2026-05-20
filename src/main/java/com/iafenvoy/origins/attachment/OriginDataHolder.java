@@ -234,7 +234,7 @@ public final class OriginDataHolder {
 
     //Component Related
     public <T> Optional<T> getComponent(ResourceLocation id, Class<T> clazz) {
-        return Optional.ofNullable(this.data.getComponents().get(id).get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast);
+        return Optional.ofNullable(this.data.getComponents().get(id)).map(x -> x.get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast);
     }
 
     public <T> Optional<T> getComponentFor(Power power, Class<T> clazz) {
@@ -242,7 +242,7 @@ public final class OriginDataHolder {
     }
 
     public <T> Optional<T> getComponentFor(Holder<Power> power, Class<T> clazz) {
-        return Optional.ofNullable(this.data.getComponents().get(RLHelper.id(power))).map(x -> x.get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast);
+        return this.getComponent(RLHelper.id(power), clazz);
     }
 
     public <H, T extends ComponentHolderProvider<H>> Optional<H> getComponentHolder(ResourceLocation id, Class<T> clazz) {

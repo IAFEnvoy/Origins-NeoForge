@@ -21,6 +21,7 @@ public final class EntityActions {
     //List
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ActionOnSetAction>> ACTION_ON_SET = REGISTRY.register("action_on_set", () -> ActionOnSetAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddEffectAction>> ADD_EFFECT = REGISTRY.register("add_effect", () -> AddEffectAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddVelocityAction>> ADD_VELOCITY = REGISTRY.register("add_velocity", () -> AddVelocityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddXPAction>> ADD_XP = REGISTRY.register("add_xp", () -> AddXPAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ApplyEffectAction>> APPLY_EFFECT = REGISTRY.register("apply_effect", () -> ApplyEffectAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<BlockActionAction>> BLOCK_ACTION = REGISTRY.register("block_action", () -> BlockActionAction.CODEC);
@@ -38,6 +39,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ExplodeAction>> EXPLODE = REGISTRY.register("explode", () -> ExplodeAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<? extends EntityAction>> EXTINGUISH = REGISTRY.register("extinguish", () -> createEntity(Entity::extinguishFire));
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<FeedAction>> FEED = REGISTRY.register("feed", () -> FeedAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<FireProjectileAction>> FIRE_PROJECTILE = REGISTRY.register("fire_projectile", () -> FireProjectileAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<GainAirAction>> GAIN_AIR = REGISTRY.register("gain_air", () -> GainAirAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<GiveItemAction>> GIVE_ITEM = REGISTRY.register("give_item", () -> GiveItemAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<GrantAdvancementAction>> GRANT_ADVANCEMENT = REGISTRY.register("grant_advancement", () -> GrantAdvancementAction.CODEC);

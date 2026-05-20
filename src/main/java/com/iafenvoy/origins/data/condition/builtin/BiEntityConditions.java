@@ -28,6 +28,7 @@ public final class BiEntityConditions {
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<? extends BiEntityCondition>> ATTACK_TARGET = REGISTRY.register("attack_target", () -> createBiEntity((source, target) -> source instanceof Mob mob && Objects.equals(target, mob.getTarget()) || source instanceof NeutralMob n && Objects.equals(target, n.getTarget())));
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<CanSeeCondition>> CAN_SEE = REGISTRY.register("can_see", () -> CanSeeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<DistanceCondition>> DISTANCE = REGISTRY.register("distance", () -> DistanceCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<? extends BiEntityCondition>> EQUAL = REGISTRY.register("equal", () -> createBiEntity(Objects::equals));
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<InSetCondition>> IN_SET = REGISTRY.register("in_set", () -> InSetCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<? extends BiEntityCondition>> OWNER = REGISTRY.register("owner", () -> createBiEntity((source, target) -> target instanceof OwnableEntity ownable && Objects.equals(ownable.getOwnerUUID(), source.getUUID())));
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<RelativeRotationCondition>> RELATIVE_ROTATION = REGISTRY.register("relative_rotation", () -> RelativeRotationCondition.CODEC);
@@ -41,7 +42,6 @@ public final class BiEntityConditions {
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<ChanceCondition>> CHANCE = REGISTRY.register("chance", () -> ChanceCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<ConstantCondition>> CONSTANT = REGISTRY.register("constant", () -> ConstantCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<EitherCondition>> EITHER = REGISTRY.register("either", () -> EitherCondition.CODEC);
-    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<EqualCondition>> EQUAL = REGISTRY.register("equal", () -> EqualCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<InvertCondition>> INVERT = REGISTRY.register("invert", () -> InvertCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<NotCondition>> NOT = REGISTRY.register("not", () -> NotCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<OrCondition>> OR = REGISTRY.register("or", () -> OrCondition.CODEC);

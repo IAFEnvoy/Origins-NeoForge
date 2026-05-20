@@ -32,10 +32,14 @@ public record Layer(Optional<Component> name, int order, ConditionedOriginList o
             Codec.INT.optionalFieldOf("order", Integer.MAX_VALUE).forGetter(Layer::order),
             ConditionedOriginList.CODEC.fieldOf("origins").forGetter(Layer::origins),
             Codec.BOOL.optionalFieldOf("enabled", true).forGetter(Layer::enabled),
+            //FIXME::Flatten this
             GuiTitle.CODEC.optionalFieldOf("gui_title").forGetter(Layer::guiTitle),
             Codec.BOOL.optionalFieldOf("allow_random", false).forGetter(Layer::allowRandom),
+            //FIXME::Implement this
             Codec.BOOL.optionalFieldOf("allow_random_unchoosable", false).forGetter(Layer::allowRandomUnchoosable),
+            //FIXME::Also use tag in exclude random
             Origin.CODEC.listOf().optionalFieldOf("exclude_random", List.of()).forGetter(Layer::excludeRandom),
+            //FIXME::Implement this
             ResourceLocation.CODEC.optionalFieldOf("default_origin").forGetter(Layer::defaultOrigin),
             Codec.BOOL.optionalFieldOf("auto_choose", false).forGetter(Layer::autoChoose),
             Codec.BOOL.optionalFieldOf("hidden", false).forGetter(Layer::hidden)
