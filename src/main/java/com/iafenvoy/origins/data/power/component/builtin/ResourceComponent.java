@@ -12,8 +12,10 @@ import java.util.function.IntBinaryOperator;
 public class ResourceComponent extends PowerComponent {
     public static final MapCodec<ResourceComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.INT.fieldOf("value").forGetter(ResourceComponent::getValue),
-            Codec.INT.fieldOf("min").forGetter(ResourceComponent::getMin),
-            Codec.INT.fieldOf("max").forGetter(ResourceComponent::getMax)).apply(i, ResourceComponent::new));
+            //FIXME::Give default value for capability with old versions
+            Codec.INT.optionalFieldOf("min", Integer.MIN_VALUE).forGetter(ResourceComponent::getMin),
+            Codec.INT.optionalFieldOf("max", Integer.MAX_VALUE).forGetter(ResourceComponent::getMax)
+    ).apply(i, ResourceComponent::new));
     private int value;
     private final int min;
     private final int max;
@@ -22,11 +24,6 @@ public class ResourceComponent extends PowerComponent {
         this.value = Math.clamp(value, min, max);
         this.min = min;
         this.max = max;
-    }
-
-    @Override
-    public @NotNull MapCodec<? extends PowerComponent> codec() {
-        return CODEC;
     }
 
     public int getValue() {
@@ -39,6 +36,11 @@ public class ResourceComponent extends PowerComponent {
 
     public int getMax() {
         return this.max;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PowerComponent> codec() {
+        return CODEC;
     }
 
     public void updateResource(Int2IntFunction operation) {

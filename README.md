@@ -25,6 +25,10 @@ Also following powers are not implemented:
 Sadly not, Fabric version use their own logic to load datapacks but this mod load them with vanilla methods. They have
 different data structure. Also, a lot of powers changed parameters, so you need extra changes to make them work.
 
+You can follow [this guide](https://docs.iafenvoy.com/docs/mod/origins/guides/porting/) to port your datapack to this
+mod. You can also try to use [Auto Converter](https://docs.iafenvoy.com/docs/mod/origins/guides/porting/converter) to
+convert your datapack, it may not do everything but can save you a lot of time.
+
 ## Credit
 
 Special thanks to the following developers for ideas and some code:
