@@ -13,9 +13,9 @@ import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.origin.OriginRegistries;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.PowerReference;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.component.PowerComponentRegistries;
-import com.iafenvoy.origins.event.internal.ElementPostRegisterEvent;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -44,7 +44,7 @@ public final class OriginsRegistries {
         // I need to control order of these registries, so I put them here.
         // Builtin ones still in their own classes.
         event.dataPackRegistry(BadgeRegistries.BADGE_KEY, Badge.DIRECT_CODEC, Badge.DIRECT_CODEC);
-        event.dataPackRegistry(PowerRegistries.POWER_KEY, Power.DIRECT_CODEC, Power.DIRECT_CODEC);
+        event.dataPackRegistry(PowerRegistries.POWER_KEY, Power.DIRECT_CODEC, Power.DIRECT_CODEC,builder->builder.onAdd((registry, i, key, p) -> PowerReference.processPower(registry, p)));
         event.dataPackRegistry(OriginRegistries.ORIGIN_KEY, Origin.DIRECT_CODEC, Origin.DIRECT_CODEC);
         event.dataPackRegistry(LayerRegistries.LAYER_KEY, Layer.DIRECT_CODEC, Layer.DIRECT_CODEC);
         event.dataPackRegistry(GlobalPowersRegistries.GLOBAL_POWERS_LEY, GlobalPowers.DIRECT_CODEC, GlobalPowers.DIRECT_CODEC);

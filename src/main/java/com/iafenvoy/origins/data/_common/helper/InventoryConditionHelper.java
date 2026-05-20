@@ -2,7 +2,6 @@ package com.iafenvoy.origins.data._common.helper;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.ItemCondition;
-import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerReference;
 import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
 import com.iafenvoy.origins.util.wrapper.ContainerWrapper;
@@ -10,7 +9,6 @@ import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.minecraft.core.Holder;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
@@ -48,7 +46,7 @@ public interface InventoryConditionHelper {
     }
 
     default ContainerWrapper getWrappedContainer(Entity entity) {
-        return this.power().flatMap(PowerReference::get).flatMap(power -> OriginDataHolder.get(entity).getComponentFor(power, InventoryComponent.class))
+        return this.power().flatMap(x -> x.get(entity.registryAccess())).flatMap(power -> OriginDataHolder.get(entity).getComponent(power.id(), InventoryComponent.class))
                 .map(InventoryComponent::getContainer)
                 .map(ContainerWrapper::container)
                 .orElseGet(() -> ContainerWrapper.entity(entity));

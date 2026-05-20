@@ -1,20 +1,17 @@
 package com.iafenvoy.origins.data.power;
 
 import com.google.common.collect.ImmutableSet;
-import com.iafenvoy.origins.Proxies;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHolder;
 import com.iafenvoy.origins.data.badge.Badge;
-import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.util.codec.AnyMapCodec;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class MultiplePower extends Power {
     public static final List<String> KNOWN_KEYS = List.of("type", "name", "description", "condition", "hidden", "loading_priority", "badges");
@@ -38,14 +35,13 @@ public class MultiplePower extends Power {
         return CODEC;
     }
 
-    public List<Holder<Power>> getPowers(RegistryAccess access) {
-        Registry<Power> registry = access.registryOrThrow(PowerRegistries.POWER_KEY);
-        return this.powers.values().stream().map(registry::wrapAsHolder).filter(Holder.Reference.class::isInstance).toList();
-    }
-
     @Override
     public void collectBadges(ImmutableSet.Builder<Badge> builder) {
         super.collectBadges(builder);
         this.powers.values().forEach(p -> p.collectBadges(builder));
+    }
+
+    public Stream<PowerHolder> getPowers(ResourceLocation parent) {
+        return this.powers.entrySet().stream().map(e -> new PowerHolder(parent.withSuffix("_" + e.getKey()), e.getValue()));
     }
 }

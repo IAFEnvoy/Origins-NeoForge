@@ -14,6 +14,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -25,9 +26,9 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public abstract class Power {
     public static final Codec<Holder<Power>> CODEC = RegistryFixedCodec.create(PowerRegistries.POWER_KEY);
@@ -103,7 +104,10 @@ public abstract class Power {
     }
 
     public ResourceLocation getId(RegistryAccess access) {
-        return access.registryOrThrow(PowerRegistries.POWER_KEY).getKey(this);
+        Registry<Power> registry = access.registryOrThrow(PowerRegistries.POWER_KEY);
+        if (this.parent.isPresent() && this.parent.get() instanceof MultiplePower multiple)
+            return multiple.getId(access).withSuffix("_" + multiple.getPowers().entrySet().stream().filter(x -> x.getValue() == this).findFirst().map(Map.Entry::getKey).orElse("child"));
+        return registry.getKey(this);
     }
 
     public MutableComponent getName(RegistryAccess access) {

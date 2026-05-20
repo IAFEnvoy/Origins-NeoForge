@@ -56,8 +56,6 @@ import java.util.stream.Stream;
 @EventBusSubscriber
 public final class OriginDataHolder {
     public static final ResourceLocation DEFAULT_SOURCE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "command");
-    public static final ResourceLocation GLOBAL = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "global");
-    public static final ResourceLocation ITEM = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item");
     private final Entity entity;
     private final EntityOriginAttachment data;
     private final RegistryAccess access;
@@ -162,32 +160,32 @@ public final class OriginDataHolder {
     //Power Related
     public void grantPower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().put(source, power);
-        this.grantPower(power);
+        this.grantPower(new PowerHolder(power));
         NeoForge.EVENT_BUS.post(new GrantPowerEvent(this.entity, power, source));
         this.sync();
     }
 
-    private void grantPower(Holder<Power> power) {
+    private void grantPower(PowerHolder power) {
         ComponentCollector collector = ComponentCollector.create();
-        power.value().createComponents(collector);
-        this.data.getComponents().put(HolderHelper.id(power), collector.build());
-        power.value().grant(this);
-        if (power.value() instanceof MultiplePower multiple)
-            multiple.getPowers(this.access).forEach(this::grantPower);
+        power.power().createComponents(collector);
+        this.data.getComponents().put(power.id(), collector.build());
+        power.power().grant(this);
+        if (power.power() instanceof MultiplePower multiple)
+            multiple.getPowers(power.id()).forEach(this::grantPower);
     }
 
     public void revokePower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().remove(source, power);
-        this.revokePower(power);
+        this.revokePower(new PowerHolder(power));
         NeoForge.EVENT_BUS.post(new RevokePowerEvent(this.entity, power, source));
         this.sync();
     }
 
-    private void revokePower(Holder<Power> power) {
-        power.value().revoke(this);
-        this.data.getComponents().remove(HolderHelper.id(power));
-        if (power.value() instanceof MultiplePower multiple)
-            multiple.getPowers(this.access).forEach(this::revokePower);
+    private void revokePower(PowerHolder power) {
+        power.power().revoke(this);
+        this.data.getComponents().remove(power.id());
+        if (power.power() instanceof MultiplePower multiple)
+            multiple.getPowers(power.id()).forEach(this::revokePower);
     }
 
     public void revokeAllPowers(ResourceLocation source) {
@@ -202,24 +200,25 @@ public final class OriginDataHolder {
         return this.data.getPowers();
     }
 
-    public Set<Holder<Power>> getAllPowers() {
+    public Set<PowerHolder> getAllPowers() {
         //TODO::Cache?
-        ImmutableSet.Builder<Holder<Power>> builder = ImmutableSet.builder();
+        ImmutableSet.Builder<PowerHolder> builder = ImmutableSet.builder();
         for (Holder<Power> power : this.data.getPowers().values())
-            if (power.value() instanceof MultiplePower multiple) builder.addAll(multiple.getPowers(this.access));
-            else builder.add(power);
+            if (power.value() instanceof MultiplePower multiple)
+                multiple.getPowers(HolderHelper.id(power)).forEach(builder::add);
+            else builder.add(new PowerHolder(power));
         //Global
-        GlobalPowersRegistries.streamPowersForType(this.access, this.entity.getType()).forEach(builder::add);
+        GlobalPowersRegistries.streamPowersForType(this.access, this.entity.getType()).map(PowerHolder::new).forEach(builder::add);
         //Item
         if (this.entity instanceof LivingEntity living)
             for (EquipmentSlot slot : EquipmentSlot.values())
-                living.getItemBySlot(slot).getOrDefault(OriginsDataComponents.ITEM_POWERS, ItemPowersComponent.EMPTY).powers().values().stream().map(ItemPowersComponent.Entry::power).forEach(builder::add);
+                living.getItemBySlot(slot).getOrDefault(OriginsDataComponents.ITEM_POWERS, ItemPowersComponent.EMPTY).powers().values().stream().map(ItemPowersComponent.Entry::power).map(PowerHolder::new).forEach(builder::add);
         return builder.build();
     }
 
     //Only for toggle and hud render, which need to bypass active logic
     private <T> Stream<T> streamPowers(Class<T> clazz, Predicate<ResourceLocation> idChecker) {
-        Stream<T> results = this.getAllPowers().stream().filter(x -> idChecker.test(HolderHelper.id(x))).map(Holder::value).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
+        Stream<T> results = this.getAllPowers().stream().filter(x -> idChecker.test(x.id())).map(PowerHolder::power).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast) : results;
     }
 
@@ -236,7 +235,7 @@ public final class OriginDataHolder {
     }
 
     public boolean hasPower(Holder<Power> power) {
-        return this.getAllPowers().stream().anyMatch(p -> p.equals(power));
+        return this.getAllPowers().stream().anyMatch(p -> Objects.equals(p, new PowerHolder(power)));
     }
 
     public boolean hasPower(ResourceLocation id, Class<Power> clazz) {
@@ -257,11 +256,11 @@ public final class OriginDataHolder {
     }
 
     public <T> Optional<T> getComponentFor(Power power, Class<T> clazz) {
-        return this.getComponentFor(this.access.registryOrThrow(PowerRegistries.POWER_KEY).wrapAsHolder(power), clazz);
+        return this.getComponent(power.getId(this.access), clazz);
     }
 
     public <T> Optional<T> getComponentFor(Holder<Power> power, Class<T> clazz) {
-        return this.getComponent(HolderHelper.id(power), clazz);
+        return this.getComponentFor(power.value(), clazz);
     }
 
     public <H, T extends ComponentHolderProvider<H>> Optional<H> getComponentHolder(ResourceLocation id, Class<T> clazz) {

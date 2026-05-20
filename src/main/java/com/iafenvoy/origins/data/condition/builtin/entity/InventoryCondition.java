@@ -1,9 +1,9 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
+import com.iafenvoy.origins.attachment.PowerHolder;
 import com.iafenvoy.origins.data._common.helper.InventoryConditionHelper;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.condition.ItemCondition;
-import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerReference;
 import com.iafenvoy.origins.data.power.builtin.regular.InventoryPower;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
@@ -11,7 +11,6 @@ import com.iafenvoy.origins.util.math.Comparison;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,8 +34,8 @@ public record InventoryCondition(ProcessMode processMode, ItemCondition itemCond
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        Optional<Holder.Reference<Power>> power = this.power.flatMap(PowerReference::get);
-        if (power.isPresent() && !(power.get().value() instanceof InventoryPower)) return false;
+        Optional<PowerHolder> power = this.power.flatMap(x -> x.get(entity.registryAccess()));
+        if (power.isPresent() && !(power.get().power() instanceof InventoryPower)) return false;
         return this.comparison().compare(this.checkInventory(entity, this.processMode.getProcessor()));
     }
 }
