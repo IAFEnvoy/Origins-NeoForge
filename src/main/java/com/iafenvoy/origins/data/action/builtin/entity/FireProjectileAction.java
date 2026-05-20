@@ -17,8 +17,6 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
 public record FireProjectileAction(EntityType<?> entityType, float divergence, float speed, int count,
                                    CompoundTag tag, EntityAction projectileAction) implements EntityAction {
     public static final MapCodec<FireProjectileAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(

@@ -6,28 +6,28 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+//FIXME::Full params https://origins.readthedocs.io/en/latest/types/power_types/particle/
 public class ParticlePower extends Power {
     public static final MapCodec<ParticlePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            BuiltInRegistries.PARTICLE_TYPE.byNameCodec().fieldOf("particle").forGetter(ParticlePower::getParticle),
+            ParticleTypes.CODEC.fieldOf("particle").forGetter(ParticlePower::getParticle),
             Codec.INT.optionalFieldOf("frequency", 4).forGetter(ParticlePower::getFrequency)
     ).apply(i, ParticlePower::new));
-    private final ParticleType<?> particle;
+    private final ParticleOptions particle;
     private final int frequency;
 
-    public ParticlePower(BaseSettings settings, ParticleType<?> particle, int frequency) {
+    public ParticlePower(BaseSettings settings, ParticleOptions particle, int frequency) {
         super(settings);
         this.particle = particle;
         this.frequency = frequency;
     }
 
-    public ParticleType<?> getParticle() {
+    public ParticleOptions getParticle() {
         return this.particle;
     }
 
@@ -45,8 +45,8 @@ public class ParticlePower extends Power {
         super.tick(holder);
         if (!this.isActive(holder)) return;
         Entity entity = holder.getEntity();
-        if (entity.level() instanceof ServerLevel serverLevel && entity.tickCount % this.frequency == 0 && this.particle instanceof ParticleOptions options)
-            serverLevel.sendParticles(options, entity.getX(), entity.getY() + entity.getBbHeight() * 0.5, entity.getZ(),
+        if (entity.level() instanceof ServerLevel serverLevel && entity.tickCount % this.frequency == 0)
+            serverLevel.sendParticles(this.particle, entity.getX(), entity.getY() + entity.getBbHeight() * 0.5, entity.getZ(),
                     1, entity.getBbWidth() * 0.3, entity.getBbHeight() * 0.3, entity.getBbWidth() * 0.3, 0.01);
     }
 }

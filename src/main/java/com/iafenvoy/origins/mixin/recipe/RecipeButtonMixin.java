@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.List;
+import java.util.Objects;
 
 @Mixin(RecipeButton.class)
 public abstract class RecipeButtonMixin {
@@ -55,7 +56,7 @@ public abstract class RecipeButtonMixin {
     private List<Component> appendRequiredRecipePowerTooltip(List<Component> original, @Share("originalEntry") LocalRef<RecipeHolder<?>> sharedOriginalEntry) {
         RecipeHolder<?> recipeEntry = sharedOriginalEntry.get() != null ? sharedOriginalEntry.get() : this.getRecipe();
         if (recipeEntry.value() instanceof PowerCraftingRecipe pcr && this.book instanceof PowerCraftingObject pco && pco.origins$getPlayer() != null) {
-            RegistryAccess access = pco.origins$getPlayer().registryAccess();
+            RegistryAccess access = Objects.requireNonNull(pco.origins$getPlayer()).registryAccess();
             access.registry(PowerRegistries.POWER_KEY).map(x -> x.get(pcr.powerId())).ifPresent(power -> {
                 Component powerTooltip = Component.translatable("tooltip.origins.power_recipe.required_power", power.getName(access)).withStyle(ChatFormatting.RED);
                 original.add(Component.empty());

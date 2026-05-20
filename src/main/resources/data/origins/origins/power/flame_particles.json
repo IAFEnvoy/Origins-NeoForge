@@ -1,6 +1,8 @@
 {
   "type": "origins:particle",
-  "particle": "minecraft:flame",
+  "particle": {
+    "type": "minecraft:flame"
+  },
   "frequency": 4,
   "hidden": true
 }
