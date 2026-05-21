@@ -23,11 +23,6 @@ public class ActiveComponent extends PowerComponent {
 
     public void tick(OriginDataHolder holder, Power power) {
         boolean result = power.getSettings().condition().test(holder.getEntity());
-        if (result) {
-            CooldownComponent cooldown = holder.getComponentFor(power, CooldownComponent.class).orElse(null);
-            if (cooldown != null)
-                result = cooldown.getValue() > 0;
-        }
         if (result ^ this.lastActive) {
             if (result)
                 power.active(holder);

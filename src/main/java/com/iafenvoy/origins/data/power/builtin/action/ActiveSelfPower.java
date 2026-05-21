@@ -19,12 +19,13 @@ public class ActiveSelfPower extends HasCooldownPower implements Toggleable {
             BaseSettings.CODEC.forGetter(Power::getSettings),
             CooldownSettings.CODEC.forGetter(HasCooldownPower::getCooldown),
             KeySettings.CODEC.forGetter(ActiveSelfPower::getKey),
-            EntityAction.CODEC.fieldOf("entity_action").forGetter(ActiveSelfPower::getEntityAction)
-    ).apply(i, ActiveSelfPower::new));
+            EntityAction.CODEC.fieldOf("entity_action").forGetter(ActiveSelfPower::getEntityAction))
+            .apply(i, ActiveSelfPower::new));
     private final KeySettings key;
     private final EntityAction entityAction;
 
-    public ActiveSelfPower(BaseSettings settings, CooldownSettings cooldown, KeySettings key, EntityAction entityAction) {
+    public ActiveSelfPower(BaseSettings settings, CooldownSettings cooldown, KeySettings key,
+            EntityAction entityAction) {
         super(settings, cooldown);
         this.key = key;
         this.entityAction = entityAction;
