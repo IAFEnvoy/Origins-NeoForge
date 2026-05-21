@@ -79,12 +79,12 @@ public class PowerReference {
     }
 
     @SubscribeEvent
-    public static void processPower1(ElementPostRegisterEvent<Power> event) {
+    public static void processPower(ElementPostRegisterEvent<Power> event) {
         if (event.getRegistryKey() != PowerRegistries.POWER_KEY) return;
-        processPower(event.getRegistry(), event.getElement());
+        resolveReference(event.getRegistry(), event.getElement());
     }
 
-    public static void processPower(Registry<Power> registry, Power p) {
+    public static void resolveReference(Registry<Power> registry, Power p) {
         Holder<Power> parent = registry.wrapAsHolder(p);
         ResourceLocation pid = HolderHelper.id(parent);
         REFERENCE_CACHE.forEach(r -> {
@@ -101,7 +101,7 @@ public class PowerReference {
     }
 
     @SubscribeEvent
-    public static void fulfillAllAfterLoad(TagsUpdatedEvent event) {
+    public static void fillParentAfterLoad(TagsUpdatedEvent event) {
         Registry<Power> registry = event.getRegistryAccess().registryOrThrow(PowerRegistries.POWER_KEY);
         for (Holder.Reference<Power> p : registry.holders().toList()) {
             if (!(p.value() instanceof MultiplePower power)) continue;

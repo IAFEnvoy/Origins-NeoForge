@@ -13,7 +13,7 @@ public enum Impact {
     LOW(1, "low", ChatFormatting.GREEN, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "choose_origin/impact/low")),
     MEDIUM(2, "medium", ChatFormatting.YELLOW, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "choose_origin/impact/medium")),
     HIGH(3, "high", ChatFormatting.RED, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "choose_origin/impact/high"));
-    public static final Codec<Impact> CODEC = ExtraCodecs.idResolverCodec(Impact::getImpactValue, Impact::getByValue, 0);
+    public static final Codec<Impact> CODEC = ExtraCodecs.idResolverCodec(Impact::getImpactValue, Impact::getByValue, -1);
     private final int impactValue;
     private final String translationKey;
     private final ChatFormatting textStyle;

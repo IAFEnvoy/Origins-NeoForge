@@ -44,7 +44,7 @@ public final class OriginsRegistries {
         // I need to control order of these registries, so I put them here.
         // Builtin ones still in their own classes.
         event.dataPackRegistry(BadgeRegistries.BADGE_KEY, Badge.DIRECT_CODEC, Badge.DIRECT_CODEC);
-        event.dataPackRegistry(PowerRegistries.POWER_KEY, Power.DIRECT_CODEC, Power.DIRECT_CODEC,builder->builder.onAdd((registry, i, key, p) -> PowerReference.processPower(registry, p)));
+        event.dataPackRegistry(PowerRegistries.POWER_KEY, Power.DIRECT_CODEC, Power.DIRECT_CODEC,builder->builder.onAdd((registry, i, key, p) -> PowerReference.resolveReference(registry, p)));
         event.dataPackRegistry(OriginRegistries.ORIGIN_KEY, Origin.DIRECT_CODEC, Origin.DIRECT_CODEC);
         event.dataPackRegistry(LayerRegistries.LAYER_KEY, Layer.DIRECT_CODEC, Layer.DIRECT_CODEC);
         event.dataPackRegistry(GlobalPowersRegistries.GLOBAL_POWERS_LEY, GlobalPowers.DIRECT_CODEC, GlobalPowers.DIRECT_CODEC);

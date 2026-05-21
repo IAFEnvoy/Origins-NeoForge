@@ -18,7 +18,6 @@ Also following powers are not implemented:
 
 - `ModifyEnchantmentLevelPower`, `EdiableItemPower`: Original implementation are too complex, I will find better way to
   implement them later.
-- `MultiplePower`: This is not very good design, you can put multiple powers in one folder to manage them.
 
 ### Are datapacks for Fabric version capable with this mod?
 
