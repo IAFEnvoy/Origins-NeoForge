@@ -52,8 +52,7 @@ public class ActiveSelfPower extends HasCooldownPower implements Toggleable {
 
     @Override
     public void toggle(@NotNull OriginDataHolder holder, String key) {
-        this.getCooldownComponent(holder).useIfReady(() -> {
-            if (this.key.match(key)) this.entityAction.execute(holder.getEntity());
-        });
+        if (this.key.match(key))
+            this.getCooldownComponent(holder).useIfReady(() -> this.entityAction.execute(holder.getEntity()));
     }
 }
