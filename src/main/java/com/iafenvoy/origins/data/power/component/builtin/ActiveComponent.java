@@ -22,6 +22,7 @@ public class ActiveComponent extends PowerComponent {
     }
 
     public void tick(OriginDataHolder holder, Power power) {
+        if (holder.getEntity().level().isClientSide()) return;
         boolean result = power.getSettings().condition().test(holder.getEntity());
         if (result ^ this.lastActive) {
             if (result)

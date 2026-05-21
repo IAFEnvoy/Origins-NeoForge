@@ -33,6 +33,9 @@ public class PowerReference {
     public static Optional<PowerHolder> resolve(ResourceLocation rl, Registry<Power> registry) {
         if (rl == null) return Optional.empty();
 
+        Power direct = registry.get(rl);
+        if (direct != null) return Optional.of(new PowerHolder(rl, direct));
+
         Set<String> seen = new HashSet<>();
         String ns = rl.getNamespace();
         String path = rl.getPath();

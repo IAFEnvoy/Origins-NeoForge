@@ -13,6 +13,10 @@ public interface HudRenderable {
 
     float getRenderPercentage(OriginDataHolder holder);
 
+    default boolean shouldRender(OriginDataHolder holder) {
+        return getPowerForHudRender().isActive(holder);
+    }
+
     static float clampProgress(float value, float min, float max) {
         return Mth.clamp((value - min) / (max - min), 0, 1);
     }
