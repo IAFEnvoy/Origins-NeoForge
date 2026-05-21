@@ -48,7 +48,7 @@ public enum HudRenderOverlay implements LayeredDraw.Layer {
         for (HudRenderable h : holder.streamPowers(HudRenderable.class).filter(h -> h.getHudRenderData().isPresent()).sorted(Comparator.comparingInt(h -> h.getHudRenderData().get().order())).toList()) {
             Power power = h.getPowerForHudRender();
             HudRender render = h.getHudRenderData().orElse(null);
-            if (render == null || !render.shouldRenderInActive() && !power.isActive(holder) || !render.condition().test(player))
+            if (render == null || !render.shouldRenderInActive() && !h.shouldRender(holder) || !render.condition().test(player))
                 continue;
             //Rendering
             ResourceLocation currentLocation = render.spriteLocation();

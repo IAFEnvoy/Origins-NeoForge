@@ -10,8 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ActiveComponent extends PowerComponent {
     public static final MapCodec<ActiveComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Codec.BOOL.fieldOf("last_active").forGetter(ActiveComponent::isLastActive)
-    ).apply(i, ActiveComponent::new));
+            Codec.BOOL.fieldOf("last_active").forGetter(ActiveComponent::isLastActive)).apply(i, ActiveComponent::new));
     private boolean lastActive;
 
     public ActiveComponent(boolean lastActive) {
@@ -23,10 +22,13 @@ public class ActiveComponent extends PowerComponent {
     }
 
     public void tick(OriginDataHolder holder, Power power) {
+        if (holder.getEntity().level().isClientSide()) return;
         boolean result = power.getSettings().condition().test(holder.getEntity());
         if (result ^ this.lastActive) {
-            if (result) power.active(holder);
-            else power.inactive(holder);
+            if (result)
+                power.active(holder);
+            else
+                power.inactive(holder);
             this.lastActive = result;
             this.markDirty();
         }
