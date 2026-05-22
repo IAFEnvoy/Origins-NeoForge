@@ -1,27 +1,16 @@
 package com.iafenvoy.origins.util.math;
 
-import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Optional;
 
-public enum TextAlignment implements StringRepresentable {
-    NONE("none", (left, right, textWidth) -> null),
-    LEFT("left", (left, right, textWidth) -> left - 1),
-    RIGHT("right", (left, right, textWidth) -> right - textWidth + 1),
-    CENTER("center", (left, right, textWidth) -> (left + right - textWidth) / 2);
+public enum TextAlignment {
+    NONE((left, right, textWidth) -> null),
+    LEFT((left, right, textWidth) -> left - 1),
+    RIGHT((left, right, textWidth) -> right - textWidth + 1),
+    CENTER((left, right, textWidth) -> (left + right - textWidth) / 2);
+    private final PositionSupplier horizontalSupplier;
 
-    final String name;
-    final PositionSupplier horizontalSupplier;
-
-    TextAlignment(String name, PositionSupplier horizontalSupplier) {
-        this.name = name;
+    TextAlignment(PositionSupplier horizontalSupplier) {
         this.horizontalSupplier = horizontalSupplier;
-    }
-
-    @Override
-    public @NotNull String getSerializedName() {
-        return this.name;
     }
 
     public Optional<Integer> horizontal(int left, int right, int textWidth) {

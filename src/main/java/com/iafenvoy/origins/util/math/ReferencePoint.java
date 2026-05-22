@@ -8,30 +8,29 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
+import java.util.function.BiFunction;
 
 public enum ReferencePoint implements StringRepresentable {
-    WORLD_SPAWN,
-    WORLD_ORIGIN;
+    WORLD_SPAWN((level, allowNull) -> {
+        if (allowNull && level.dimension() != Level.OVERWORLD) return null;
+        LevelData data = level.getLevelData();
+        BlockPos spawnPos = data.getSpawnPos();
+        if (!level.getWorldBorder().isWithinBounds(spawnPos))
+            spawnPos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, new BlockPos((int) level.getWorldBorder().getCenterX(), 0, (int) level.getWorldBorder().getCenterZ()));
+        return new Vec3(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
+    }),
+    WORLD_ORIGIN((level, allowNull) -> Vec3.ZERO);
     public static final Codec<ReferencePoint> CODEC = StringRepresentable.fromValues(ReferencePoint::values);
+    private final BiFunction<Level, Boolean, Vec3> processor;
 
-    @Nullable
-    public Vec3 getPoint(@NotNull Level level, boolean allowNull) {
-        switch (this) {
-            case WORLD_SPAWN:
-                if (allowNull && level.dimension() != Level.OVERWORLD)
-                    return null;
-                LevelData data = level.getLevelData();
-                BlockPos spawnPos = data.getSpawnPos();
-                if (!level.getWorldBorder().isWithinBounds(spawnPos))
-                    spawnPos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, new BlockPos((int) level.getWorldBorder().getCenterX(), 0, (int) level.getWorldBorder().getCenterZ()));
-                return new Vec3(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
-            case WORLD_ORIGIN:
-            default:
-                return Vec3.ZERO;
-        }
+    ReferencePoint(BiFunction<Level, Boolean, Vec3> processor) {
+        this.processor = processor;
+    }
+
+    public BiFunction<Level, Boolean, Vec3> getProcessor() {
+        return this.processor;
     }
 
     @Override

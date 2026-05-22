@@ -12,12 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public final class CollectionCodecs {
-    public static final Codec<Pattern> PATTERN = Codec.STRING.xmap(Pattern::compile, Pattern::pattern);
-
     public static <K, V> Codec<Map<K, V>> ofAutoIgnore(Codec<K> key, Codec<V> value) {
         return new AutoIgnoreMapCodec<>(key, value);
     }

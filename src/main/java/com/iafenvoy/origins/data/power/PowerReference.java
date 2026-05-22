@@ -1,33 +1,24 @@
 package com.iafenvoy.origins.data.power;
 
 import com.iafenvoy.origins.attachment.PowerHolder;
-import com.iafenvoy.origins.event.internal.ElementPostRegisterEvent;
-import com.iafenvoy.origins.util.HolderHelper;
-import com.mojang.datafixers.util.Either;
+import com.iafenvoy.origins.util.codec.WildcardCodec;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
 import java.util.*;
 
-@EventBusSubscriber
 public class PowerReference {
-    public static final Codec<PowerReference> CODEC = Codec.either(ResourceLocation.CODEC, Codec.STRING).xmap(PowerReference::new, p -> p.id);
-    private static final List<PowerReference> REFERENCE_CACHE = new LinkedList<>();
-    private Either<ResourceLocation, String> id;
+    public static final Codec<PowerReference> CODEC = WildcardCodec.INSTANCE.xmap(PowerReference::new, p -> p.id);
+    private final ResourceLocation id;
 
-    public PowerReference(Either<ResourceLocation, String> id) {
+    public PowerReference(ResourceLocation id) {
         this.id = id;
-        REFERENCE_CACHE.add(this);
     }
 
     public Optional<PowerHolder> get(RegistryAccess access) {
-        return this.id.left().flatMap(rl -> resolve(rl, access.registryOrThrow(PowerRegistries.POWER_KEY)));
+        return resolve(this.id, access.registryOrThrow(PowerRegistries.POWER_KEY));
     }
 
     public static Optional<PowerHolder> resolve(ResourceLocation rl, Registry<Power> registry) {
@@ -76,36 +67,5 @@ public class PowerReference {
     }
 
     private record Split(String base, String sub) {
-    }
-
-    @SubscribeEvent
-    public static void processPower(ElementPostRegisterEvent<Power> event) {
-        if (event.getRegistryKey() != PowerRegistries.POWER_KEY) return;
-        resolveReference(event.getRegistry(), event.getElement());
-    }
-
-    public static void resolveReference(Registry<Power> registry, Power p) {
-        Holder<Power> parent = registry.wrapAsHolder(p);
-        ResourceLocation pid = HolderHelper.id(parent);
-        REFERENCE_CACHE.forEach(r -> {
-            Optional<String> s = r.id.right();
-            if (s.isPresent()) {
-                String[] split = s.get().split(":");
-                if (split.length == 2) {
-                    ResourceLocation id = ResourceLocation.tryBuild(split[0].replaceAll("\\*", pid.getNamespace()), split[1].replaceAll("\\*", pid.getPath()));
-                    if (id != null) r.id = Either.left(id);
-                }
-            }
-        });
-        REFERENCE_CACHE.clear();
-    }
-
-    @SubscribeEvent
-    public static void fillParentAfterLoad(TagsUpdatedEvent event) {
-        Registry<Power> registry = event.getRegistryAccess().registryOrThrow(PowerRegistries.POWER_KEY);
-        for (Holder.Reference<Power> p : registry.holders().toList()) {
-            if (!(p.value() instanceof MultiplePower power)) continue;
-            power.getPowers().values().forEach(x -> x.setParent(Optional.of(p.value())));
-        }
     }
 }

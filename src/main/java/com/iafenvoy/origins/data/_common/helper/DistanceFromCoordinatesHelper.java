@@ -34,9 +34,8 @@ public interface DistanceFromCoordinatesHelper {
 
     default boolean testDistanceFromCoordinates(Level level, Vec3 pos) {
         double scale = level.dimensionType().coordinateScale();
-        Vec3 point = this.reference().getPoint(level, this.resultOnWrongDimension().isPresent());
-        if (point == null)
-            return this.resultOnWrongDimension().get();
+        Vec3 point = this.reference().getProcessor().apply(level, this.resultOnWrongDimension().isPresent());
+        if (point == null) return this.resultOnWrongDimension().get();
         point = point.add(this.offset().orElse(Vec3.ZERO));
         if (this.scaleReferenceToDimension() && (point.x() != 0 || point.z() != 0)) {
             if (scale == 0) return this.comparison().compare(Double.POSITIVE_INFINITY);

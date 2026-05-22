@@ -6,7 +6,7 @@ import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Prioritized;
-import com.iafenvoy.origins.util.codec.CollectionCodecs;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 public class ReplaceLootTablePower extends Power implements Prioritized {
     public static final MapCodec<ReplaceLootTablePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.unboundedMap(CollectionCodecs.PATTERN, Codec.STRING).fieldOf("replace").forGetter(ReplaceLootTablePower::getReplace),
+            Codec.unboundedMap(MiscCodecs.PATTERN, Codec.STRING).fieldOf("replace").forGetter(ReplaceLootTablePower::getReplace),
             BiEntityCondition.optionalCodec("bi_entity_condition").forGetter(ReplaceLootTablePower::getBiEntityCondition),
             BlockCondition.optionalCodec("block_condition").forGetter(ReplaceLootTablePower::getBlockCondition),
             ItemCondition.optionalCodec("item_condition").forGetter(ReplaceLootTablePower::getItemCondition),
