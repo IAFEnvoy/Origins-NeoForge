@@ -1,11 +1,11 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
+import com.iafenvoy.origins.data._common.CommandHelper;
 import com.iafenvoy.origins.data._common.RaycastSettings;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
-import com.iafenvoy.origins.util.CommandHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public record RaycastAction(RaycastSettings settings, EntityAction beforeAction, BiEntityCondition biEntityCondition,
-                            CommandInfo commandInfo, HitAction action) implements EntityAction {
+                            CommandInfo commandInfo, HitAction action) implements EntityAction, CommandHelper {
     public static final MapCodec<RaycastAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RaycastSettings.CODEC.forGetter(RaycastAction::settings),
             EntityAction.optionalCodec("before_action").forGetter(RaycastAction::beforeAction),
@@ -66,11 +66,10 @@ public record RaycastAction(RaycastSettings settings, EntityAction beforeAction,
                     offset += 0.05;
                 }
                 Vec3 at = hitPos.subtract(offsetDirection.scale(offset));
-                CommandHelper.executeAt(source, at, commandInfo.commandAtHit().get());
+                this.executeCommand(source, at, commandInfo.commandAtHit().get());
             }
-            if (commandInfo.commandAlongRay().isPresent()) {
-                executeStepCommands(source, origin, hitResult.getLocation(), commandInfo.commandAlongRay().get(), commandInfo.commandStep());
-            }
+            if (commandInfo.commandAlongRay().isPresent())
+                this.executeStepCommands(source, origin, hitResult.getLocation(), commandInfo.commandAlongRay().get(), commandInfo.commandStep());
             if (hitResult instanceof BlockHitResult bhr)
                 actions.blockAction().execute(source.level(), bhr.getBlockPos(), Optional.of(bhr.getDirection()));
             if (hitResult instanceof EntityHitResult ehr)
@@ -78,16 +77,16 @@ public record RaycastAction(RaycastSettings settings, EntityAction beforeAction,
             actions.hitAction().execute(source);
         } else {
             if (commandInfo.commandAlongRay().isPresent() && !commandInfo.commandAlongRayOnlyOnHit())
-                executeStepCommands(source, origin, hitResult.getLocation(), commandInfo.commandAlongRay().get(), commandInfo.commandStep());
+                this.executeStepCommands(source, origin, hitResult.getLocation(), commandInfo.commandAlongRay().get(), commandInfo.commandStep());
             actions.missAction().execute(source);
         }
     }
 
-    private static void executeStepCommands(Entity entity, Vec3 origin, Vec3 target, String command, double step) {
+    private void executeStepCommands(Entity entity, Vec3 origin, Vec3 target, String command, double step) {
         Vec3 direction = target.subtract(origin).normalize();
         double length = origin.distanceTo(target);
         for (double current = 0; current < length; current += step)
-            CommandHelper.executeAt(entity, origin.add(direction.scale(current)), command);
+            this.executeCommand(entity, origin.add(direction.scale(current)), command);
     }
 
     public record CommandInfo(Optional<String> commandAtHit, Optional<Double> commandHitOffset,

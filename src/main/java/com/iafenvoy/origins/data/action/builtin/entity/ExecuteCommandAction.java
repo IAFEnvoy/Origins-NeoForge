@@ -1,15 +1,14 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
+import com.iafenvoy.origins.data._common.CommandHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
-import com.iafenvoy.origins.util.CommandHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record ExecuteCommandAction(String command) implements EntityAction {
+public record ExecuteCommandAction(String command) implements EntityAction, CommandHelper {
     public static final MapCodec<ExecuteCommandAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.STRING.fieldOf("command").forGetter(ExecuteCommandAction::command)
     ).apply(i, ExecuteCommandAction::new));
@@ -21,7 +20,6 @@ public record ExecuteCommandAction(String command) implements EntityAction {
 
     @Override
     public void execute(@NotNull Entity source) {
-        if (source.level() instanceof ServerLevel serverLevel)
-            CommandHelper.executeCommand(serverLevel.getServer(), this.command);
+        this.executeCommand(source, this.command);
     }
 }
