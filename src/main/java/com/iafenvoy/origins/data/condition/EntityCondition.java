@@ -19,9 +19,5 @@ public interface EntityCondition {
     @NotNull
     MapCodec<? extends EntityCondition> codec();
 
-    default boolean serverSideOnly() {
-        return false;
-    }
-
     boolean test(@NotNull Entity entity);
 }

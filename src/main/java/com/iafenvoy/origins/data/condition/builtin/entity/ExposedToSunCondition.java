@@ -1,13 +1,15 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
-import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.condition.EntityCondition;
+import com.iafenvoy.origins.data.condition.Side;
 import com.iafenvoy.origins.util.math.Comparison;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.api.distmarker.Dist;
+
 import org.jetbrains.annotations.NotNull;
 
-public enum ExposedToSunCondition implements EntityCondition {
+public enum ExposedToSunCondition implements EntityCondition, Side {
     INSTANCE;
 
     public static final MapCodec<ExposedToSunCondition> CODEC = MapCodec.unit(INSTANCE);
@@ -21,8 +23,8 @@ public enum ExposedToSunCondition implements EntityCondition {
     }
 
     @Override
-    public boolean serverSideOnly() {
-        return true;
+    public Dist side() {
+        return Dist.DEDICATED_SERVER;
     }
 
     @Override

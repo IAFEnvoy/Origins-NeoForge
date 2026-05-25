@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.data.power.component.builtin;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
 import com.mojang.serialization.Codec;
@@ -24,11 +23,7 @@ public class ActiveComponent extends PowerComponent {
     }
 
     public void tick(OriginDataHolder holder, Power power) {
-        EntityCondition condition = power.getSettings().condition();
-        if (condition.serverSideOnly() && holder.getEntity().level().isClientSide())
-            return;
-
-        boolean result = condition.test(holder.getEntity());
+        boolean result = power.getSettings().condition().test(holder.getEntity());
         if (result ^ this.lastActive) {
             if (result)
                 power.active(holder);
