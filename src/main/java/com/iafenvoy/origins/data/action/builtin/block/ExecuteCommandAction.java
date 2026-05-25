@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.action.builtin.block;
 
-import com.iafenvoy.origins.data._common.CommandHelper;
+import com.iafenvoy.origins.data._common.helper.CommandHelper;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

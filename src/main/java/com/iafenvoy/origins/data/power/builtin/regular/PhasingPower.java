@@ -79,9 +79,10 @@ public class PhasingPower extends Power {
         return CODEC;
     }
 
+    @SuppressWarnings("ConstantValue")
     public static boolean shouldPhaseThrough(Entity entity, Level level, BlockPos pos, boolean isAbove) {
         if (entity instanceof ServerPlayer player && player.connection == null)
-            return false;//FIXME::Fixes a crash when the player is connecting
+            return false;// Fixes a crash when the player is connecting
         return OriginDataHolder.get(entity).streamActivePowers(PhasingPower.class).anyMatch(x -> (!isAbove || x.canPhaseDown(entity)) && x.canPhaseThrough(level, pos));
     }
 

@@ -1,12 +1,14 @@
 package com.iafenvoy.origins.accessor;
 
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public interface PowerCraftingObject {
-    @Nullable
-    Player origins$getPlayer();
+    Optional<Player> origins$getPlayer();
 
-    void origins$setPlayer(Player player);
+    void origins$setPlayer(@NotNull Player player);
 
+    void origins$clearPlayer();
 }

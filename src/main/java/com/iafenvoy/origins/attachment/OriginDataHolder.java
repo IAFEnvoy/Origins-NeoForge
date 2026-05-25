@@ -268,7 +268,7 @@ public final class OriginDataHolder {
     }
 
     //Utils
-    public static OriginDataHolder get(Entity entity) {
+    public static OriginDataHolder get(@NotNull Entity entity) {
         return new OriginDataHolder(entity, entity.getData(OriginsAttachments.ENTITY_ORIGIN));
     }
 

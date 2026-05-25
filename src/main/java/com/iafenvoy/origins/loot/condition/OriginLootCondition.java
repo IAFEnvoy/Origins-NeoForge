@@ -7,6 +7,7 @@ import com.iafenvoy.origins.registry.OriginsLootItemConditions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
@@ -29,7 +30,9 @@ public record OriginLootCondition(LootContext.EntityTarget target, Holder<Origin
 
     @Override
     public boolean test(LootContext lootContext) {
-        OriginDataHolder holder = OriginDataHolder.get(lootContext.getParamOrNull(this.target.getParam()));
+        Entity entity = lootContext.getParamOrNull(this.target.getParam());
+        if (entity == null) return false;
+        OriginDataHolder holder = OriginDataHolder.get(entity);
         return this.layer.map(l -> holder.hasOrigin(l, this.origin)).orElseGet(() -> holder.hasOrigin(this.origin));
     }
 }

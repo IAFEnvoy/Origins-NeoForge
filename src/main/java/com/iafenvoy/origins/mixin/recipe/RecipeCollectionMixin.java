@@ -17,6 +17,6 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class RecipeCollectionMixin {
     @ModifyExpressionValue(method = "canCraft", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/StackedContents;canCraft(Lnet/minecraft/world/item/crafting/Recipe;Lit/unimi/dsi/fastutil/ints/IntList;)Z"))
     private boolean accountForPowerRecipes(boolean original, StackedContents recipeFinder, int gridWidth, int gridHeight, RecipeBook recipeBook, @Local RecipeHolder<?> recipeEntry) {
-        return original && recipeEntry.value() instanceof PowerCraftingRecipe pcr && recipeBook instanceof PowerCraftingObject pco && pco.origins$getPlayer() != null ? OriginDataHolder.get(pco.origins$getPlayer()).hasActivePower(pcr.powerId(), RecipePower.class) : original;
+        return original && recipeEntry.value() instanceof PowerCraftingRecipe pcr && recipeBook instanceof PowerCraftingObject pco && pco.origins$getPlayer().map(OriginDataHolder::get).map(h -> h.hasActivePower(pcr.powerId(), RecipePower.class)).orElse(true);
     }
 }

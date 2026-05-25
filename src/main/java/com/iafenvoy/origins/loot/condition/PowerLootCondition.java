@@ -7,6 +7,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
@@ -29,6 +30,8 @@ public record PowerLootCondition(LootContext.EntityTarget target, Holder<Power> 
 
     @Override
     public boolean test(LootContext lootContext) {
-        return OriginDataHolder.get(lootContext.getParamOrNull(this.target.getParam())).hasPower(this.power);
+        Entity entity = lootContext.getParamOrNull(this.target.getParam());
+        if (entity == null) return false;
+        return OriginDataHolder.get(entity).hasPower(this.power);
     }
 }

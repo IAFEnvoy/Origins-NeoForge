@@ -48,8 +48,8 @@ public record ModifiedCraftingRecipe(ResourceLocation id, CraftingRecipe delegat
 
     @Override
     public @NotNull ItemStack assemble(@NotNull CraftingInput input, HolderLookup.@NotNull Provider lookup) {
-        if (input instanceof PowerCraftingInventory pci) {
-            Pair<ItemStack, Collection<ModifyCraftingPower>> result = this.getModifiedResult(lookup, pci.origins$getPlayer());
+        if (input instanceof PowerCraftingInventory pci && pci.origins$getPlayer().isPresent()) {
+            Pair<ItemStack, Collection<ModifyCraftingPower>> result = this.getModifiedResult(lookup, pci.origins$getPlayer().get());
             pci.origins$setPowerTypes(result.getSecond());
             return result.getFirst().copy();
         } else return this.getResultItem(lookup).copy();
@@ -100,23 +100,23 @@ public record ModifiedCraftingRecipe(ResourceLocation id, CraftingRecipe delegat
         return this.delegate().getGroup();
     }
 
-    public Pair<ItemStack, Collection<ModifyCraftingPower>> getModifiedResult(HolderLookup.Provider registriesLookup, @Nullable Player player) {
+    public Pair<ItemStack, Collection<ModifyCraftingPower>> getModifiedResult(HolderLookup.Provider registriesLookup, @NotNull Player player) {
         return getModifiedResult(this.id(), this.delegate(), registriesLookup, player);
     }
 
     public static boolean canModify(ResourceLocation id, CraftingRecipe craftingRecipe, RecipeBook recipeBook) {
-        return recipeBook instanceof PowerCraftingObject pco && canModify(id, craftingRecipe, pco.origins$getPlayer());
+        return recipeBook instanceof PowerCraftingObject pco && pco.origins$getPlayer().map(p -> canModify(id, craftingRecipe, p)).orElse(false);
     }
 
     public static boolean canModify(ResourceLocation id, CraftingRecipe craftingRecipe, RecipeInput recipeInput) {
-        return recipeInput instanceof PowerCraftingObject pco && canModify(id, craftingRecipe, pco.origins$getPlayer());
+        return recipeInput instanceof PowerCraftingObject pco && pco.origins$getPlayer().map(p -> canModify(id, craftingRecipe, p)).orElse(false);
     }
 
     public static boolean canModify(ResourceLocation id, CraftingRecipe craftingRecipe, @Nullable Player player) {
         return player != null && OriginDataHolder.get(player).streamActivePowers(ModifyCraftingPower.class).anyMatch(mcpt -> mcpt.doesApply(player, id, craftingRecipe.getResultItem(player.registryAccess())));
     }
 
-    public static Pair<ItemStack, Collection<ModifyCraftingPower>> getModifiedResult(ResourceLocation id, CraftingRecipe craftingRecipe, HolderLookup.Provider registriesLookup, @Nullable Player player) {
+    public static Pair<ItemStack, Collection<ModifyCraftingPower>> getModifiedResult(ResourceLocation id, CraftingRecipe craftingRecipe, HolderLookup.Provider registriesLookup, @NotNull Player player) {
         ItemStack resultStack = craftingRecipe.getResultItem(registriesLookup).copy();
         SlotAccess newStackRef = Mutable.stack(resultStack).toSlotAccess();
 

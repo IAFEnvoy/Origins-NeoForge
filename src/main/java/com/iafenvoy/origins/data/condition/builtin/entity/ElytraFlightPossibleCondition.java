@@ -26,16 +26,6 @@ public record ElytraFlightPossibleCondition(boolean checkState, boolean checkAbi
         if (!(entity instanceof LivingEntity livingEntity))
             return false;
         boolean ability = this.checkAbilities || CaelusApi.getInstance().canFallFly(livingEntity, false);
-        //FORGE STILL DOESN'T HAVE ELYTRA EVENTS.
-        //(Also PRs are for 1.18.2 and that ain't gonna happen for quite a while)
-        //I'm just going to assume that Caelus does all the hard work for me.
-        //For when forge gets events (if ever):
-		/*
-		if (!ability && EntityElytraEvents.CUSTOM.invoker().useCustomElytra(livingEntity, false))
-			ability = true;
-		if (!EntityElytraEvents.ALLOW.invoker().allowElytraFlight(livingEntity))
-			ability = false;
-		*/
         boolean state = true;
         if (this.checkState)
             state = !livingEntity.onGround() && !livingEntity.isFallFlying() && !livingEntity.isInWater() && !livingEntity.hasEffect(MobEffects.LEVITATION);

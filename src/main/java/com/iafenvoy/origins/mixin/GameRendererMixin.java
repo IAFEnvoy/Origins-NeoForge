@@ -164,7 +164,8 @@ public abstract class GameRendererMixin {
 
     @Inject(method = "togglePostEffect", at = @At("HEAD"), cancellable = true)
     private void disableShaderToggle(CallbackInfo ci) {
-        if (OriginDataHolder.get(this.minecraft.getCameraEntity()).streamActivePowers(ShaderPower.class).anyMatch(power -> !power.isToggleable() && power.getShader().equals(this.origins$currentlyLoadedShader)))
+        Entity cameraEntity = this.minecraft.getCameraEntity();
+        if (cameraEntity != null && OriginDataHolder.get(cameraEntity).streamActivePowers(ShaderPower.class).anyMatch(power -> !power.isToggleable() && power.getShader().equals(this.origins$currentlyLoadedShader)))
             ci.cancel();
     }
 

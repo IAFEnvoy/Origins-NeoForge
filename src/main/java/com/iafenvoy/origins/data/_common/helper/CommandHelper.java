@@ -1,4 +1,4 @@
-package com.iafenvoy.origins.data._common;
+package com.iafenvoy.origins.data._common.helper;
 
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;

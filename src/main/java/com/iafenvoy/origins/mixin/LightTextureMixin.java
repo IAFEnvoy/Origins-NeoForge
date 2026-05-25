@@ -18,6 +18,7 @@ public class LightTextureMixin {
 
     @ModifyVariable(method = "updateLightTexture", at = @At(value = "STORE"), ordinal = 7)
     private float nightVisionPowerEffect(float value) {
+        if (this.minecraft.player == null) return value;
         return OriginDataHolder.get(this.minecraft.player).streamActivePowers(NightVisionPower.class).map(NightVisionPower::getStrength).max(Float::compareTo).map(x -> Math.max(x, value)).orElse(value);
     }
 }

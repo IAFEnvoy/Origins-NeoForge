@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
-import com.iafenvoy.origins.data._common.CommandHelper;
+import com.iafenvoy.origins.data._common.helper.CommandHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

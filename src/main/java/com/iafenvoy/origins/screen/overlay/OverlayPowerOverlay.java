@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -31,11 +32,13 @@ public class OverlayPowerOverlay implements LayeredDraw.Layer {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker deltaTracker) {
+        Entity cameraEntity = this.minecraft.getCameraEntity();
+        if (cameraEntity == null) return;
         boolean hideGui = this.minecraft.options.hideGui;
         boolean isFirstPerson = this.minecraft.options.getCameraType().isFirstPerson();
         int width = graphics.guiWidth();
         int height = graphics.guiHeight();
-        OriginDataHolder.get(this.minecraft.getCameraEntity()).streamActivePowers(OverlayPower.class)
+        OriginDataHolder.get(cameraEntity).streamActivePowers(OverlayPower.class)
                 .filter(x -> x.getDrawPhase() == this.phase && (!x.shouldHideWithHud() || !hideGui) && (x.isVisibleInThirdPerson() || isFirstPerson))
                 .forEach(power -> this.renderPower(power, graphics, width, height));
     }

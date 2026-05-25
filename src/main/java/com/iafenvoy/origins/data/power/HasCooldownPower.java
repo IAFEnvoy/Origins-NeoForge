@@ -43,7 +43,7 @@ public abstract class HasCooldownPower extends Power implements HudRenderable {
 
     @Override
     public boolean shouldRender(OriginDataHolder holder) {
-        return getCooldownComponent(holder).getValue() > 0;
+        return this.getCooldownComponent(holder).getValue() > 0;
     }
 
     protected CooldownComponent getCooldownComponent(OriginDataHolder holder) {

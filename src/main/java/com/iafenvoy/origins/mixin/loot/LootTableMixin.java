@@ -65,6 +65,7 @@ public abstract class LootTableMixin implements KeyableLootTable {
         } else if (contextType == LootContextParamSets.PIGLIN_BARTER)
             if (thisEntity instanceof Piglin piglin)
                 holder = piglin.getBrain().getMemory(MemoryModuleType.NEAREST_VISIBLE_PLAYER).orElse(null);
+        if (holder == null) return;
 
         ReplaceLootTablePower.push((LootTable) (Object) this);
 

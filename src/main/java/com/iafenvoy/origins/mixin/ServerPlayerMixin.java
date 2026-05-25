@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 @Mixin(ServerPlayer.class)
@@ -35,6 +36,7 @@ public abstract class ServerPlayerMixin extends Player implements ContainerListe
     @Shadow
     private ResourceKey<Level> respawnDimension;
     @Shadow
+    @Nullable
     private BlockPos respawnPosition;
     @Shadow
     @Final
@@ -86,8 +88,7 @@ public abstract class ServerPlayerMixin extends Player implements ContainerListe
     private Optional<ServerPlayer.RespawnPosAngle> origins$retryObstructedSpawnPointIfFailed(ServerLevel world, BlockPos pos, float spawnAngle, boolean spawnForced, boolean alive, Operation<Optional<ServerPlayer.RespawnPosAngle>> original) {
         Optional<ServerPlayer.RespawnPosAngle> originalRespawnPos = original.call(world, pos, spawnAngle, spawnForced, alive);
         if (originalRespawnPos.isEmpty() && OriginDataHolder.get(this).hasActivePower(ModifyPlayerSpawnPower.class)) {
-            return Optional
-                    .ofNullable(DismountHelper.findSafeDismountLocation(this.getType(), world, pos, spawnForced))
+            return Optional.ofNullable(DismountHelper.findSafeDismountLocation(this.getType(), world, pos, spawnForced))
                     .map(newPos -> ServerPlayer.RespawnPosAngle.of(newPos, pos));
         } else return originalRespawnPos;
     }
@@ -95,9 +96,8 @@ public abstract class ServerPlayerMixin extends Player implements ContainerListe
     @Unique
     private boolean origins$hasObstructedOriginalSpawnPoint() {
         ServerLevel spawnPointWorld = this.server.getLevel(this.respawnDimension);
-        return this.respawnPosition != null
-                && spawnPointWorld != null
-                && findRespawnAndUseSpawnBlock(spawnPointWorld, this.respawnPosition, this.respawnAngle, this.respawnForced, true).isEmpty();
+        if (this.respawnPosition == null || spawnPointWorld == null) return false;
+        return findRespawnAndUseSpawnBlock(spawnPointWorld, this.respawnPosition, this.respawnAngle, this.respawnForced, true).isEmpty();
     }
 
     @Unique

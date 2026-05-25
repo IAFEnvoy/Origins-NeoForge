@@ -2,6 +2,7 @@ package com.iafenvoy.origins.accessor;
 
 import com.iafenvoy.origins.data.power.Power;
 import net.minecraft.world.inventory.TransientCraftingContainer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -10,6 +11,7 @@ public interface PowerCraftingInventory extends PowerCraftingObject {
 
     void origins$setPowerTypes(Collection<? extends Power> powerType);
 
+    @Nullable
     default TransientCraftingContainer origins$getInventory() {
         return null;
     }

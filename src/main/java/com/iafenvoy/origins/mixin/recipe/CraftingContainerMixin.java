@@ -13,7 +13,7 @@ public interface CraftingContainerMixin {
     private CraftingInput.Positioned passCacheToPositionedInput(CraftingInput.Positioned original) {
         if ((CraftingContainer) this instanceof PowerCraftingInventory sourcePci && original.input() instanceof PowerCraftingInventory targetPci) {
             targetPci.origins$setPowerTypes(sourcePci.origins$getPowerTypes());
-            targetPci.origins$setPlayer(sourcePci.origins$getPlayer());
+            sourcePci.origins$getPlayer().ifPresentOrElse(targetPci::origins$setPlayer, targetPci::origins$clearPlayer);
             targetPci.origins$setInventory(sourcePci.origins$getInventory());
         }
         return original;
