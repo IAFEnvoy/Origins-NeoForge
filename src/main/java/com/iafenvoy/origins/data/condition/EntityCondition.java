@@ -9,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 
 public interface EntityCondition {
-    Codec<EntityCondition> CODEC = DefaultedCodec.registryDispatch(ConditionRegistries.ENTITY_CONDITION, EntityCondition::codec, Function.identity(), () -> AlwaysTrueCondition.INSTANCE);
+    Codec<EntityCondition> CODEC = DefaultedCodec.registryDispatch(ConditionRegistries.ENTITY_CONDITION,
+            EntityCondition::codec, Function.identity(), () -> AlwaysTrueCondition.INSTANCE);
 
     static MapCodec<EntityCondition> optionalCodec(String name) {
         return CODEC.optionalFieldOf(name, AlwaysTrueCondition.INSTANCE);

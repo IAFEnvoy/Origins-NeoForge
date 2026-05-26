@@ -6,6 +6,7 @@ import com.google.common.collect.Multimap;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.Proxies;
 import com.iafenvoy.origins.data.ItemPowersComponent;
+import com.iafenvoy.origins.data.condition.Side;
 import com.iafenvoy.origins.data.global_powers.GlobalPowersRegistries;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
@@ -218,7 +219,17 @@ public final class OriginDataHolder {
 
     //Only for toggle and hud render, which need to bypass active logic
     private <T> Stream<T> streamPowers(Class<T> clazz, Predicate<ResourceLocation> idChecker) {
-        Stream<T> results = this.getAllPowers().stream().filter(x -> idChecker.test(x.id())).map(PowerHolder::power).filter(power -> clazz.isAssignableFrom(power.getClass())).map(clazz::cast);
+        Stream<Power> powers = this.getAllPowers().stream().filter(x -> idChecker.test(x.id())).map(PowerHolder::power).filter(power -> clazz.isAssignableFrom(power.getClass()));
+        if (entity.level().isClientSide()) {
+            powers = powers.filter(power -> {
+                if (power.getSettings().condition() instanceof Side condition) {
+                    return !condition.server();
+                } else return true;
+            });
+        }
+
+        Stream<T> results = powers.map(clazz::cast);
+
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast) : results;
     }
 
