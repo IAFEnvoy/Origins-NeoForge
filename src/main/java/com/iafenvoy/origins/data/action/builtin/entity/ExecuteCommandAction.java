@@ -20,6 +20,6 @@ public record ExecuteCommandAction(String command) implements EntityAction, Comm
 
     @Override
     public void execute(@NotNull Entity source) {
-        this.executeCommand(source, this.command);
+        this.executeCommand(source, this.command, true);
     }
 }

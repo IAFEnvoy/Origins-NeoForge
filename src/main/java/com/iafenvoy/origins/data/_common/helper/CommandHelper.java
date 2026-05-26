@@ -13,6 +13,8 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Consumer;
 
+import com.iafenvoy.origins.config.OriginsConfig;
+
 public interface CommandHelper {
     default void executeCommand(Level level, Consumer<CommandSourceStack> consumer, String command) {
         if (level instanceof ServerLevel serverLevel) this.executeCommand(serverLevel.getServer(), consumer, command);
@@ -25,12 +27,23 @@ public interface CommandHelper {
     }
 
     default void executeCommand(Entity entity, String command) {
-        this.executeCommand(entity, entity.position(), command);
+        this.executeCommand(entity, entity.position(), command, false);
+    }
+
+    default void executeCommand(Entity entity, String command, boolean silent) {
+        this.executeCommand(entity, entity.position(), command, silent);
     }
 
     default void executeCommand(Entity entity, Vec3 pos, String command) {
-        if (entity.level() instanceof ServerLevel level)
-            this.executeCommand(entity.createCommandSourceStack().withPosition(pos), level.getServer(), command);
+        this.executeCommand(entity, pos, command, false);
+    }
+
+    default void executeCommand(Entity entity, Vec3 pos, String command, boolean silent) {
+        if (entity.level() instanceof ServerLevel level) {
+            CommandSourceStack stack = new CommandSourceStack(entity, pos, entity.getRotationVector(), level, OriginsConfig.INSTANCE.general.permissionLevel.getValue(), entity.getName().getString(), entity.getDisplayName(), entity.level().getServer(), entity);
+            if (silent) stack = stack.withSuppressedOutput();
+            this.executeCommand(stack, level.getServer(), command);
+        }
     }
 
     default void executeCommand(CommandSourceStack stack, MinecraftServer server, String command) {
