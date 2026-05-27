@@ -46,8 +46,7 @@ public class PowerReference {
             if (mp == null) return Optional.empty();
             Power p = mp.getPowers().get(sub);
             if (p == null) return Optional.empty();
-            ResourceLocation finalId = ResourceLocation.fromNamespaceAndPath(ns, sub);
-            if (!(p instanceof MultiplePower)) return Optional.of(new PowerHolder(finalId, p));
+            if (!(p instanceof MultiplePower)) return Optional.of(new PowerHolder(rl, p));
             path = path.substring(0, path.length() - sub.length() - 1);
         }
         return Optional.empty();

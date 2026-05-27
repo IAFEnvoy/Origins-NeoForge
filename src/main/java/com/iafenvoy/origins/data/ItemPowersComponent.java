@@ -22,7 +22,6 @@ import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 @EventBusSubscriber
 public record ItemPowersComponent(Multimap<EquipmentSlotGroup, Entry> powers) {
@@ -83,16 +82,14 @@ public record ItemPowersComponent(Multimap<EquipmentSlotGroup, Entry> powers) {
             return this;
         }
 
-        public Builder remove(EquipmentSlotGroup slot, Holder<Power> power, BiConsumer<EquipmentSlotGroup, Entry> callback) {
-            for (Entry entry : this.powers.get(slot).stream().filter(e1 -> e1.power().equals(power)).toList()) {
+        public Builder remove(EquipmentSlotGroup slot, Holder<Power> power) {
+            for (Entry entry : this.powers.get(slot).stream().filter(e1 -> e1.power().equals(power)).toList())
                 this.powers.remove(slot, entry);
-                callback.accept(slot, entry);
-            }
             return this;
         }
 
-        public Builder remove(Iterable<EquipmentSlotGroup> slots, Holder<Power> power, BiConsumer<EquipmentSlotGroup, Entry> callback) {
-            slots.forEach(slot -> this.remove(slot, power, callback));
+        public Builder remove(Iterable<EquipmentSlotGroup> slots, Holder<Power> power) {
+            slots.forEach(slot -> this.remove(slot, power));
             return this;
         }
 

@@ -2,7 +2,6 @@ package com.iafenvoy.origins.data.power.builtin.action;
 
 import com.google.common.collect.ImmutableSet;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data._common.CooldownSettings;
 import com.iafenvoy.origins.data._common.KeySettings;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.badge.Badge;

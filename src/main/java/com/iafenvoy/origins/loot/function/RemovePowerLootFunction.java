@@ -52,31 +52,10 @@ public class RemovePowerLootFunction extends LootItemConditionalFunction {
         if (itemPowers == null) return stack;
         ItemPowersComponent newItemPowers = ItemPowersComponent.builder()
                 .add(itemPowers)
-                .remove(this.slots, this.power, (slot, entry) -> {
-                    //TODO
-                })
+                .remove(this.slots, this.power)
                 .build();
         if (newItemPowers.isEmpty()) stack.remove(OriginsDataComponents.ITEM_POWERS.get());
         else stack.set(OriginsDataComponents.ITEM_POWERS.get(), newItemPowers);
         return stack;
     }
-
-//    protected void onSlotsRemoval(LootContext context, EquipmentSlotGroup modifierSlot, ItemPowersComponent.Entry entry) {
-//        Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
-//        Power power = this.power.value();
-//        if (entity == null) return;
-//
-//        PowerHolderComponent powerComponent = PowerHolderComponent.KEY.getNullable(entity);
-//        if (powerComponent == null) return;
-//
-//        Map<ResourceLocation, Collection<Power>> revokedPowers = new HashMap<>();
-//
-//        for (EquipmentSlot slot : Stream.of(EquipmentSlot.values()).filter(modifierSlot::test).toList()) {
-//            ResourceLocation source = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item/" + slot.getName());
-//            if (!revokedPowers.containsKey(source) && modifierSlot.test(slot))
-//                revokedPowers.computeIfAbsent(source, k -> new ObjectArrayList<>()).add(power);
-//        }
-//
-//        if (!revokedPowers.isEmpty()) PowerHolderComponent.revokePowers(entity, revokedPowers, true);
-//    }
 }

@@ -1,10 +1,12 @@
 package com.iafenvoy.origins.data.power;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data._common.CooldownSettings;
 import com.iafenvoy.origins.data._common.HudRender;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.builtin.CooldownComponent;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.Optional;
 
@@ -48,5 +50,12 @@ public abstract class HasCooldownPower extends Power implements HudRenderable {
 
     protected CooldownComponent getCooldownComponent(OriginDataHolder holder) {
         return holder.getComponentFor(this, CooldownComponent.class).orElse(new CooldownComponent(1));
+    }
+
+    public record CooldownSettings(int cooldown, Optional<HudRender> hudRender) {
+        public static final MapCodec<CooldownSettings> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+                Codec.INT.optionalFieldOf("cooldown", 1).forGetter(CooldownSettings::cooldown),
+                HudRender.CODEC.optionalFieldOf("hud_render").forGetter(CooldownSettings::hudRender)
+        ).apply(i, CooldownSettings::new));
     }
 }

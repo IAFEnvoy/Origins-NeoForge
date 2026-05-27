@@ -40,7 +40,7 @@ public class OrbOfOriginItem extends Item {
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
 
-    //FIXME::idk why but this can work
+    // I don't know why but this can work
     public static void openGuiForLayer(ServerPlayer target, @Nullable Holder<Layer> layer) {
         OriginDataHolder holder = OriginDataHolder.get(target);
         List<Holder<Layer>> layers = new ObjectArrayList<>();
