@@ -2,7 +2,7 @@ package com.iafenvoy.origins.data._common.helper;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.ItemCondition;
-import com.iafenvoy.origins.data.power.PowerReference;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
 import com.iafenvoy.origins.util.wrapper.ContainerWrapper;
 import com.mojang.serialization.Codec;

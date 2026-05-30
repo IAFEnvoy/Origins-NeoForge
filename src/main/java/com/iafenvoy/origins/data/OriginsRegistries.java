@@ -55,6 +55,7 @@ public final class OriginsRegistries {
     @SubscribeEvent
     public static void fillParentAfterLoad(TagsUpdatedEvent event) {
         Registry<Power> registry = event.getRegistryAccess().registryOrThrow(PowerRegistries.POWER_KEY);
+        //FIXME::recursive?
         for (Holder.Reference<Power> p : registry.holders().toList()) {
             if (!(p.value() instanceof MultiplePower power)) continue;
             power.getPowers().values().forEach(x -> x.setParent(Optional.of(p.value())));

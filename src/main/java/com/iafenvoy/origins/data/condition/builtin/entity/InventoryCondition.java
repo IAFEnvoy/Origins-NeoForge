@@ -1,10 +1,10 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
-import com.iafenvoy.origins.attachment.PowerHolder;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.data._common.helper.InventoryConditionHelper;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.condition.ItemCondition;
-import com.iafenvoy.origins.data.power.PowerReference;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.data.power.builtin.regular.InventoryPower;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Comparison;

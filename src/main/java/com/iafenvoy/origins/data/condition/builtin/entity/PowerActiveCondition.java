@@ -1,9 +1,9 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.attachment.PowerHolder;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
-import com.iafenvoy.origins.data.power.PowerReference;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;

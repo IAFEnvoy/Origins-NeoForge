@@ -121,5 +121,8 @@
         "id": "minecraft:cobweb"
       }
     }
-  }
+  },
+  "badges": [
+    "origins:master_of_webs"
+  ]
 }

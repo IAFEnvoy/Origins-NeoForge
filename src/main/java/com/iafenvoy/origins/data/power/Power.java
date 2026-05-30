@@ -103,6 +103,7 @@ public abstract class Power {
     public void respawn(OriginDataHolder holder, boolean backFromEnd) {
     }
 
+    //FIXME::Use PowerHolder instead
     public ResourceLocation getId(RegistryAccess access) {
         Registry<Power> registry = access.registryOrThrow(PowerRegistries.POWER_KEY);
         if (this.parent.isPresent() && this.parent.get() instanceof MultiplePower multiple)

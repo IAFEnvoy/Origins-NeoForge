@@ -2,6 +2,8 @@ package com.iafenvoy.origins.mixin.recipe;
 
 import com.iafenvoy.origins.accessor.PowerCraftingObject;
 import com.iafenvoy.origins.data.power.PowerRegistries;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.recipe.ModifiedCraftingRecipe;
 import com.iafenvoy.origins.recipe.PowerCraftingRecipe;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -64,10 +66,9 @@ public abstract class RecipeButtonMixin {
     private List<Component> appendRequiredRecipePowerTooltip(List<Component> original, @Share("originalEntry") LocalRef<RecipeHolder<?>> sharedOriginalEntry) {
         RecipeHolder<?> recipeEntry = sharedOriginalEntry.get() != null ? sharedOriginalEntry.get() : this.getRecipe();
         if (recipeEntry.value() instanceof PowerCraftingRecipe pcr && this.book instanceof PowerCraftingObject pco && pco.origins$getPlayer().isPresent()) {
-            RegistryAccess access = pco.origins$getPlayer().get().registryAccess();
-            access.registry(PowerRegistries.POWER_KEY).map(x -> x.get(pcr.powerId())).ifPresent(power -> {
+            PowerReference.getHolder(pco.origins$getPlayer().get().registryAccess(), pcr.powerId()).ifPresent(holder -> {
                 original.add(Component.empty());
-                original.add(Component.translatable("tooltip.origins.power_recipe.required_power", power.getName(access)).withStyle(ChatFormatting.RED));
+                original.add(Component.translatable("tooltip.origins.power_recipe.required_power", holder.getName()).withStyle(ChatFormatting.RED));
             });
         }
         return original;

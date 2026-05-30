@@ -1,11 +1,11 @@
-package com.iafenvoy.origins.data.condition;
+package com.iafenvoy.origins.data;
 
 import javax.annotation.Nullable;
 
 import net.neoforged.api.distmarker.Dist;
 
-public interface Side {
-
+//FIXME::Better sided logic
+public interface Sided {
     @Nullable
     default Dist side() {
         return null;

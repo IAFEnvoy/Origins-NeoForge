@@ -1,9 +1,10 @@
 package com.iafenvoy.origins.registry;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.data._common.helper.RecipeHelper;
 import com.iafenvoy.origins.data.badge.BuiltinBadges;
-import com.iafenvoy.origins.data.power.PowerRegistries;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCraftingPower;
 import com.iafenvoy.origins.screen.badge.BadgeTooltipManager;
@@ -37,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @EventBusSubscriber(Dist.CLIENT)
@@ -60,7 +62,7 @@ public final class OriginsRenderers {
             List<ClientTooltipComponent> tooltips = new LinkedList<>();
             if (client.level == null || player == null) return tooltips;
             RegistryAccess access = client.level.registryAccess();
-            @Nullable CraftingRecipe recipe = badge.fromPower() ? access.registryOrThrow(PowerRegistries.POWER_KEY).get(badge.recipe()) instanceof RecipeHelper helper ? helper.getRecipe() : null
+            @Nullable CraftingRecipe recipe = badge.fromPower() ? PowerReference.listAllPowers(access).filter(x -> Objects.equals(x.id(), badge.recipe())).map(PowerHolder::power).filter(RecipeHelper.class::isInstance).findAny().map(RecipeHelper.class::cast).map(RecipeHelper::getRecipe).orElse(null)
                     : client.level.getRecipeManager().byKey(badge.recipe()).map(RecipeHolder::value).filter(CraftingRecipe.class::isInstance).map(CraftingRecipe.class::cast).orElse(null);
             if (recipe == null) return tooltips;
             int recipeWidth = recipe instanceof ShapedRecipe shapedRecipe ? shapedRecipe.getWidth() : 3;

@@ -4,7 +4,7 @@ import com.iafenvoy.origins.data._common.helper.InventoryActionHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
-import com.iafenvoy.origins.data.power.PowerReference;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

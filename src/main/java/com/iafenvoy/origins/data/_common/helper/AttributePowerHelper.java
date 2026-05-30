@@ -1,9 +1,10 @@
 package com.iafenvoy.origins.data._common.helper;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.data._common.AttributeEntry;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.PowerRegistries;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.util.annotation.Comment;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -26,7 +27,7 @@ public interface AttributePowerHelper {
         float previousHealthPercent = living.getHealth() / previousMaxHealth;
         this.getModifier().stream().filter(x -> living.getAttributes().hasAttribute(x.attribute())).forEach(mod -> {
             AttributeInstance instance = living.getAttribute(mod.attribute());
-            ResourceLocation id = holder.getAccess().registryOrThrow(PowerRegistries.POWER_KEY).getKey((Power) this);// HERE
+            ResourceLocation id = PowerReference.getHolder(holder.getAccess(), (Power) this).map(PowerHolder::id).orElse(null);// HERE
             if (id != null && instance != null)
                 if (grant) {
                     if (!instance.hasModifier(id)) instance.addPermanentModifier(mod.buildModifier(id));

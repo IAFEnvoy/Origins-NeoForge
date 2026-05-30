@@ -6,7 +6,7 @@ import com.google.common.collect.Multimap;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.Proxies;
 import com.iafenvoy.origins.data.ItemPowersComponent;
-import com.iafenvoy.origins.data.condition.Side;
+import com.iafenvoy.origins.data.Sided;
 import com.iafenvoy.origins.data.global_powers.GlobalPowersRegistries;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
@@ -18,6 +18,7 @@ import com.iafenvoy.origins.data.power.MultiplePower;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.event.GrantOriginEvent;
 import com.iafenvoy.origins.event.GrantPowerEvent;
 import com.iafenvoy.origins.event.RevokeOriginEvent;
@@ -222,7 +223,7 @@ public final class OriginDataHolder {
         Stream<Power> powers = this.getAllPowers().stream().filter(x -> idChecker.test(x.id())).map(PowerHolder::power).filter(power -> clazz.isAssignableFrom(power.getClass()));
         if (entity.level().isClientSide()) {
             powers = powers.filter(power -> {
-                if (power.getSettings().condition() instanceof Side condition) {
+                if (power.getSettings().condition() instanceof Sided condition) {
                     return !condition.server();
                 } else return true;
             });
