@@ -43,6 +43,11 @@ public class ResourceComponent extends PowerComponent {
         return CODEC;
     }
 
+    public void setValue(int value) {
+        this.value = Math.clamp(value, this.min, this.max);
+        this.markDirty();
+    }
+
     public void updateResource(Int2IntFunction operation) {
         this.value = Math.clamp(operation.applyAsInt(this.value), this.min, this.max);
         this.markDirty();

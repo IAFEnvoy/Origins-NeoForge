@@ -14,8 +14,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-@Comment("Only for power, or will crash")
 public interface AttributePowerHelper {
+    Power self();
+
     List<AttributeEntry> getModifier();
 
     boolean shouldUpdateHealth();
@@ -27,7 +28,7 @@ public interface AttributePowerHelper {
         float previousHealthPercent = living.getHealth() / previousMaxHealth;
         this.getModifier().stream().filter(x -> living.getAttributes().hasAttribute(x.attribute())).forEach(mod -> {
             AttributeInstance instance = living.getAttribute(mod.attribute());
-            ResourceLocation id = PowerReference.getHolder(holder.getAccess(), (Power) this).map(PowerHolder::id).orElse(null);// HERE
+            ResourceLocation id = PowerReference.getHolder(holder.getAccess(), this.self()).map(PowerHolder::id).orElse(null);// HERE
             if (id != null && instance != null)
                 if (grant) {
                     if (!instance.hasModifier(id)) instance.addPermanentModifier(mod.buildModifier(id));

@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+//FIXME::update docs
 public record ModifyAction(ResourceLocation modifier) implements ItemAction {
     public static final MapCodec<ModifyAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             WildcardCodec.INSTANCE.fieldOf("modifier").forGetter(ModifyAction::modifier)

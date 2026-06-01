@@ -45,7 +45,6 @@
   "commands.origins.remove.success.single": "已从实体 %s 移除了能力 %s。",
   "commands.origins.resource.change.success": "已将 %1$s 的资源能力 %2$s 变更 %3$s，当前值为 %4$s",
   "commands.origins.resource.get.result": "%1$s 的资源能力 %2$s 当前值为 %3$s",
-  "commands.origins.resource.has.failure": "%1$s 没有资源能力 %2$s",
   "commands.origins.resource.has.success": "%1$s 拥有资源能力 %2$s",
   "commands.origins.resource.invalid_entity": "该实体不是生物实体，因此不能拥有任何能力。",
   "commands.origins.resource.missing_power": "%1$s 没有资源能力 %2$s",

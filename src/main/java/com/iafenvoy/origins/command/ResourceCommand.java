@@ -1,9 +1,10 @@
 package com.iafenvoy.origins.command;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data._common.helper.ResourceHelper;
 import com.iafenvoy.origins.data.power.reference.PowerHolder;
-import com.iafenvoy.origins.data.power.builtin.regular.ResourcePower;
 import com.iafenvoy.origins.data.power.component.builtin.ResourceComponent;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -21,11 +22,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.commands.Commands.argument;
@@ -38,7 +39,7 @@ public final class ResourceCommand {
                 .then(literal("has")
                         .then(argument("target", EntityArgument.entity())
                                 .then(argument("power", ResourceLocationArgument.id())
-                                        .suggests(ResourceCommand::suggestResource)
+                                        .suggests(ResourceCommand::suggestAllResource)
                                         .executes(ResourceCommand::has))))
                 .then(literal("get")
                         .then(argument("target", EntityArgument.entity())
@@ -71,96 +72,81 @@ public final class ResourceCommand {
         return literal(operation.symbol)
                 .then(argument("sourceEntity", EntityArgument.entity())
                         .then(argument("sourceObjective", ObjectiveArgument.objective())
-                                .executes(ctx -> ResourceCommand.operation(ctx, operation))));
+                                .executes(ctx -> operation(ctx, operation))));
+    }
+
+    private static CompletableFuture<Suggestions> suggestAllResource(final CommandContext<CommandSourceStack> context, final SuggestionsBuilder builder) throws CommandSyntaxException {
+        return SharedSuggestionProvider.suggestResource(PowerReference.listAllPowers(context.getSource().registryAccess()).filter(x -> x.power() instanceof ResourceHelper).flatMap(PowerHolder::stream).map(PowerHolder::id), builder);
     }
 
     private static CompletableFuture<Suggestions> suggestResource(final CommandContext<CommandSourceStack> context, final SuggestionsBuilder builder) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "target");
-        return SharedSuggestionProvider.suggestResource(OriginDataHolder.get(player).getAllPowers().stream().filter(x -> x.power() instanceof ResourcePower).flatMap(PowerHolder::stream).map(PowerHolder::id), builder);
+        return SharedSuggestionProvider.suggestResource(OriginDataHolder.get(player).getAllPowers().stream().filter(x -> x.power() instanceof ResourceHelper).flatMap(PowerHolder::stream).map(PowerHolder::id), builder);
     }
 
     private static int has(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        LivingEntity target = getLivingTarget(context);
-        if (target == null) return 0;
-
+        Entity target = EntityArgument.getEntity(context, "target");
         ResourceLocation power = ResourceLocationArgument.getId(context, "power");
         CommandSourceStack source = context.getSource();
-        boolean has = OriginDataHolder.get(target).getComponent(power, ResourceComponent.class).isPresent();
-
+        OriginDataHolder holder = OriginDataHolder.get(target);
+        boolean has = getResourceComponent(holder, power, context) != null;
         if (has)
-            source.sendSuccess(() -> Component.translatable("commands.origins.resource.has.success", target.getName(), power), false);
-        else
-            source.sendFailure(Component.translatable("commands.origins.resource.has.failure", target.getName(), power));
+            source.sendSuccess(() -> Component.translatable("commands.origins.resource.has.success", target.getName(), power.toString()), false);
         return has ? 1 : 0;
     }
 
     private static int get(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        LivingEntity target = getLivingTarget(context);
-        if (target == null) return 0;
-
+        Entity target = EntityArgument.getEntity(context, "target");
         ResourceLocation power = ResourceLocationArgument.getId(context, "power");
-        ResourceComponent component = getResourceComponent(target, power, context);
+        OriginDataHolder holder = OriginDataHolder.get(target);
+        ResourceHelper component = getResourceComponent(holder, power, context);
         if (component == null) return 0;
-
-        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.get.result", target.getName(), power, component.getValue()), false);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.get.result", target.getName(), power.toString(), component.getValue(holder)), false);
         return 1;
     }
 
     private static int change(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        LivingEntity target = getLivingTarget(context);
-        if (target == null) return 0;
-
+        Entity target = EntityArgument.getEntity(context, "target");
         ResourceLocation power = ResourceLocationArgument.getId(context, "power");
-        ResourceComponent component = getResourceComponent(target, power, context);
-        if (component == null) return 0;
-
-        int value = IntegerArgumentType.getInteger(context, "value");
         OriginDataHolder holder = OriginDataHolder.get(target);
-        component.updateResource(Integer::sum, value);
+        ResourceHelper resource = getResourceComponent(holder, power, context);
+        if (resource == null) return 0;
+        int value = IntegerArgumentType.getInteger(context, "value");
+        resource.setValue(holder, resource.getValue(holder) + value);
         holder.sync();
-        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.change.success", target.getName(), power, value, component.getValue()), true);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.change.success", target.getName(), power.toString(), value, resource.getValue(holder)), true);
         return 1;
     }
 
     private static int operation(CommandContext<CommandSourceStack> context, Operation operation) throws CommandSyntaxException {
-        LivingEntity target = getLivingTarget(context);
-        if (target == null) return 0;
-
+        Entity target = EntityArgument.getEntity(context, "target");
         ResourceLocation power = ResourceLocationArgument.getId(context, "power");
-        ResourceComponent component = getResourceComponent(target, power, context);
-        if (component == null) return 0;
+        OriginDataHolder holder = OriginDataHolder.get(target);
+        ResourceHelper resource = getResourceComponent(holder, power, context);
+        if (resource == null) return 0;
 
         Entity sourceEntity = EntityArgument.getEntity(context, "sourceEntity");
         Objective objective = ObjectiveArgument.getObjective(context, "sourceObjective");
         Scoreboard scoreboard = sourceEntity.level().getScoreboard();
-        ScoreHolder holder = ScoreHolder.forNameOnly(sourceEntity.getScoreboardName());
-        int sourceValue = scoreboard.getOrCreatePlayerScore(holder, objective).get();
-        int targetValue = component.getValue();
+        ScoreHolder score = ScoreHolder.forNameOnly(sourceEntity.getScoreboardName());
+        int sourceValue = scoreboard.getOrCreatePlayerScore(score, objective).get();
+        int targetValue = resource.getValue(holder);
         int newValue = operation.apply(targetValue, sourceValue);
-
-        component.updateResource(current -> newValue);
-        OriginDataHolder.get(target).sync();
+        resource.setValue(holder, newValue);
+        holder.sync();
 
         if (operation == Operation.SWAP)
-            scoreboard.getOrCreatePlayerScore(holder, objective).set(targetValue);
+            scoreboard.getOrCreatePlayerScore(score, objective).set(targetValue);
         else
-            scoreboard.getOrCreatePlayerScore(holder, objective).set(sourceValue);
-
-        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.operation.success", target.getName(), power, operation.symbol, sourceEntity.getName(), objective.getName(), newValue), true);
+            scoreboard.getOrCreatePlayerScore(score, objective).set(sourceValue);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.resource.operation.success", target.getName(), power.toString(), operation.symbol, sourceEntity.getName(), objective.getName(), newValue), true);
         return 1;
     }
 
-    private static LivingEntity getLivingTarget(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        Entity target = EntityArgument.getEntity(context, "target");
-        if (target instanceof LivingEntity living) return living;
-        context.getSource().sendFailure(Component.translatable("commands.origins.resource.invalid_entity"));
-        return null;
-    }
-
-    private static ResourceComponent getResourceComponent(LivingEntity target, ResourceLocation power, CommandContext<CommandSourceStack> context) {
-        ResourceComponent component = OriginDataHolder.get(target).getComponent(power, ResourceComponent.class).orElse(null);
-        if (component != null) return component;
-        context.getSource().sendFailure(Component.translatable("commands.origins.resource.missing_power", target.getName(), power.toString()));
+    private static ResourceHelper getResourceComponent(OriginDataHolder holder, ResourceLocation power, CommandContext<CommandSourceStack> context) {
+        ResourceHelper resource = holder.getAllPowers().stream().filter(x -> Objects.equals(x.id(), power)).findAny().map(PowerHolder::power).filter(ResourceHelper.class::isInstance).map(ResourceHelper.class::cast).orElse(null);
+        if (resource != null) return resource;
+        context.getSource().sendFailure(Component.translatable("commands.origins.resource.missing_power", holder.getEntity().getName(), power.toString()));
         return null;
     }
 

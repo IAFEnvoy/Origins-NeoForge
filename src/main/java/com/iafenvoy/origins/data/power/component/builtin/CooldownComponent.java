@@ -38,6 +38,11 @@ public class CooldownComponent extends PowerComponent {
         return this.value;
     }
 
+    public void setValue(int value) {
+        this.value = value;
+        this.markDirty();
+    }
+
     public void startCooldown() {
         this.value = this.defaultValue;
         this.markDirty();

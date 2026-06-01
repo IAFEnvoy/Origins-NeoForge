@@ -51,4 +51,9 @@ public class ConditionedAttributePower extends Power implements AttributePowerHe
     public void inactive(@NotNull OriginDataHolder holder) {
         this.modify(holder, false);
     }
+
+    @Override
+    public Power self() {
+        return this;
+    }
 }

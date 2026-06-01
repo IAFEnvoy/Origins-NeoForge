@@ -12,7 +12,7 @@ public record HudRender(boolean shouldRenderInActive, ResourceLocation spriteLoc
     public static final ResourceLocation DEFAULT_SPRITE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "textures/gui/resource_bar.png");
     public static final Codec<HudRender> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.BOOL.optionalFieldOf("should_render_inactive", true).forGetter(HudRender::shouldRenderInActive),
-            WildcardCodec.INSTANCE.optionalFieldOf("sprite_location", DEFAULT_SPRITE).forGetter(HudRender::spriteLocation),
+            ResourceLocation.CODEC.optionalFieldOf("sprite_location", DEFAULT_SPRITE).forGetter(HudRender::spriteLocation),
             Codec.INT.optionalFieldOf("bar_index", 0).forGetter(HudRender::barIndex),
             Codec.INT.optionalFieldOf("icon_index", 0).forGetter(HudRender::iconIndex),
             EntityCondition.optionalCodec("condition").forGetter(HudRender::condition),

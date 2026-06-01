@@ -19,8 +19,8 @@ import java.util.OptionalInt;
 public class ResourcePower extends Power implements HudRenderable {
     public static final MapCodec<ResourcePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.INT.fieldOf("min").forGetter(ResourcePower::getMin),
-            Codec.INT.fieldOf("max").forGetter(ResourcePower::getMax),
+            Codec.INT.fieldOf("min").forGetter(ResourcePower::getMinValue),
+            Codec.INT.fieldOf("max").forGetter(ResourcePower::getMaxValue),
             HudRender.CODEC.optionalFieldOf("hud_render").forGetter(ResourcePower::getHudRender),
             MiscCodecs.integer("start_value").forGetter(ResourcePower::getStartValue),
             EntityAction.optionalCodec("min_action").forGetter(ResourcePower::getMinAction),
@@ -43,11 +43,13 @@ public class ResourcePower extends Power implements HudRenderable {
         this.maxAction = maxAction;
     }
 
-    public int getMin() {
+    @Override
+    public int getMinValue() {
         return this.min;
     }
 
-    public int getMax() {
+    @Override
+    public int getMaxValue() {
         return this.max;
     }
 
@@ -79,6 +81,16 @@ public class ResourcePower extends Power implements HudRenderable {
     }
 
     @Override
+    public int getValue(OriginDataHolder holder) {
+        return holder.getComponentFor(this, ResourceComponent.class).map(ResourceComponent::getValue).orElse(this.min);
+    }
+
+    @Override
+    public void setValue(OriginDataHolder holder, int value) {
+        holder.getComponentFor(this, ResourceComponent.class).ifPresent(x -> x.setValue(value));
+    }
+
+    @Override
     public Power getPowerForHudRender() {
         return this;
     }
@@ -86,10 +98,5 @@ public class ResourcePower extends Power implements HudRenderable {
     @Override
     public Optional<HudRender> getHudRenderData() {
         return this.hudRender;
-    }
-
-    @Override
-    public float getRenderPercentage(OriginDataHolder holder) {
-        return HudRenderable.clampProgress(holder.getComponentFor(this, ResourceComponent.class).map(ResourceComponent::getValue).orElse(this.min), this.min, this.max);
     }
 }

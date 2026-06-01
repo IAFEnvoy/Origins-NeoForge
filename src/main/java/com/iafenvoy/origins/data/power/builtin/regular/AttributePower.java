@@ -56,4 +56,9 @@ public class AttributePower extends Power implements AttributePowerHelper {
     public void respawn(OriginDataHolder holder, boolean backFromEnd) {
         this.modify(holder, true);
     }
+
+    @Override
+    public Power self() {
+        return this;
+    }
 }
