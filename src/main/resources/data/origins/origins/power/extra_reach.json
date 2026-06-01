@@ -1,3 +1,15 @@
 {
-  "type": "origins:attribute"
+  "type": "origins:attribute",
+  "modifier": [
+    {
+      "attribute": "minecraft:player.block_interaction_range",
+      "operation": "add_value",
+      "value": 1.5
+    },
+    {
+      "attribute": "minecraft:player.entity_interaction_range",
+      "operation": "add_value",
+      "value": 1.5
+    }
+  ]
 }

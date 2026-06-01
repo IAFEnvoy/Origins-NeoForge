@@ -27,6 +27,6 @@ public enum ExposedToSunCondition implements EntityCondition, Sided {
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return entity.level().isDay() && !entity.isInRain() && BRIGHTNESS.test(entity) && EXPOSED_TO_SKY.test(entity);
+        return entity.level().getDayTime() < 12000 && !entity.isInRain() && BRIGHTNESS.test(entity) && EXPOSED_TO_SKY.test(entity);
     }
 }

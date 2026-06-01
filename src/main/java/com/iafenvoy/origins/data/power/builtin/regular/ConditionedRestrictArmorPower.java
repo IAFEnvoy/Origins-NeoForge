@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
 
+//FIXME::extends RestrictArmorPower
 public class ConditionedRestrictArmorPower extends Power {
     public static final MapCodec<ConditionedRestrictArmorPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),

@@ -58,7 +58,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @ModifyVariable(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getFluidState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/material/FluidState;"), name = "d0")
     private double modifyFalling(double d0) {
-        return ModifyFallingPower.apply(this.origins$self(), d0);
+        return this.getDeltaMovement().y > 0 ? d0 : ModifyFallingPower.apply(this.origins$self(), d0);
     }
 
     @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/core/Holder;)D", ordinal = 0))
