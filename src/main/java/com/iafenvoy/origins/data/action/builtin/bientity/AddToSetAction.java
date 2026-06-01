@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.action.builtin.bientity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.power.component.builtin.EntitySetComponent;
+import com.iafenvoy.origins.util.codec.WildcardCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record AddToSetAction(ResourceLocation set, int timeLimit) implements BiEntityAction {
     public static final MapCodec<AddToSetAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ResourceLocation.CODEC.fieldOf("set").forGetter(AddToSetAction::set),
+            WildcardCodec.INSTANCE.fieldOf("set").forGetter(AddToSetAction::set),
             Codec.INT.optionalFieldOf("time_limit", -1).forGetter(AddToSetAction::timeLimit)
     ).apply(i, AddToSetAction::new));
 

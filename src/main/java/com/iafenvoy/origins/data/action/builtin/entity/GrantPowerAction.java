@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.action.builtin.entity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.codec.WildcardCodec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public record GrantPowerAction(Holder<Power> power, ResourceLocation source) implements EntityAction {
     public static final MapCodec<GrantPowerAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Power.CODEC.fieldOf("power").forGetter(GrantPowerAction::power),
-            ResourceLocation.CODEC.fieldOf("source").forGetter(GrantPowerAction::source)
+            WildcardCodec.INSTANCE.fieldOf("source").forGetter(GrantPowerAction::source)
     ).apply(i, GrantPowerAction::new));
 
     @Override

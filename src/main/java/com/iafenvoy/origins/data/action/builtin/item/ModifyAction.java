@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.action.builtin.item;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.action.ItemAction;
+import com.iafenvoy.origins.util.codec.WildcardCodec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
@@ -22,7 +23,7 @@ import java.util.Optional;
 
 public record ModifyAction(ResourceLocation modifier) implements ItemAction {
     public static final MapCodec<ModifyAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ResourceLocation.CODEC.fieldOf("modifier").forGetter(ModifyAction::modifier)
+            WildcardCodec.INSTANCE.fieldOf("modifier").forGetter(ModifyAction::modifier)
     ).apply(i, ModifyAction::new));
 
     @Override

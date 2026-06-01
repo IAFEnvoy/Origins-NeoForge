@@ -5,6 +5,7 @@ import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.power.component.builtin.EntitySetComponent;
+import com.iafenvoy.origins.util.codec.WildcardCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -22,7 +23,7 @@ public record ActionOnSetAction(ResourceLocation set, BiEntityAction biEntityAct
                                 BiEntityCondition biEntityCondition, int limit,
                                 boolean reverse) implements EntityAction {
     public static final MapCodec<ActionOnSetAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ResourceLocation.CODEC.fieldOf("set").forGetter(ActionOnSetAction::set),
+            WildcardCodec.INSTANCE.fieldOf("set").forGetter(ActionOnSetAction::set),
             BiEntityAction.CODEC.fieldOf("bientity_action").forGetter(ActionOnSetAction::biEntityAction),
             BiEntityCondition.optionalCodec("bientity_condition").forGetter(ActionOnSetAction::biEntityCondition),
             Codec.INT.optionalFieldOf("limit", 0).forGetter(ActionOnSetAction::limit),

@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.action.builtin.entity;
 import com.iafenvoy.origins.data._common.helper.AdvancementHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
+import com.iafenvoy.origins.util.codec.WildcardCodec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.AdvancementHolder;

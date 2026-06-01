@@ -55,19 +55,20 @@ public final class ResourceCommand {
                         .then(argument("target", EntityArgument.entity())
                                 .then(argument("power", ResourceLocationArgument.id())
                                         .suggests(ResourceCommand::suggestResource)
-                                        .then(operationBranch("%=", Operation.MOD))
-                                        .then(operationBranch("*=", Operation.MUL))
-                                        .then(operationBranch("+=", Operation.ADD))
-                                        .then(operationBranch("-=", Operation.SUB))
-                                        .then(operationBranch("/=", Operation.DIV))
-                                        .then(operationBranch("<", Operation.MIN))
-                                        .then(operationBranch("=", Operation.SET))
-                                        .then(operationBranch(">", Operation.MAX))
-                                        .then(operationBranch("><", Operation.SWAP))))));
+                                        .then(operationBranch(Operation.MOD))
+                                        .then(operationBranch(Operation.MUL))
+                                        .then(operationBranch(Operation.ADD))
+                                        .then(operationBranch(Operation.SUB))
+                                        .then(operationBranch(Operation.DIV))
+                                        .then(operationBranch(Operation.MIN))
+                                        .then(operationBranch(Operation.SET))
+                                        .then(operationBranch(Operation.MAX))
+                                        .then(operationBranch(Operation.SWAP))
+                                ))));
     }
 
-    private static LiteralArgumentBuilder<CommandSourceStack> operationBranch(String symbol, Operation operation) {
-        return literal(symbol)
+    private static LiteralArgumentBuilder<CommandSourceStack> operationBranch(Operation operation) {
+        return literal(operation.symbol)
                 .then(argument("sourceEntity", EntityArgument.entity())
                         .then(argument("sourceObjective", ObjectiveArgument.objective())
                                 .executes(ctx -> ResourceCommand.operation(ctx, operation))));
@@ -159,7 +160,7 @@ public final class ResourceCommand {
     private static ResourceComponent getResourceComponent(LivingEntity target, ResourceLocation power, CommandContext<CommandSourceStack> context) {
         ResourceComponent component = OriginDataHolder.get(target).getComponent(power, ResourceComponent.class).orElse(null);
         if (component != null) return component;
-        context.getSource().sendFailure(Component.translatable("commands.origins.resource.missing_power", target.getName(), power));
+        context.getSource().sendFailure(Component.translatable("commands.origins.resource.missing_power", target.getName(), power.toString()));
         return null;
     }
 

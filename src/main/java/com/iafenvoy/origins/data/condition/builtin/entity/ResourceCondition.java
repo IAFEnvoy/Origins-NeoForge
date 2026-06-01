@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.condition.builtin.entity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.component.builtin.ResourceComponent;
+import com.iafenvoy.origins.util.codec.WildcardCodec;
 import com.iafenvoy.origins.util.math.Comparison;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record ResourceCondition(ResourceLocation resource, Comparison comparison) implements EntityCondition {
     public static final MapCodec<ResourceCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            ResourceLocation.CODEC.fieldOf("resource").forGetter(ResourceCondition::resource),
+            WildcardCodec.INSTANCE.fieldOf("resource").forGetter(ResourceCondition::resource),
             Comparison.CODEC.forGetter(ResourceCondition::comparison)
     ).apply(i, ResourceCondition::new));
 

@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.action.builtin.entity;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.codec.WildcardCodec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -16,7 +17,7 @@ public record RevokePowerAction(Optional<Holder<Power>> power,
                                 Optional<ResourceLocation> source) implements EntityAction {
     public static final MapCodec<RevokePowerAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Power.CODEC.optionalFieldOf("power").forGetter(RevokePowerAction::power),
-            ResourceLocation.CODEC.optionalFieldOf("source").forGetter(RevokePowerAction::source)
+            WildcardCodec.INSTANCE.optionalFieldOf("source").forGetter(RevokePowerAction::source)
     ).apply(i, RevokePowerAction::new));
 
     @Override
