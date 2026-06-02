@@ -14,6 +14,7 @@ import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.Prioritized;
+import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.MultiplePower;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
@@ -26,10 +27,13 @@ import com.iafenvoy.origins.event.RevokePowerEvent;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
+import com.iafenvoy.origins.registry.OriginsKeyMappings;
 import com.iafenvoy.origins.util.codec.RegistryCodecs;
 import com.iafenvoy.origins.util.HolderHelper;
 import com.iafenvoy.origins.util.RandomHelper;
+
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -84,6 +88,24 @@ public final class OriginDataHolder {
 
     public PowerHelper getHelper() {
         return this.helper;
+    }
+
+    private void registerToggleKeysFromExistingPowers() {
+        OriginsKeyMappings.ACTIVATE_KEYS.clear();
+        OriginsKeyMappings.ACTIVATE_KEYS.add(OriginsKeyMappings.PRIMARY_ACTIVE);
+        OriginsKeyMappings.ACTIVATE_KEYS.add(OriginsKeyMappings.SECONDARY_ACTIVE);
+
+        for (PowerHolder powerHolder : this.getAllPowers()) {
+            Power power = powerHolder.power();
+            if (power instanceof Toggleable toggleable) {
+                KeyMapping key = KeyMapping.ALL.entrySet().stream()
+                        .filter(e -> Objects.equals(toggleable.getKey().key(), e.getValue().getName())).findFirst()
+                        .map(Map.Entry::getValue).orElse(null);
+                if (key != null && !OriginsKeyMappings.ACTIVATE_KEYS.contains(key)) {
+                    OriginsKeyMappings.ACTIVATE_KEYS.add(key);
+                }
+            }
+        }
     }
 
     //Query
@@ -174,6 +196,7 @@ public final class OriginDataHolder {
         power.power().grant(this);
         if (power.power() instanceof MultiplePower multiple)
             multiple.getPowers(power.id()).forEach(this::grantPower);
+        registerToggleKeysFromExistingPowers();
     }
 
     public void revokePower(ResourceLocation source, Holder<Power> power) {
@@ -355,5 +378,10 @@ public final class OriginDataHolder {
             holder.setOrigin(entry.getKey(), upgrade.origin());
             upgrade.announcement().ifPresent(player::sendSystemMessage);
         }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        OriginDataHolder.get(event.getEntity()).registerToggleKeysFromExistingPowers();
     }
 }

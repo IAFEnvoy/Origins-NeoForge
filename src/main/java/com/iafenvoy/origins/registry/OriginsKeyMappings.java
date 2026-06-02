@@ -3,7 +3,6 @@ package com.iafenvoy.origins.registry;
 import com.iafenvoy.origins.Constants;
 import com.iafenvoy.origins.network.payload.PowerToggleC2SPayload;
 import com.iafenvoy.origins.screen.ViewOriginScreen;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
@@ -25,10 +24,7 @@ public final class OriginsKeyMappings {
     public static final KeyMapping PRIMARY_ACTIVE = new KeyMapping(Constants.PRIMARY_ACTIVE_KEY, GLFW.GLFW_KEY_G, CATEGORY);
     public static final KeyMapping SECONDARY_ACTIVE = new KeyMapping(Constants.SECONDARY_ACTIVE_KEY, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping VIEW_ORIGIN = new KeyMapping("key.origins.view_origin", GLFW.GLFW_KEY_O, CATEGORY);
-    public static final List<KeyMapping> ACTIVATE_KEYS = Util.make(new LinkedList<>(), list -> {
-        list.add(PRIMARY_ACTIVE);
-        list.add(SECONDARY_ACTIVE);
-    });
+    public static final List<KeyMapping> ACTIVATE_KEYS = new LinkedList<>();
 
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {

@@ -66,7 +66,7 @@ public class TogglePower extends Power implements Toggleable {
 
     @Override
     public void toggle(@NotNull OriginDataHolder holder, String key) {
-        if (Objects.equals(this.key.key(), key))
+        if (this.key.match(key))
             holder.getComponentFor(this, ToggleComponent.class).ifPresent(x -> {
                 x.toggle();
                 x.sendMessage(holder, key);
