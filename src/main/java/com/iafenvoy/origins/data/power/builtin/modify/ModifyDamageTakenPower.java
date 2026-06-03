@@ -93,10 +93,11 @@ public class ModifyDamageTakenPower extends Power implements ModifierPowerHelper
         return CODEC;
     }
 
-    public boolean check(Entity entity, DamageSource source, float amount) {
+    private boolean check(Entity entity, DamageSource source, float amount) {
         if (!this.damageCondition.test(source, amount)) return false;
         Entity attacker = source.getEntity();
-        return attacker != null && this.biEntityCondition.test(source.getEntity(), entity);
+        if (attacker == null) return true;
+        return this.biEntityCondition.test(attacker, entity);
     }
 
     public void execute(Entity entity, DamageSource source) {
@@ -109,17 +110,19 @@ public class ModifyDamageTakenPower extends Power implements ModifierPowerHelper
 
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent.Pre event) {
-        Entity source = event.getSource().getEntity(), target = event.getEntity();
-        if (source == null) return;
+        Entity target = event.getEntity();
+        DamageSource s = event.getSource();
         OriginDataHolder holder = OriginDataHolder.get(target);
         holder.streamActivePowers(ModifyDamageTakenPower.class).forEach(power -> {
             float baseValue = event.getNewDamage();
-            DamageSource s = event.getSource();
-            if (power.biEntityCondition.test(source, target) && power.damageCondition.test(s, baseValue)) {
+            if (power.check(target, s, baseValue)) {
                 event.setNewDamage(power.modify(holder, baseValue));
                 power.selfAction.execute(target);
-                power.attackerAction.execute(source);
-                power.biEntityAction.execute(source, target);
+                Entity attacker = s.getEntity();
+                if (attacker != null) {
+                    power.attackerAction.execute(attacker);
+                    power.biEntityAction.execute(attacker, target);
+                }
             }
         });
     }
