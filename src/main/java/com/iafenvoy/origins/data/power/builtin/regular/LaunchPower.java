@@ -66,7 +66,7 @@ public class LaunchPower extends HasCooldownPower implements Toggleable {
 
     @Override
     public void toggle(@NotNull OriginDataHolder holder, String key) {
-        if (!this.key.match(key)) return;
+        if (!this.key.match(key) || !this.isActive(holder)) return;
         this.getCooldownComponent(holder).useIfReady(() -> {
                 Entity entity = holder.getEntity();
                 if (entity.level() instanceof ServerLevel serverLevel) {

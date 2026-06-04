@@ -3,7 +3,6 @@ package com.iafenvoy.origins.attachment;
 import com.iafenvoy.origins.data._common.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
-import com.iafenvoy.origins.data.power.builtin.regular.TogglePower;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -38,14 +37,6 @@ public record PowerHelper(OriginDataHolder holder) {
     }
 
     public void toggle(String key) {
-        this.holder.streamPowers(Toggleable.class).filter(x -> {
-            //because of TogglePower isActive override
-            if (x instanceof TogglePower)
-                return true;
-            else if (x instanceof Power p)
-                return p.isActive(this.holder);
-            else
-                return false;
-        }).forEach(x -> x.toggle(this.holder, key));
+        this.holder.streamPowers(Toggleable.class).forEach(x -> x.toggle(this.holder, key));
     }
 }
