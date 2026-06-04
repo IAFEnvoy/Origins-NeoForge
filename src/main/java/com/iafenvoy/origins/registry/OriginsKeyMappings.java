@@ -34,7 +34,7 @@ public final class OriginsKeyMappings {
     }
 
     @SubscribeEvent
-    public static void clientTick(ClientTickEvent.Post event) {
+    public static void clientTick(ClientTickEvent.Pre event) {
         if (VIEW_ORIGIN.consumeClick()) Minecraft.getInstance().setScreen(new ViewOriginScreen());
         for (KeyMapping key : ACTIVATE_KEYS)
             if (key.consumeClick()) PacketDistributor.sendToServer(new PowerToggleC2SPayload(key.getName()));

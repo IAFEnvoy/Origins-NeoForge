@@ -37,6 +37,10 @@ public record PowerHelper(OriginDataHolder holder) {
     }
 
     public void toggle(String key) {
-        this.holder.streamPowers(Toggleable.class).forEach(x -> x.toggle(this.holder, key));
+        this.holder.streamPowers(Toggleable.class).filter(x -> {
+            if (x instanceof Power p)
+                return p.isActive(this.holder);
+            return false;
+        }).forEach(x -> x.toggle(this.holder, key));
     }
 }

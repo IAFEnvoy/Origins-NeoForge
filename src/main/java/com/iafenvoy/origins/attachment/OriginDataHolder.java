@@ -92,16 +92,16 @@ public final class OriginDataHolder {
 
     private void registerToggleKeysFromExistingPowers() {
         OriginsKeyMappings.ACTIVATE_KEYS.clear();
-        OriginsKeyMappings.ACTIVATE_KEYS.add(OriginsKeyMappings.PRIMARY_ACTIVE);
-        OriginsKeyMappings.ACTIVATE_KEYS.add(OriginsKeyMappings.SECONDARY_ACTIVE);
 
         for (PowerHolder powerHolder : this.getAllPowers()) {
             Power power = powerHolder.power();
             if (power instanceof Toggleable toggleable) {
-                KeyMapping key = KeyMapping.ALL.entrySet().stream()
-                        .filter(e -> Objects.equals(toggleable.getKey().key(), e.getValue().getName())).findFirst()
-                        .map(Map.Entry::getValue).orElse(null);
-                if (key != null && !OriginsKeyMappings.ACTIVATE_KEYS.contains(key)) {
+                List<KeyMapping> keys = KeyMapping.ALL.entrySet().stream()
+                        .filter(e -> Objects.equals(toggleable.getKey().key(), e.getValue().getName()))
+                        .map(Map.Entry::getValue).toList();
+                for (KeyMapping key : keys) {
+                    Origins.LOGGER.debug("Registering toggle key {} for power {} of entity {}", key.getName(),
+                            powerHolder.id(), this.entity);
                     OriginsKeyMappings.ACTIVATE_KEYS.add(key);
                 }
             }

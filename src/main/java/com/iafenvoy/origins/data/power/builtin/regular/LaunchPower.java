@@ -66,8 +66,8 @@ public class LaunchPower extends HasCooldownPower implements Toggleable {
 
     @Override
     public void toggle(@NotNull OriginDataHolder holder, String key) {
+        if (!this.key.match(key)) return;
         this.getCooldownComponent(holder).useIfReady(() -> {
-            if (this.key.match(key)) {
                 Entity entity = holder.getEntity();
                 if (entity.level() instanceof ServerLevel serverLevel) {
                     entity.push(0, this.speed, 0);
@@ -76,7 +76,6 @@ public class LaunchPower extends HasCooldownPower implements Toggleable {
                     for (int i = 0; i < 4; ++i)
                         serverLevel.sendParticles(ParticleTypes.CLOUD, entity.getX(), entity.getRandomY(), entity.getZ(), 8, entity.level().random.nextGaussian(), 0.0D, entity.level().random.nextGaussian(), 0.5);
                 }
-            }
         });
     }
 }
