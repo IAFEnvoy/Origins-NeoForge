@@ -2,10 +2,10 @@ package com.iafenvoy.origins.data.power.component.builtin;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class CooldownComponent extends PowerComponent {
@@ -60,7 +60,7 @@ public class CooldownComponent extends PowerComponent {
     }
 
     @Override
-    public void tick(OriginDataHolder holder, ResourceLocation id) {
+    public void tick(OriginDataHolder holder, PowerHolder parent) {
         if (!this.canUse()) {
             this.value--;
             this.markDirty();

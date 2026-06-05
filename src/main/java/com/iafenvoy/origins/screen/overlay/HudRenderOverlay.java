@@ -5,7 +5,6 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.config.OriginsConfig;
 import com.iafenvoy.origins.data._common.HudRender;
 import com.iafenvoy.origins.data.power.HudRenderable;
-import com.iafenvoy.origins.data.power.Power;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -46,7 +45,6 @@ public enum HudRenderOverlay implements LayeredDraw.Layer {
         int iconSize = 8;
 
         for (HudRenderable h : holder.streamPowers(HudRenderable.class).filter(h -> h.getHudRenderData().isPresent()).sorted(Comparator.comparingInt(h -> h.getHudRenderData().get().order())).toList()) {
-            Power power = h.getPowerForHudRender();
             HudRender render = h.getHudRenderData().orElse(null);
             if (render == null || !render.shouldRenderInActive() && !h.shouldRender(holder) || !render.condition().test(player))
                 continue;

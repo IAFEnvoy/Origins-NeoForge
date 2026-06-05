@@ -4,6 +4,7 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.builtin.regular.EntitySetPower;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -41,7 +42,8 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
     }
 
     @Override
-    public void tick(OriginDataHolder holder, ResourceLocation id) {
+    public void tick(OriginDataHolder holder, PowerHolder parent) {
+        if (!(parent.power() instanceof EntitySetPower power)) return;
         Entity entity = holder.getEntity();
         List<UUID> removal = new LinkedList<>();
         for (Map.Entry<UUID, Integer> e : this.set.entrySet()) {
@@ -50,8 +52,7 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
                 removal.add(e.getKey());
                 if (entity.level() instanceof ServerLevel serverLevel) {
                     Entity l = serverLevel.getEntity(e.getKey());
-                    if (l != null)
-                        holder.streamPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(entity, l));
+                    if (l != null) power.getActionOnRemove().execute(entity, l);
                 }
             } else if (value > 0) this.set.computeIfPresent(e.getKey(), (u, i) -> i - 1);
         }

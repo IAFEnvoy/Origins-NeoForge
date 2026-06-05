@@ -96,9 +96,7 @@ public final class OriginDataHolder {
         for (PowerHolder powerHolder : this.getAllPowers()) {
             Power power = powerHolder.power();
             if (power instanceof Toggleable toggleable) {
-                List<KeyMapping> keys = KeyMapping.ALL.entrySet().stream()
-                        .filter(e -> Objects.equals(toggleable.getKey().key(), e.getValue().getName()))
-                        .map(Map.Entry::getValue).toList();
+                List<KeyMapping> keys = KeyMapping.ALL.values().stream().filter(keyMapping -> Objects.equals(toggleable.getKey().key(), keyMapping.getName())).toList();
                 OriginsKeyMappings.ACTIVATE_KEYS.addAll(keys);
             }
         }
@@ -192,7 +190,7 @@ public final class OriginDataHolder {
         power.power().grant(this);
         if (power.power() instanceof MultiplePower multiple)
             multiple.getPowers(power.id()).forEach(this::grantPower);
-        registerToggleKeysFromExistingPowers();
+        this.registerToggleKeysFromExistingPowers();
     }
 
     public void revokePower(ResourceLocation source, Holder<Power> power) {
@@ -240,7 +238,7 @@ public final class OriginDataHolder {
     //Only for toggle and hud render, which need to bypass active logic
     private <T> Stream<T> streamPowers(Class<T> clazz, Predicate<ResourceLocation> idChecker) {
         Stream<Power> powers = this.getAllPowers().stream().filter(x -> idChecker.test(x.id())).map(PowerHolder::power).filter(power -> clazz.isAssignableFrom(power.getClass()));
-        if (entity.level().isClientSide()) {
+        if (this.entity.level().isClientSide()) {
             powers = powers.filter(power -> {
                 if (power.getSettings().condition() instanceof Sided condition) {
                     return !condition.server();
@@ -290,10 +288,6 @@ public final class OriginDataHolder {
         return this.getComponent(power.getId(this.access), clazz);
     }
 
-    public <T> Optional<T> getComponentFor(Holder<Power> power, Class<T> clazz) {
-        return this.getComponentFor(power.value(), clazz);
-    }
-
     public <H, T extends ComponentHolderProvider<H>> Optional<H> getComponentHolder(ResourceLocation id, Class<T> clazz) {
         return Optional.ofNullable(this.data.getComponents().get(id)).map(x -> x.get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast).map(x -> x.constructHolder(this));
     }
@@ -310,11 +304,17 @@ public final class OriginDataHolder {
 
     public void tick() {
         long currentTick = Proxies.TICK_COUNT.getAsLong();
-        this.streamPowers(Power.class).filter(p -> p.tickInterval() <= 0 || currentTick % p.tickInterval() == 0).forEach(p -> p.tick(this));
-        this.data.getComponents().forEach((id, map) -> map.values().forEach(c -> c.tick(this, id)));
-        //Check components and update
-        if (this.data.getComponents().values().stream().flatMap(x -> x.values().stream()).map(PowerComponent::isDirty).reduce(false, (p, c) -> p | c))
-            this.sync();
+        Set<PowerHolder> powers = this.getAllPowers();
+        powers.stream().map(PowerHolder::power).filter(p -> p.tickInterval() <= 0 || currentTick % p.tickInterval() == 0).forEach(p -> p.tick(this));
+        //Update components
+        boolean changed = false;
+        for (PowerHolder power : powers)
+            for (Map.Entry<Class<? extends PowerComponent>, PowerComponent> entry : this.data.getComponents().getOrDefault(power.id(), new LinkedHashMap<>()).entrySet()) {
+                PowerComponent component = entry.getValue();
+                component.tick(this, power);
+                if (component.isDirty()) changed = true;
+            }
+        if (changed) this.sync();
     }
 
     @ApiStatus.Internal
