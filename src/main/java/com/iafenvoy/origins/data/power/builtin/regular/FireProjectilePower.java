@@ -127,6 +127,7 @@ public class FireProjectilePower extends HasCooldownPower implements Toggleable 
 
     @Override
     public void toggle(@NotNull OriginDataHolder holder, String key) {
+        if (!this.key.match(key) || !this.isActive(holder)) return;
         Entity entity = holder.getEntity();
         this.getCooldownComponent(holder).useIfReady(() -> {
             if (this.interval <= 0) Timeout.create(this.startDelay, () -> {

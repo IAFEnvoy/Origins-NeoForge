@@ -6,7 +6,6 @@ import com.iafenvoy.origins.data.power.builtin.regular.NightVisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ShaderPower;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
@@ -67,11 +66,6 @@ public abstract class GameRendererMixin {
 
     @Shadow
     public abstract void loadEffect(ResourceLocation resourceLocation);
-
-    @Inject(method = "getNightVisionScale", at = @At("HEAD"), cancellable = true)
-    private static void nightVisionPatch(LivingEntity livingEntity, float nanoTime, CallbackInfoReturnable<Float> cir) {
-        if (!livingEntity.hasEffect(MobEffects.NIGHT_VISION)) cir.setReturnValue(0F);
-    }
 
     @ModifyExpressionValue(method = "getFov", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;getFluidInCamera()Lnet/minecraft/world/level/material/FogType;"))
     private FogType modifySubmersionType(FogType original, Camera camera) {
@@ -169,8 +163,9 @@ public abstract class GameRendererMixin {
             ci.cancel();
     }
 
-    @ModifyReturnValue(method = "getNightVisionScale", at = @At("RETURN"))
-    private static float updateNightVisionScale(float original, LivingEntity living, float tickDelta) {
-        return !living.hasEffect(MobEffects.NIGHT_VISION) ? OriginDataHolder.get(living).streamActivePowers(NightVisionPower.class).map(NightVisionPower::getStrength).max(Float::compareTo).orElse(original) : original;
+    @Inject(method = "getNightVisionScale", at = @At("HEAD"), cancellable = true)
+    private static void updateNightVisionScale(LivingEntity living, float tickDelta, CallbackInfoReturnable<Float> cir) {
+        if (!living.hasEffect(MobEffects.NIGHT_VISION) && OriginDataHolder.get(living).hasActivePower(NightVisionPower.class))
+            cir.setReturnValue(OriginDataHolder.get(living).streamActivePowers(NightVisionPower.class).map(NightVisionPower::getStrength).max(Float::compareTo).orElse(1F));
     }
 }
