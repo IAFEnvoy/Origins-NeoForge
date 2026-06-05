@@ -99,11 +99,7 @@ public final class OriginDataHolder {
                 List<KeyMapping> keys = KeyMapping.ALL.entrySet().stream()
                         .filter(e -> Objects.equals(toggleable.getKey().key(), e.getValue().getName()))
                         .map(Map.Entry::getValue).toList();
-                for (KeyMapping key : keys) {
-                    Origins.LOGGER.debug("Registering toggle key {} for power {} of entity {}", key.getName(),
-                            powerHolder.id(), this.entity);
-                    OriginsKeyMappings.ACTIVATE_KEYS.add(key);
-                }
+                OriginsKeyMappings.ACTIVATE_KEYS.addAll(keys);
             }
         }
     }
