@@ -14,7 +14,6 @@ import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.Prioritized;
-import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.MultiplePower;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
@@ -33,7 +32,6 @@ import com.iafenvoy.origins.util.HolderHelper;
 import com.iafenvoy.origins.util.RandomHelper;
 
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -88,18 +86,6 @@ public final class OriginDataHolder {
 
     public PowerHelper getHelper() {
         return this.helper;
-    }
-
-    private void registerToggleKeysFromExistingPowers() {
-        OriginsKeyMappings.ACTIVATE_KEYS.clear();
-
-        for (PowerHolder powerHolder : this.getAllPowers()) {
-            Power power = powerHolder.power();
-            if (power instanceof Toggleable toggleable) {
-                List<KeyMapping> keys = KeyMapping.ALL.values().stream().filter(keyMapping -> Objects.equals(toggleable.getKey().key(), keyMapping.getName())).toList();
-                OriginsKeyMappings.ACTIVATE_KEYS.addAll(keys);
-            }
-        }
     }
 
     //Query
@@ -190,7 +176,7 @@ public final class OriginDataHolder {
         power.power().grant(this);
         if (power.power() instanceof MultiplePower multiple)
             multiple.getPowers(power.id()).forEach(this::grantPower);
-        this.registerToggleKeysFromExistingPowers();
+        OriginsKeyMappings.registerKeyMappingsFromPowers(this.getAllPowers());
     }
 
     public void revokePower(ResourceLocation source, Holder<Power> power) {
@@ -378,6 +364,6 @@ public final class OriginDataHolder {
 
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        OriginDataHolder.get(event.getEntity()).registerToggleKeysFromExistingPowers();
+        OriginsKeyMappings.registerKeyMappingsFromPowers(OriginDataHolder.get(event.getEntity()).getAllPowers());
     }
 }

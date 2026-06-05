@@ -1,6 +1,9 @@
 package com.iafenvoy.origins.registry;
 
 import com.iafenvoy.origins.Constants;
+import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.Toggleable;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.network.payload.PowerToggleC2SPayload;
 import com.iafenvoy.origins.screen.ViewOriginScreen;
 import net.minecraft.client.KeyMapping;
@@ -16,6 +19,8 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(Dist.CLIENT)
@@ -25,6 +30,18 @@ public final class OriginsKeyMappings {
     public static final KeyMapping SECONDARY_ACTIVE = new KeyMapping(Constants.SECONDARY_ACTIVE_KEY, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping VIEW_ORIGIN = new KeyMapping("key.origins.view_origin", GLFW.GLFW_KEY_O, CATEGORY);
     public static final List<KeyMapping> ACTIVATE_KEYS = new LinkedList<>();
+
+    public static void registerKeyMappingsFromPowers(Set<PowerHolder> powerHolders) {
+        ACTIVATE_KEYS.clear();
+
+        for (PowerHolder powerHolder : powerHolders) {
+            Power power = powerHolder.power();
+            if (power instanceof Toggleable toggleable) {
+                List<KeyMapping> keys = KeyMapping.ALL.values().stream().filter(keyMapping -> Objects.equals(toggleable.getKey().key(), keyMapping.getName())).toList();
+                ACTIVATE_KEYS.addAll(keys);
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
