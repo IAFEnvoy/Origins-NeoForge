@@ -46,8 +46,13 @@ neoForge {
     runs {
         client {
             client()
-
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        clientB {
+            client()
+            programArgument '--username=Dev-B'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
@@ -165,6 +170,10 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+tasks.named('runServer', JavaExec).configure {
+    standardInput = System.in
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.

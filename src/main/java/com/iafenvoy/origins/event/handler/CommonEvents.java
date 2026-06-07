@@ -5,7 +5,10 @@ import com.iafenvoy.origins.data.power.builtin.action.ActionOnBeingUsedPower;
 import com.iafenvoy.origins.data.power.builtin.action.ActionOnEntityUsePower;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventBeingUsedPower;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventEntityUsePower;
+import com.iafenvoy.origins.network.payload.DismountPlayerS2CPayload;
 import com.iafenvoy.origins.util.MiscUtil;
+
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +17,9 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
+import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -41,6 +46,12 @@ public final class CommonEvents {
                 event.setCanceled(true);
             }
         });
+    }
+
+    @SubscribeEvent
+    public static void onEntityMount(EntityMountEvent event) {
+        if (event.isDismounting() && event.getEntityBeingMounted() instanceof ServerPlayer)
+            PacketDistributor.sendToAllPlayers(new DismountPlayerS2CPayload(event.getEntityMounting().getId()));
     }
 
     //If the interaction isn't canceled, let other mod interaction play, as this can cancel interactions.
