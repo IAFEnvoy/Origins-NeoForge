@@ -23,7 +23,6 @@ import com.iafenvoy.origins.event.GrantOriginEvent;
 import com.iafenvoy.origins.event.GrantPowerEvent;
 import com.iafenvoy.origins.event.RevokeOriginEvent;
 import com.iafenvoy.origins.event.RevokePowerEvent;
-import com.iafenvoy.origins.network.payload.NotifyKeymapsS2CPayload;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
@@ -362,12 +361,5 @@ public final class OriginDataHolder {
             holder.setOrigin(entry.getKey(), upgrade.origin());
             upgrade.announcement().ifPresent(player::sendSystemMessage);
         }
-    }
-
-    @ApiStatus.Internal
-    @SubscribeEvent
-    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player)
-            PacketDistributor.sendToPlayer(player, NotifyKeymapsS2CPayload.INSTANCE);
     }
 }
