@@ -20,7 +20,6 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<NoOpAction>> NO_OP = REGISTRY.register(Constants.NO_OP_KEY, () -> NoOpAction.CODEC);
     //List
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ActionOnSetAction>> ACTION_ON_SET = REGISTRY.register("action_on_set", () -> ActionOnSetAction.CODEC);
-    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddEffectAction>> ADD_EFFECT = REGISTRY.register("add_effect", () -> AddEffectAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddVelocityAction>> ADD_VELOCITY = REGISTRY.register("add_velocity", () -> AddVelocityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddXPAction>> ADD_XP = REGISTRY.register("add_xp", () -> AddXPAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ApplyEffectAction>> APPLY_EFFECT = REGISTRY.register("apply_effect", () -> ApplyEffectAction.CODEC);
