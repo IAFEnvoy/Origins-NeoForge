@@ -1,19 +1,26 @@
 package com.iafenvoy.origins.network;
 
+import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
+import com.iafenvoy.origins.network.payload.DismountPlayerS2CPayload;
+import com.iafenvoy.origins.network.payload.MountPlayerS2CPayload;
+import com.iafenvoy.origins.network.payload.NotifyKeymapsS2CPayload;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import com.iafenvoy.origins.network.payload.ReapplyShadersS2CPayload;
 import com.iafenvoy.origins.network.payload.ReloadLevelRendererS2CPayload;
+import com.iafenvoy.origins.registry.OriginsKeyMappings;
 import com.iafenvoy.origins.render.LevelRenderHelper;
 import com.iafenvoy.origins.screen.ChooseOriginScreen;
 import com.iafenvoy.origins.screen.WaitForNextLayerScreen;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -44,6 +51,33 @@ public final class ClientNetworkHandler {
         LevelRenderHelper.reload();
     }
 
+    public static void onNotifyKeymaps(NotifyKeymapsS2CPayload payload, IPayloadContext context) {
+        OriginsKeyMappings.INSTANCE.registerKeyMappingsFromPowers(OriginDataHolder.get(context.player()).getAllPowers());
+    }
+
+    public static void onMountPlayer(MountPlayerS2CPayload payload, IPayloadContext context) {
+        Entity source = context.player().level().getEntity(payload.source());
+        Entity target = context.player().level().getEntity(payload.target());
+
+        if (source == null || target == null) {
+            Origins.LOGGER.warn("Received MountPlayerS2CPayload with invalid entity IDs: source={}, target={}", payload.source(), payload.target());
+            return;
+        }
+
+        source.startRiding(target);
+    }
+
+    public static void onDismountPlayer(DismountPlayerS2CPayload payload, IPayloadContext context) {
+        Entity dismounter = context.player().level().getEntity(payload.dismountingEntity());
+
+        if (dismounter == null) {
+            Origins.LOGGER.warn("Received DismountPlayerS2CPayload with invalid entity ID: dismountingEntity={}", payload.dismountingEntity());
+            return;
+        }
+
+        dismounter.stopRiding();
+    }
+
     //If I don't call in a single class server will crash
     private static final class ClientCall {
         public static void openOriginScreen(List<Holder<Layer>> layers, boolean showBackground) {
@@ -55,4 +89,6 @@ public final class ClientNetworkHandler {
             minecraft.gameRenderer.checkEntityPostEffect(minecraft.options.getCameraType().isFirstPerson() ? minecraft.getCameraEntity() : null);
         }
     }
+
+
 }

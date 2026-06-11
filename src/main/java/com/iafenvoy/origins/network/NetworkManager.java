@@ -17,6 +17,9 @@ public final class NetworkManager {
                 .playToClient(OpenChooseOriginScreenS2CPayload.TYPE, OpenChooseOriginScreenS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::openOriginScreen))
                 .playToServer(PowerToggleC2SPayload.TYPE, PowerToggleC2SPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ServerNetworkHandler::onPowerToggle))
                 .playToClient(ReapplyShadersS2CPayload.TYPE, ReapplyShadersS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onReapplyShaders))
-                .playToClient(ReloadLevelRendererS2CPayload.TYPE, ReloadLevelRendererS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onReloadLevelRenderer));
+                .playToClient(ReloadLevelRendererS2CPayload.TYPE, ReloadLevelRendererS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onReloadLevelRenderer))
+                .playToClient(NotifyKeymapsS2CPayload.TYPE, NotifyKeymapsS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onNotifyKeymaps))
+                .playToClient(MountPlayerS2CPayload.TYPE, MountPlayerS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onMountPlayer))
+                .playToClient(DismountPlayerS2CPayload.TYPE, DismountPlayerS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onDismountPlayer));
     }
 }
