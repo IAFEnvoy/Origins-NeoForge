@@ -38,9 +38,10 @@ public class Entity$ClientMixin {
 
     @Inject(method = "isCurrentlyGlowing", at = @At("HEAD"), cancellable = true)
     private void handleGlowing(CallbackInfoReturnable<Boolean> cir) {
+        Entity entity = this.origins$self();
+        if (!entity.level().isClientSide) return;
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
-        Entity entity = this.origins$self();
         if (Stream.concat(
                 OriginDataHolder.get(player).streamActivePowers(EntityGlowPower.class),
                 OriginDataHolder.get(entity).streamActivePowers(SelfGlowPower.class)

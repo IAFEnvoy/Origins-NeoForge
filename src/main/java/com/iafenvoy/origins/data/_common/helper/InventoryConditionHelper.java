@@ -33,6 +33,13 @@ public interface InventoryConditionHelper {
 
     default IntSet deduplicateSlots(Entity entity) {
         IntSet slots = new IntOpenHashSet(this.slot());
+        if (slots.isEmpty()) {
+            ContainerWrapper container = this.getWrappedContainer(entity);
+            for (int i = 0; i < 41; i++) {
+                if (container.get(i) != SlotAccess.NULL)
+                    slots.add(i);
+            }
+        }
         int hotbarSlot = getDuplicatedSlotIndex(entity);
         if (hotbarSlot >= 0 && slots.contains(hotbarSlot))
             Optional.ofNullable(SlotRanges.nameToIds("weapon.mainhand")).map(SlotRange::slots).ifPresent(x -> x.forEach(slots::remove));
