@@ -76,7 +76,10 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyReturnValue(method = "onClimbable", at = @At("RETURN"))
     private boolean handleClimbing(boolean original) {
         if (original) return true;
-        if (this.isSpectator() || !OriginDataHolder.get(this).hasActivePower(ClimbingPower.class)) return false;
+        if (this.isSpectator()) return false;
+        OriginDataHolder holder = OriginDataHolder.get(this);
+        if (holder.streamActivePowers(ClimbingPower.class).noneMatch(x -> x.canClimb(this)))
+            return false;
         this.lastClimbablePos = Optional.of(this.blockPosition());
         return true;
     }
@@ -84,7 +87,7 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyReturnValue(method = "isSuppressingSlidingDownLadder", at = @At("RETURN"))
     private boolean handleClimbingHold(boolean original) {
         OriginDataHolder holder = OriginDataHolder.get(this);
-        return original || holder.streamActivePowers(ClimbingPower.class).anyMatch(x -> x.isActive(holder) && x.canHold(this));
+        return original || holder.streamActivePowers(ClimbingPower.class).anyMatch(x -> x.canHold(this));
     }
 
     @ModifyVariable(method = "eat*", at = @At("HEAD"), argsOnly = true)
