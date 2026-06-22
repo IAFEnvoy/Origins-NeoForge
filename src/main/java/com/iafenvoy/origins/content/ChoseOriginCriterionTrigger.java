@@ -7,6 +7,7 @@ import com.iafenvoy.origins.registry.OriginsCriterionTriggers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.criterion.*;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger.SimpleInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -28,12 +29,13 @@ public class ChoseOriginCriterionTrigger extends SimpleCriterionTrigger<ChoseOri
     }
 
     public record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<Holder<Layer>> layer,
-                                  Holder<Origin> origin) implements SimpleInstance {
+            Holder<Origin> origin) implements SimpleInstance {
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(ChoseOriginCriterionTrigger.TriggerInstance::player),
+                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player")
+                        .forGetter(ChoseOriginCriterionTrigger.TriggerInstance::player),
                 Layer.CODEC.optionalFieldOf("layer").forGetter(ChoseOriginCriterionTrigger.TriggerInstance::layer),
-                Origin.CODEC.fieldOf("origin").forGetter(ChoseOriginCriterionTrigger.TriggerInstance::origin)
-        ).apply(inst, TriggerInstance::new));
+                Origin.CODEC.fieldOf("origin").forGetter(ChoseOriginCriterionTrigger.TriggerInstance::origin))
+                .apply(inst, TriggerInstance::new));
 
         public boolean matches(Holder<Layer> layer, Holder<Origin> origin) {
             return this.layer.map(l -> Objects.equals(l, layer)).orElse(true) && Objects.equals(this.origin, origin);
@@ -51,4 +53,3 @@ public class ChoseOriginCriterionTrigger extends SimpleCriterionTrigger<ChoseOri
             OriginsCriterionTriggers.CHOSE_ORIGIN.get().trigger(player, event.getLayer(), event.getOrigin());
     }
 }
-
