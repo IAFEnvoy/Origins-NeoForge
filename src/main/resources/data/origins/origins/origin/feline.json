@@ -1,0 +1,10 @@
+{
+  "powers": [
+    "#origins:feline"
+  ],
+  "icon": {
+    "id": "minecraft:orange_wool"
+  },
+  "order": 0,
+  "impact": 2
+}

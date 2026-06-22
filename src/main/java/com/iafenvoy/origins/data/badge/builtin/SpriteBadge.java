@@ -1,0 +1,18 @@
+package com.iafenvoy.origins.data.badge.builtin;
+
+import com.iafenvoy.origins.data.badge.Badge;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
+
+public record SpriteBadge(Identifier sprite) implements Badge {
+    public static final MapCodec<SpriteBadge> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            Identifier.CODEC.fieldOf("sprite").forGetter(SpriteBadge::sprite)
+    ).apply(i, SpriteBadge::new));
+
+    @Override
+    public @NotNull MapCodec<? extends Badge> codec() {
+        return CODEC;
+    }
+}

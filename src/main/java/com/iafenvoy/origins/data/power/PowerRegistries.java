@@ -1,0 +1,25 @@
+package com.iafenvoy.origins.data.power;
+
+import com.iafenvoy.origins.Constants;
+import com.iafenvoy.origins.Origins;
+import com.mojang.serialization.Lifecycle;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.*;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+
+@EventBusSubscriber
+public final class PowerRegistries {
+    public static final ResourceKey<Registry<MapCodec<? extends Power>>> POWER_TYPE_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(Origins.MOD_ID, "power_type"));
+    public static final DefaultedRegistry<MapCodec<? extends Power>> POWER_TYPE = new DefaultedMappedRegistry<>(Constants.EMPTY_KEY, POWER_TYPE_KEY, Lifecycle.stable(), false);
+
+    public static final ResourceKey<Registry<Power>> POWER_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(Origins.MOD_ID, "power"));
+
+    @SubscribeEvent
+    public static void newRegistries(NewRegistryEvent event) {
+        event.register(POWER_TYPE);
+    }
+}

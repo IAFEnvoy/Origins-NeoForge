@@ -1,0 +1,27 @@
+package com.iafenvoy.origins.data.condition.builtin.bientity;
+
+import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.condition.BiEntityCondition;
+import com.iafenvoy.origins.data.power.component.builtin.EntitySetComponent;
+import com.iafenvoy.origins.util.codec.WildcardCodec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
+
+public record InSetCondition(Identifier set) implements BiEntityCondition {
+    public static final MapCodec<InSetCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            WildcardCodec.INSTANCE.fieldOf("set").forGetter(InSetCondition::set)
+    ).apply(i, InSetCondition::new));
+
+    @Override
+    public @NotNull MapCodec<? extends BiEntityCondition> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public boolean test(@NotNull Entity source, @NotNull Entity target) {
+        return OriginDataHolder.get(source).getComponentHolder(this.set, EntitySetComponent.class).map(x -> x.containEntity(target)).orElse(false);
+    }
+}

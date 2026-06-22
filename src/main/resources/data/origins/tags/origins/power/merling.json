@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "origins:water_breathing",
+    "origins:water_vision",
+    "origins:aqua_affinity",
+    "origins:swim_speed",
+    "origins:like_water",
+    "origins:conduit_power_on_land",
+    "origins:air_from_potions"
+  ]
+}

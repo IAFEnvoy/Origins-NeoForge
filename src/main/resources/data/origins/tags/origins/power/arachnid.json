@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "origins:climbing",
+    "origins:master_of_webs",
+    "origins:carnivore",
+    "origins:fragile"
+  ]
+}

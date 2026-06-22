@@ -1,0 +1,69 @@
+package com.iafenvoy.origins.data.power.component.builtin;
+
+import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.power.component.PowerComponent;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.NotNull;
+
+public class CooldownComponent extends PowerComponent {
+    public static final MapCodec<CooldownComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            Codec.INT.fieldOf("defaultValue").forGetter(CooldownComponent::getDefaultValue),
+            Codec.INT.fieldOf("value").forGetter(CooldownComponent::getValue)
+    ).apply(i, CooldownComponent::new));
+    private final int defaultValue;
+    private int value;
+
+    public CooldownComponent(int defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public CooldownComponent(int defaultValue, int value) {
+        this(defaultValue);
+        this.value = value;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends PowerComponent> codec() {
+        return CODEC;
+    }
+
+    public int getDefaultValue() {
+        return this.defaultValue;
+    }
+
+    public int getValue() {
+        return this.value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+        this.markDirty();
+    }
+
+    public void startCooldown() {
+        this.value = this.defaultValue;
+        this.markDirty();
+    }
+
+    public boolean canUse() {
+        return this.value <= 0;
+    }
+
+    public void useIfReady(Runnable runnable) {
+        if (this.canUse()) {
+            runnable.run();
+            this.startCooldown();
+        }
+    }
+
+    @Override
+    public void tick(OriginDataHolder holder, PowerHolder parent) {
+        if (!this.canUse()) {
+            this.value--;
+            this.markDirty();
+        }
+    }
+}

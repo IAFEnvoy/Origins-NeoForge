@@ -1,0 +1,8 @@
+{
+  "java.jdt.ls.java.home": "E:\\Scoop\\apps\\temurin25-jdk\\current",
+  "java.import.gradle.java.home": "E:\\Scoop\\apps\\temurin25-jdk\\current",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.import.gradle.wrapper.enabled": true,
+  "gradle.nestedProjects": false,
+  "java.compile.nullAnalysis.mode": "automatic"
+}

@@ -1,0 +1,10 @@
+{
+  "powers": [
+    "#origins:arachnid"
+  ],
+  "icon": {
+    "id": "minecraft:cobweb"
+  },
+  "order": 1,
+  "impact": 1
+}

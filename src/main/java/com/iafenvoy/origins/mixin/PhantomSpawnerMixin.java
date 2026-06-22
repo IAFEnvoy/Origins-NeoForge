@@ -1,0 +1,19 @@
+package com.iafenvoy.origins.mixin;
+
+import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.power.builtin.modify.ModifyInsomniaTicksPower;
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.levelgen.PhantomSpawner;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+
+@Mixin(PhantomSpawner.class)
+public class PhantomSpawnerMixin {
+    // 这是处理此问题的更好方式，修改后的失眠计时可以正确钳制。
+    @ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(III)I"), index = 0)
+    private int modifyTicks(int original, @Local ServerPlayer serverplayer) {
+        return OriginDataHolder.get(serverplayer).getHelper().modify(ModifyInsomniaTicksPower.class, original);
+    }
+}

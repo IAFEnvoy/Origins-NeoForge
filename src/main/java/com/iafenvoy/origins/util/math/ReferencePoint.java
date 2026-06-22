@@ -1,0 +1,40 @@
+package com.iafenvoy.origins.util.math;
+
+import com.mojang.serialization.Codec;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.LevelData;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+import java.util.function.BiFunction;
+
+public enum ReferencePoint implements StringRepresentable {
+    WORLD_SPAWN((level, allowNull) -> {
+        if (allowNull && level.dimension() != Level.OVERWORLD) return null;
+        LevelData data = level.getLevelData();
+        BlockPos spawnPos = data.getRespawnData().pos();
+        if (!level.getWorldBorder().isWithinBounds(spawnPos))
+            spawnPos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, new BlockPos((int) level.getWorldBorder().getCenterX(), 0, (int) level.getWorldBorder().getCenterZ()));
+        return new Vec3(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
+    }),
+    WORLD_ORIGIN((level, allowNull) -> Vec3.ZERO);
+    public static final Codec<ReferencePoint> CODEC = StringRepresentable.fromValues(ReferencePoint::values);
+    private final BiFunction<Level, Boolean, Vec3> processor;
+
+    ReferencePoint(BiFunction<Level, Boolean, Vec3> processor) {
+        this.processor = processor;
+    }
+
+    public BiFunction<Level, Boolean, Vec3> getProcessor() {
+        return this.processor;
+    }
+
+    @Override
+    public @NotNull String getSerializedName() {
+        return this.name().toLowerCase(Locale.ROOT);
+    }
+}

@@ -1,0 +1,175 @@
+package com.iafenvoy.origins.command;
+
+import com.iafenvoy.origins.Origins;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.content.OrbOfOriginItem;
+import com.iafenvoy.origins.data.layer.Layer;
+import com.iafenvoy.origins.data.layer.LayerRegistries;
+import com.iafenvoy.origins.data.origin.Origin;
+import com.iafenvoy.origins.data.origin.OriginRegistries;
+import com.iafenvoy.origins.util.HolderHelper;
+import com.iafenvoy.origins.util.RandomHelper;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceArgument;
+import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+import net.minecraft.commands.Commands;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
+
+public final class OriginCommand {
+    public static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
+        dispatcher.register(literal("origin")
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .then(literal("set")
+                        .then(argument("targets", EntityArgument.players())
+                                .then(argument("layer", ResourceArgument.resource(context, LayerRegistries.LAYER_KEY))
+                                        .then(argument("origin", ResourceArgument.resource(context, OriginRegistries.ORIGIN_KEY))
+                                                .executes(OriginCommand::set)))))
+                .then(literal("get")
+                        .then(argument("targets", EntityArgument.players())
+                                .then(argument("layer", ResourceArgument.resource(context, LayerRegistries.LAYER_KEY))
+                                        .executes(OriginCommand::get))))
+                .then(literal("has")
+                        .then(argument("targets", EntityArgument.players())
+                                .then(argument("layer", ResourceArgument.resource(context, LayerRegistries.LAYER_KEY))
+                                        .then(argument("origin", ResourceArgument.resource(context, OriginRegistries.ORIGIN_KEY))
+                                                .executes(OriginCommand::has)))))
+                .then(literal("gui")
+                        .executes(ctx -> OriginCommand.openGuiAll(ctx, true))
+                        .then(argument("targets", EntityArgument.players())
+                                .executes(ctx -> OriginCommand.openGuiAll(ctx, false))
+                                .then(argument("layer", ResourceArgument.resource(context, LayerRegistries.LAYER_KEY))
+                                        .executes(OriginCommand::openGuiSpecific))))
+                .then(literal("random")
+                        .executes(ctx -> OriginCommand.randomAll(ctx, true))
+                        .then(argument("targets", EntityArgument.players())
+                                .executes(ctx -> OriginCommand.randomAll(ctx, false))
+                                .then(argument("layer", ResourceArgument.resource(context, LayerRegistries.LAYER_KEY))
+                                        .executes(OriginCommand::randomSpecific))))
+        );
+    }
+
+    private static int set(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        List<ServerPlayer> targets = new ObjectArrayList<>(EntityArgument.getPlayers(context, "targets"));
+        Holder<Layer> layer = ResourceArgument.getResource(context, "layer", LayerRegistries.LAYER_KEY);
+        Holder<Origin> origin = ResourceArgument.getResource(context, "origin", OriginRegistries.ORIGIN_KEY);
+
+        CommandSourceStack source = context.getSource();
+        int processedTargets = 0;
+
+        if (origin.value().equals(Origin.EMPTY) || layer.value().collectOrigins(source.registryAccess(), null).anyMatch(origin::equals)) {
+            for (ServerPlayer target : targets) {
+                OriginDataHolder holder = OriginDataHolder.get(target);
+                holder.setOrigin(layer, origin);
+                holder.sync();
+                processedTargets++;
+            }
+            if (processedTargets == 1)
+                source.sendSuccess(() -> Component.translatable("commands.origin.set.success.single", targets.getFirst().getName(), Layer.getName(layer), Origin.getName(origin)), true);
+            else {
+                int finalProcessedTargets = processedTargets;
+                source.sendSuccess(() -> Component.translatable("commands.origin.set.success.multiple", finalProcessedTargets, Layer.getName(layer), Origin.getName(origin)), true);
+            }
+        } else
+            source.sendFailure(Component.translatableEscape("commands.origin.unregistered_in_layer", HolderHelper.string(origin), HolderHelper.string(layer)));
+        return processedTargets;
+    }
+
+    private static int get(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer target = EntityArgument.getPlayer(context, "targets");
+        Holder<Layer> layer = ResourceArgument.getResource(context, "layer", LayerRegistries.LAYER_KEY);
+        CommandSourceStack source = context.getSource();
+        OriginDataHolder holder = OriginDataHolder.get(target);
+        Holder<Origin> origin = holder.getOrigin(layer);
+        source.sendSuccess(() -> Component.translatable("commands.origin.get.result", target.getName(), Layer.getName(layer), Origin.getName(origin), HolderHelper.string(origin)), false);
+        return 1;
+    }
+
+    private static int has(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
+        Holder<Layer> layer = ResourceArgument.getResource(context, "layer", LayerRegistries.LAYER_KEY);
+        Holder<Origin> origin = ResourceArgument.getResource(context, "origin", OriginRegistries.ORIGIN_KEY);
+        int count = 0;
+        for (ServerPlayer player : targets)
+            if (OriginDataHolder.get(player).hasOrigin(layer, origin)) {
+                source.sendSystemMessage(Component.translatable("commands.origin.has.success", player.getName(), Layer.getName(layer), Origin.getName(origin)));
+                count++;
+            } else
+                source.sendSystemMessage(Component.translatable("commands.origin.has.failure", player.getName(), Layer.getName(layer), Origin.getName(origin)));
+        return count;
+    }
+
+    private static int openGuiAll(CommandContext<CommandSourceStack> context, boolean self) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        Collection<ServerPlayer> targets = self ? List.of(source.getPlayerOrException()) : EntityArgument.getPlayers(context, "targets");
+        for (ServerPlayer target : targets) OrbOfOriginItem.openGuiForLayer(target, null);
+        source.sendSuccess(() -> Component.translatable("commands.origin.gui.all", targets.size()), true);
+        return targets.size();
+    }
+
+    private static int openGuiSpecific(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets");
+        Holder<Layer> layer = ResourceArgument.getResource(context, "layer", LayerRegistries.LAYER_KEY);
+        for (ServerPlayer target : targets) OrbOfOriginItem.openGuiForLayer(target, layer);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.origin.gui.layer", targets.size(), Layer.getName(layer)), true);
+        return targets.size();
+
+    }
+
+    private static int randomAll(CommandContext<CommandSourceStack> context, boolean self) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        Collection<ServerPlayer> targets = self ? List.of(source.getPlayerOrException()) : EntityArgument.getPlayers(context, "targets");
+        List<Holder<Layer>> layers = LayerRegistries.streamRandomizableLayers(context.getSource().registryAccess()).toList();
+
+        for (ServerPlayer target : targets)
+            for (Holder<Layer> layer : layers)
+                setAndGetRandomOrigin(target, layer);
+
+        source.sendSuccess(() -> Component.translatable("commands.origin.random.all", targets.size(), layers.size()), true);
+        return targets.size();
+
+    }
+
+    private static int randomSpecific(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        List<ServerPlayer> targets = new ObjectArrayList<>(EntityArgument.getPlayers(context, "targets"));
+        Holder<Layer> layer = ResourceArgument.getResource(context, "layer", LayerRegistries.LAYER_KEY);
+
+        CommandSourceStack source = context.getSource();
+        AtomicReference<Holder<Origin>> origin = new AtomicReference<>();
+
+        if (layer.value().allowRandom()) {
+            for (ServerPlayer target : targets) origin.set(setAndGetRandomOrigin(target, layer));
+            if (targets.size() > 1)
+                source.sendSuccess(() -> Component.translatable("commands.origin.random.success.multiple", targets.size(), Layer.getName(layer)), true);
+            else
+                source.sendSuccess(() -> Component.translatable("commands.origin.random.success.single", targets.getFirst().getName(), Origin.getName(origin.get()), Layer.getName(layer)), true);
+        }
+
+        return targets.size();
+    }
+
+    private static Holder<Origin> setAndGetRandomOrigin(ServerPlayer target, Holder<Layer> layer) {
+        List<Holder<Origin>> origins = layer.value().collectRandomizableOrigins(target).toList();
+        OriginDataHolder holder = OriginDataHolder.get(target);
+        Holder<Origin> origin = RandomHelper.randomOne(origins);
+        holder.setOrigin(layer, origin);
+        holder.fillAutoChoosing();
+        holder.sync();
+        Origins.LOGGER.info("Player {} was randomly assigned the origin {} for layer {}", target.getName().getString(), HolderHelper.id(origin), HolderHelper.id(layer));
+        return origin;
+    }
+}

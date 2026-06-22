@@ -1,0 +1,41 @@
+{
+  "type": "origins:modify_falling",
+  "modifier": {
+    "operation": "set_total",
+    "value": 0.01
+  },
+  "take_fall_damage": false,
+  "condition": {
+    "type": "origins:or",
+    "conditions": [
+      {
+        "type": "origins:and",
+        "conditions": [
+          {
+            "type": "origins:sneaking"
+          },
+          {
+            "type": "origins:fall_flying"
+          }
+        ]
+      },
+      {
+        "type": "origins:and",
+        "conditions": [
+          {
+            "type": "origins:not",
+            "condition": {
+              "type": "origins:sneaking"
+            }
+          },
+          {
+            "type": "origins:not",
+            "condition": {
+              "type": "origins:fall_flying"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

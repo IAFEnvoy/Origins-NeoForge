@@ -1,0 +1,10 @@
+{
+  "powers": [
+    "#origins:elytrian"
+  ],
+  "icon": {
+    "id": "minecraft:elytra"
+  },
+  "order": 3,
+  "impact": 1
+}

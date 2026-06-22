@@ -1,0 +1,18 @@
+{
+  "type": "origins:modify_break_speed",
+  "block_condition": {
+    "type": "origins:in_tag",
+    "tag": "origins:natural_stone"
+  },
+  "condition": {
+    "type": "origins:not",
+    "condition": {
+      "type": "origins:using_effective_tool"
+    }
+  },
+  "modifier": {
+    "value": 0.06,
+    "operation": "add_base_early"
+  },
+  "hidden": true
+}

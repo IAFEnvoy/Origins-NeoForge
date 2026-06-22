@@ -1,0 +1,8 @@
+{
+  "type": "origins:attribute",
+  "modifier": {
+    "attribute": "minecraft:armor",
+    "value": 8,
+    "operation": "add_value"
+  }
+}

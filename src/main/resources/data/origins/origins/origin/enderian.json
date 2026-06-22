@@ -1,0 +1,10 @@
+{
+  "powers": [
+    "#origins:enderian"
+  ],
+  "icon": {
+    "id": "minecraft:ender_pearl"
+  },
+  "order": 1,
+  "impact": 2
+}

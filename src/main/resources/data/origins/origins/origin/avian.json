@@ -1,0 +1,10 @@
+{
+  "powers": [
+    "#origins:avian"
+  ],
+  "icon": {
+    "id": "minecraft:feather"
+  },
+  "order": 0,
+  "impact": 1
+}

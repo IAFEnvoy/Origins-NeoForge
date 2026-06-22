@@ -1,0 +1,71 @@
+package com.iafenvoy.origins.data.power.builtin.regular;
+
+import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.data.power.Power;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
+
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+public class DamageOverTimePower extends Power {
+    public static final MapCodec<DamageOverTimePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            BaseSettings.CODEC.forGetter(Power::getSettings),
+            Codec.INT.optionalFieldOf("interval", 20).forGetter(DamageOverTimePower::getInterval),
+            Codec.FLOAT.fieldOf("damage").forGetter(DamageOverTimePower::getDamage),
+            Codec.FLOAT.optionalFieldOf("damage_easy").forGetter(DamageOverTimePower::getDamageEasy),
+            DamageType.CODEC.fieldOf("damage_type").forGetter(DamageOverTimePower::getDamageType)
+    ).apply(i, DamageOverTimePower::new));
+
+    private final int interval;
+    private final float damage, damageEasy;
+    private final Holder<DamageType> damageType;
+
+    public DamageOverTimePower(BaseSettings settings, int interval, float damage, Optional<Float> damageEasy, Holder<DamageType> damageType) {
+        super(settings);
+        this.interval = interval;
+        this.damage = damage;
+        this.damageEasy = damageEasy.orElse(this.damage);
+        this.damageType = damageType;
+    }
+
+    public int getInterval() {
+        return this.interval;
+    }
+
+    public float getDamage() {
+        return this.damage;
+    }
+
+    public Optional<Float> getDamageEasy() {
+        return Optional.of(this.damageEasy);
+    }
+
+    public Holder<DamageType> getDamageType() {
+        return this.damageType;
+    }
+
+    @Override
+    public @NotNull MapCodec<? extends Power> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public int tickInterval() {
+        return this.interval;
+    }
+
+    @Override
+    public void activeTick(OriginDataHolder holder) {
+        super.activeTick(holder);
+        Entity entity = holder.getEntity();
+        entity.hurt(new DamageSource(this.damageType), entity.level().getDifficulty() == Difficulty.EASY ? this.damageEasy : this.damage);
+    }
+}

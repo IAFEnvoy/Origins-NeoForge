@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "prepareClientRun",
+      "type": "shell",
+      "command": "${workspaceFolder}\\gradlew.bat",
+      "args": ["prepareClientRun"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": ["$gradle"]
+    },
+    {
+      "label": "prepareClientBRun",
+      "type": "shell",
+      "command": "${workspaceFolder}\\gradlew.bat",
+      "args": ["prepareClientBRun"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": ["$gradle"]
+    },
+    {
+      "label": "prepareDataRun",
+      "type": "shell",
+      "command": "${workspaceFolder}\\gradlew.bat",
+      "args": ["prepareDataRun"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": ["$gradle"]
+    },
+    {
+      "label": "prepareGameTestServerRun",
+      "type": "shell",
+      "command": "${workspaceFolder}\\gradlew.bat",
+      "args": ["prepareGameTestServerRun"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": ["$gradle"]
+    },
+    {
+      "label": "prepareServerRun",
+      "type": "shell",
+      "command": "${workspaceFolder}\\gradlew.bat",
+      "args": ["prepareServerRun"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": ["$gradle"]
+    }
+  ]
+}

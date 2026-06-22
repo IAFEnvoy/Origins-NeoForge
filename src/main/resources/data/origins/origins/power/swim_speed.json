@@ -1,0 +1,8 @@
+{
+  "type": "origins:attribute",
+  "modifier": {
+    "attribute": "additionalentityattributes:water_speed",
+    "value": 1.5,
+    "operation": "add_multiplied_base"
+  }
+}

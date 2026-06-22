@@ -1,0 +1,10 @@
+{
+  "powers": [
+    "#origins:shulk"
+  ],
+  "icon": {
+    "id": "minecraft:shulker_shell"
+  },
+  "order": 4,
+  "impact": 1
+}
