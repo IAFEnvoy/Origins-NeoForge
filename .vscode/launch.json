@@ -1,0 +1,60 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Client",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": "@${env:LOCALAPPDATA}\\Origins-NeoForge-build\\moddev\\clientRunProgramArgs.txt",
+      "vmArgs": "@${env:LOCALAPPDATA}\\Origins-NeoForge-build\\moddev\\clientRunVmArgs.txt -Dfml.modFolders=origins%%${workspaceFolder}\\bin\\main",
+      "cwd": "${workspaceFolder}\\run",
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "ClientB",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": "@${env:LOCALAPPDATA}\\Origins-NeoForge-build\\moddev\\clientBRunProgramArgs.txt",
+      "vmArgs": "@${env:LOCALAPPDATA}\\Origins-NeoForge-build\\moddev\\clientBRunVmArgs.txt -Dfml.modFolders=origins%%${workspaceFolder}\\bin\\main",
+      "cwd": "${workspaceFolder}\\run",
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "ClientData",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": "@${env:LOCALAPPDATA}\\Origins-NeoForge-build\\moddev\\clientDataRunProgramArgs.txt",
+      "vmArgs": "@${env:LOCALAPPDATA}\\Origins-NeoForge-build\\moddev\\clientDataRunVmArgs.txt -Dfml.modFolders=origins%%${workspaceFolder}\\bin\\main",
+      "cwd": "${workspaceFolder}\\run",
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "GameTestServer",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": "@${env:LOCALAPPDATA}\\Origins-NeoForge-build\\moddev\\gameTestServerRunProgramArgs.txt",
+      "vmArgs": "@${env:LOCALAPPDATA}\\Origins-NeoForge-build\\moddev\\gameTestServerRunVmArgs.txt -Dfml.modFolders=origins%%${workspaceFolder}\\bin\\main",
+      "cwd": "${workspaceFolder}\\run",
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Server",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": "@${env:LOCALAPPDATA}\\Origins-NeoForge-build\\moddev\\serverRunProgramArgs.txt",
+      "vmArgs": "@${env:LOCALAPPDATA}\\Origins-NeoForge-build\\moddev\\serverRunVmArgs.txt -Dfml.modFolders=origins%%${workspaceFolder}\\bin\\main",
+      "cwd": "${workspaceFolder}\\run",
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}

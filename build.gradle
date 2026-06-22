@@ -17,6 +17,13 @@ tasks.named('wrapper', Wrapper).configure {
 version = mod_version
 group = mod_group_id
 
+// OneDrive can lock and recreate files while Gradle cleans the build tree.
+// Keep transient outputs in the local machine cache so clean/build remains reliable.
+def localAppData = providers.environmentVariable('LOCALAPPDATA').getOrNull()
+if (localAppData != null) {
+    layout.buildDirectory = file("${localAppData}/Origins-NeoForge-build")
+}
+
 repositories {
     maven { url = "https://api.modrinth.com/maven" }
     maven { url = "https://jitpack.io" }

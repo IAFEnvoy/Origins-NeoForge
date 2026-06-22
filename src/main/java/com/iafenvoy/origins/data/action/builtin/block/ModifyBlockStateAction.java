@@ -18,16 +18,17 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 public record ModifyBlockStateAction(String property, ResourceOperation operation, OptionalInt change,
-                                     Optional<Boolean> value, Optional<String> enumValue,
-                                     boolean cycle) implements BlockAction {
+        Optional<Boolean> value, Optional<String> enumValue,
+        boolean cycle) implements BlockAction {
     public static final MapCodec<ModifyBlockStateAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("property").forGetter(ModifyBlockStateAction::property),
-            ResourceOperation.CODEC.optionalFieldOf("operation", ResourceOperation.ADD).forGetter(ModifyBlockStateAction::operation),
+            ResourceOperation.CODEC.optionalFieldOf("operation", ResourceOperation.ADD)
+                    .forGetter(ModifyBlockStateAction::operation),
             MiscCodecs.integer("change").forGetter(ModifyBlockStateAction::change),
             Codec.BOOL.optionalFieldOf("value").forGetter(ModifyBlockStateAction::value),
             Codec.STRING.optionalFieldOf("enum").forGetter(ModifyBlockStateAction::enumValue),
-            Codec.BOOL.optionalFieldOf("change", false).forGetter(ModifyBlockStateAction::cycle)
-    ).apply(instance, ModifyBlockStateAction::new));
+            Codec.BOOL.optionalFieldOf("change", false).forGetter(ModifyBlockStateAction::cycle))
+            .apply(instance, ModifyBlockStateAction::new));
 
     @Override
     public @NotNull MapCodec<? extends BlockAction> codec() {
@@ -53,11 +54,11 @@ public record ModifyBlockStateAction(String property, ResourceOperation operatio
             } else {
                 Object value = state.getValue(property);
                 switch (value) {
-                    case Enum<?> ignored when this.enumValue().isPresent() ->
-                            modifyEnumState(level, pos, state, property, this.enumValue().get());
-                    case Boolean ignored when this.value().isPresent() ->
-                            level.setBlockAndUpdate(pos, state.setValue((Property<Boolean>) property, this.value().get()));
-                    case Integer ignored when this.change().isPresent() -> {
+                    case Enum<?> _ when this.enumValue().isPresent() ->
+                        modifyEnumState(level, pos, state, property, this.enumValue().get());
+                    case Boolean _ when this.value().isPresent() ->
+                        level.setBlockAndUpdate(pos, state.setValue((Property<Boolean>) property, this.value().get()));
+                    case Integer _ when this.change().isPresent() -> {
                         ResourceOperation op = this.operation();
                         int opValue = this.change().getAsInt();
                         int newValue = (int) value;
@@ -77,7 +78,8 @@ public record ModifyBlockStateAction(String property, ResourceOperation operatio
         }
     }
 
-    private static <T extends Comparable<T>> void modifyEnumState(Level world, BlockPos pos, BlockState originalState, Property<T> property, String value) {
+    private static <T extends Comparable<T>> void modifyEnumState(Level world, BlockPos pos, BlockState originalState,
+            Property<T> property, String value) {
         Optional<T> enumValue = property.getValue(value);
         enumValue.ifPresent(v -> world.setBlockAndUpdate(pos, originalState.setValue(property, v)));
     }
