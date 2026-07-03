@@ -2,7 +2,7 @@ package com.iafenvoy.origins.recipe;
 
 import com.iafenvoy.origins.accessor.PowerCraftingInventory;
 import com.iafenvoy.origins.accessor.PowerCraftingObject;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCraftingPower;
 import com.iafenvoy.origins.mixin.recipe.CraftingMenuAccessor;
 import com.iafenvoy.origins.mixin.recipe.TransientCraftingContainerAccessor;
@@ -113,14 +113,14 @@ public record ModifiedCraftingRecipe(ResourceLocation id, CraftingRecipe delegat
     }
 
     public static boolean canModify(ResourceLocation id, CraftingRecipe craftingRecipe, @Nullable Player player) {
-        return player != null && OriginDataHolder.get(player).streamActivePowers(ModifyCraftingPower.class).anyMatch(mcpt -> mcpt.doesApply(player, id, craftingRecipe.getResultItem(player.registryAccess())));
+        return player != null && PowerHelper.get(player).anyActive(ModifyCraftingPower.class, mcpt -> mcpt.doesApply(player, id, craftingRecipe.getResultItem(player.registryAccess())));
     }
 
     public static Pair<ItemStack, Collection<ModifyCraftingPower>> getModifiedResult(ResourceLocation id, CraftingRecipe craftingRecipe, HolderLookup.Provider registriesLookup, @NotNull Player player) {
         ItemStack resultStack = craftingRecipe.getResultItem(registriesLookup).copy();
         SlotAccess newStackRef = Mutable.stack(resultStack).toSlotAccess();
 
-        List<ModifyCraftingPower> powers = OriginDataHolder.get(player).streamActivePowers(ModifyCraftingPower.class).filter(mcpt -> mcpt.doesApply(player, id, resultStack)).toList();
+        List<ModifyCraftingPower> powers = PowerHelper.get(player).listActive(ModifyCraftingPower.class, p -> p.doesApply(player, id, resultStack));
         powers.forEach(mcpt -> mcpt.getNewResult(player, newStackRef));
         return Pair.of(newStackRef.get(), powers);
     }

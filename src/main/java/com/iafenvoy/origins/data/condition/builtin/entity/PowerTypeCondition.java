@@ -21,7 +21,6 @@ public record PowerTypeCondition(ResourceLocation powerType) implements EntityCo
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        OriginDataHolder holder = OriginDataHolder.get(entity);
-        return holder.hasPower(this.powerType, Power.class);
+        return OriginDataHolder.optionalStream(entity).anyMatch(holder -> holder.hasPower(this.powerType, Power.class));
     }
 }

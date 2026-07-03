@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.prevent;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
@@ -85,9 +85,7 @@ public class PreventItemPickupPower extends Power implements Prioritized {
         ItemStack stack = itemEntity.getItem();
         Entity thrower = itemEntity.getOwner();
         if (thrower == null) return false;
-        List<PreventItemPickupPower> powers = OriginDataHolder.get(entity).streamActivePowers(PreventItemPickupPower.class)
-                .filter(power -> power.itemCondition.test(entity.level(), stack) && power.biEntityCondition.test(entity, thrower))
-                .toList();
+        List<PreventItemPickupPower> powers = PowerHelper.get(entity).listActive(PreventItemPickupPower.class, p -> p.itemCondition.test(entity.level(), stack) && p.biEntityCondition.test(entity, thrower));
         powers.forEach(power -> power.executeActions(entity, itemEntity, thrower));
         return !powers.isEmpty();
     }

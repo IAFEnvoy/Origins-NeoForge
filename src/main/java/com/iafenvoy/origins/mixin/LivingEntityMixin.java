@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.*;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventEntityCollisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.*;
@@ -52,7 +52,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getTicksFrozen()I"))
     private void handleFrozen(CallbackInfo ci) {
-        if (OriginDataHolder.get(this.origins$self()).streamActivePowers(FreezePower.class).findAny().isPresent())
+        if (PowerHelper.get(this.origins$self()).anyActive(FreezePower.class, x -> true))
             this.isInPowderSnow = true;
     }
 
@@ -63,12 +63,12 @@ public abstract class LivingEntityMixin extends Entity {
 
     @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAttributeValue(Lnet/minecraft/core/Holder;)D", ordinal = 0))
     private double handleSpeedInWater(double original) {
-        return OriginDataHolder.get(this.origins$self()).streamActivePowers(IgnoreWaterPower.class).findAny().isPresent() ? 1 : original;
+        return PowerHelper.get(this).anyActive(IgnoreWaterPower.class) ? 1 : original;
     }
 
     @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getFluidFallingAdjustedMovement(DZLnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;"))
     private Vec3 origins$modifyFluidMovement(Vec3 original, @Local(ordinal = 0) double fallVelocity) {
-        if (OriginDataHolder.get(this).hasActivePower(LikeWaterPower.class) && Math.abs(original.y - fallVelocity / 16.0D) < 0.025D)
+        if (PowerHelper.get(this).anyActive(LikeWaterPower.class) && Math.abs(original.y - fallVelocity / 16.0D) < 0.025D)
             return new Vec3(original.x, 0, original.z);
         return original;
     }
@@ -77,17 +77,15 @@ public abstract class LivingEntityMixin extends Entity {
     private boolean handleClimbing(boolean original) {
         if (original) return true;
         if (this.isSpectator()) return false;
-        OriginDataHolder holder = OriginDataHolder.get(this);
-        if (holder.streamActivePowers(ClimbingPower.class).noneMatch(x -> x.canClimb(this)))
-            return false;
-        this.lastClimbablePos = Optional.of(this.blockPosition());
-        return true;
+        if (PowerHelper.get(this).anyActive(ClimbingPower.class, x -> x.canClimb(this))) {
+            this.lastClimbablePos = Optional.of(this.blockPosition());
+            return true;
+        } else return false;
     }
 
     @ModifyReturnValue(method = "isSuppressingSlidingDownLadder", at = @At("RETURN"))
     private boolean handleClimbingHold(boolean original) {
-        OriginDataHolder holder = OriginDataHolder.get(this);
-        return original || holder.streamActivePowers(ClimbingPower.class).anyMatch(x -> x.canHold(this));
+        return original || PowerHelper.get(this).anyActive(ClimbingPower.class, x -> x.canHold(this));
     }
 
     @ModifyVariable(method = "eat*", at = @At("HEAD"), argsOnly = true)
@@ -100,7 +98,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @WrapWithCondition(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEatEffect(Lnet/minecraft/world/food/FoodProperties;)V"))
     private boolean preventApplyingFoodEffects(LivingEntity instance, FoodProperties foodProperties) {
-        return OriginDataHolder.get(instance).streamActivePowers(ModifyFoodPower.class).noneMatch(ModifyFoodPower::shouldPreventEffects);
+        return PowerHelper.get(instance).noneActive(ModifyFoodPower.class, ModifyFoodPower::shouldPreventEffects);
     }
 
     @ModifyVariable(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At("HEAD"), argsOnly = true)
@@ -109,8 +107,8 @@ public abstract class LivingEntityMixin extends Entity {
         int originalAmp = effect.getAmplifier();
         int originalDur = effect.getDuration();
 
-        int amplifier = OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyEffectAmplifierPower.class, p -> p.doesApply(effectType), originalAmp);
-        int duration = OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyEffectDurationPower.class, p -> p.doesApply(effectType), originalDur);
+        int amplifier = PowerHelper.get(this.origins$self()).modify(ModifyEffectAmplifierPower.class, p -> p.doesApply(effectType), originalAmp);
+        int duration = PowerHelper.get(this.origins$self()).modify(ModifyEffectDurationPower.class, p -> p.doesApply(effectType), originalDur);
 
         if (amplifier != originalAmp || duration != originalDur)
             return new MobEffectInstance(effectType, duration, amplifier, effect.isAmbient(), effect.isVisible(), effect.showIcon(), ((MobEffectInstanceAccessor) effect).getHiddenEffect());
@@ -119,30 +117,30 @@ public abstract class LivingEntityMixin extends Entity {
 
     @ModifyExpressionValue(method = "getFrictionInfluencedSpeed(F)F", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getFlyingSpeed()F"))
     private float modifyFlySpeed(float original) {
-        return OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyAirSpeedPower.class, original);
+        return PowerHelper.get(this.origins$self()).modify(ModifyAirSpeedPower.class, original);
     }
 
     @Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true)
     private void modifyWalkableFluids(FluidState fluid, CallbackInfoReturnable<Boolean> cir) {
-        if (OriginDataHolder.get(this.origins$self()).streamActivePowers(WalkOnFluidPower.class).anyMatch(x -> fluid.is(x.getFluid())))
+        if (PowerHelper.get(this.origins$self()).anyActive(WalkOnFluidPower.class, x -> fluid.is(x.getFluid())))
             cir.setReturnValue(true);
     }
 
     @Inject(method = "doPush", at = @At("HEAD"), cancellable = true)
     private void preventPushing(Entity target, CallbackInfo ci) {
         Entity self = this.origins$self();
-        if (OriginDataHolder.get(self).streamActivePowers(PreventEntityCollisionPower.class).anyMatch(x -> x.getBiEntityCondition().test(self, target)) ||
-                OriginDataHolder.get(target).streamActivePowers(PreventEntityCollisionPower.class).anyMatch(x -> x.getBiEntityCondition().test(target, self)))
+        if (PowerHelper.get(self).anyActive(PreventEntityCollisionPower.class, x -> x.getBiEntityCondition().test(self, target)) ||
+                PowerHelper.get(target).anyActive(PreventEntityCollisionPower.class, x -> x.getBiEntityCondition().test(target, self)))
             ci.cancel();
     }
 
     @ModifyReturnValue(method = "canBreatheUnderwater", at = @At("RETURN"))
     private boolean origins$breatheUnderwater(boolean original) {
-        return original || OriginDataHolder.get(this).hasActivePower(WaterBreathingPower.class);
+        return original || PowerHelper.get(this).anyActive(WaterBreathingPower.class);
     }
 
     @Inject(method = "baseTick", at = @At("TAIL"))
     private void origins$waterBreathingTick(CallbackInfo ci) {
-        WaterBreathingHelper.tick((LivingEntity) (Object) this);
+        WaterBreathingHelper.tick(this.origins$self());
     }
 }

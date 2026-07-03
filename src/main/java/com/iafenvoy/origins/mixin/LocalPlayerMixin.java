@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyAirSpeedPower;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventSprintingPower;
 import com.iafenvoy.origins.data.power.builtin.regular.WaterVisionPower;
@@ -22,16 +22,16 @@ public class LocalPlayerMixin {
 
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Abilities;getFlyingSpeed()F"))
     private float modifyFlySpeed(float original) {
-        return OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyAirSpeedPower.class, original);
+        return PowerHelper.get(this.origins$self()).modify(ModifyAirSpeedPower.class, original);
     }
 
     @ModifyVariable(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;onGround()Z"), ordinal = 4)
     private boolean modifySprintAbility(boolean original) {
-        return original && !OriginDataHolder.get(this.origins$self()).hasActivePower(PreventSprintingPower.class);
+        return original && PowerHelper.get(this.origins$self()).noneActive(PreventSprintingPower.class);
     }
 
     @Inject(method = "getWaterVision", at = @At("HEAD"), cancellable = true)
     private void getUnderwaterVisibility(CallbackInfoReturnable<Float> info) {
-        OriginDataHolder.get(this.origins$self()).streamActivePowers(WaterVisionPower.class).map(WaterVisionPower::getStrength).max(Float::compareTo).ifPresent(info::setReturnValue);
+        PowerHelper.get(this.origins$self()).streamActive(WaterVisionPower.class).map(WaterVisionPower::getStrength).max(Float::compareTo).ifPresent(info::setReturnValue);
     }
 }

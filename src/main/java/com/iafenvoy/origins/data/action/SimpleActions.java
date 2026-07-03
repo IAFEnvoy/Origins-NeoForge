@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.action;
 
-import com.iafenvoy.origins.util.TriConsumer;
+import com.iafenvoy.origins.util.function.TriConsumer;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

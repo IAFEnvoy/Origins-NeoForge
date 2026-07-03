@@ -1,12 +1,12 @@
 package com.iafenvoy.origins.registry;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.power.reference.PowerHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.helper.RecipeHelper;
 import com.iafenvoy.origins.data.badge.BuiltinBadges;
-import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCraftingPower;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.screen.badge.BadgeTooltipManager;
 import com.iafenvoy.origins.screen.tooltip.CraftingRecipeTooltipComponent;
 import com.iafenvoy.origins.util.wrapper.Mutable;
@@ -67,9 +67,7 @@ public final class OriginsRenderers {
             if (recipe == null) return tooltips;
             int recipeWidth = recipe instanceof ShapedRecipe shapedRecipe ? shapedRecipe.getWidth() : 3;
             SlotAccess outputStackReference = Mutable.stack(recipe.getResultItem(access)).toSlotAccess();
-            OriginDataHolder.get(player).streamActivePowers(ModifyCraftingPower.class)
-                    .filter(p -> p.doesApply(player, badge.recipe(), outputStackReference.get()))
-                    .findFirst()
+            PowerHelper.get(player).getFirst(ModifyCraftingPower.class, p -> p.doesApply(player, badge.recipe(), outputStackReference.get()))
                     .ifPresent(p -> p.getNewResult(player, outputStackReference));
             CraftingRecipeTooltipComponent recipeTooltip = new CraftingRecipeTooltipComponent(recipeWidth, peekInputs(recipe), outputStackReference.get());
             Consumer<Component> addLines = component -> font.split(component, widthLimit).stream().map(ClientTextTooltip::new).forEach(tooltips::add);

@@ -2,8 +2,8 @@ package com.iafenvoy.origins.data._common.helper;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.condition.ItemCondition;
-import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.data.power.component.builtin.InventoryComponent;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.util.wrapper.ContainerWrapper;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -53,7 +53,7 @@ public interface InventoryConditionHelper {
     }
 
     default ContainerWrapper getWrappedContainer(Entity entity) {
-        return this.power().flatMap(x -> x.get(entity.registryAccess())).flatMap(power -> OriginDataHolder.get(entity).getComponent(power.id(), InventoryComponent.class))
+        return this.power().flatMap(x -> x.get(entity.registryAccess())).flatMap(power -> OriginDataHolder.optional(entity).flatMap(h -> h.getComponent(power.id(), InventoryComponent.class)))
                 .map(InventoryComponent::getContainer)
                 .map(ContainerWrapper::container)
                 .orElseGet(() -> ContainerWrapper.entity(entity));

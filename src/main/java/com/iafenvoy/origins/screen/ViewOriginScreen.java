@@ -40,7 +40,7 @@ public class ViewOriginScreen extends OriginDisplayScreen {
             return;
         }
 
-        Map<Holder<Layer>, Holder<Origin>> origins = OriginDataHolder.get(player).getOrigins();
+        Map<Holder<Layer>, Holder<Origin>> origins = OriginDataHolder.optional(player).map(OriginDataHolder::getOrigins).orElse(Map.of());
         this.originLayers = new LinkedList<>();
         origins.forEach((layer, origin) -> {
             ItemStack iconStack = origin.value().icon().orElse(ItemStack.EMPTY);

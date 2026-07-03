@@ -28,7 +28,8 @@ public record PowerCraftingRecipe(ResourceLocation powerId, CraftingRecipe deleg
 
     @Override
     public boolean matches(@NotNull CraftingInput input, @NotNull Level level) {
-        return input instanceof PowerCraftingObject pco && pco.origins$getPlayer().map(OriginDataHolder::get).map(h -> h.hasActivePower(this.powerId(), RecipePower.class)).orElse(false) && level.getRecipeManager().byKey(this.powerId())
+        //FIXME::Helper
+        return input instanceof PowerCraftingObject pco && pco.origins$getPlayer().flatMap(OriginDataHolder::optional).map(h -> h.hasActivePower(this.powerId(), RecipePower.class)).orElse(false) && level.getRecipeManager().byKey(this.powerId())
                 .filter(entry -> Objects.equals(this, entry.value()))
                 .map(entry -> this.delegate().matches(input, level))
                 .orElse(false);

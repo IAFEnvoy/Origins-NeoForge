@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.mixin.recipe;
 
 import com.iafenvoy.origins.accessor.PowerModifiedGrindstone;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyGrindstonePower;
 import com.iafenvoy.origins.event.OriginsModifierCollectEvent;
 import com.iafenvoy.origins.util.math.Modifier;
@@ -33,6 +33,6 @@ public abstract class GrindstoneMenu$4Mixin {
                 .map(Optional::get)
                 .toList();
         NeoForge.EVENT_BUS.post(new OriginsModifierCollectEvent(powerModifiedGrindstone.origins$getPlayer(), ModifyGrindstonePower.class, original, modifiers));
-        return Modifier.applyModifiers(OriginDataHolder.get(powerModifiedGrindstone.origins$getPlayer()), modifiers, original);
+        return PowerHelper.get(powerModifiedGrindstone.origins$getPlayer()).applyModifiers(modifiers, original);
     }
 }

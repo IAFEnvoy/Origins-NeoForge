@@ -32,6 +32,6 @@ public record PowerLootCondition(LootContext.EntityTarget target, Holder<Power> 
     public boolean test(LootContext lootContext) {
         Entity entity = lootContext.getParamOrNull(this.target.getParam());
         if (entity == null) return false;
-        return OriginDataHolder.get(entity).hasPower(this.power);
+        return OriginDataHolder.optionalStream(entity).anyMatch(h -> h.hasPower(this.power));
     }
 }

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.prevent;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.InteractionPowerSettings;
 import com.iafenvoy.origins.data._common.helper.InteractionPowerHelper;
 import com.iafenvoy.origins.data.action.BiEntityAction;
@@ -59,7 +59,7 @@ public class PreventEntityUsePower extends Power implements InteractionPowerHelp
     }
 
     public static Optional<InteractionResult> tryPrevent(Entity self, Entity other, InteractionHand hand) {
-        for (PreventEntityUsePower power : OriginDataHolder.get(self).streamActivePowers(PreventEntityUsePower.class).toList()) {
+        for (PreventEntityUsePower power : PowerHelper.get(self).listActive(PreventEntityUsePower.class)) {
             Optional<InteractionResult> result = power.tryExecute(self, other, hand);
             if (result.isPresent()) return result;
         }

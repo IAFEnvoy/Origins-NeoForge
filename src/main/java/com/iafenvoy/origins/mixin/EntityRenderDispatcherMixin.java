@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventEntityRenderPower;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -20,7 +20,7 @@ public class EntityRenderDispatcherMixin {
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
     private void preventRenderingEntities(Entity entity, Frustum frustum, double x, double y, double z, CallbackInfoReturnable<Boolean> cir) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player != null && OriginDataHolder.get(player).streamActivePowers(PreventEntityRenderPower.class).anyMatch(power -> power.getEntityCondition().test(entity) && power.getBientityCondition().test(player, entity)))
+        if (player != null && PowerHelper.get(player).anyActive(PreventEntityRenderPower.class, power -> power.getEntityCondition().test(entity) && power.getBientityCondition().test(player, entity)))
             cir.setReturnValue(false);
     }
 }

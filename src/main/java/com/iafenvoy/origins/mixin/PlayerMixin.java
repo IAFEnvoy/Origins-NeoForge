@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyAirSpeedPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyExhaustionPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyFoodPower;
@@ -30,12 +30,12 @@ public class PlayerMixin {
 
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/GameRules;getBoolean(Lnet/minecraft/world/level/GameRules$Key;)Z"))
     private boolean checkNaturalSpawn(boolean original) {
-        return original && !OriginDataHolder.get(this.origins$self()).hasActivePower(DisableRegenPower.class);
+        return original && PowerHelper.get(this.origins$self()).noneActive(DisableRegenPower.class);
     }
 
     @ModifyVariable(method = "causeFoodExhaustion", at = @At("HEAD"), ordinal = 0, name = "exhaustion", argsOnly = true)
     private float modifyExhaustion(float exhaustion) {
-        return OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyExhaustionPower.class, exhaustion);
+        return PowerHelper.get(this.origins$self()).modify(ModifyExhaustionPower.class, exhaustion);
     }
 
     @ModifyVariable(method = "eat", at = @At("HEAD"), argsOnly = true)
@@ -48,16 +48,16 @@ public class PlayerMixin {
     @Inject(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/food/FoodProperties;)V", shift = At.Shift.AFTER))
     private void afterEatToFoodData(Level level, ItemStack food, FoodProperties foodProperties, CallbackInfoReturnable<ItemStack> cir) {
         Entity entity = this.origins$self();
-        OriginDataHolder.get(entity).streamActivePowers(ModifyFoodPower.class).filter(x -> x.getItemCondition().test(level, food)).map(ModifyFoodPower::getEntityAction).forEach(x -> x.execute(entity));
+        PowerHelper.get(entity).execute(ModifyFoodPower.class, x -> x.getItemCondition().test(level, food), (h, p) -> p.getEntityAction().execute(entity));
     }
 
     @ModifyReturnValue(method = "getFlyingSpeed", at = @At("RETURN"))
     private float modifyFlySpeed(float original) {
-        return OriginDataHolder.get(this.origins$self()).getHelper().modify(ModifyAirSpeedPower.class, original);
+        return PowerHelper.get(this.origins$self()).modify(ModifyAirSpeedPower.class, original);
     }
 
     @ModifyExpressionValue(method = "turtleHelmetTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isEyeInFluid(Lnet/minecraft/tags/TagKey;)Z"))
     private boolean origins$submergedProxy(boolean original) {
-        return original ^ OriginDataHolder.get(this.origins$self()).hasActivePower(WaterBreathingPower.class);
+        return original ^ PowerHelper.get(this.origins$self()).anyActive(WaterBreathingPower.class);
     }
 }

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.ColorSettings;
 import com.iafenvoy.origins.data.power.builtin.regular.InvisibilityPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ModelColorPower;
@@ -32,18 +32,17 @@ public abstract class LivingEntityRendererMixin extends EntityRenderer<LivingEnt
 
     @ModifyVariable(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getRenderType(Lnet/minecraft/world/entity/LivingEntity;ZZZ)Lnet/minecraft/client/renderer/RenderType;"), ordinal = 2)
     private boolean preventOutlineRendering(boolean original, LivingEntity living) {
-        return original && OriginDataHolder.get(living).streamActivePowers(InvisibilityPower.class).anyMatch(InvisibilityPower::shouldRenderOutline);
+        return original && PowerHelper.get(living).anyActive(InvisibilityPower.class, InvisibilityPower::shouldRenderOutline);
     }
 
     @WrapWithCondition(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/RenderLayer;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/Entity;FFFFFF)V"))
     private <T extends Entity> boolean preventFeatureRendering(RenderLayer<T, ?> instance, PoseStack poseStack, MultiBufferSource buffer, int packedLight, T living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        return OriginDataHolder.get(living).streamActivePowers(InvisibilityPower.class).noneMatch(InvisibilityPower::shouldRenderArmor);
+        return PowerHelper.get(living).noneActive(InvisibilityPower.class, InvisibilityPower::shouldRenderArmor);
     }
 
     @Inject(method = "isShaking", at = @At("HEAD"), cancellable = true)
     private void letPlayersShakeTheirBodies(LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
-        if (OriginDataHolder.get(entity).hasActivePower(ShakingPower.class))
-            cir.setReturnValue(true);
+        if (PowerHelper.get(entity).anyActive(ShakingPower.class)) cir.setReturnValue(true);
     }
 
     @ModifyVariable(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MultiBufferSource;getBuffer(Lnet/minecraft/client/renderer/RenderType;)Lcom/mojang/blaze3d/vertex/VertexConsumer;"))

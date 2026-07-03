@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public record EquippedItemCondition(EquipmentSlot equipmentSlot,
@@ -25,7 +25,7 @@ public record EquippedItemCondition(EquipmentSlot equipmentSlot,
     @Override
     public boolean test(@NotNull Entity entity) {
         if (!(entity instanceof LivingEntity living)) return false;
-        var stack = living.getItemBySlot(this.equipmentSlot);
+        ItemStack stack = living.getItemBySlot(this.equipmentSlot);
         boolean hasItem = !stack.isEmpty() && this.itemCondition.test(entity.level(), stack);
         return hasItem;
     }

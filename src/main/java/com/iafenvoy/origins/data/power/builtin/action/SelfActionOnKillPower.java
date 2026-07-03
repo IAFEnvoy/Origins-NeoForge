@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
@@ -55,9 +55,8 @@ public class SelfActionOnKillPower extends HasCooldownPower {
     public static void onDeath(LivingDeathEvent event) {
         Entity self = event.getSource().getEntity(), target = event.getEntity();
         if (self == null) return;
-        OriginDataHolder holder = OriginDataHolder.get(self);
-        holder.getHelper().execute(SelfActionOnKillPower.class,
+        PowerHelper.get(self).execute(SelfActionOnKillPower.class,
                 p -> p.damageCondition.test(event.getSource(), 1) && p.targetCondition.test(target),
-                p -> p.getCooldownComponent(holder).useIfReady(() -> p.entityAction.execute(self)));
+                (h, p) -> p.getCooldownComponent(h).useIfReady(() -> p.entityAction.execute(self)));
     }
 }

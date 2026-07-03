@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.helper.GlowPowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.EntityGlowPower;
 import com.iafenvoy.origins.data.power.builtin.regular.SelfGlowPower;
@@ -31,8 +31,8 @@ public class Entity$ClientMixin {
         if (player == null) return;
         Entity entity = this.origins$self();
         Stream.concat(
-                OriginDataHolder.get(player).streamActivePowers(EntityGlowPower.class),
-                OriginDataHolder.get(entity).streamActivePowers(SelfGlowPower.class)
+                PowerHelper.get(player).streamActive(EntityGlowPower.class),
+                PowerHelper.get(entity).streamActive(SelfGlowPower.class)
         ).filter(power -> !power.shouldUseTeam() && power.canGlow(player, entity)).mapToInt(GlowPowerHelper::getColor).forEach(cir::setReturnValue);
     }
 
@@ -43,8 +43,8 @@ public class Entity$ClientMixin {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
         if (Stream.concat(
-                OriginDataHolder.get(player).streamActivePowers(EntityGlowPower.class),
-                OriginDataHolder.get(entity).streamActivePowers(SelfGlowPower.class)
+                PowerHelper.get(player).streamActive(EntityGlowPower.class),
+                PowerHelper.get(entity).streamActive(SelfGlowPower.class)
         ).anyMatch(power -> power.canGlow(player, entity)))
             cir.setReturnValue(true);
     }

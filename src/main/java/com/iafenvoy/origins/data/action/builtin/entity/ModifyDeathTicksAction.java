@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
@@ -24,6 +24,6 @@ public record ModifyDeathTicksAction(Modifier modifier) implements EntityAction 
     @Override
     public void execute(@NotNull Entity source) {
         if (source instanceof LivingEntity living)
-            living.deathTime = Modifier.applyModifiers(OriginDataHolder.get(living), List.of(this.modifier), living.deathTime);
+            living.deathTime = PowerHelper.get(living).applyModifiers(List.of(this.modifier), living.deathTime);
     }
 }

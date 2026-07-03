@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.mixin.recipe;
 
 import com.iafenvoy.origins.accessor.PowerCraftingInventory;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCraftingPower;
 import com.iafenvoy.origins.data.power.builtin.regular.RestrictArmorPower;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -38,7 +38,7 @@ public abstract class InventoryMenuMixin {
 
     @ModifyExpressionValue(method = "quickMoveStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/Slot;hasItem()Z", ordinal = 0), slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/EquipmentSlot$Type;HUMANOID_ARMOR:Lnet/minecraft/world/entity/EquipmentSlot$Type;", opcode = Opcodes.GETSTATIC)))
     private boolean disallowQuickMovingRestrictedWearables(boolean original, Player player, @Local(ordinal = 1) ItemStack stackToInsert, @Local EquipmentSlot slot) {
-        return original || OriginDataHolder.get(player).streamActivePowers(RestrictArmorPower.class).anyMatch(x -> Optional.ofNullable(x.getConditions().get(slot)).map(c -> c.test(player.level(), stackToInsert)).orElse(false));
+        return original || PowerHelper.get(player).anyActive(RestrictArmorPower.class, x -> Optional.ofNullable(x.getConditions().get(slot)).map(c -> c.test(player.level(), stackToInsert)).orElse(false));
     }
 
     @ModifyVariable(method = "quickMoveStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/InventoryMenu;moveItemStackTo(Lnet/minecraft/world/item/ItemStack;IIZ)Z", ordinal = 0), ordinal = 1)

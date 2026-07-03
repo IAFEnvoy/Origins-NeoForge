@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.ColorSettings;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.MapCodec;
@@ -32,6 +32,6 @@ public class ModelColorPower extends Power {
     }
 
     public static Optional<ColorSettings> getColor(Entity entity) {
-        return OriginDataHolder.get(entity).streamActivePowers(ModelColorPower.class).map(ModelColorPower::getColor).reduce(ColorSettings::merge);
+        return PowerHelper.get(entity).streamActive(ModelColorPower.class).map(ModelColorPower::getColor).reduce(ColorSettings::merge);
     }
 }

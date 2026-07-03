@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
@@ -75,10 +75,9 @@ public class ActionOnItemPickupPower extends Power implements Prioritized {
         Level level = target.level();
         ItemStack stack = event.getItemEntity().getItem();
         if (actor == null) return;
-        OriginDataHolder holder = OriginDataHolder.get(target);
-        holder.getHelper().execute(ActionOnItemPickupPower.class,
+        PowerHelper.get(target).execute(ActionOnItemPickupPower.class,
                 p -> p.biEntityCondition.test(actor, target) && p.itemCondition.test(level, stack),
-                p -> {
+                (h, p) -> {
                     p.biEntityAction.execute(actor, target);
                     p.itemAction.execute(level, target, stack);
                 });

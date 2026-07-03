@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
@@ -97,17 +98,13 @@ public class KeepInventoryPower extends Power {
 
     @SubscribeEvent
     public static void playerClone(PlayerEvent.Clone event) {
-        OriginDataHolder holder = OriginDataHolder.get(event.getEntity());
         if (!event.getEntity().level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
-            holder.streamActivePowers(KeepInventoryPower.class).forEach(power -> power.restoreItems(holder, event.getEntity()));
+            PowerHelper.get(event.getEntity()).execute(KeepInventoryPower.class, (h, p) -> p.restoreItems(h, event.getEntity()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onPlayerDeath(LivingDeathEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            OriginDataHolder holder = OriginDataHolder.get(player);
-            if (!player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
-                holder.streamActivePowers(KeepInventoryPower.class).forEach(power -> power.captureItems(holder, player));
-        }
+        if (event.getEntity() instanceof Player player && !player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
+            PowerHelper.get(player).execute(KeepInventoryPower.class, (h, p) -> p.captureItems(h, player));
     }
 }

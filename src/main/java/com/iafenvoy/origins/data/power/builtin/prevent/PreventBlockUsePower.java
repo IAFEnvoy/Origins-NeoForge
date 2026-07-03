@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.prevent;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.MapCodec;
@@ -36,7 +36,7 @@ public class PreventBlockUsePower extends Power {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void preventBlockInteraction(PlayerInteractEvent.RightClickBlock event) {
         Entity entity = event.getEntity();
-        if (OriginDataHolder.get(entity).streamActivePowers(PreventBlockUsePower.class).anyMatch(x -> x.blockCondition.test(entity.level(), event.getPos())))
+        if (PowerHelper.get(entity).anyActive(PreventBlockUsePower.class, x -> x.blockCondition.test(entity.level(), event.getPos())))
             event.setUseBlock(TriState.FALSE);
     }
 }

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.math.Modifier;
@@ -40,6 +40,6 @@ public class ModifyXPGainPower extends Power implements ModifierPowerHelper {
     @SubscribeEvent
     public static void onXPGain(PlayerXpEvent.PickupXp event) {
         ExperienceOrb orb = event.getOrb();
-        orb.value = OriginDataHolder.get(event.getEntity()).getHelper().modify(ModifyXPGainPower.class, orb.value);
+        orb.value = PowerHelper.get(event.getEntity()).modify(ModifyXPGainPower.class, orb.value);
     }
 }

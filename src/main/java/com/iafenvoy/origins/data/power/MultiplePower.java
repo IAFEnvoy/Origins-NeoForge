@@ -1,10 +1,10 @@
 package com.iafenvoy.origins.data.power;
 
 import com.google.common.collect.ImmutableSet;
-import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.data.badge.Badge;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.util.codec.AnyMapCodec;
-import com.mojang.serialization.*;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.Power;
@@ -54,11 +54,10 @@ public class ModifyJumpPower extends Power implements ModifierPowerHelper {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void livingJump(LivingEvent.LivingJumpEvent event) {
         Entity player = event.getEntity();
-        OriginDataHolder holder = OriginDataHolder.get(player);
-        double modified = holder.streamActivePowers(ModifyJumpPower.class).reduce(event.getEntity().getDeltaMovement().y, (value, power) -> {
+        double modified = PowerHelper.get(player).reduce(ModifyJumpPower.class, event.getEntity().getDeltaMovement().y, (h, value, power) -> {
             power.entityAction.execute(player);
-            return power.modify(holder, value);
-        }, Double::sum);
+            return power.modify(h, value);
+        });
         Vec3 vel = player.getDeltaMovement();
         double delta = modified - vel.y;
         if (delta == 0) return;

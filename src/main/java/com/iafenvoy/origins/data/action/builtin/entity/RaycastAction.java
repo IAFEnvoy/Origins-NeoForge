@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
-import com.iafenvoy.origins.data._common.helper.CommandHelper;
 import com.iafenvoy.origins.data._common.RaycastSettings;
+import com.iafenvoy.origins.data._common.helper.CommandHelper;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.action.EntityAction;

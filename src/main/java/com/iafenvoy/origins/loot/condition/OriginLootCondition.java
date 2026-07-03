@@ -32,7 +32,6 @@ public record OriginLootCondition(LootContext.EntityTarget target, Holder<Origin
     public boolean test(LootContext lootContext) {
         Entity entity = lootContext.getParamOrNull(this.target.getParam());
         if (entity == null) return false;
-        OriginDataHolder holder = OriginDataHolder.get(entity);
-        return this.layer.map(l -> holder.hasOrigin(l, this.origin)).orElseGet(() -> holder.hasOrigin(this.origin));
+        return OriginDataHolder.optional(entity).map(h -> this.layer.map(l -> h.hasOrigin(l, this.origin)).orElseGet(() -> h.hasOrigin(this.origin))).orElse(false);
     }
 }

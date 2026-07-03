@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.condition.builtin.entity;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.condition.EntityCondition;
 import com.iafenvoy.origins.data.power.component.builtin.EntitySetComponent;
 import com.iafenvoy.origins.util.codec.WildcardCodec;
@@ -24,6 +24,6 @@ public record SetSizeCondition(ResourceLocation set, Comparison comparison) impl
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        return this.comparison.compare(OriginDataHolder.get(entity).getComponentHolder(this.set, EntitySetComponent.class).map(EntitySetComponent.SetHolder::getSize).orElse(0));
+        return this.comparison.compare(PowerHelper.get(entity).getComponentHolder(this.set, EntitySetComponent.class).map(EntitySetComponent.SetHolder::getSize).orElse(0));
     }
 }

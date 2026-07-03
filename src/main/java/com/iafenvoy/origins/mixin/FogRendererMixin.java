@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCameraSubmersionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.NightVisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
@@ -40,6 +40,6 @@ public class FogRendererMixin {
 
     @ModifyExpressionValue(method = "setupColor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/core/Holder;)Z", ordinal = 0))
     private static boolean hasStatusEffectProxy(boolean original, @Local LivingEntity living) {
-        return original || OriginDataHolder.get(living).streamActivePowers(NightVisionPower.class).map(NightVisionPower::getStrength).findAny().isPresent();
+        return original || PowerHelper.get(living).anyActive(NightVisionPower.class, x -> true);
     }
 }

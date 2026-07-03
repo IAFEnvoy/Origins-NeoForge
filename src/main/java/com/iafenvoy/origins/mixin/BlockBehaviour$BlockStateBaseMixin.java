@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventBlockSelectionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -46,7 +46,7 @@ public abstract class BlockBehaviour$BlockStateBaseMixin {
 
     @ModifyReturnValue(method = "getShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;", at = @At("RETURN"))
     private VoxelShape modifyBlockOutline(VoxelShape original, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        if (getter instanceof Level level && context instanceof EntityCollisionContext ctx && ctx.getEntity() != null && OriginDataHolder.get(ctx.getEntity()).streamActivePowers(PreventBlockSelectionPower.class).anyMatch(x -> x.getBlockCondition().test(level, pos)))
+        if (getter instanceof Level level && context instanceof EntityCollisionContext ctx && ctx.getEntity() != null && PowerHelper.get(ctx.getEntity()).anyActive(PreventBlockSelectionPower.class, x -> x.getBlockCondition().test(level, pos)))
             return Shapes.empty();
         return original;
     }

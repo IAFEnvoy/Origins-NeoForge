@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.DamageCondition;
@@ -55,9 +55,8 @@ public class ActionOnHitPower extends HasCooldownPower {
     public static void onDamage(LivingDamageEvent.Post event) {
         Entity source = event.getSource().getEntity(), target = event.getEntity();
         if (source == null) return;
-        OriginDataHolder holder = OriginDataHolder.get(source);
-        holder.getHelper().execute(ActionOnHitPower.class,
+        PowerHelper.get(source).execute(ActionOnHitPower.class,
                 p -> p.biEntityCondition.test(source, target) && p.damageCondition.test(event.getSource(), event.getNewDamage()),
-                p -> p.getCooldownComponent(holder).useIfReady(() -> p.biEntityAction.execute(source, target)));
+                (h, p) -> p.getCooldownComponent(h).useIfReady(() -> p.biEntityAction.execute(source, target)));
     }
 }

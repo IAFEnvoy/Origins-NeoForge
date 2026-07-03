@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.StatusBarTexturePower;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -26,7 +26,7 @@ public abstract class GuiMixin {
 
     @Unique
     private static Optional<StatusBarTexturePower> origins$getOverrideHudTexturePower(Player player) {
-        return OriginDataHolder.get(player).streamActivePowers(StatusBarTexturePower.class).findFirst();
+        return PowerHelper.get(player).streamActive(StatusBarTexturePower.class).findFirst();
     }
 
     @WrapOperation(method = "renderArmor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 0))

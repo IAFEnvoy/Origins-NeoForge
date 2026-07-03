@@ -2,6 +2,7 @@ package com.iafenvoy.origins.network;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.network.payload.ChooseOriginC2SPayload;
@@ -73,7 +74,6 @@ public final class ServerNetworkHandler {
 
     public static void onPowerToggle(PowerToggleC2SPayload payload, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) return;
-        OriginDataHolder holder = OriginDataHolder.get(player);
-        holder.getHelper().toggle(payload.key());
+        PowerHelper.get(player).toggle(payload.key());
     }
 }

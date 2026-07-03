@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.prevent;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
@@ -54,10 +54,7 @@ public class PreventGameEventPower extends Power {
     public static void preventGameEvent(VanillaGameEvent event) {
         Entity entity = event.getCause();
         if (entity == null) return;
-        List<PreventGameEventPower> list = OriginDataHolder.get(entity)
-                .streamActivePowers(PreventGameEventPower.class)
-                .filter(x -> x.event.map(l -> l.stream().anyMatch(e -> e.value() == event.getVanillaEvent().value()), tag -> event.getVanillaEvent().is(tag)))
-                .toList();
+        List<PreventGameEventPower> list = PowerHelper.get(entity).listActive(PreventGameEventPower.class, p -> p.event.map(l -> l.stream().anyMatch(e -> e.value() == event.getVanillaEvent().value()), tag -> event.getVanillaEvent().is(tag)));
         if (!list.isEmpty()) {
             list.forEach(x -> x.entityAction.execute(entity));
             event.setCanceled(true);

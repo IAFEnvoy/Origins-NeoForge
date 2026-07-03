@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.ScareCreepersPower;
 import com.iafenvoy.origins.mixin.accessor.MobAccessor;
 import net.minecraft.world.entity.EntitySelector;
@@ -44,7 +44,7 @@ public abstract class ScareCreepersMixin extends LivingEntity {
         GoalSelector targetSelector = accessor.origins$getTargetSelector();
         GoalSelector goalSelector = accessor.origins$getGoalSelector();
 
-        Predicate<LivingEntity> hasScarePower = e -> OriginDataHolder.get(e).hasActivePower(ScareCreepersPower.class);
+        Predicate<LivingEntity> hasScarePower = e -> PowerHelper.get(e).anyActive(ScareCreepersPower.class);
 
         Iterator<WrappedGoal> oldTargetGoals = targetSelector.getAvailableGoals().iterator();
         Set<WrappedGoal> newTargetGoals = new HashSet<>();

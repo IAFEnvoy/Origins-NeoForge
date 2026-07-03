@@ -30,7 +30,6 @@ public record DamageTargetAction(Holder<DamageType> damageType, float amount,
 
     @Override
     public void execute(@NotNull Entity source, @NotNull Entity target) {
-        float finalAmount = Modifier.applyModifiers(OriginDataHolder.get(source), this.modifier, this.amount);
-        target.hurt(new DamageSource(this.damageType, source), finalAmount);
+        OriginDataHolder.optional(source).ifPresent(h -> target.hurt(new DamageSource(this.damageType, source), Modifier.applyModifiers(h, this.modifier, this.amount)));
     }
 }

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
@@ -97,9 +97,8 @@ public class ItemOnItemPower extends Power {
 
     //FIXME::Optimize
     public static boolean execute(Entity entity, Slot self, SlotAccess other, ClickAction action) {
-        List<ItemOnItemPower> powers = OriginDataHolder.get(entity).streamActivePowers(ItemOnItemPower.class)
-                .filter(p -> p.clickAction == action && p.usingItemCondition.test(entity.level(), other.get()) && p.onItemCondition.test(entity.level(), self.getItem()))
-                .toList();
+        List<ItemOnItemPower> powers = PowerHelper.get(entity).listActive(ItemOnItemPower.class,
+                p -> p.clickAction == action && p.usingItemCondition.test(entity.level(), other.get()) && p.onItemCondition.test(entity.level(), self.getItem()));
         powers.forEach(p -> p.apply(entity, self, other));
         return !powers.isEmpty();
     }

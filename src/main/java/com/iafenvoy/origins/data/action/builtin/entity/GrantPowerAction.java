@@ -24,6 +24,6 @@ public record GrantPowerAction(Holder<Power> power, ResourceLocation source) imp
 
     @Override
     public void execute(@NotNull Entity source) {
-        OriginDataHolder.get(source).grantPower(this.source, this.power);
+        OriginDataHolder.optional(source).ifPresent(h -> h.grantPower(this.source, this.power));
     }
 }

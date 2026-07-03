@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.component.builtin.ToggleComponent;
 import com.iafenvoy.origins.util.codec.WildcardCodec;
@@ -22,6 +22,6 @@ public record ToggleAction(ResourceLocation power) implements EntityAction {
 
     @Override
     public void execute(@NotNull Entity source) {
-        OriginDataHolder.get(source).getComponent(this.power, ToggleComponent.class).ifPresent(ToggleComponent::toggle);
+        PowerHelper.get(source).getComponent(this.power, ToggleComponent.class).ifPresent(ToggleComponent::toggle);
     }
 }

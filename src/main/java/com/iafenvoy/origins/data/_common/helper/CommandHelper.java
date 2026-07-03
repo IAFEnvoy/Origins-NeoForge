@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data._common.helper;
 
+import com.iafenvoy.origins.config.OriginsConfig;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -12,8 +13,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Consumer;
-
-import com.iafenvoy.origins.config.OriginsConfig;
 
 public interface CommandHelper {
     default void executeCommand(Level level, Consumer<CommandSourceStack> consumer, String command) {

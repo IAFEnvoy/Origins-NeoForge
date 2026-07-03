@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public record KeySettings(String key, boolean continuous) {
     public static final Codec<KeySettings> BASE_CODEC = RecordCodecBuilder.create(instance -> instance.group(

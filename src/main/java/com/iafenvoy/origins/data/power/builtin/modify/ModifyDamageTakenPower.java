@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.EntityAction;
@@ -112,16 +112,15 @@ public class ModifyDamageTakenPower extends Power implements ModifierPowerHelper
     public static void onDamage(LivingDamageEvent.Pre event) {
         Entity target = event.getEntity();
         DamageSource s = event.getSource();
-        OriginDataHolder holder = OriginDataHolder.get(target);
-        holder.streamActivePowers(ModifyDamageTakenPower.class).forEach(power -> {
+        PowerHelper.get(target).execute(ModifyDamageTakenPower.class, (h, p) -> {
             float baseValue = event.getNewDamage();
-            if (power.check(target, s, baseValue)) {
-                event.setNewDamage(power.modify(holder, baseValue));
-                power.selfAction.execute(target);
+            if (p.check(target, s, baseValue)) {
+                event.setNewDamage(p.modify(h, baseValue));
+                p.selfAction.execute(target);
                 Entity attacker = s.getEntity();
                 if (attacker != null) {
-                    power.attackerAction.execute(attacker);
-                    power.biEntityAction.execute(attacker, target);
+                    p.attackerAction.execute(attacker);
+                    p.biEntityAction.execute(attacker, target);
                 }
             }
         });

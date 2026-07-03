@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.ConditionedRestrictArmorPower;
 import com.iafenvoy.origins.data.power.builtin.regular.RestrictArmorPower;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -17,9 +17,9 @@ import org.spongepowered.asm.mixin.injection.At;
 public interface EquipableMixin {
     @ModifyExpressionValue(method = "swapWithEquipmentSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;canUseSlot(Lnet/minecraft/world/entity/EquipmentSlot;)Z"))
     private boolean preventArmorEquipping(boolean original, @Local(argsOnly = true) Level level, @Local(argsOnly = true) Player player, @Local ItemStack stack, @Local EquipmentSlot slot) {
-        OriginDataHolder holder = OriginDataHolder.get(player);
+        PowerHelper helper = PowerHelper.get(player);
         return original
-                && holder.getHelper().holder().streamActivePowers(ConditionedRestrictArmorPower.class).noneMatch(p -> p.getConditions().get(slot).test(level, stack))
-                && holder.getHelper().holder().streamActivePowers(RestrictArmorPower.class).noneMatch(p -> p.getConditions().get(slot).test(level, stack));
+                && helper.noneActive(ConditionedRestrictArmorPower.class, p -> p.getConditions().get(slot).test(level, stack))
+                && helper.noneActive(RestrictArmorPower.class, p -> p.getConditions().get(slot).test(level, stack));
     }
 }

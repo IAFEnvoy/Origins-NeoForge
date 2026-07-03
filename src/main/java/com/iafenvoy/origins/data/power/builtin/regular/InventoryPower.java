@@ -2,6 +2,7 @@ package com.iafenvoy.origins.data.power.builtin.regular;
 
 import com.google.common.collect.ImmutableSet;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.KeySettings;
 import com.iafenvoy.origins.data.badge.Badge;
 import com.iafenvoy.origins.data.badge.PresetBadges;
@@ -33,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 
 @EventBusSubscriber
@@ -119,7 +119,7 @@ public class InventoryPower extends Power implements Toggleable, MenuProvider {
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
-        return OriginDataHolder.get(player).getComponentFor(this, InventoryComponent.class).map(InventoryComponent::getContainer).map(container -> this.containerType.getFactory().createMenu(id, inventory, container)).orElse(null);
+        return PowerHelper.get(player).getComponentFor(this, InventoryComponent.class).map(InventoryComponent::getContainer).map(container -> this.containerType.getFactory().createMenu(id, inventory, container)).orElse(null);
     }
 
     public void tryDropItemsOnDeath(OriginDataHolder holder, Player player) {
@@ -142,11 +142,8 @@ public class InventoryPower extends Power implements Toggleable, MenuProvider {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onPlayerDeath(LivingDeathEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            OriginDataHolder holder = OriginDataHolder.get(player);
-            if (!player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
-                holder.streamActivePowers(InventoryPower.class).forEach(p -> p.tryDropItemsOnDeath(holder, player));
-        }
+        if (event.getEntity() instanceof Player player && !player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
+            PowerHelper.get(player).execute(InventoryPower.class, (h, p) -> p.tryDropItemsOnDeath(h, player));
     }
 
     public enum ContainerType implements StringRepresentable {

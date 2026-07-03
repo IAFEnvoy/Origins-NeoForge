@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.action.EntityAction;
@@ -92,15 +92,14 @@ public class ModifyDamageDealtPower extends Power implements ModifierPowerHelper
         Entity source = event.getSource().getEntity(), target = event.getEntity();
         if (source == null || event.getSource().is(DamageTypeTags.IS_PROJECTILE))// projectile is handled by ModifyProjectileDamagePower
             return;
-        OriginDataHolder holder = OriginDataHolder.get(source);
-        holder.streamActivePowers(ModifyDamageDealtPower.class).forEach(power -> {
+        PowerHelper.get(source).execute(ModifyDamageDealtPower.class, (h, p) -> {
             float baseValue = event.getNewDamage();
             DamageSource s = event.getSource();
-            if (power.damageCondition.test(s, baseValue) && power.targetCondition.test(target) && power.biEntityCondition.test(source, target)) {
-                event.setNewDamage(power.modify(holder, baseValue));
-                power.selfAction.execute(source);
-                power.targetAction.execute(target);
-                power.biEntityAction.execute(source, target);
+            if (p.damageCondition.test(s, baseValue) && p.targetCondition.test(target) && p.biEntityCondition.test(source, target)) {
+                event.setNewDamage(p.modify(h, baseValue));
+                p.selfAction.execute(source);
+                p.targetAction.execute(target);
+                p.biEntityAction.execute(source, target);
             }
         });
     }

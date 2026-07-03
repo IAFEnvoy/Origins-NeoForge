@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @EventBusSubscriber
 public class AttributeModifyTransferPower extends Power {
@@ -64,7 +65,9 @@ public class AttributeModifyTransferPower extends Power {
         if (!(entity instanceof LivingEntity livingEntity)) return;
         Class<? extends Power> powerClass = event.getPowerClass();
         List<Modifier> modifiers = event.getModifier();
-        OriginDataHolder holder = OriginDataHolder.get(livingEntity);
+        Optional<OriginDataHolder> optional = OriginDataHolder.optional(livingEntity);
+        if (optional.isEmpty()) return;
+        OriginDataHolder holder = optional.get();
         for (AttributeModifyTransferPower p : holder.streamActivePowers(AttributeModifyTransferPower.class).toList()) {
             if (p.target.get(holder.getAccess()).map(x -> !Objects.equals(powerClass, x.power().getClass())).orElse(true))
                 continue;

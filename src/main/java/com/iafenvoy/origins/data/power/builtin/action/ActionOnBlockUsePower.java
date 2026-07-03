@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.InteractionPowerSettings;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.action.EntityAction;
@@ -106,7 +106,7 @@ public class ActionOnBlockUsePower extends Power {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onBlockUse(PlayerInteractEvent.RightClickBlock event) {
         Entity entity = event.getEntity();
-        OriginDataHolder.get(entity).streamActivePowers(ActionOnBlockUsePower.class)
+        PowerHelper.get(entity).streamActive(ActionOnBlockUsePower.class)
                 .flatMap(x -> x.tryExecute(entity, event.getPos(), event.getFace(), event.getHand()).stream())
                 .reduce(MiscUtil::reduce).ifPresent(res -> {
                     if (res.consumesAction()) {

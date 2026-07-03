@@ -2,7 +2,7 @@ package com.iafenvoy.origins.mixin.loot;
 
 import com.iafenvoy.origins.accessor.KeyableLootTable;
 import com.iafenvoy.origins.accessor.ReplacingLootContext;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.ReplaceLootTablePower;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -70,7 +70,7 @@ public abstract class LootTableMixin implements KeyableLootTable {
         ReplaceLootTablePower.push((LootTable) (Object) this);
 
         Entity finalHolder = holder;
-        Optional<LootTable> replacementTable = OriginDataHolder.get(holder).streamActivePowers(ReplaceLootTablePower.class)
+        Optional<LootTable> replacementTable = PowerHelper.get(holder).streamActive(ReplaceLootTablePower.class)
                 .filter(power -> power.hasReplacement(key) && power.doesApply(finalHolder, context))
                 .map(power -> power.getReplacement(key)
                         .map(id -> this.origins$lookup.getLootTable(id))

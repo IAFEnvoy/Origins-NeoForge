@@ -9,6 +9,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import java.util.List;
 
 //Only for power
+//FIXME::Remove to PowerHelper
 @FunctionalInterface
 public interface ModifierPowerHelper {
     List<Modifier> getModifier();

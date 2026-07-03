@@ -1,8 +1,8 @@
 package com.iafenvoy.origins.data;
 
-import javax.annotation.Nullable;
-
 import net.neoforged.api.distmarker.Dist;
+
+import javax.annotation.Nullable;
 
 //FIXME::Better sided logic
 public interface Sided {

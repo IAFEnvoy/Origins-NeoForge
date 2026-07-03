@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.ConditionedRestrictArmorPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ElytraFlightPower;
 import com.iafenvoy.origins.data.power.builtin.regular.RestrictArmorPower;
@@ -25,13 +25,13 @@ public interface IItemStackExtensionMixin {
 
     @Inject(method = "canEquip", at = @At("HEAD"), cancellable = true, remap = false)
     private void preventArmorEquip(EquipmentSlot armorType, LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
-        OriginDataHolder holder = OriginDataHolder.get(entity);
         ItemStack stack = this.self();
+        PowerHelper helper = PowerHelper.get(entity);
         if (Stream.concat(
-                holder.streamActivePowers(ConditionedRestrictArmorPower.class).map(ConditionedRestrictArmorPower::getConditions),
-                holder.streamActivePowers(RestrictArmorPower.class).map(RestrictArmorPower::getConditions)
+                helper.streamActive(ConditionedRestrictArmorPower.class).map(ConditionedRestrictArmorPower::getConditions),
+                helper.streamActive(RestrictArmorPower.class).map(RestrictArmorPower::getConditions)
         ).anyMatch(x -> x.get(armorType) != null && x.get(armorType).test(entity.level(), stack)) ||
-                stack.is(Items.ELYTRA) && holder.hasActivePower(ElytraFlightPower.class))
+                stack.is(Items.ELYTRA) && helper.anyActive(ElytraFlightPower.class))
             cir.setReturnValue(false);
     }
 }

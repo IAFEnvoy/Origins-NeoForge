@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.mojang.serialization.Codec;
@@ -55,7 +55,7 @@ public class EffectImmunityPower extends Power {
 
     @SubscribeEvent
     public static void disableEffectApply(MobEffectEvent.Applicable event) {
-        if (OriginDataHolder.get(event.getEntity()).streamActivePowers(EffectImmunityPower.class).anyMatch(power -> !power.canApply(event.getEffectInstance())))
+        if (PowerHelper.get(event.getEntity()).anyActive(EffectImmunityPower.class, power -> !power.canApply(event.getEffectInstance())))
             event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
     }
 }

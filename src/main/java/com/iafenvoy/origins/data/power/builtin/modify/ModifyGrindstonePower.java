@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
 import com.iafenvoy.origins.accessor.PowerModifiedGrindstone;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
@@ -154,13 +154,11 @@ public class ModifyGrindstonePower extends Power {
     }
 
     public static boolean allowsInTopSlot(GrindstoneMenu screenHandler, ItemStack stack) {
-        return screenHandler instanceof PowerModifiedGrindstone powerModifiedGrindstone
-                && OriginDataHolder.get(powerModifiedGrindstone.origins$getPlayer()).streamActivePowers(ModifyGrindstonePower.class).anyMatch(x -> x.allowsInTop(powerModifiedGrindstone.origins$getPlayer(), stack));
+        return screenHandler instanceof PowerModifiedGrindstone powerModifiedGrindstone && PowerHelper.get(powerModifiedGrindstone.origins$getPlayer()).anyActive(ModifyGrindstonePower.class, x -> x.allowsInTop(powerModifiedGrindstone.origins$getPlayer(), stack));
     }
 
     public static boolean allowsInBottomSlot(GrindstoneMenu screenHandler, ItemStack stack) {
-        return screenHandler instanceof PowerModifiedGrindstone powerModifiedGrindstone
-                && OriginDataHolder.get(powerModifiedGrindstone.origins$getPlayer()).streamActivePowers(ModifyGrindstonePower.class).anyMatch(x -> x.allowsInBottom(powerModifiedGrindstone.origins$getPlayer(), stack));
+        return screenHandler instanceof PowerModifiedGrindstone powerModifiedGrindstone && PowerHelper.get(powerModifiedGrindstone.origins$getPlayer()).anyActive(ModifyGrindstonePower.class, x -> x.allowsInBottom(powerModifiedGrindstone.origins$getPlayer(), stack));
     }
 
     public enum ResultType implements StringRepresentable {

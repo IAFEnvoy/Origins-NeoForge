@@ -5,18 +5,11 @@ import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
-import com.iafenvoy.origins.network.payload.ConfirmOriginS2CPayload;
-import com.iafenvoy.origins.network.payload.DismountPlayerS2CPayload;
-import com.iafenvoy.origins.network.payload.MountPlayerS2CPayload;
-import com.iafenvoy.origins.network.payload.NotifyKeymapsS2CPayload;
-import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
-import com.iafenvoy.origins.network.payload.ReapplyShadersS2CPayload;
-import com.iafenvoy.origins.network.payload.ReloadLevelRendererS2CPayload;
+import com.iafenvoy.origins.network.payload.*;
 import com.iafenvoy.origins.registry.OriginsKeyMappings;
 import com.iafenvoy.origins.render.LevelRenderHelper;
 import com.iafenvoy.origins.screen.ChooseOriginScreen;
 import com.iafenvoy.origins.screen.WaitForNextLayerScreen;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -26,11 +19,12 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 public final class ClientNetworkHandler {
     static void onOriginConfirm(ConfirmOriginS2CPayload packet, IPayloadContext context) {
         Player player = context.player();
-        OriginDataHolder holder = OriginDataHolder.get(player);
+        OriginDataHolder holder = OriginDataHolder.get(context.player());
         holder.setOrigin(packet.layer(), packet.origin());
         player.sendSystemMessage(Component.translatable("commands.origin.set.success.single", player.getDisplayName(), Layer.getName(packet.layer()), Origin.getName(packet.origin())));
         if (Minecraft.getInstance().screen instanceof WaitForNextLayerScreen nextLayerScreen)
@@ -52,7 +46,7 @@ public final class ClientNetworkHandler {
     }
 
     public static void onNotifyKeymaps(NotifyKeymapsS2CPayload payload, IPayloadContext context) {
-        OriginsKeyMappings.INSTANCE.registerKeyMappingsFromPowers(OriginDataHolder.get(context.player()).getAllPowers());
+        OriginsKeyMappings.INSTANCE.registerKeyMappingsFromPowers(OriginDataHolder.optional(context.player()).map(OriginDataHolder::getAllPowers).orElse(Set.of()));
     }
 
     public static void onMountPlayer(MountPlayerS2CPayload payload, IPayloadContext context) {

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyInsomniaTicksPower;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,6 +14,6 @@ public class PhantomSpawnerMixin {
     // This is imo a better way to handle this, so then the modified insomnia ticks will be properly clamped.
     @ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(III)I"), index = 0)
     private int modifyTicks(int original, @Local ServerPlayer serverplayer) {
-        return OriginDataHolder.get(serverplayer).getHelper().modify(ModifyInsomniaTicksPower.class, original);
+        return PowerHelper.get(serverplayer).modify(ModifyInsomniaTicksPower.class, original);
     }
 }

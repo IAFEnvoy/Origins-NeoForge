@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.condition.AlwaysTrueCondition;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.condition.EntityCondition;
@@ -79,11 +79,8 @@ public class PhasingPower extends Power {
         return CODEC;
     }
 
-    @SuppressWarnings("ConstantValue")
     public static boolean shouldPhaseThrough(Entity entity, Level level, BlockPos pos, boolean isAbove) {
-        if (entity instanceof ServerPlayer player && player.connection == null)
-            return false;// Fixes a crash when the player is connecting
-        return OriginDataHolder.get(entity).streamActivePowers(PhasingPower.class).anyMatch(x -> (!isAbove || x.canPhaseDown(entity)) && x.canPhaseThrough(level, pos));
+        return PowerHelper.get(entity).anyActive(PhasingPower.class, x -> (!isAbove || x.canPhaseDown(entity)) && x.canPhaseThrough(level, pos));
     }
 
     public static boolean shouldPhaseThrough(Entity entity, Level level, BlockPos pos) {
@@ -95,11 +92,11 @@ public class PhasingPower extends Power {
     }
 
     public static boolean hasRenderMethod(Entity entity, PhasingRenderType renderType) {
-        return OriginDataHolder.get(entity).streamActivePowers(PhasingPower.class).anyMatch(x -> x.renderType == renderType);
+        return PowerHelper.get(entity).anyActive(PhasingPower.class, x -> x.renderType == renderType);
     }
 
     public static Optional<Float> getRenderMethod(Entity entity, PhasingRenderType renderType) {
-        return OriginDataHolder.get(entity).streamActivePowers(PhasingPower.class).filter(x -> x.renderType == renderType).map(x -> x.viewDistance).min(Float::compareTo);
+        return PowerHelper.get(entity).streamActive(PhasingPower.class).filter(x -> x.renderType == renderType).map(x -> x.viewDistance).min(Float::compareTo);
     }
 
     public boolean canPhaseDown(Entity entity) {
@@ -141,7 +138,7 @@ public class PhasingPower extends Power {
     public static class ClientEvents {
         @SubscribeEvent(priority = EventPriority.HIGHEST)
         public static void onBlockOverlay(RenderBlockScreenEffectEvent event) {
-            if (OriginDataHolder.get(event.getPlayer()).hasActivePower(PhasingPower.class))
+            if (PowerHelper.get(event.getPlayer()).anyActive(PhasingPower.class))
                 event.setCanceled(true);
         }
 

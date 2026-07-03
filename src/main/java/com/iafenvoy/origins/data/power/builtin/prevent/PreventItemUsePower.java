@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.data.power.builtin.prevent;
 
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.config.OriginsConfig;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
@@ -25,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 //FIXME::Tooltip
 @EventBusSubscriber
@@ -51,7 +50,7 @@ public class PreventItemUsePower extends Power {
     }
 
     public static boolean isUsagePrevented(Entity entity, ItemStack stack) {
-        return OriginDataHolder.get(entity).streamActivePowers(PreventItemUsePower.class).anyMatch(x -> x.itemCondition.test(entity.level(), stack));
+        return PowerHelper.get(entity).anyActive(PreventItemUsePower.class, x -> x.itemCondition.test(entity.level(), stack));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -70,7 +69,7 @@ public class PreventItemUsePower extends Power {
         //TODO::Config
         Player player = event.getEntity();
         if (player == null) return;
-        List<PreventItemUsePower> powers = OriginDataHolder.get(player).streamActivePowers(PreventItemUsePower.class).filter(x -> x.itemCondition.test(player.level(), event.getItemStack())).collect(Collectors.toList());
+        List<PreventItemUsePower> powers = PowerHelper.get(player).listActive(PreventItemUsePower.class, p -> p.itemCondition.test(player.level(), event.getItemStack()));
         int size = powers.size();
         if (!powers.isEmpty()) {
             RegistryAccess access = player.registryAccess();

@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.event.handler;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.action.ActionOnBeingUsedPower;
 import com.iafenvoy.origins.data.power.builtin.action.ActionOnEntityUsePower;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventBeingUsedPower;
@@ -8,7 +9,6 @@ import com.iafenvoy.origins.data.power.builtin.prevent.PreventEntityUsePower;
 import com.iafenvoy.origins.network.payload.DismountPlayerS2CPayload;
 import com.iafenvoy.origins.network.payload.NotifyKeymapsS2CPayload;
 import com.iafenvoy.origins.util.MiscUtil;
-
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,9 +19,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Optional;
@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 public final class CommonEvents {
     @SubscribeEvent
     public static void preventDamageWhenSelecting(EntityInvulnerabilityCheckEvent event) {
-        if (event.getEntity() instanceof Player player && !OriginDataHolder.get(player).hasAllOrigins())
+        if (event.getEntity() instanceof Player player && OriginDataHolder.optionalStream(player).noneMatch(OriginDataHolder::hasAllOrigins))
             event.setInvulnerable(true);
     }
 
@@ -79,8 +79,8 @@ public final class CommonEvents {
         Entity target = event.getTarget();
         InteractionHand hand = event.getHand();
         Stream.concat(
-                OriginDataHolder.get(player).streamActivePowers(ActionOnEntityUsePower.class).flatMap(p -> p.tryExecute(player, target, hand).stream()),
-                OriginDataHolder.get(target).streamActivePowers(ActionOnBeingUsedPower.class).flatMap(p -> p.tryExecute(target, player, hand).stream())
+                PowerHelper.get(player).streamActive(ActionOnEntityUsePower.class).flatMap(p -> p.tryExecute(player, target, hand).stream()),
+                PowerHelper.get(target).streamActive(ActionOnBeingUsedPower.class).flatMap(p -> p.tryExecute(target, player, hand).stream())
         ).reduce(MiscUtil::reduce).filter(res -> res != InteractionResult.PASS).ifPresent(res -> {
             event.setCancellationResult(res);
             event.setCanceled(true);

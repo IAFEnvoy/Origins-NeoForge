@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
@@ -91,9 +91,9 @@ public class ModifyFoodPower extends Power {
     }
 
     public static void modifyStack(Level level, Entity entity, Mutable.Stack input) {
-        OriginDataHolder.get(entity).streamActivePowers(ModifyFoodPower.class).filter(x -> x.itemCondition.test(level, input.get())).forEach(power -> {
-            power.replaceStack.ifPresent(stack -> input.set(stack.copy()));
-            power.itemAction.execute(level, entity, input.toSlotAccess());
+        PowerHelper.get(entity).execute(ModifyFoodPower.class, p -> p.itemCondition.test(level, input.get()), (h, p) -> {
+            p.replaceStack.ifPresent(stack -> input.set(stack.copy()));
+            p.itemAction.execute(level, entity, input.toSlotAccess());
         });
     }
 }

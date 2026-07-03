@@ -1,11 +1,10 @@
 package com.iafenvoy.origins.data._common.helper;
 
 import com.iafenvoy.origins.attachment.OriginDataHolder;
-import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.data._common.AttributeEntry;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.data.power.reference.PowerReference;
-import com.iafenvoy.origins.util.annotation.Comment;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

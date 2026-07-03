@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.ElytraFlightPower;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.resources.ResourceLocation;
@@ -22,12 +22,12 @@ public class ElytraLayerMixin<T extends LivingEntity> {
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
     private void modifyEquippedStackToElytra(ItemStack stack, LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
         this.origins$livingEntity = entity;
-        if (OriginDataHolder.get(entity).streamActivePowers(ElytraFlightPower.class).anyMatch(ElytraFlightPower::shouldRenderElytra) && !entity.isInvisible())
+        if (PowerHelper.get(entity).anyActive(ElytraFlightPower.class, ElytraFlightPower::shouldRenderElytra) && !entity.isInvisible())
             cir.setReturnValue(true);
     }
 
     @Inject(method = "getElytraTexture", at = @At("HEAD"), cancellable = true)
     private void setTexture(ItemStack stack, T entity, CallbackInfoReturnable<ResourceLocation> cir) {
-        OriginDataHolder.get(this.origins$livingEntity).streamActivePowers(ElytraFlightPower.class).map(ElytraFlightPower::getTextureLocation).flatMap(Optional::stream).findFirst().ifPresent(cir::setReturnValue);
+        PowerHelper.get(this.origins$livingEntity).streamActive(ElytraFlightPower.class).map(ElytraFlightPower::getTextureLocation).flatMap(Optional::stream).findFirst().ifPresent(cir::setReturnValue);
     }
 }

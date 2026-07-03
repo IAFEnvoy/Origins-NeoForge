@@ -2,9 +2,9 @@ package com.iafenvoy.origins.data.origin;
 
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
+import com.iafenvoy.origins.util.HolderHelper;
 import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.iafenvoy.origins.util.codec.RegistryCodecs;
-import com.iafenvoy.origins.util.HolderHelper;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

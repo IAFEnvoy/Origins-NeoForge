@@ -19,6 +19,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 @EventBusSubscriber
 public class ModifyProjectileDamagePower extends Power implements ModifierPowerHelper {
@@ -76,7 +77,9 @@ public class ModifyProjectileDamagePower extends Power implements ModifierPowerH
         Entity source = damageSource.getEntity(), target = event.getEntity();
         if (source != null && damageSource.is(DamageTypeTags.IS_PROJECTILE)) {
             float amount = event.getNewDamage();
-            OriginDataHolder holder = OriginDataHolder.get(source);
+            Optional<OriginDataHolder> optional = OriginDataHolder.optional(source);
+            if (optional.isEmpty()) return;
+            OriginDataHolder holder = optional.get();
             List<ModifyProjectileDamagePower> powers = holder.streamActivePowers(ModifyProjectileDamagePower.class).filter(x -> x.damageCondition.test(damageSource, amount) && x.targetCondition.test(target)).toList();
             powers.forEach(x -> {
                 x.selfAction.execute(source);

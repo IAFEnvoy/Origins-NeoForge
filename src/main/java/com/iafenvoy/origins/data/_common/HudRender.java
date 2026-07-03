@@ -2,7 +2,6 @@ package com.iafenvoy.origins.data._common;
 
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.data.condition.EntityCondition;
-import com.iafenvoy.origins.util.codec.WildcardCodec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;

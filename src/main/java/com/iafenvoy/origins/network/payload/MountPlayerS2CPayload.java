@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.network.payload;
 
 import com.iafenvoy.origins.Origins;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -15,7 +14,7 @@ public record MountPlayerS2CPayload(int source, int target) implements CustomPac
             ByteBufCodecs.INT, MountPlayerS2CPayload::source,
             ByteBufCodecs.INT, MountPlayerS2CPayload::target,
             MountPlayerS2CPayload::new
-            );
+    );
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {

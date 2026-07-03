@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyCameraSubmersionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.NightVisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
@@ -125,8 +125,8 @@ public abstract class GameRendererMixin {
     private void loadShaderFromPowerOnCameraEntity(Entity entity, CallbackInfo ci) {
         Entity cameraEntity = this.minecraft.getCameraEntity();
         if (cameraEntity == null) return;
-        OriginDataHolder.get(cameraEntity).streamActivePowers(ShaderPower.class).forEach(x -> {
-            ResourceLocation shaderLoc = x.getShader();
+        PowerHelper.get(cameraEntity).execute(ShaderPower.class, (h, p) -> {
+            ResourceLocation shaderLoc = p.getShader();
             if (this.resourceManager.getResource(shaderLoc).isPresent()) {
                 this.loadEffect(shaderLoc);
                 this.origins$currentlyLoadedShader = shaderLoc;
@@ -138,7 +138,7 @@ public abstract class GameRendererMixin {
     private void loadShaderFromPower(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
         Entity cameraEntity = this.minecraft.getCameraEntity();
         if (cameraEntity == null) return;
-        List<ShaderPower> shaderPowers = OriginDataHolder.get(cameraEntity).streamActivePowers(ShaderPower.class).toList();
+        List<ShaderPower> shaderPowers = PowerHelper.get(cameraEntity).listActive(ShaderPower.class);
         shaderPowers.forEach(x -> {
             ResourceLocation shader = x.getShader();
             if (this.origins$currentlyLoadedShader != shader) {
@@ -159,13 +159,14 @@ public abstract class GameRendererMixin {
     @Inject(method = "togglePostEffect", at = @At("HEAD"), cancellable = true)
     private void disableShaderToggle(CallbackInfo ci) {
         Entity cameraEntity = this.minecraft.getCameraEntity();
-        if (cameraEntity != null && OriginDataHolder.get(cameraEntity).streamActivePowers(ShaderPower.class).anyMatch(power -> !power.isToggleable() && power.getShader().equals(this.origins$currentlyLoadedShader)))
+        if (cameraEntity != null && PowerHelper.get(cameraEntity).anyActive(ShaderPower.class, p -> !p.isToggleable() && p.getShader().equals(this.origins$currentlyLoadedShader)))
             ci.cancel();
     }
 
     @Inject(method = "getNightVisionScale", at = @At("HEAD"), cancellable = true)
     private static void updateNightVisionScale(LivingEntity living, float tickDelta, CallbackInfoReturnable<Float> cir) {
-        if (!living.hasEffect(MobEffects.NIGHT_VISION) && OriginDataHolder.get(living).hasActivePower(NightVisionPower.class))
-            cir.setReturnValue(OriginDataHolder.get(living).streamActivePowers(NightVisionPower.class).map(NightVisionPower::getStrength).max(Float::compareTo).orElse(1F));
+        PowerHelper helper = PowerHelper.get(living);
+        if (!living.hasEffect(MobEffects.NIGHT_VISION) && helper.anyActive(NightVisionPower.class))
+            cir.setReturnValue(helper.streamActive(NightVisionPower.class).map(NightVisionPower::getStrength).max(Float::compareTo).orElse(1F));
     }
 }

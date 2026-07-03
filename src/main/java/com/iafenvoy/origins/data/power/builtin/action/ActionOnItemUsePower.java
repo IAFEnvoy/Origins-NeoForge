@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.data.condition.ItemCondition;
@@ -73,7 +73,7 @@ public class ActionOnItemUsePower extends Power implements Prioritized {
 
     @SubscribeEvent
     public static void onItemUse(LivingEntityUseItemEvent event) {
-        OriginDataHolder.get(event.getEntity()).streamActivePowers(ActionOnItemUsePower.class).filter(x -> x.trigger.testEvent(event)).forEach(p -> {
+        PowerHelper.get(event.getEntity()).execute(ActionOnItemUsePower.class, p -> p.trigger.testEvent(event), (h, p) -> {
             ItemStack stack = event.getItem();
             LivingEntity entity = event.getEntity();
             if (p.itemCondition.test(entity.level(), stack)) {

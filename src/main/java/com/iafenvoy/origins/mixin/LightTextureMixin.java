@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.NightVisionPower;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -19,6 +19,6 @@ public class LightTextureMixin {
     @ModifyVariable(method = "updateLightTexture", at = @At(value = "STORE"), ordinal = 7)
     private float nightVisionPowerEffect(float value) {
         if (this.minecraft.player == null) return value;
-        return OriginDataHolder.get(this.minecraft.player).streamActivePowers(NightVisionPower.class).map(NightVisionPower::getStrength).max(Float::compareTo).map(x -> Math.max(x, value)).orElse(value);
+        return PowerHelper.get(this.minecraft.player).streamActive(NightVisionPower.class).map(NightVisionPower::getStrength).max(Float::compareTo).map(x -> Math.max(x, value)).orElse(value);
     }
 }

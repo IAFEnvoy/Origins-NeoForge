@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.render;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyBlockRenderPower;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyFluidRenderPower;
 import com.iafenvoy.origins.network.payload.ReloadLevelRendererS2CPayload;
@@ -32,9 +32,9 @@ public final class LevelRenderHelper {
         if (!SHOULD_RELOAD_LEVEL_RENDERER) return false;
         SHOULD_RELOAD_LEVEL_RENDERER = false;
         if (entity != null) {
-            OriginDataHolder holder = OriginDataHolder.get(entity);
-            holder.streamActivePowers(ModifyBlockRenderPower.class).forEach(BLOCK_RENDER_POWERS::add);
-            holder.streamActivePowers(ModifyFluidRenderPower.class).forEach(FLUID_RENDER_POWERS::add);
+            PowerHelper helper = PowerHelper.get(entity);
+            helper.streamActive(ModifyBlockRenderPower.class).forEach(BLOCK_RENDER_POWERS::add);
+            helper.streamActive(ModifyFluidRenderPower.class).forEach(FLUID_RENDER_POWERS::add);
         }
         return true;
     }

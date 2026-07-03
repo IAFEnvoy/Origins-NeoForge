@@ -1,9 +1,12 @@
 package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.accessor.MovingEntity;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyVelocityPower;
-import com.iafenvoy.origins.data.power.builtin.regular.*;
+import com.iafenvoy.origins.data.power.builtin.regular.FireImmunityPower;
+import com.iafenvoy.origins.data.power.builtin.regular.GroundedPower;
+import com.iafenvoy.origins.data.power.builtin.regular.InvisibilityPower;
+import com.iafenvoy.origins.data.power.builtin.regular.PhasingPower;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -46,7 +49,7 @@ public class EntityMixin implements MovingEntity {
 
     @Inject(method = "fireImmune", at = @At("HEAD"), cancellable = true)
     private void handleFireImmune(CallbackInfoReturnable<Boolean> cir) {
-        if (OriginDataHolder.get(this.origins$self()).streamActivePowers(FireImmunityPower.class).findAny().isPresent())
+        if (PowerHelper.get(this.origins$self()).anyActive(FireImmunityPower.class, x -> true))
             cir.setReturnValue(true);
     }
 
@@ -65,8 +68,7 @@ public class EntityMixin implements MovingEntity {
     @ModifyVariable(method = "move", at = @At(value = "HEAD"), argsOnly = true)
     private Vec3 modifyMovementVelocityXZ(Vec3 vec, MoverType movementType) {
         if (movementType != MoverType.SELF) return vec;
-        OriginDataHolder holder = OriginDataHolder.get(this.origins$self());
-        return holder.streamActivePowers(ModifyVelocityPower.class).reduce(vec, (v, p) -> p.apply(holder, v), Vec3::add);
+        return PowerHelper.get(this.origins$self()).reduce(ModifyVelocityPower.class, vec, (h, v, p) -> p.apply(h, v), Vec3::add);
     }
 
     @Inject(method = "moveTowardsClosestSpace", at = @At(value = "HEAD"), cancellable = true)
@@ -81,13 +83,13 @@ public class EntityMixin implements MovingEntity {
 
     @Inject(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getOnPosLegacy()Lnet/minecraft/core/BlockPos;"))
     private void forceGrounded(MoverType pType, Vec3 pPos, CallbackInfo ci) {
-        if (OriginDataHolder.get(this.origins$self()).hasActivePower(GroundedPower.class)) {
+        if (PowerHelper.get(this.origins$self()).anyActive(GroundedPower.class)) {
             this.onGround = true;
         }
     }
 
     @ModifyReturnValue(method = "isInvisible", at = @At("RETURN"))
     private boolean phantomInvisibility(boolean original) {
-        return original || OriginDataHolder.get(this.origins$self()).hasActivePower(InvisibilityPower.class);
+        return original || PowerHelper.get(this.origins$self()).anyActive(InvisibilityPower.class);
     }
 }

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.codec.ExtraEnumCodecs;
 import com.mojang.serialization.MapCodec;
@@ -41,6 +41,6 @@ public class ModifyCameraSubmersionPower extends Power {
     }
 
     public static Optional<FogType> tryReplace(Entity entity, FogType original) {
-        return OriginDataHolder.get(entity).streamActivePowers(ModifyCameraSubmersionPower.class).map(x -> x.from.isEmpty() ? Optional.of(x.to) : x.from.filter(original::equals).map(k -> x.to)).flatMap(Optional::stream).findFirst();
+        return PowerHelper.get(entity).streamActive(ModifyCameraSubmersionPower.class).map(x -> x.from.isEmpty() ? Optional.of(x.to) : x.from.filter(original::equals).map(k -> x.to)).flatMap(Optional::stream).findFirst();
     }
 }

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BlockCondition;
@@ -58,12 +58,11 @@ public class ActionOnWakeUpPower extends Power {
         Player player = event.getEntity();
         Optional<BlockPos> pos = player.getSleepingPos();
         if (pos.isEmpty()) return;
-        OriginDataHolder.get(player).streamActivePowers(ActionOnWakeUpPower.class).forEach(power -> {
-            if (power.blockCondition.test(player.level(), pos.get())) {
-                power.entityAction.execute(player);
-                power.blockAction.execute(player.level(), pos.get(), Optional.of(player.getDirection()));
-            }
-        });
-
+        PowerHelper.get(player).execute(ActionOnWakeUpPower.class,
+                p -> p.blockCondition.test(player.level(), pos.get()),
+                (h, p) -> {
+                    p.entityAction.execute(player);
+                    p.blockAction.execute(player.level(), pos.get(), Optional.of(player.getDirection()));
+                });
     }
 }

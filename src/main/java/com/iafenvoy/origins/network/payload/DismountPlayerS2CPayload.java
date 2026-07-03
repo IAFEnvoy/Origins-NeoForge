@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.network.payload;
 
 import com.iafenvoy.origins.Origins;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -14,7 +13,7 @@ public record DismountPlayerS2CPayload(int dismountingEntity) implements CustomP
     public static final StreamCodec<ByteBuf, DismountPlayerS2CPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, DismountPlayerS2CPayload::dismountingEntity,
             DismountPlayerS2CPayload::new
-            );
+    );
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {

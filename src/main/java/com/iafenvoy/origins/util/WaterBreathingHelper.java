@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.util;
 
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.WaterBreathingPower;
 import com.iafenvoy.origins.mixin.accessor.LivingEntityAccessor;
 import net.minecraft.core.particles.ParticleTypes;
@@ -13,8 +13,6 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.common.NeoForgeMod;
-
-import java.util.List;
 
 public final class WaterBreathingHelper {
     private static final ResourceKey<DamageType> NO_WATER_FOR_GILLS = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "no_water_for_gills"));
@@ -29,8 +27,7 @@ public final class WaterBreathingHelper {
     }
 
     public static void tick(LivingEntity entity) {
-        List<WaterBreathingPower> powers = OriginDataHolder.get(entity).streamActivePowers(WaterBreathingPower.class).toList();
-        if (powers.isEmpty()) return;
+        if (PowerHelper.get(entity).noneActive(WaterBreathingPower.class)) return;
 
         LivingEntityAccessor entityAccess = (LivingEntityAccessor) entity;
         if (shouldDrown(entity)) {

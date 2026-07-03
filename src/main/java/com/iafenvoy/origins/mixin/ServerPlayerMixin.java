@@ -2,7 +2,7 @@ package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.accessor.EndRespawningEntity;
 import com.iafenvoy.origins.accessor.PowerCraftingObject;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyPlayerSpawnPower;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -60,16 +60,13 @@ public abstract class ServerPlayerMixin extends Player implements ContainerListe
     @ModifyReturnValue(method = "getRespawnDimension", at = @At("RETURN"))
     private ResourceKey<Level> origins$modifySpawnPointDimension(ResourceKey<Level> original) {
         if (!this.origins$isEndRespawning() && (this.respawnPosition == null || this.origins$hasObstructedOriginalSpawnPoint()))
-            return OriginDataHolder.get(this).streamActivePowers(ModifyPlayerSpawnPower.class)
-                    .findFirst()
-                    .map(ModifyPlayerSpawnPower::getDimension)
-                    .orElse(original);
+            return PowerHelper.get(this).getFirst(ModifyPlayerSpawnPower.class).map(ModifyPlayerSpawnPower::getDimension).orElse(original);
         else return original;
     }
 
     @ModifyReturnValue(method = "getRespawnPosition", at = @At("RETURN"))
     private BlockPos origins$modifySpawnPointPosition(BlockPos original) {
-        if (this.origins$isEndRespawning() || !OriginDataHolder.get(this).hasActivePower(ModifyPlayerSpawnPower.class))
+        if (this.origins$isEndRespawning() || !PowerHelper.get(this).noneActive(ModifyPlayerSpawnPower.class))
             return original;
         else if (original == null)
             return this.origins$findPowerSpawnPoint();
@@ -81,13 +78,13 @@ public abstract class ServerPlayerMixin extends Player implements ContainerListe
 
     @ModifyReturnValue(method = "isRespawnForced", at = @At("RETURN"))
     private boolean origins$modifySpawnForced(boolean original) {
-        return original || (!this.origins$isEndRespawning() && (this.respawnPosition == null || this.origins$hasObstructedOriginalSpawnPoint()) && OriginDataHolder.get(this).hasActivePower(ModifyPlayerSpawnPower.class));
+        return original || !this.origins$isEndRespawning() && (this.respawnPosition == null || this.origins$hasObstructedOriginalSpawnPoint()) && PowerHelper.get(this).anyActive(ModifyPlayerSpawnPower.class);
     }
 
     @WrapOperation(method = "findRespawnPositionAndUseSpawnBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;findRespawnAndUseSpawnBlock(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;FZZ)Ljava/util/Optional;"))
     private Optional<ServerPlayer.RespawnPosAngle> origins$retryObstructedSpawnPointIfFailed(ServerLevel world, BlockPos pos, float spawnAngle, boolean spawnForced, boolean alive, Operation<Optional<ServerPlayer.RespawnPosAngle>> original) {
         Optional<ServerPlayer.RespawnPosAngle> originalRespawnPos = original.call(world, pos, spawnAngle, spawnForced, alive);
-        if (originalRespawnPos.isEmpty() && OriginDataHolder.get(this).hasActivePower(ModifyPlayerSpawnPower.class)) {
+        if (originalRespawnPos.isEmpty() && PowerHelper.get(this).anyActive(ModifyPlayerSpawnPower.class)) {
             return Optional.ofNullable(DismountHelper.findSafeDismountLocation(this.getType(), world, pos, spawnForced))
                     .map(newPos -> ServerPlayer.RespawnPosAngle.of(newPos, pos));
         } else return originalRespawnPos;
@@ -102,8 +99,7 @@ public abstract class ServerPlayerMixin extends Player implements ContainerListe
 
     @Unique
     private BlockPos origins$findPowerSpawnPoint() {
-        return OriginDataHolder.get(this).streamActivePowers(ModifyPlayerSpawnPower.class)
-                .findFirst()
+        return PowerHelper.get(this).getFirst(ModifyPlayerSpawnPower.class)
                 .flatMap(x -> x.getSpawn(this))
                 .map(Tuple::getB)
                 .orElse(null);

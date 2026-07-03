@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
@@ -57,6 +57,6 @@ public class TooltipPower extends Power {
     public static void appendTooltips(ItemTooltipEvent event) {
         Player player = event.getEntity();
         if (player != null)
-            OriginDataHolder.get(player).streamActivePowers(TooltipPower.class).filter(power -> power.itemCondition.test(player.level(), event.getItemStack())).forEach(power -> event.getToolTip().addAll(power.order, power.text));
+            PowerHelper.get(player).execute(TooltipPower.class, p -> p.itemCondition.test(player.level(), event.getItemStack()), (h, p) -> event.getToolTip().addAll(p.order, p.text));
     }
 }

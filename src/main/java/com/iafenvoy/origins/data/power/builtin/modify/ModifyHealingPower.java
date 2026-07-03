@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.math.Modifier;
@@ -38,6 +38,6 @@ public class ModifyHealingPower extends Power implements ModifierPowerHelper {
 
     @SubscribeEvent
     public static void updateHealAmount(LivingHealEvent event) {
-        event.setAmount(OriginDataHolder.get(event.getEntity()).getHelper().modify(ModifyHealingPower.class, event.getAmount()));
+        event.setAmount(PowerHelper.get(event.getEntity()).modify(ModifyHealingPower.class, event.getAmount()));
     }
 }

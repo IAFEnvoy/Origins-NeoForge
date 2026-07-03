@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.MapCodec;
@@ -36,6 +36,6 @@ public class ActionOnLandPower extends Power {
     @SubscribeEvent
     public static void onFall(LivingFallEvent event) {
         LivingEntity living = event.getEntity();
-        OriginDataHolder.get(living).streamActivePowers(ActionOnLandPower.class).forEach(x -> x.entityAction.execute(living));
+        PowerHelper.get(living).execute(ActionOnLandPower.class, (h, p) -> p.entityAction.execute(living));
     }
 }

@@ -1,8 +1,7 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyBreakSpeedPower;
-import com.iafenvoy.origins.util.math.Modifier;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.core.BlockPos;
@@ -17,8 +16,8 @@ import org.spongepowered.asm.mixin.injection.At;
 public class BlockBehaviourMixin {
     @ModifyExpressionValue(method = "getDestroyProgress", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getDestroySpeed(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)F"))
     private float modifyBlockHardness(float original, BlockState state, Player player, BlockGetter world, BlockPos pos) {
-        OriginDataHolder holder = OriginDataHolder.get(player);
-        return Math.max(Modifier.applyModifiers(holder, holder.streamActivePowers(ModifyBreakSpeedPower.class)
+        PowerHelper helper = PowerHelper.get(player);
+        return Math.max(helper.applyModifiers(helper.streamActive(ModifyBreakSpeedPower.class)
                 .filter(p -> p.getBlockCondition().test(player.level(), pos))
                 .flatMap(p -> p.getHardnessModifier().stream())
                 .toList(), original), -1.0F);
@@ -26,6 +25,6 @@ public class BlockBehaviourMixin {
 
     @ModifyReturnValue(method = "getDestroyProgress", at = @At("RETURN"))
     private float modifyBlockBreakSpeed(float original, BlockState state, Player player, BlockGetter getter, BlockPos pos) {
-        return OriginDataHolder.get(player).getHelper().modify(ModifyBreakSpeedPower.class, p -> p.getBlockCondition().test(player.level(), pos), original);
+        return PowerHelper.get(player).modify(ModifyBreakSpeedPower.class, p -> p.getBlockCondition().test(player.level(), pos), original);
     }
 }

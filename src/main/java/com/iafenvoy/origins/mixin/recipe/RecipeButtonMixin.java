@@ -1,8 +1,6 @@
 package com.iafenvoy.origins.mixin.recipe;
 
 import com.iafenvoy.origins.accessor.PowerCraftingObject;
-import com.iafenvoy.origins.data.power.PowerRegistries;
-import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.recipe.ModifiedCraftingRecipe;
 import com.iafenvoy.origins.recipe.PowerCraftingRecipe;
@@ -16,7 +14,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.RecipeBook;

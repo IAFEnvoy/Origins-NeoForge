@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.action.builtin.entity;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.power.component.builtin.ResourceComponent;
 import com.iafenvoy.origins.util.codec.WildcardCodec;
@@ -27,6 +27,6 @@ public record ChangeResourceAction(ResourceLocation resource, int change,
 
     @Override
     public void execute(@NotNull Entity source) {
-        OriginDataHolder.get(source).getComponent(this.resource, ResourceComponent.class).ifPresent(x -> x.updateResource(this.operation.getOperator(), this.change));
+        PowerHelper.get(source).getComponent(this.resource, ResourceComponent.class).ifPresent(x -> x.updateResource(this.operation.getOperator(), this.change));
     }
 }

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.ConduitPowerOnLandPower;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -13,6 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 public class ConduitBlockEntityMixin {
     @ModifyExpressionValue(method = "applyEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isInWaterOrRain()Z"))
     private static boolean applyConduitPower(boolean original, @Local Player player) {
-        return original || OriginDataHolder.get(player).hasActivePower(ConduitPowerOnLandPower.class);
+        return original || PowerHelper.get(player).anyActive(ConduitPowerOnLandPower.class);
     }
 }

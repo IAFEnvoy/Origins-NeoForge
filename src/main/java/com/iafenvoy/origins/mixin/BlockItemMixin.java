@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.action.ActionOnBlockPlacePower;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventBlockPlacePower;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventItemUsePower;
@@ -41,7 +41,7 @@ public class BlockItemMixin {
         Direction direction = context.getClickedFace();
         BlockPos onPos = context.getHitResult().getBlockPos();
         InteractionHand hand = context.getHand();
-        List<ActionOnBlockPlacePower> powers = OriginDataHolder.get(user).streamActivePowers(ActionOnBlockPlacePower.class).filter(x -> x.getBlockPlaceSettings().shouldExecute(user, stack, hand, toPos, onPos, direction)).toList();
+        List<ActionOnBlockPlacePower> powers = PowerHelper.get(user).listActive(ActionOnBlockPlacePower.class, p -> p.getBlockPlaceSettings().shouldExecute(user, stack, hand, toPos, onPos, direction));
         powers.forEach(x -> x.getBlockPlaceSettings().executeOtherActions(user, toPos, onPos, direction));
         powersRef.set(powers);
     }
@@ -63,7 +63,7 @@ public class BlockItemMixin {
         InteractionHand hand = context.getHand();
         BlockPos toPos = context.getClickedPos();
         BlockPos onPos = context.getHitResult().getBlockPos();
-        List<PreventBlockPlacePower> powers = OriginDataHolder.get(player).streamActivePowers(PreventBlockPlacePower.class).filter(p -> p.getBlockPlaceSettings().shouldExecute(player, stack, hand, toPos, onPos, direction)).toList();
+        List<PreventBlockPlacePower> powers = PowerHelper.get(player).listActive(PreventBlockPlacePower.class, p -> p.getBlockPlaceSettings().shouldExecute(player, stack, hand, toPos, onPos, direction));
         powers.forEach(x -> {
             x.getBlockPlaceSettings().executeOtherActions(player, toPos, onPos, direction);
             x.getBlockPlaceSettings().performActorItemStuff(player, hand);

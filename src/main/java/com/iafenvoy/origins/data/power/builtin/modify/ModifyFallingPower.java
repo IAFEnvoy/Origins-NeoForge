@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
@@ -49,12 +49,12 @@ public class ModifyFallingPower extends Power implements ModifierPowerHelper {
     @SubscribeEvent
     public static void onFall(LivingFallEvent event) {
         LivingEntity living = event.getEntity();
-        if (OriginDataHolder.get(living).streamActivePowers(ModifyFallingPower.class).anyMatch(x -> !x.shouldTakeFallDamage()))
+        if (PowerHelper.get(living).anyActive(ModifyFallingPower.class, x -> !x.shouldTakeFallDamage()))
             event.setDamageMultiplier(0.0F); //Disable fall damage without actually removing distance. This is to avoid breaking compatibility.
     }
 
     public static double apply(LivingEntity living, double originalValue) {
-        double modifier = OriginDataHolder.get(living).getHelper().modify(ModifyFallingPower.class, originalValue);
+        double modifier = PowerHelper.get(living).modify(ModifyFallingPower.class, originalValue);
         if (modifier != originalValue && modifier >= 0.0) return modifier;
         return originalValue;
     }

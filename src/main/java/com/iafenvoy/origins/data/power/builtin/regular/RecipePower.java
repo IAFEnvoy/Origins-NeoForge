@@ -1,10 +1,10 @@
 package com.iafenvoy.origins.data.power.builtin.regular;
 
-import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.data._common.helper.RecipeHelper;
 import com.iafenvoy.origins.data.power.Power;
-import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.data.power.Prioritized;
+import com.iafenvoy.origins.data.power.reference.PowerHolder;
+import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.iafenvoy.origins.mixin.recipe.RecipeManagerAccessor;
 import com.iafenvoy.origins.recipe.PowerCraftingRecipe;
 import com.iafenvoy.origins.util.codec.MiscCodecs;

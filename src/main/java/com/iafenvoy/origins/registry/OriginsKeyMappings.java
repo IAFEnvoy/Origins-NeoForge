@@ -26,21 +26,21 @@ import java.util.Set;
 @EventBusSubscriber(Dist.CLIENT)
 public enum OriginsKeyMappings {
     INSTANCE;
-    
+
     public final String CATEGORY = "category.origins";
-    public final KeyMapping PRIMARY_ACTIVE = new KeyMapping(Constants.PRIMARY_ACTIVE_KEY, GLFW.GLFW_KEY_G, CATEGORY);
-    public final KeyMapping SECONDARY_ACTIVE = new KeyMapping(Constants.SECONDARY_ACTIVE_KEY, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
-    public final KeyMapping VIEW_ORIGIN = new KeyMapping("key.origins.view_origin", GLFW.GLFW_KEY_O, CATEGORY);
+    public final KeyMapping PRIMARY_ACTIVE = new KeyMapping(Constants.PRIMARY_ACTIVE_KEY, GLFW.GLFW_KEY_G, this.CATEGORY);
+    public final KeyMapping SECONDARY_ACTIVE = new KeyMapping(Constants.SECONDARY_ACTIVE_KEY, GLFW.GLFW_KEY_UNKNOWN, this.CATEGORY);
+    public final KeyMapping VIEW_ORIGIN = new KeyMapping("key.origins.view_origin", GLFW.GLFW_KEY_O, this.CATEGORY);
     public final List<KeyMapping> ACTIVATE_KEYS = new LinkedList<>();
 
     public void registerKeyMappingsFromPowers(Set<PowerHolder> powerHolders) {
-        ACTIVATE_KEYS.clear();
+        this.ACTIVATE_KEYS.clear();
 
         for (PowerHolder powerHolder : powerHolders) {
             Power power = powerHolder.power();
             if (power instanceof Toggleable toggleable) {
                 List<KeyMapping> keys = KeyMapping.ALL.values().stream().filter(keyMapping -> Objects.equals(toggleable.getKey().key(), keyMapping.getName())).toList();
-                ACTIVATE_KEYS.addAll(keys);
+                this.ACTIVATE_KEYS.addAll(keys);
             }
         }
     }

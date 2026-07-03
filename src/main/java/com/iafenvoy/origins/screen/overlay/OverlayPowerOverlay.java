@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.screen.overlay;
 
 import com.iafenvoy.origins.Origins;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.ColorSettings;
 import com.iafenvoy.origins.data.power.builtin.regular.OverlayPower;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -38,9 +38,9 @@ public class OverlayPowerOverlay implements LayeredDraw.Layer {
         boolean isFirstPerson = this.minecraft.options.getCameraType().isFirstPerson();
         int width = graphics.guiWidth();
         int height = graphics.guiHeight();
-        OriginDataHolder.get(cameraEntity).streamActivePowers(OverlayPower.class)
-                .filter(x -> x.getDrawPhase() == this.phase && (!x.shouldHideWithHud() || !hideGui) && (x.isVisibleInThirdPerson() || isFirstPerson))
-                .forEach(power -> this.renderPower(power, graphics, width, height));
+        PowerHelper.get(cameraEntity).execute(OverlayPower.class,
+                p -> p.getDrawPhase() == this.phase && (!p.shouldHideWithHud() || !hideGui) && (p.isVisibleInThirdPerson() || isFirstPerson),
+                (h, p) -> this.renderPower(p, graphics, width, height));
     }
 
     private void renderPower(OverlayPower power, GuiGraphics graphics, int width, int height) {

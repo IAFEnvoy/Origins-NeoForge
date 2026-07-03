@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.mojang.serialization.Codec;
@@ -44,7 +44,7 @@ public class ModifyHarvestPower extends Power {
     @SubscribeEvent
     public static void checkCanHarvest(PlayerEvent.HarvestCheck event) {
         if (event.getLevel() instanceof Level level)
-            OriginDataHolder.get(event.getEntity()).streamActivePowers(ModifyHarvestPower.class)
+            PowerHelper.get(event.getEntity()).streamActive(ModifyHarvestPower.class)
                     .filter(x -> x.blockCondition.test(level, event.getPos()))
                     .map(ModifyHarvestPower::isAllow)
                     .reduce((x, y) -> x || y)

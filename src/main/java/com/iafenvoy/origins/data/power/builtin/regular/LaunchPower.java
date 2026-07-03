@@ -68,14 +68,14 @@ public class LaunchPower extends HasCooldownPower implements Toggleable {
     public void toggle(@NotNull OriginDataHolder holder, String key) {
         if (!this.key.match(key) || !this.isActive(holder)) return;
         this.getCooldownComponent(holder).useIfReady(() -> {
-                Entity entity = holder.getEntity();
-                if (entity.level() instanceof ServerLevel serverLevel) {
-                    entity.push(0, this.speed, 0);
-                    entity.hurtMarked = true;
-                    this.sound.ifPresent(s -> serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), s, SoundSource.NEUTRAL, 0.5F, 0.4F / (entity.level().random.nextFloat() * 0.4F + 0.8F)));
-                    for (int i = 0; i < 4; ++i)
-                        serverLevel.sendParticles(ParticleTypes.CLOUD, entity.getX(), entity.getRandomY(), entity.getZ(), 8, entity.level().random.nextGaussian(), 0.0D, entity.level().random.nextGaussian(), 0.5);
-                }
+            Entity entity = holder.getEntity();
+            if (entity.level() instanceof ServerLevel serverLevel) {
+                entity.push(0, this.speed, 0);
+                entity.hurtMarked = true;
+                this.sound.ifPresent(s -> serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), s, SoundSource.NEUTRAL, 0.5F, 0.4F / (entity.level().random.nextFloat() * 0.4F + 0.8F)));
+                for (int i = 0; i < 4; ++i)
+                    serverLevel.sendParticles(ParticleTypes.CLOUD, entity.getX(), entity.getRandomY(), entity.getZ(), 8, entity.level().random.nextGaussian(), 0.0D, entity.level().random.nextGaussian(), 0.5);
+            }
         });
     }
 }

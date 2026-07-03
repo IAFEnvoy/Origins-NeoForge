@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.DamageCondition;
@@ -53,9 +53,9 @@ public class ActionOnDeathPower extends Power {
     public static void onDeath(LivingDeathEvent event) {
         Entity actor = event.getSource().getEntity(), target = event.getEntity();
         if (actor == null) return;
-        OriginDataHolder.get(target).streamActivePowers(ActionOnDeathPower.class).forEach(power -> {
-            if (power.biEntityCondition.test(target, actor) && power.damageCondition.test(event.getSource(), 1))
-                power.biEntityAction.execute(target, actor);
+        PowerHelper.get(target).execute(ActionOnDeathPower.class, (h, p) -> {
+            if (p.biEntityCondition.test(target, actor) && p.damageCondition.test(event.getSource(), 1))
+                p.biEntityAction.execute(target, actor);
         });
     }
 }

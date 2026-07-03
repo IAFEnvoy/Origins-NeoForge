@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.prevent;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.condition.BlockCondition;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Prioritized;
@@ -61,13 +61,11 @@ public class PreventSleepPower extends Power implements Prioritized {
 
     @SubscribeEvent
     public static void preventSleep(CanPlayerSleepEvent event) {
-        OriginDataHolder.get(event.getEntity()).streamActivePowers(PreventSleepPower.class).forEach(x -> {
-            if (x.blockCondition.test(event.getLevel(), event.getPos())) {
-                if (x.shouldSetSpawnPoint())
-                    event.getEntity().setRespawnPosition(event.getLevel().dimension(), event.getPos(), 0.0F, false, true);
-                event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
-                event.getEntity().displayClientMessage(x.message, true);
-            }
+        PowerHelper.get(event.getEntity()).execute(PreventSleepPower.class, p -> p.blockCondition.test(event.getLevel(), event.getPos()), (h, p) -> {
+            if (p.shouldSetSpawnPoint())
+                event.getEntity().setRespawnPosition(event.getLevel().dimension(), event.getPos(), 0.0F, false, true);
+            event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
+            event.getEntity().displayClientMessage(p.message, true);
         });
     }
 }

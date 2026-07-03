@@ -27,7 +27,9 @@ public record RevokePowerAction(Optional<Holder<Power>> power,
 
     @Override
     public void execute(@NotNull Entity source) {
-        OriginDataHolder holder = OriginDataHolder.get(source);
+        Optional<OriginDataHolder> optional = OriginDataHolder.optional(source);
+        if (optional.isEmpty()) return;
+        OriginDataHolder holder = optional.get();
         if (this.power.isPresent() && this.source.isPresent())
             holder.revokePower(this.source.get(), this.power.get());
         else {

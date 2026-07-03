@@ -7,7 +7,8 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class PowerReference {

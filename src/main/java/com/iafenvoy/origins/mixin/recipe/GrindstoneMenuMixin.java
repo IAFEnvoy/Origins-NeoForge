@@ -1,7 +1,7 @@
 package com.iafenvoy.origins.mixin.recipe;
 
 import com.iafenvoy.origins.accessor.PowerModifiedGrindstone;
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifyGrindstonePower;
 import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -66,9 +66,9 @@ public abstract class GrindstoneMenuMixin extends AbstractContainerMenu implemen
         ItemStack bottomStack = this.repairSlots.getItem(ADDITIONAL_SLOT);
 
         SlotAccess outputStackRef = Mutable.stack(this.resultSlots.getItem(0)).toSlotAccess();
-        this.origins$appliedPowers = OriginDataHolder.get(this.origins$cachedPlayer).streamActivePowers(ModifyGrindstonePower.class)
-                .filter(mgp -> mgp.doesApply(this.origins$cachedPlayer, topStack, bottomStack, outputStackRef.get(), this.origins$getPos()))
-                .peek(mgp -> mgp.setOutput(this.origins$cachedPlayer, topStack, bottomStack, outputStackRef))
+        this.origins$appliedPowers = PowerHelper.get(this.origins$cachedPlayer).streamActive(ModifyGrindstonePower.class)
+                .filter(p -> p.doesApply(this.origins$cachedPlayer, topStack, bottomStack, outputStackRef.get(), this.origins$getPos()))
+                .peek(p -> p.setOutput(this.origins$cachedPlayer, topStack, bottomStack, outputStackRef))
                 .collect(Collectors.toCollection(LinkedList::new));
 
         this.resultSlots.setItem(0, outputStackRef.get());

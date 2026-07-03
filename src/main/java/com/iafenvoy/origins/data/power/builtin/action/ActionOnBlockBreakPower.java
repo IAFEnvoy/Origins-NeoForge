@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.action;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.BlockCondition;
@@ -61,11 +61,11 @@ public class ActionOnBlockBreakPower extends Power {
 
     @SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        OriginDataHolder.get(event.getPlayer()).streamActivePowers(ActionOnBlockBreakPower.class).forEach(power -> {
-            if (power.onlyWheSuccess && event.isCanceled()) return;
-            if (!power.blockCondition.test(event.getPlayer().level(), event.getPos())) return;
-            power.entityAction.execute(event.getPlayer());
-            power.blockAction.execute(event.getPlayer().level(), event.getPos(), Optional.of(event.getPlayer().getDirection()));
+        PowerHelper.get(event.getPlayer()).execute(ActionOnBlockBreakPower.class, (h, p) -> {
+            if (p.onlyWheSuccess && event.isCanceled()) return;
+            if (!p.blockCondition.test(event.getPlayer().level(), event.getPos())) return;
+            p.entityAction.execute(event.getPlayer());
+            p.blockAction.execute(event.getPlayer().level(), event.getPos(), Optional.of(event.getPlayer().getDirection()));
         });
     }
 }

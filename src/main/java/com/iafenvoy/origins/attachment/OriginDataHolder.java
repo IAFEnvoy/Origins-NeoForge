@@ -11,10 +11,10 @@ import com.iafenvoy.origins.data.global_powers.GlobalPowersRegistries;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
+import com.iafenvoy.origins.data.power.MultiplePower;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.data.power.Prioritized;
-import com.iafenvoy.origins.data.power.MultiplePower;
 import com.iafenvoy.origins.data.power.component.ComponentCollector;
 import com.iafenvoy.origins.data.power.component.ComponentHolderProvider;
 import com.iafenvoy.origins.data.power.component.PowerComponent;
@@ -27,10 +27,10 @@ import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
 import com.iafenvoy.origins.registry.OriginsKeyMappings;
-import com.iafenvoy.origins.util.codec.RegistryCodecs;
 import com.iafenvoy.origins.util.HolderHelper;
 import com.iafenvoy.origins.util.RandomHelper;
-
+import com.iafenvoy.origins.util.annotation.Comment;
+import com.iafenvoy.origins.util.codec.RegistryCodecs;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -52,6 +52,7 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -69,7 +70,7 @@ public final class OriginDataHolder {
         this.entity = entity;
         this.data = data;
         this.access = entity.registryAccess();
-        this.helper = new PowerHelper(this);
+        this.helper = new PowerHelperImpl(this);
     }
 
     public Entity getEntity() {
@@ -176,7 +177,7 @@ public final class OriginDataHolder {
         power.power().grant(this);
         if (power.power() instanceof MultiplePower multiple)
             multiple.getPowers(power.id()).forEach(this::grantPower);
-        if (this.getEntity().level().isClientSide())
+        if (this.entity.level().isClientSide())
             OriginsKeyMappings.INSTANCE.registerKeyMappingsFromPowers(this.getAllPowers());
     }
 
@@ -258,10 +259,8 @@ public final class OriginDataHolder {
         return this.streamPowers(id, clazz).findAny().isPresent();
     }
 
-    public <T extends Power> boolean hasActivePower(Class<T> clazz) {
-        return this.streamPowers(clazz).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
-    }
-
+    @Comment("Use helper first")
+    @ApiStatus.Internal
     public <T extends Power> boolean hasActivePower(ResourceLocation id, Class<T> clazz) {
         return this.streamPowers(id, clazz).filter(x -> x.isActive(this)).anyMatch(p -> clazz.isAssignableFrom(p.getClass()));
     }
@@ -280,8 +279,20 @@ public final class OriginDataHolder {
     }
 
     //Utils
-    public static OriginDataHolder get(@NotNull Entity entity) {
-        return new OriginDataHolder(entity, entity.getData(OriginsAttachments.ENTITY_ORIGIN));
+    public static Optional<OriginDataHolder> optional(@Nullable Entity entity) {
+        try {
+            return Optional.ofNullable(entity).map(x -> new OriginDataHolder(entity, x.getData(OriginsAttachments.ENTITY_ORIGIN)));
+        } catch (Exception ignored) {
+            return Optional.empty();
+        }
+    }
+
+    public static Stream<OriginDataHolder> optionalStream(@Nullable Entity entity) {
+        return optional(entity).stream();
+    }
+
+    public static OriginDataHolder get(@Nullable Entity entity) {
+        return optional(entity).orElse(null);
     }
 
     //Ticking
@@ -307,14 +318,13 @@ public final class OriginDataHolder {
     @ApiStatus.Internal
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
-        OriginDataHolder.get(event.getEntity()).tick();
+        OriginDataHolder.optional(event.getEntity()).ifPresent(OriginDataHolder::tick);
     }
 
     @ApiStatus.Internal
     @SubscribeEvent
     public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        OriginDataHolder holder = OriginDataHolder.get(event.getEntity());
-        holder.streamActivePowers(Power.class).forEach(x -> x.respawn(holder, event.isEndConquered()));
+        PowerHelper.get(event.getEntity()).execute(Power.class, (h, p) -> p.respawn(h, event.isEndConquered()));
     }
 
     //FIXME::Should remove?

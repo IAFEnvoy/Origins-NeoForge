@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.prevent;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.power.Power;
@@ -47,9 +47,7 @@ public class PreventDeathPower extends Power {
     }
 
     public static boolean tryPreventDeath(Entity entity, DamageSource source, float amount) {
-        Optional<PreventDeathPower> first = OriginDataHolder.get(entity).streamActivePowers(PreventDeathPower.class)
-                .filter(x -> x.damageCondition.test(source, amount))
-                .findFirst();
+        Optional<PreventDeathPower> first = PowerHelper.get(entity).getFirst(PreventDeathPower.class, p -> p.damageCondition.test(source, amount));
         first.ifPresent(x -> {
             if (entity instanceof LivingEntity living) living.setHealth(1.0F);
             x.entityAction.execute(entity);

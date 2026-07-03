@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.network.payload;
 
 import com.iafenvoy.origins.Origins;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

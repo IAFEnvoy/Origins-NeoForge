@@ -25,7 +25,6 @@ public record OriginCondition(Holder<Origin> origin, Optional<Holder<Layer>> lay
 
     @Override
     public boolean test(@NotNull Entity entity) {
-        OriginDataHolder holder = OriginDataHolder.get(entity);
-        return this.layer.map(x -> holder.hasOrigin(x, this.origin)).orElseGet(() -> holder.hasOrigin(this.origin));
+        return OriginDataHolder.optionalStream(entity).anyMatch(h -> this.layer.map(x -> h.hasOrigin(x, this.origin)).orElseGet(() -> h.hasOrigin(this.origin)));
     }
 }

@@ -1,6 +1,6 @@
 package com.iafenvoy.origins.mixin;
 
-import com.iafenvoy.origins.attachment.OriginDataHolder;
+import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.modify.ModifySlipperinessPower;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -18,7 +18,7 @@ public interface IBlockStateExtensionMixin {
     @ModifyReturnValue(method = "getFriction", at = @At("RETURN"))
     default float modifyFriction(float original, @Local(argsOnly = true) LevelReader reader, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) @Nullable Entity entity) {
         if (entity != null && reader instanceof Level level)
-            return OriginDataHolder.get(entity).getHelper().modify(ModifySlipperinessPower.class, p -> p.getBlockCondition().test(level, pos), original);
+            return PowerHelper.get(entity).modify(ModifySlipperinessPower.class, p -> p.getBlockCondition().test(level, pos), original);
         return original;
     }
 }
