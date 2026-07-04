@@ -47,7 +47,7 @@ public class ModifyPlayerSpawnPower extends Power {
     public static final MapCodec<ModifyPlayerSpawnPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
             ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(ModifyPlayerSpawnPower::getDimension),
-            Codec.FLOAT.optionalFieldOf("dimension_distance_multiplier", 0F).forGetter(ModifyPlayerSpawnPower::getDistanceMultiplier),
+            Codec.FLOAT.optionalFieldOf("dimension_distance_multiplier", 1F).forGetter(ModifyPlayerSpawnPower::getDistanceMultiplier),
             SpawnStrategy.CODEC.optionalFieldOf("spawn_strategy", SpawnStrategy.DEFAULT).forGetter(ModifyPlayerSpawnPower::getSpawnStrategy),
             //FIXME::Can work?
             Codec.either(ResourceKey.codec(Registries.BIOME), TagKey.hashedCodec(Registries.BIOME)).optionalFieldOf("biome").forGetter(ModifyPlayerSpawnPower::getBiome),

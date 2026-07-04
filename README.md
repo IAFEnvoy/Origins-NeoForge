@@ -14,11 +14,6 @@ This mod provide an "origin" system. Each of them have special effects, and you 
 NeoForge and Additional Entity Attributes provides some attributes which can replace them, just use AttributePowers
 instead.
 
-Also following powers are not implemented:
-
-- `ModifyEnchantmentLevelPower`, `EdiableItemPower`: Original implementation are too complex, I will find better way to
-  implement them later.
-
 ### Are datapacks for Fabric version capable with this mod?
 
 Sadly not, Fabric version use their own logic to load datapacks but this mod load them with vanilla methods. They have

@@ -2,10 +2,12 @@ package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.power.builtin.regular.ConditionedRestrictArmorPower;
+import com.iafenvoy.origins.data.power.builtin.regular.EdibleItemPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ElytraFlightPower;
 import com.iafenvoy.origins.data.power.builtin.regular.RestrictArmorPower;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.extensions.IItemStackExtension;
@@ -33,5 +35,13 @@ public interface IItemStackExtensionMixin {
         ).anyMatch(x -> x.get(armorType) != null && x.get(armorType).test(entity.level(), stack)) ||
                 stack.is(Items.ELYTRA) && helper.anyActive(ElytraFlightPower.class))
             cir.setReturnValue(false);
+    }
+
+    @Inject(method = "getFoodProperties", at = @At("HEAD"), cancellable = true, remap = false)
+    private void modifyEdibleItem(LivingEntity entity, CallbackInfoReturnable<FoodProperties> cir) {
+        ItemStack stack = this.self();
+        EdibleItemPower.get(stack, entity).ifPresent(power -> {
+            cir.setReturnValue(power.getFoodProperties());
+        });
     }
 }

@@ -9,6 +9,7 @@
     "CommonHooksMixin",
     "ConduitBlockEntityMixin",
     "EntityMixin",
+    "EnchantmentHelperMixin",
     "EquipableMixin",
     "FoodDataMixin",
     "IBlockStateExtensionMixin",

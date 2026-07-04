@@ -20,7 +20,6 @@ public class ActionOverTimePower extends Power {
     private final EntityAction activeAction;
     private final EntityAction inactiveAction;
     private final int interval;
-    private boolean lastValue;
 
     public ActionOverTimePower(BaseSettings settings, EntityAction entityAction, EntityAction activeAction, EntityAction inactiveAction, int interval) {
         super(settings);

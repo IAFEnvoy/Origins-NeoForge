@@ -18,6 +18,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -142,5 +143,19 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "baseTick", at = @At("TAIL"))
     private void origins$waterBreathingTick(CallbackInfo ci) {
         WaterBreathingHelper.tick(this.origins$self());
+    }
+
+    // ===== EdibleItem - handle entity/item actions on eat =====
+
+    @ModifyReturnValue(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At("RETURN"))
+    private ItemStack origins$handleEdibleItemActions(ItemStack result, Level level, ItemStack originalStack, FoodProperties foodProperties) {
+        LivingEntity self = this.origins$self();
+        EdibleItemPower.get(originalStack.copy(), self).ifPresent(power -> {
+            power.executeEntityAction(self);
+            // Execute item actions on the result stack reference
+            Mutable.Stack mutable = Mutable.stack(result);
+            power.executeItemActions(self, SlotAccess.of(mutable::get, mutable::set));
+        });
+        return result;
     }
 }

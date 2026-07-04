@@ -68,13 +68,9 @@ public class ElytraFlightPower extends Power {
 
     @Override
     public void respawn(@NotNull OriginDataHolder holder, boolean backFromEnd) {
-        if (holder.getEntity() instanceof LivingEntity living &&
-                living.getAttributes().hasAttribute(FLIGHT_ATTRIBUTE)) {
-
+        if (holder.getEntity() instanceof LivingEntity living && living.getAttributes().hasAttribute(FLIGHT_ATTRIBUTE)) {
             AttributeInstance instance = living.getAttribute(FLIGHT_ATTRIBUTE);
-
-            if (instance != null)
-                instance.addOrReplacePermanentModifier(FLIGHT_MODIFIER);
+            if (instance != null) instance.addOrReplacePermanentModifier(FLIGHT_MODIFIER);
         }
     }
 }
