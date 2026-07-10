@@ -36,6 +36,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BrightnessCondition>> BRIGHTNESS = REGISTRY.register("brightness", () -> BrightnessCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> CLIMBING = REGISTRY.register("climbing", () -> createEntity(entity -> entity instanceof LivingEntity living && living.onClimbable()));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> COLLIDED_HORIZONTALLY = REGISTRY.register("collided_horizontally", () -> createEntity(entity -> entity.horizontalCollision));
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<CommandCondition>> COMMAND = REGISTRY.register("command", () -> CommandCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> CREATIVE_FLYING = REGISTRY.register("creative_flying", () -> createEntity(entity -> entity instanceof Player player && player.getAbilities().flying));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> DAYTIME = REGISTRY.register("daytime", () -> createEntity(entity -> entity.level().getDayTime() % 24000L < 13000L));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<DimensionCondition>> DIMENSION = REGISTRY.register("dimension", () -> DimensionCondition.CODEC);
