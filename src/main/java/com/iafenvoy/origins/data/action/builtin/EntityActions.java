@@ -26,6 +26,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<BlockActionAction>> BLOCK_ACTION = REGISTRY.register("block_action", () -> BlockActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<BlockActionAtAction>> BLOCK_ACTION_AT = REGISTRY.register("block_action_at", () -> BlockActionAtAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ChangeResourceAction>> CHANGE_RESOURCE = REGISTRY.register("change_resource", () -> ChangeResourceAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ClearSetAction>> CLEAR_SET = REGISTRY.register("clear_set", () -> ClearSetAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<CraftingTableAction>> CRAFTING_TABLE = REGISTRY.register("crafting_table", () -> CraftingTableAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<DamageAction>> DAMAGE = REGISTRY.register("damage", () -> DamageAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<? extends EntityAction>> DISMOUNT = REGISTRY.register("dismount", () -> createEntity(Entity::stopRiding));

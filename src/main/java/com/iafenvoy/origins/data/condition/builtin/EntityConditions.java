@@ -42,6 +42,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<DistanceFromCoordinatesCondition>> DISTANCE_FROM_COORDINATES = REGISTRY.register("distance_from_coordinates", () -> DistanceFromCoordinatesCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<ElytraFlightPossibleCondition>> ELYTRA_FLIGHT_POSSIBLE = REGISTRY.register("elytra_flight_possible", () -> ElytraFlightPossibleCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EnchantmentCondition>> ENCHANTMENT = REGISTRY.register("enchantment", () -> EnchantmentCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EntityInRadiusCondition>> ENTITY_IN_RADIUS = REGISTRY.register("entity_in_radius", () -> EntityInRadiusCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EntityTypeCondition>> ENTITY_TYPE = REGISTRY.register("entity_type", () -> EntityTypeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<EquippedItemCondition>> EQUIPPED_ITEM = REGISTRY.register("equipped_item", () -> EquippedItemCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> EXISTS = REGISTRY.register("exists", () -> createEntity(entity -> !entity.isRemoved()));

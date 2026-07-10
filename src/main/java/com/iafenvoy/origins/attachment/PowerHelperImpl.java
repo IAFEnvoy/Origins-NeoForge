@@ -42,8 +42,8 @@ public record PowerHelperImpl(OriginDataHolder holder) implements PowerHelper {
     }
 
     @Override
-    public <T extends Power, U> U reduce(Class<T> clazz, U baseValue, TriFunction<OriginDataHolder, U, T, U> accumulator, BinaryOperator<U> combiner) {
-        return this.streamActive(clazz).reduce(baseValue, (value, power) -> accumulator.apply(this.holder, value, power), combiner);
+    public <T extends Power, U> U reduce(Class<T> clazz, Predicate<T> condition, U baseValue, TriFunction<OriginDataHolder, U, T, U> accumulator, BinaryOperator<U> combiner) {
+        return this.streamActive(clazz).filter(condition).reduce(baseValue, (value, power) -> accumulator.apply(this.holder, value, power), combiner);
     }
 
     @Override
@@ -58,7 +58,7 @@ public record PowerHelperImpl(OriginDataHolder holder) implements PowerHelper {
 
     @Override
     public <H, T extends ComponentHolderProvider<H>> Optional<H> getComponentHolder(ResourceLocation id, Class<T> clazz) {
-        return Optional.ofNullable(this.holder.getData().getComponents().get(id)).map(x -> x.get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast).map(x -> x.constructHolder(this.holder));
+        return Optional.ofNullable(this.holder.getData().getComponents().get(id)).map(x -> x.get(clazz)).filter(x -> clazz.isAssignableFrom(x.getClass())).map(clazz::cast).map(x -> x.constructHolder(this.holder, id));
     }
 
     @Override

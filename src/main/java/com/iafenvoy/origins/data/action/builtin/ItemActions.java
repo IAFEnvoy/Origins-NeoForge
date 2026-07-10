@@ -16,6 +16,7 @@ public final class ItemActions {
     public static final DeferredRegister<MapCodec<? extends ItemAction>> REGISTRY = DeferredRegister.create(ActionRegistries.ITEM_ACTION, Origins.MOD_ID);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<NoOpAction>> NO_OP = REGISTRY.register(Constants.NO_OP_KEY, () -> NoOpAction.CODEC);
     //List
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<AddEnchantmentAction>> ADD_ENCHANTMENT = REGISTRY.register("add_enchantment", () -> AddEnchantmentAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ConsumeAction>> CONSUME = REGISTRY.register("consume", () -> ConsumeAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<DamageAction>> DAMAGE = REGISTRY.register("damage", () -> DamageAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<HolderActionAction>> HOLDER_ACTION = REGISTRY.register("holder_action", () -> HolderActionAction.CODEC);

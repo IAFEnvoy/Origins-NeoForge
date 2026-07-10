@@ -22,6 +22,6 @@ public record RemoveFromSetAction(ResourceLocation set) implements BiEntityActio
 
     @Override
     public void execute(@NotNull Entity source, @NotNull Entity target) {
-        PowerHelper.get(source).getComponentHolder(this.set, EntitySetComponent.class).ifPresent(x -> x.removeEntity(this.set, target));
+        PowerHelper.get(source).getComponentHolder(this.set, EntitySetComponent.class).ifPresent(x -> x.removeEntity(target));
     }
 }

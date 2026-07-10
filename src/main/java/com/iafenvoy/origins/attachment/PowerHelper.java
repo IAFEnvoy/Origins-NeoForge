@@ -72,7 +72,15 @@ public interface PowerHelper {
         return this.reduce(clazz, baseValue, accumulator, Double::sum);
     }
 
-    <T extends Power, U> U reduce(Class<T> clazz, U baseValue, TriFunction<OriginDataHolder, U, T, U> accumulator, BinaryOperator<U> combiner);
+    default <T extends Power> double reduce(Class<T> clazz, Predicate<T> condition, double baseValue, TriFunction<OriginDataHolder, Double, T, Double> accumulator) {
+        return this.reduce(clazz, condition, baseValue, accumulator, Double::sum);
+    }
+
+    default <T extends Power, U> U reduce(Class<T> clazz, U baseValue, TriFunction<OriginDataHolder, U, T, U> accumulator, BinaryOperator<U> combiner) {
+        return this.reduce(clazz, x -> true, baseValue, accumulator, combiner);
+    }
+
+    <T extends Power, U> U reduce(Class<T> clazz, Predicate<T> condition, U baseValue, TriFunction<OriginDataHolder, U, T, U> accumulator, BinaryOperator<U> combiner);
 
     default <T extends Power> Optional<T> getFirst(Class<T> clazz) {
         return this.getFirst(clazz, x -> true);
@@ -130,7 +138,7 @@ public interface PowerHelper {
         }
 
         @Override
-        public <T extends Power, U> U reduce(Class<T> clazz, U baseValue, TriFunction<OriginDataHolder, U, T, U> accumulator, BinaryOperator<U> combiner) {
+        public <T extends Power, U> U reduce(Class<T> clazz, Predicate<T> condition, U baseValue, TriFunction<OriginDataHolder, U, T, U> accumulator, BinaryOperator<U> combiner) {
             return baseValue;
         }
 

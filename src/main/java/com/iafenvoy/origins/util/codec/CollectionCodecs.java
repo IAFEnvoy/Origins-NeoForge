@@ -3,8 +3,11 @@ package com.iafenvoy.origins.util.codec;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import org.checkerframework.checker.units.qual.K;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -46,5 +49,9 @@ public final class CollectionCodecs {
             for (int i = 0; i < c.getContainerSize(); i++) stacks.add(c.getItem(i));
             return stacks;
         });
+    }
+
+    public static <K> Codec<Object2IntMap<K>> toIntMap(Codec<K> keyCodec) {
+        return Codec.unboundedMap(keyCodec, Codec.INT).xmap(Object2IntOpenHashMap::new, Function.identity());
     }
 }

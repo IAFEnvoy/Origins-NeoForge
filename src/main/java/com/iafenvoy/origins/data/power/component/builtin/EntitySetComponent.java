@@ -12,6 +12,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -21,7 +22,6 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
             Codec.unboundedMap(UUIDUtil.CODEC, Codec.INT).fieldOf("set").forGetter(EntitySetComponent::getSet)
     ).apply(i, EntitySetComponent::new));
     private final Map<UUID, Integer> set;
-
 
     public EntitySetComponent() {
         this(Map.of());
@@ -37,8 +37,8 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
     }
 
     @Override
-    public SetHolder constructHolder(OriginDataHolder holder) {
-        return new SetHolder(holder, this);
+    public SetHolder constructHolder(OriginDataHolder holder, ResourceLocation id) {
+        return new SetHolder(holder, this, id);
     }
 
     @Override
@@ -64,34 +64,38 @@ public class EntitySetComponent extends PowerComponent implements ComponentHolde
         return this.set;
     }
 
-    public record SetHolder(OriginDataHolder holder, EntitySetComponent component) {
-        public void addEntity(ResourceLocation id, Entity target) {
-            this.addEntity(id, target, -1);
+    public record SetHolder(OriginDataHolder holder, EntitySetComponent component, ResourceLocation id) {
+        public void addEntity(Entity target) {
+            this.addEntity(target, -1);
         }
 
         //-1 for unlimited
-        public void addEntity(ResourceLocation id, Entity target, int timeLimit) {
+        public void addEntity(Entity target, int timeLimit) {
             if (!this.component.set.containsKey(target.getUUID())) {
                 this.component.set.put(target.getUUID(), timeLimit);
-                this.postAdd(id, target);
+                this.postAdd(target);
             }
         }
 
-        public void removeEntity(ResourceLocation id, Entity target) {
+        public void removeEntity(Entity target) {
             if (this.component.set.containsKey(target.getUUID())) {
                 this.component.set.remove(target.getUUID());
-                this.postRemove(id, target);
+                this.postRemove(target);
             }
         }
 
-        public void postAdd(ResourceLocation id, Entity target) {
-            this.holder.streamPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnAdd().execute(this.holder.getEntity(), target));
+        public void removeAllEntities(ServerLevel level) {
+            this.component.set.keySet().stream().map(level::getEntity).filter(Objects::nonNull).forEach(this::removeEntity);
+        }
+
+        public void postAdd(Entity target) {
+            this.holder.streamPowers(this.id, EntitySetPower.class).forEach(x -> x.getActionOnAdd().execute(this.holder.getEntity(), target));
             this.component.markDirty();
         }
 
-        public void postRemove(ResourceLocation id, Entity target) {
+        public void postRemove(Entity target) {
             if (target != null)
-                this.holder.streamPowers(id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(this.holder.getEntity(), target));
+                this.holder.streamPowers(this.id, EntitySetPower.class).forEach(x -> x.getActionOnRemove().execute(this.holder.getEntity(), target));
             this.component.markDirty();
         }
 

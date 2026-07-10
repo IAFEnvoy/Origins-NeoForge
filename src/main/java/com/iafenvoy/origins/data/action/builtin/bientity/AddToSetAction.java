@@ -24,6 +24,6 @@ public record AddToSetAction(ResourceLocation set, int timeLimit) implements BiE
 
     @Override
     public void execute(@NotNull Entity source, @NotNull Entity target) {
-        PowerHelper.get(source).getComponentHolder(this.set, EntitySetComponent.class).ifPresent(x -> x.addEntity(this.set, target, this.timeLimit));
+        PowerHelper.get(source).getComponentHolder(this.set, EntitySetComponent.class).ifPresent(x -> x.addEntity(target, this.timeLimit));
     }
 }

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public record BlockInRadiusCondition(BlockCondition blockCondition, int radius, Shape shape,
                                      Comparison comparison) implements EntityCondition {
     public static final MapCodec<BlockInRadiusCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BlockCondition.CODEC.fieldOf("block_condition").forGetter(BlockInRadiusCondition::blockCondition),
+            BlockCondition.optionalCodec("block_condition").forGetter(BlockInRadiusCondition::blockCondition),
             Codec.INT.fieldOf("radius").forGetter(BlockInRadiusCondition::radius),
             Shape.CODEC.optionalFieldOf("shape", Shape.CUBE).forGetter(BlockInRadiusCondition::shape),
             Comparison.optionalCodec(Comparison.CompareOperation.GREATER_THAN_OR_EQUAL, 1).forGetter(BlockInRadiusCondition::comparison)
