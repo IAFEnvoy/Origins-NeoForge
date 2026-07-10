@@ -23,6 +23,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -70,10 +71,11 @@ public class PreventItemUsePower extends Power {
         Player player = event.getEntity();
         if (player == null) return;
         List<PreventItemUsePower> powers = PowerHelper.get(player).listActive(PreventItemUsePower.class, p -> p.itemCondition.test(player.level(), event.getItemStack()));
-        int size = powers.size();
+        powers = new ArrayList<>(powers);
         if (!powers.isEmpty()) {
             RegistryAccess access = player.registryAccess();
             powers.removeIf(Power::isHidden);
+            int size = powers.size();
             String key = String.format(Locale.ROOT, "tooltip.%s.unusable.%s", Origins.MOD_ID, event.getItemStack().getUseAnimation().name().toLowerCase(Locale.ROOT));
             ChatFormatting textColor = ChatFormatting.GRAY;
             ChatFormatting powerColor = ChatFormatting.RED;
