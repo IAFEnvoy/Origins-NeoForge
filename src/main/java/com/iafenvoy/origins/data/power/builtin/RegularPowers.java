@@ -50,6 +50,7 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<NightVisionPower>> NIGHT_VISION = REGISTRY.register("night_vision", () -> NightVisionPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<OverlayPower>> OVERLAY = REGISTRY.register("overlay", () -> OverlayPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ParticlePower>> PARTICLE = REGISTRY.register("particle", () -> ParticlePower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PermanentEffectPower>> PERMANENT_EFFECT = REGISTRY.register("permanent_effect", () -> PermanentEffectPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PhasingPower>> PHASING = REGISTRY.register("phasing", () -> PhasingPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<RecipePower>> RECIPE = REGISTRY.register("recipe", () -> RecipePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ReplaceLootTablePower>> REPLACE_LOOT_TABLE = REGISTRY.register("replace_loot_table", () -> ReplaceLootTablePower.CODEC);
