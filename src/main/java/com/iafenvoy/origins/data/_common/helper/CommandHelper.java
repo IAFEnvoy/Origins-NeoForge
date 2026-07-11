@@ -1,7 +1,6 @@
 package com.iafenvoy.origins.data._common.helper;
 
 import com.iafenvoy.origins.config.OriginsConfig;
-import it.unimi.dsi.fastutil.booleans.BooleanIntImmutablePair;
 import it.unimi.dsi.fastutil.booleans.BooleanIntPair;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
@@ -18,7 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public interface CommandHelper {
-    BooleanIntPair NO_OP = new BooleanIntImmutablePair(false, 0);
+    BooleanIntPair NO_OP = BooleanIntPair.of(false, 0);
 
     //Server execute
     default BooleanIntPair executeCommand(Level level, Consumer<CommandSourceStack> consumer, String command) {
@@ -37,11 +36,8 @@ public interface CommandHelper {
     }
 
     default BooleanIntPair executeCommand(Entity entity, Vec3 pos, String command) {
-        if (entity.level() instanceof ServerLevel level) {
-            CommandSourceStack stack = new CommandSourceStack(entity, pos, entity.getRotationVector(), level, OriginsConfig.INSTANCE.general.permissionLevel.getValue(), entity.getName().getString(), entity.getDisplayName(), entity.level().getServer(), entity);
-            stack = stack.withSuppressedOutput();
-            this.executeCommand(stack, level.getServer(), command);
-        }
+        if (entity.level() instanceof ServerLevel level)
+            this.executeCommand(entity.createCommandSourceStack().withPosition(pos).withPermission(OriginsConfig.INSTANCE.general.permissionLevel.getValue()).withSuppressedOutput(), level.getServer(), command);
         return NO_OP;
     }
 
@@ -50,7 +46,7 @@ public interface CommandHelper {
         if (!StringUtil.isNullOrEmpty(command))
             try {
                 AtomicReference<BooleanIntPair> reference = new AtomicReference<>(NO_OP);
-                server.getCommands().performPrefixedCommand(stack.withCallback((success, result) -> reference.set(new BooleanIntImmutablePair(success, result))), command);
+                server.getCommands().performPrefixedCommand(stack.withCallback((success, result) -> reference.set(BooleanIntPair.of(success, result))), command);
                 return reference.get();
             } catch (Throwable throwable) {
                 CrashReport crashreport = CrashReport.forThrowable(throwable, "Execute Command in Origins Mod");

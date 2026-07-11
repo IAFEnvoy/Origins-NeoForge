@@ -23,6 +23,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddVelocityAction>> ADD_VELOCITY = REGISTRY.register("add_velocity", () -> AddVelocityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddXPAction>> ADD_XP = REGISTRY.register("add_xp", () -> AddXPAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ApplyEffectAction>> APPLY_EFFECT = REGISTRY.register("apply_effect", () -> ApplyEffectAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AwardStatAction>> AWARD_STAT = REGISTRY.register("award_stat", () -> AwardStatAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<BlockActionAction>> BLOCK_ACTION = REGISTRY.register("block_action", () -> BlockActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<BlockActionAtAction>> BLOCK_ACTION_AT = REGISTRY.register("block_action_at", () -> BlockActionAtAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ChangeResourceAction>> CHANGE_RESOURCE = REGISTRY.register("change_resource", () -> ChangeResourceAction.CODEC);
@@ -54,6 +55,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RaycastAction>> RAYCAST = REGISTRY.register("raycast", () -> RaycastAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RemoveEffectAction>> REMOVE_EFFECT = REGISTRY.register("remove_effect", () -> RemoveEffectAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ReplaceInventoryAction>> REPLACE_INVENTORY = REGISTRY.register("replace_inventory", () -> ReplaceInventoryAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ResetStatAction>> RESET_STAT = REGISTRY.register("reset_stat", () -> ResetStatAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RevokeAdvancementAction>> REVOKE_ADVANCEMENT = REGISTRY.register("revoke_advancement", () -> RevokeAdvancementAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RevokePowerAction>> REVOKE_POWER = REGISTRY.register("revoke_power", () -> RevokePowerAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RidingActionAction>> RIDING_ACTION = REGISTRY.register("riding_action", () -> RidingActionAction.CODEC);

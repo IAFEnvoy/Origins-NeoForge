@@ -87,6 +87,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<SetSizeCondition>> SET_SIZE = REGISTRY.register("set_size", () -> SetSizeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<SneakingCondition>> SNEAKING = REGISTRY.register("sneaking", () -> SneakingCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> SPRINTING = REGISTRY.register("sprinting", () -> createEntity(Entity::isSprinting));
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<StatCondition>> STAT = REGISTRY.register("stat", () -> StatCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<SubmergedInCondition>> SUBMERGED_IN = REGISTRY.register("submerged_in", () -> SubmergedInCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> SWIMMING = REGISTRY.register("swimming", () -> createEntity(Entity::isSwimming));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> TAMED = REGISTRY.register("tamed", () -> createEntity(entity -> entity instanceof OwnableEntity ownable && ownable.getOwnerUUID() != null));
