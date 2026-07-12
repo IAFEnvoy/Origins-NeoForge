@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data.action.builtin.block;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.iafenvoy.origins.util.math.ResourceOperation;
+import com.iafenvoy.origins.util.wrapper.OptionalBoolean;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -18,13 +19,13 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 public record ModifyBlockStateAction(String property, ResourceOperation operation, OptionalInt change,
-                                     Optional<Boolean> value, Optional<String> enumValue,
+                                     OptionalBoolean value, Optional<String> enumValue,
                                      boolean cycle) implements BlockAction {
     public static final MapCodec<ModifyBlockStateAction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("property").forGetter(ModifyBlockStateAction::property),
             ResourceOperation.CODEC.optionalFieldOf("operation", ResourceOperation.ADD).forGetter(ModifyBlockStateAction::operation),
             MiscCodecs.integer("change").forGetter(ModifyBlockStateAction::change),
-            Codec.BOOL.optionalFieldOf("value").forGetter(ModifyBlockStateAction::value),
+            MiscCodecs.bool("value").forGetter(ModifyBlockStateAction::value),
             Codec.STRING.optionalFieldOf("enum").forGetter(ModifyBlockStateAction::enumValue),
             Codec.BOOL.optionalFieldOf("change", false).forGetter(ModifyBlockStateAction::cycle)
     ).apply(instance, ModifyBlockStateAction::new));
@@ -56,7 +57,7 @@ public record ModifyBlockStateAction(String property, ResourceOperation operatio
                     case Enum<?> ignored when this.enumValue().isPresent() ->
                             modifyEnumState(level, pos, state, property, this.enumValue().get());
                     case Boolean ignored when this.value().isPresent() ->
-                            level.setBlockAndUpdate(pos, state.setValue((Property<Boolean>) property, this.value().get()));
+                            level.setBlockAndUpdate(pos, state.setValue((Property<Boolean>) property, this.value().getAsBoolean()));
                     case Integer ignored when this.change().isPresent() -> {
                         ResourceOperation op = this.operation();
                         int opValue = this.change().getAsInt();

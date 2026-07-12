@@ -23,6 +23,7 @@ public final class ModifyPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyDeathSoundPower>> MODIFY_DEATH_SOUND = REGISTRY.register("modify_death_sound", () -> ModifyDeathSoundPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyEffectAmplifierPower>> MODIFY_EFFECT_AMPLIFIER = REGISTRY.register("modify_effect_amplifier", () -> ModifyEffectAmplifierPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyEffectDurationPower>> MODIFY_EFFECT_DURATION = REGISTRY.register("modify_effect_duration", () -> ModifyEffectDurationPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyEffectTypePower>> MODIFY_EFFECT_TYPE = REGISTRY.register("modify_effect_type", () -> ModifyEffectTypePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyEnchantmentLevelPower>> MODIFY_ENCHANTMENT_LEVEL = REGISTRY.register("modify_enchantment_level", () -> ModifyEnchantmentLevelPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyExhaustionPower>> MODIFY_EXHAUSTION = REGISTRY.register("modify_exhaustion", () -> ModifyExhaustionPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyFallingPower>> MODIFY_FALLING = REGISTRY.register("modify_falling", () -> ModifyFallingPower.CODEC);

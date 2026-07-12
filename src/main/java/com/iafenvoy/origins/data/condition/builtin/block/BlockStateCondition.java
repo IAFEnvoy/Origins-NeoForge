@@ -1,7 +1,9 @@
 package com.iafenvoy.origins.data.condition.builtin.block;
 
 import com.iafenvoy.origins.data.condition.BlockCondition;
+import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.iafenvoy.origins.util.math.Comparison;
+import com.iafenvoy.origins.util.wrapper.OptionalBoolean;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,12 +17,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Optional;
 
-public record BlockStateCondition(String property, Optional<Comparison> comparison, Optional<Boolean> booleanValue,
+public record BlockStateCondition(String property, Optional<Comparison> comparison, OptionalBoolean booleanValue,
                                   Optional<String> stringValue) implements BlockCondition {
     public static final MapCodec<BlockStateCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("property").forGetter(BlockStateCondition::property),
             Comparison.OPTIONAL_CODEC.forGetter(BlockStateCondition::comparison),
-            Codec.BOOL.optionalFieldOf("value").forGetter(BlockStateCondition::booleanValue),
+            MiscCodecs.bool("value").forGetter(BlockStateCondition::booleanValue),
             Codec.STRING.optionalFieldOf("enum").forGetter(BlockStateCondition::stringValue)
     ).apply(instance, BlockStateCondition::new));
 
@@ -45,7 +47,7 @@ public record BlockStateCondition(String property, Optional<Comparison> comparis
                 flag |= stringIdentifiable.getSerializedName().equalsIgnoreCase(this.stringValue().get());
         }
         if (this.booleanValue().isPresent() && value instanceof Boolean bool)
-            return bool.booleanValue() == this.booleanValue().get();
+            return bool == this.booleanValue().getAsBoolean();
         if (this.comparison().isPresent() && value instanceof Integer intValue)
             return this.comparison().get().compare(intValue);
         return flag;

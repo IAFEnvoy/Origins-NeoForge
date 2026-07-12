@@ -15,7 +15,7 @@ import java.util.List;
 public class ModifyEffectDurationPower extends Power implements ModifierPowerHelper {
     public static final MapCodec<ModifyEffectDurationPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            MobEffect.CODEC.listOf().optionalFieldOf("effect", List.of()).forGetter(ModifyEffectDurationPower::getEffect),
+            CombinedCodecs.MOB_EFFECT.optionalFieldOf("effect", List.of()).forGetter(ModifyEffectDurationPower::getEffect),
             CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyEffectDurationPower::getModifier)
     ).apply(i, ModifyEffectDurationPower::new));
     private final List<Holder<MobEffect>> effect;

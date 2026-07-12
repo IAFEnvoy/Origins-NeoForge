@@ -74,7 +74,7 @@ public final class ResourceCommand {
                                 .executes(ctx -> operation(ctx, operation))));
     }
 
-    private static CompletableFuture<Suggestions> suggestAllResource(final CommandContext<CommandSourceStack> context, final SuggestionsBuilder builder) throws CommandSyntaxException {
+    private static CompletableFuture<Suggestions> suggestAllResource(final CommandContext<CommandSourceStack> context, final SuggestionsBuilder builder) {
         return SharedSuggestionProvider.suggestResource(PowerReference.listAllPowers(context.getSource().registryAccess()).filter(x -> x.power() instanceof ResourceHelper).flatMap(PowerHolder::stream).map(PowerHolder::id), builder);
     }
 

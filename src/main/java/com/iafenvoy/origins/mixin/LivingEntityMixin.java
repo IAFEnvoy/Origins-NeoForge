@@ -18,7 +18,6 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -39,7 +38,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,16 +108,17 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @ModifyVariable(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At("HEAD"), argsOnly = true)
-    private MobEffectInstance modifyStatusEffect(MobEffectInstance effect) {
+    private MobEffectInstance modifyEffect(MobEffectInstance effect) {
         Holder<MobEffect> effectType = effect.getEffect();
         int originalAmp = effect.getAmplifier();
         int originalDur = effect.getDuration();
 
+        Holder<MobEffect> newEffect = PowerHelper.get(this.origins$self()).getFirst(ModifyEffectTypePower.class, p -> p.getEffect().contains(effectType)).map(ModifyEffectTypePower::getNewEffect).orElse(effectType);
         int amplifier = PowerHelper.get(this.origins$self()).modify(ModifyEffectAmplifierPower.class, p -> p.doesApply(effectType), originalAmp);
         int duration = PowerHelper.get(this.origins$self()).modify(ModifyEffectDurationPower.class, p -> p.doesApply(effectType), originalDur);
 
-        if (amplifier != originalAmp || duration != originalDur)
-            return new MobEffectInstance(effectType, duration, amplifier, effect.isAmbient(), effect.isVisible(), effect.showIcon(), ((MobEffectInstanceAccessor) effect).getHiddenEffect());
+        if (effectType != newEffect || amplifier != originalAmp || duration != originalDur)
+            return new MobEffectInstance(newEffect, duration, amplifier, effect.isAmbient(), effect.isVisible(), effect.showIcon(), ((MobEffectInstanceAccessor) effect).getHiddenEffect());
         return effect;
     }
 

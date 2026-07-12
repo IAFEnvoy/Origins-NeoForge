@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 @EventBusSubscriber
 public class ActionOnItemPickupPower extends Power implements Prioritized {
     public static final MapCodec<ActionOnItemPickupPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BaseSettings.CODEC.forGetter(ActionOnItemPickupPower::getSettings),
+            BaseSettings.CODEC.forGetter(Power::getSettings),
             BiEntityAction.optionalCodec("bi_entity_action").forGetter(ActionOnItemPickupPower::getBiEntityAction),
             ItemAction.optionalCodec("item_action").forGetter(ActionOnItemPickupPower::getItemAction),
             BiEntityCondition.optionalCodec("bi_entity_condition").forGetter(ActionOnItemPickupPower::getBiEntityCondition),

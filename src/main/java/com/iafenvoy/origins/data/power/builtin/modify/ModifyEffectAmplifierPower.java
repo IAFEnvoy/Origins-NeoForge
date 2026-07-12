@@ -15,7 +15,7 @@ import java.util.List;
 public class ModifyEffectAmplifierPower extends Power implements ModifierPowerHelper {
     public static final MapCodec<ModifyEffectAmplifierPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            MobEffect.CODEC.listOf().optionalFieldOf("effect", List.of()).forGetter(ModifyEffectAmplifierPower::getEffect),
+            CombinedCodecs.MOB_EFFECT.optionalFieldOf("effect", List.of()).forGetter(ModifyEffectAmplifierPower::getEffect),
             CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyEffectAmplifierPower::getModifier)
     ).apply(i, ModifyEffectAmplifierPower::new));
     private final List<Holder<MobEffect>> effect;

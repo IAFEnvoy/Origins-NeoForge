@@ -45,17 +45,17 @@ public abstract class ItemStackMixin implements EntityLinkedItemStack {
 
     @Override
     public Entity origins$getEntity() {
-        return origins$getEntity(true);
+        return this.origins$getEntity(true);
     }
 
     @Override
     public Entity origins$getEntity(boolean prioritiseVanillaHolder) {
-        Entity vanillaHolder = getEntityRepresentation();
+        Entity vanillaHolder = this.getEntityRepresentation();
         if (prioritiseVanillaHolder && vanillaHolder != null) {
             return vanillaHolder;
         }
-        if (origins$holdingEntity != null) {
-            return origins$holdingEntity.get();
+        if (this.origins$holdingEntity != null) {
+            return this.origins$holdingEntity.get();
         }
         return null;
     }
@@ -67,8 +67,8 @@ public abstract class ItemStackMixin implements EntityLinkedItemStack {
 
     @ModifyReturnValue(method = "copy", at = @At("RETURN"))
     private ItemStack origins$moveEntityToCopy(ItemStack copy) {
-        if (origins$holdingEntity != null) {
-            ((EntityLinkedItemStack) (Object) copy).origins$setEntity(origins$holdingEntity.get());
+        if (this.origins$holdingEntity != null) {
+            ((EntityLinkedItemStack) (Object) copy).origins$setEntity(this.origins$holdingEntity.get());
         }
         return copy;
     }

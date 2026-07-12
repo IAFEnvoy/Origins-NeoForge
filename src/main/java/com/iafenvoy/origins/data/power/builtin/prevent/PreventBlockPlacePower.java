@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PreventBlockPlacePower extends Power {
     public static final MapCodec<PreventBlockPlacePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BaseSettings.CODEC.forGetter(PreventBlockPlacePower::getSettings),
+            BaseSettings.CODEC.forGetter(Power::getSettings),
             BlockPlaceSettings.CODEC.forGetter(PreventBlockPlacePower::getBlockPlaceSettings)
     ).apply(i, PreventBlockPlacePower::new));
     private final BlockPlaceSettings blockPlaceSettings;

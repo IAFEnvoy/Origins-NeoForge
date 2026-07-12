@@ -150,6 +150,6 @@ public class EdibleItemPower extends Power implements Prioritized {
         return PowerHelper.get(resolved).streamActive(EdibleItemPower.class)
                 .filter(p -> p.doesApply(resolved.level(), stack))
                 .max(Comparator.comparing(EdibleItemPower::getPriority))
-                .filter(p -> !stack.has(DataComponents.FOOD) || p.getPriority() > 1);
+                .filter(p -> !stack.has(DataComponents.FOOD) || p.priority > 1);
     }
 }

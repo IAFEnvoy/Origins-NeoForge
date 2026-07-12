@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import org.checkerframework.checker.units.qual.K;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;

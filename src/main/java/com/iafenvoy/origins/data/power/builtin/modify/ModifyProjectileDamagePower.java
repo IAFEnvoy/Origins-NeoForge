@@ -24,7 +24,7 @@ import java.util.Optional;
 @EventBusSubscriber
 public class ModifyProjectileDamagePower extends Power implements ModifierPowerHelper {
     public static final MapCodec<ModifyProjectileDamagePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BaseSettings.CODEC.forGetter(ModifyProjectileDamagePower::getSettings),
+            BaseSettings.CODEC.forGetter(Power::getSettings),
             DamageCondition.optionalCodec("damage_condition").forGetter(ModifyProjectileDamagePower::getDamageCondition),
             CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyProjectileDamagePower::getModifier),
             EntityCondition.optionalCodec("target_condition").forGetter(ModifyProjectileDamagePower::getTargetCondition),

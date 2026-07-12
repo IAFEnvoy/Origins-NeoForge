@@ -26,7 +26,6 @@ public record EquippedItemCondition(EquipmentSlot equipmentSlot,
     public boolean test(@NotNull Entity entity) {
         if (!(entity instanceof LivingEntity living)) return false;
         ItemStack stack = living.getItemBySlot(this.equipmentSlot);
-        boolean hasItem = !stack.isEmpty() && this.itemCondition.test(entity.level(), stack);
-        return hasItem;
+        return !stack.isEmpty() && this.itemCondition.test(entity.level(), stack);
     }
 }

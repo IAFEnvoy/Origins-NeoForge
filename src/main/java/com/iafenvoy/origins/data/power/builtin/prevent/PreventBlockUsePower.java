@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PreventBlockUsePower extends Power {
     public static final MapCodec<PreventBlockUsePower> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            BaseSettings.CODEC.forGetter(PreventBlockUsePower::getSettings),
+            BaseSettings.CODEC.forGetter(Power::getSettings),
             BlockCondition.CODEC.fieldOf("block_condition").forGetter(PreventBlockUsePower::getBlockCondition)
     ).apply(instance, PreventBlockUsePower::new));
     private final BlockCondition blockCondition;

@@ -39,9 +39,6 @@ public interface IItemStackExtensionMixin {
 
     @Inject(method = "getFoodProperties", at = @At("HEAD"), cancellable = true, remap = false)
     private void modifyEdibleItem(LivingEntity entity, CallbackInfoReturnable<FoodProperties> cir) {
-        ItemStack stack = this.self();
-        EdibleItemPower.get(stack, entity).ifPresent(power -> {
-            cir.setReturnValue(power.getFoodProperties());
-        });
+        EdibleItemPower.get(this.self(), entity).ifPresent(power -> cir.setReturnValue(power.getFoodProperties()));
     }
 }

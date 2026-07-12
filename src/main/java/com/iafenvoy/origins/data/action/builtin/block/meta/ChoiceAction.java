@@ -1,8 +1,8 @@
 package com.iafenvoy.origins.data.action.builtin.block.meta;
 
+import com.iafenvoy.origins.data._common.WeightedActionEntry;
 import com.iafenvoy.origins.data.action.BlockAction;
 import com.iafenvoy.origins.util.WeightedRandomSelector;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-public record ChoiceAction(List<WeightedActionHolder> actions) implements BlockAction {
+public record ChoiceAction(List<WeightedActionEntry<BlockAction>> actions) implements BlockAction {
     public static final MapCodec<ChoiceAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            WeightedActionHolder.CODEC.listOf().fieldOf("actions").forGetter(ChoiceAction::actions)
+            WeightedActionEntry.codec(BlockAction.CODEC).listOf().fieldOf("actions").forGetter(ChoiceAction::actions)
     ).apply(i, ChoiceAction::new));
 
     @Override
@@ -25,15 +25,7 @@ public record ChoiceAction(List<WeightedActionHolder> actions) implements BlockA
 
     @Override
     public void execute(@NotNull Level level, @NotNull BlockPos pos, @NotNull Optional<Direction> direction) {
-        WeightedActionHolder holder = WeightedRandomSelector.selectRandomByWeight(this.actions);
-        if (holder != null) holder.element.execute(level, pos, direction);
-    }
-
-    private record WeightedActionHolder(BlockAction element,
-                                        int weight) implements WeightedRandomSelector.WeightGetter {
-        public static final Codec<WeightedActionHolder> CODEC = RecordCodecBuilder.create(i -> i.group(
-                BlockAction.CODEC.fieldOf("element").forGetter(WeightedActionHolder::element),
-                Codec.INT.optionalFieldOf("weight", 0).forGetter(WeightedActionHolder::weight)
-        ).apply(i, WeightedActionHolder::new));
+        WeightedActionEntry<BlockAction> holder = WeightedRandomSelector.selectRandomByWeight(this.actions);
+        if (holder != null) holder.element().execute(level, pos, direction);
     }
 }

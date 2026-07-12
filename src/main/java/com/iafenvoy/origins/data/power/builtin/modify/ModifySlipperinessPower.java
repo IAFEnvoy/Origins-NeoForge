@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ModifySlipperinessPower extends Power implements ModifierPowerHelper {
     public static final MapCodec<ModifySlipperinessPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BaseSettings.CODEC.forGetter(ModifySlipperinessPower::getSettings),
+            BaseSettings.CODEC.forGetter(Power::getSettings),
             BlockCondition.optionalCodec("block_condition").forGetter(ModifySlipperinessPower::getBlockCondition),
             CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifySlipperinessPower::getModifier)
     ).apply(i, ModifySlipperinessPower::new));

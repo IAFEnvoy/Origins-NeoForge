@@ -10,8 +10,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 
 import java.util.List;
 
-public record EffectEntry(Holder<MobEffect> effect, int amplifier, boolean showParticles,
-                          boolean showIcon) {
+public record EffectEntry(Holder<MobEffect> effect, int amplifier, boolean showParticles, boolean showIcon) {
     public static final Codec<EffectEntry> CODEC = Codec.withAlternative(
             RecordCodecBuilder.create(i -> i.group(
                     BuiltInRegistries.MOB_EFFECT.holderByNameCodec().fieldOf("effect").forGetter(EffectEntry::effect),
@@ -24,8 +23,12 @@ public record EffectEntry(Holder<MobEffect> effect, int amplifier, boolean showP
     public static final Codec<List<EffectEntry>> LIST_CODEC = CombinedCodecs.combineCodec(CODEC);
 
     public MobEffectInstance create(int duration) {
+        return this.create(duration, duration == -1);
+    }
+
+    public MobEffectInstance create(int duration, boolean unremovable) {
         MobEffectInstance effect = new MobEffectInstance(this.effect, duration, this.amplifier, false, this.showParticles, this.showIcon);
-        effect.getCures().clear();
+        if (unremovable) effect.getCures().clear();
         return effect;
     }
 }

@@ -3,7 +3,6 @@ package com.iafenvoy.origins.data.action.builtin.entity;
 import com.iafenvoy.origins.data._common.StatReference;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.util.codec.CombinedCodecs;
-import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,7 +12,6 @@ import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.OptionalInt;
 
 public record AwardStatAction(List<StatReference> stats, int amount) implements EntityAction {
     public static final MapCodec<AwardStatAction> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(

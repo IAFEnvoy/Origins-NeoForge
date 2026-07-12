@@ -2,8 +2,6 @@ package com.iafenvoy.origins.data.action.builtin.item;
 
 import com.iafenvoy.origins.data.action.ItemAction;
 import com.iafenvoy.origins.util.codec.CollectionCodecs;
-import com.iafenvoy.origins.util.codec.CombinedCodecs;
-import com.iafenvoy.origins.util.codec.MiscCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -17,9 +15,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.OptionalInt;
 
 public record AddEnchantmentAction(Object2IntMap<Holder<Enchantment>> enchantment,
                                    boolean override) implements ItemAction {

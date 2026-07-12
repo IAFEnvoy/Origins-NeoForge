@@ -30,7 +30,7 @@ import java.util.Optional;
 @EventBusSubscriber
 public class KeepInventoryPower extends Power {
     public static final MapCodec<KeepInventoryPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BaseSettings.CODEC.forGetter(KeepInventoryPower::getSettings),
+            BaseSettings.CODEC.forGetter(Power::getSettings),
             ItemCondition.optionalCodec("item_condition").forGetter(KeepInventoryPower::getItemCondition),
             Codec.INT.listOf().optionalFieldOf("slots", List.of()).forGetter(KeepInventoryPower::getSlots)
     ).apply(i, KeepInventoryPower::new));

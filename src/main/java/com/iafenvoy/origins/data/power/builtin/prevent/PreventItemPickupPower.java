@@ -20,7 +20,7 @@ import java.util.List;
 
 public class PreventItemPickupPower extends Power implements Prioritized {
     public static final MapCodec<PreventItemPickupPower> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            BaseSettings.CODEC.forGetter(PreventItemPickupPower::getSettings),
+            BaseSettings.CODEC.forGetter(Power::getSettings),
             BiEntityAction.optionalCodec("bi_entity_action_thrower").forGetter(PreventItemPickupPower::getBiEntityActionThrower),
             BiEntityAction.optionalCodec("bi_entity_action_item").forGetter(PreventItemPickupPower::getBiEntityActionItem),
             ItemAction.optionalCodec("item_action").forGetter(PreventItemPickupPower::getItemAction),

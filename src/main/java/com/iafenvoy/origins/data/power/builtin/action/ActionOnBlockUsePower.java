@@ -30,7 +30,7 @@ import java.util.Optional;
 @EventBusSubscriber
 public class ActionOnBlockUsePower extends Power {
     public static final MapCodec<ActionOnBlockUsePower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            BaseSettings.CODEC.forGetter(ActionOnBlockUsePower::getSettings),
+            BaseSettings.CODEC.forGetter(Power::getSettings),
             InteractionPowerSettings.CODEC.forGetter(ActionOnBlockUsePower::getInteractionSettings),
             EntityAction.optionalCodec("entity_action").forGetter(ActionOnBlockUsePower::getEntityAction),
             BlockAction.optionalCodec("block_action").forGetter(ActionOnBlockUsePower::getBlockAction),

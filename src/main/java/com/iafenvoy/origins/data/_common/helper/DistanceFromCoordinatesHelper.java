@@ -3,6 +3,7 @@ package com.iafenvoy.origins.data._common.helper;
 import com.iafenvoy.origins.util.math.Comparison;
 import com.iafenvoy.origins.util.math.ReferencePoint;
 import com.iafenvoy.origins.util.math.Shape;
+import com.iafenvoy.origins.util.wrapper.OptionalBoolean;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -26,7 +27,7 @@ public interface DistanceFromCoordinatesHelper {
 
     boolean scaleReferenceToDimension();
 
-    Optional<Boolean> resultOnWrongDimension();
+    OptionalBoolean resultOnWrongDimension();
 
     OptionalInt roundToDigit();
 
@@ -35,7 +36,7 @@ public interface DistanceFromCoordinatesHelper {
     default boolean testDistanceFromCoordinates(Level level, Vec3 pos) {
         double scale = level.dimensionType().coordinateScale();
         Vec3 point = this.reference().getProcessor().apply(level, this.resultOnWrongDimension().isPresent());
-        if (point == null) return this.resultOnWrongDimension().get();
+        if (point == null) return this.resultOnWrongDimension().getAsBoolean();
         point = point.add(this.offset().orElse(Vec3.ZERO));
         if (this.scaleReferenceToDimension() && (point.x() != 0 || point.z() != 0)) {
             if (scale == 0) return this.comparison().compare(Double.POSITIVE_INFINITY);

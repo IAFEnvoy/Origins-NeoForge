@@ -13,10 +13,10 @@ import java.util.stream.Stream;
 public class ModifyDeathSoundPower extends Power {
     public static final MapCodec<ModifyDeathSoundPower> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             BaseSettings.CODEC.forGetter(Power::getSettings),
-            Codec.BOOL.fieldOf("muted").forGetter(ModifyDeathSoundPower::isMuted),
+            Codec.BOOL.optionalFieldOf("muted", false).forGetter(ModifyDeathSoundPower::isMuted),
             WeightedSoundEntry.LIST_CODEC.fieldOf("sound").forGetter(ModifyDeathSoundPower::getSound),
-            Codec.FLOAT.fieldOf("volume").forGetter(ModifyDeathSoundPower::getVolume),
-            Codec.FLOAT.fieldOf("pitch").forGetter(ModifyDeathSoundPower::getPitch)
+            Codec.FLOAT.optionalFieldOf("volume", 1F).forGetter(ModifyDeathSoundPower::getVolume),
+            Codec.FLOAT.optionalFieldOf("pitch", 1F).forGetter(ModifyDeathSoundPower::getPitch)
     ).apply(i, ModifyDeathSoundPower::new));
     private final boolean muted;
     private final List<WeightedSoundEntry> sound;
