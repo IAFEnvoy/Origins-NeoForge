@@ -1,24 +1,29 @@
 package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.attachment.PowerHelper;
+import com.iafenvoy.origins.data._common.WeightedSoundEntry;
 import com.iafenvoy.origins.data.power.builtin.modify.*;
 import com.iafenvoy.origins.data.power.builtin.prevent.PreventEntityCollisionPower;
 import com.iafenvoy.origins.data.power.builtin.regular.*;
 import com.iafenvoy.origins.mixin.accessor.MobEffectInstanceAccessor;
 import com.iafenvoy.origins.util.WaterBreathingHelper;
+import com.iafenvoy.origins.util.WeightedRandomSelector;
 import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -34,6 +39,8 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Mixin(LivingEntity.class)
@@ -145,17 +152,49 @@ public abstract class LivingEntityMixin extends Entity {
         WaterBreathingHelper.tick(this.origins$self());
     }
 
-    // ===== EdibleItem - handle entity/item actions on eat =====
-
     @ModifyReturnValue(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At("RETURN"))
     private ItemStack origins$handleEdibleItemActions(ItemStack result, Level level, ItemStack originalStack, FoodProperties foodProperties) {
         LivingEntity self = this.origins$self();
         EdibleItemPower.get(originalStack.copy(), self).ifPresent(power -> {
             power.executeEntityAction(self);
-            // Execute item actions on the result stack reference
-            Mutable.Stack mutable = Mutable.stack(result);
-            power.executeItemActions(self, SlotAccess.of(mutable::get, mutable::set));
+            power.executeItemActions(self, Mutable.stack(result).toSlotAccess());
         });
         return result;
+    }
+
+    @ModifyExpressionValue(method = {"playHurtSound", "handleDamageEvent"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getHurtSound(Lnet/minecraft/world/damagesource/DamageSource;)Lnet/minecraft/sounds/SoundEvent;"))
+    private SoundEvent modifyHurtSound(SoundEvent original, @Share("hurtSoundEntry") LocalRef<WeightedSoundEntry.SoundHolder> ref) {
+        List<ModifyHurtSoundPower> powers = PowerHelper.get(this.origins$self()).listActive(ModifyHurtSoundPower.class);
+        if (powers.stream().anyMatch(ModifyHurtSoundPower::isMuted)) return null;
+        WeightedSoundEntry.SoundHolder holder = WeightedRandomSelector.selectRandomByWeight(powers.stream().flatMap(ModifyHurtSoundPower::streamSoundHolder).toList());
+        ref.set(holder);
+        return holder != null ? null : original;
+    }
+
+    @Inject(method = {"playHurtSound", "handleDamageEvent"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getHurtSound(Lnet/minecraft/world/damagesource/DamageSource;)Lnet/minecraft/sounds/SoundEvent;", shift = At.Shift.AFTER))
+    private void playModifiedHurtSound(CallbackInfo ci, @Share("hurtSoundEntry") LocalRef<WeightedSoundEntry.SoundHolder> ref) {
+        WeightedSoundEntry.SoundHolder entry = ref.get();
+        if (entry != null) entry.playSound(this::playSound);
+    }
+
+    @ModifyExpressionValue(method = {"hurt", "handleEntityEvent"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDeathSound()Lnet/minecraft/sounds/SoundEvent;"))
+    private SoundEvent modifyDeathSound(SoundEvent original, @Share("deathSoundEntry") LocalRef<WeightedSoundEntry.SoundHolder> ref) {
+        List<ModifyDeathSoundPower> powers = PowerHelper.get(this.origins$self()).listActive(ModifyDeathSoundPower.class);
+        if (powers.stream().anyMatch(ModifyDeathSoundPower::isMuted)) return null;
+        WeightedSoundEntry.SoundHolder holder = WeightedRandomSelector.selectRandomByWeight(powers.stream().flatMap(ModifyDeathSoundPower::streamSoundHolder).toList());
+        ref.set(holder);
+        return holder != null ? null : original;
+    }
+
+    @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDeathSound()Lnet/minecraft/sounds/SoundEvent;", shift = At.Shift.AFTER))
+    private void playModifiedDeathSound1(CallbackInfoReturnable<Boolean> cir, @Share("deathSoundEntry") LocalRef<WeightedSoundEntry.SoundHolder> ref) {
+        WeightedSoundEntry.SoundHolder entry = ref.get();
+        if (entry != null) entry.playSound(this::playSound);
+    }
+
+    @Inject(method = "handleEntityEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDeathSound()Lnet/minecraft/sounds/SoundEvent;", shift = At.Shift.AFTER))
+    private void playModifiedDeathSound2(CallbackInfo cir, @Share("deathSoundEntry") LocalRef<WeightedSoundEntry.SoundHolder> ref) {
+        WeightedSoundEntry.SoundHolder entry = ref.get();
+        if (entry != null) entry.playSound(this::playSound);
     }
 }
