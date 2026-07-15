@@ -18,10 +18,13 @@ public final class BlockActions {
     //List
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<AddBlockAction>> ADD_BLOCK = REGISTRY.register("add_block", () -> AddBlockAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<BonemealAction>> BONEMEAL = REGISTRY.register("bonemeal", () -> BonemealAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<DestroyAction>> DESTROY = REGISTRY.register("destroy", () -> DestroyAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<ExecuteCommandAction>> EXECUTE_COMMAND = REGISTRY.register("execute_command", () -> ExecuteCommandAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<ExplodeAction>> EXPLODE = REGISTRY.register("explode", () -> ExplodeAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<LightUpAction>> LIGHT_UP = REGISTRY.register("light_up", () -> LightUpAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<ModifyBlockStateAction>> MODIFY_BLOCK_STATE = REGISTRY.register("modify_block_state", () -> ModifyBlockStateAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<SetBlockAction>> SET_BLOCK = REGISTRY.register("set_block", () -> SetBlockAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<ScheduleTickAction>> SCHEDULE_TICK = REGISTRY.register("schedule_tick", () -> ScheduleTickAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<SpawnEntityAction>> SPAWN_ENTITY = REGISTRY.register("spawn_entity", () -> SpawnEntityAction.CODEC);
     //Meta
     public static final DeferredHolder<MapCodec<? extends BlockAction>, MapCodec<AbsoluteOffsetAction>> ABSOLUTE_OFFSET = REGISTRY.register("absolute_offset", () -> AbsoluteOffsetAction.CODEC);

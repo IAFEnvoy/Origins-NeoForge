@@ -20,6 +20,7 @@ public final class DamageConditions {
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<AttackerCondition>> ATTACKER = REGISTRY.register("attacker", () -> AttackerCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<IdCondition>> ID = REGISTRY.register("id", () -> IdCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<InTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> InTagCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<MagicDamageCondition>> MAGIC = REGISTRY.register("magic", () -> MagicDamageCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<ProjectileCondition>> PROJECTILE = REGISTRY.register("projectile", () -> ProjectileCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends DamageCondition>, MapCodec<TypeCondition>> TYPE = REGISTRY.register("type", () -> TypeCondition.CODEC);
     //Meta

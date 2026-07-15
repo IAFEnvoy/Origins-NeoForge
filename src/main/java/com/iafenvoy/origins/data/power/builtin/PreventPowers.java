@@ -13,6 +13,7 @@ public final class PreventPowers {
     public static final DeferredRegister<MapCodec<? extends Power>> REGISTRY = DeferredRegister.create(PowerRegistries.POWER_TYPE, Origins.MOD_ID);
 
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventBeingUsedPower>> PREVENT_BEING_USED = REGISTRY.register("prevent_being_used", () -> PreventBeingUsedPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventBreedingPower>> PREVENT_BREEDING = REGISTRY.register("prevent_breeding", () -> PreventBreedingPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventBlockPlacePower>> PREVENT_BLOCK_PLACE = REGISTRY.register("prevent_block_place", () -> PreventBlockPlacePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventBlockSelectionPower>> PREVENT_BLOCK_SELECTION = REGISTRY.register("prevent_block_selection", () -> PreventBlockSelectionPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventBlockUsePower>> PREVENT_BLOCK_USE = REGISTRY.register("prevent_block_use", () -> PreventBlockUsePower.CODEC);

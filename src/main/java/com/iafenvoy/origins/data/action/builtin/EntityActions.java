@@ -62,6 +62,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SelectorActionAction>> SELECTOR_ACTION = REGISTRY.register("selector_action", () -> SelectorActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SetFallDistanceAction>> SET_FALL_DISTANCE = REGISTRY.register("set_fall_distance", () -> SetFallDistanceAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SetOnFireAction>> SET_ON_FIRE = REGISTRY.register("set_on_fire", () -> SetOnFireAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SetNoGravityAction>> SET_NO_GRAVITY = REGISTRY.register("set_no_gravity", () -> SetNoGravityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnEffectCloudAction>> SPAWN_EFFECT_CLOUD = REGISTRY.register("spawn_effect_cloud", () -> SpawnEffectCloudAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnEntityAction>> SPAWN_ENTITY = REGISTRY.register("spawn_entity", () -> SpawnEntityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnParticlesAction>> SPAWN_PARTICLES = REGISTRY.register("spawn_particles", () -> SpawnParticlesAction.CODEC);

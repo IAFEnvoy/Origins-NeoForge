@@ -23,6 +23,8 @@ You can follow [this guide](https://docs.iafenvoy.com/docs/mod/origins/guides/po
 mod. You can also try to use [Auto Converter](https://docs.iafenvoy.com/docs/mod/origins/guides/porting/converter) to
 convert your datapack, it may not do everything but can save you a lot of time.
 
+**You can also join our Discord server to ask for porting help. I'll help if I have spare time (Free).**
+
 ## Credit
 
 Special thanks to the following developers for ideas and some code:
@@ -32,6 +34,8 @@ Special thanks to the following developers for ideas and some code:
   source under `MIT` license.
 - UltrusBot: Author of [`Alternate Origin GUI`](https://github.com/UltrusBot/AltOriginGui), a better choose origin
   screen, open source under `MIT` license.
+- ChrysanthCow: Author of [`Apugli`](https://github.com/MerchantCalico/apugli), extends actions, conditions and so on,
+  open source under `LGPL-3.0` license.
 
 ## Discord
 

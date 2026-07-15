@@ -38,6 +38,7 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<FireProjectilePower>> FIRE_PROJECTILE = REGISTRY.register("fire_projectile", () -> FireProjectilePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<FreezePower>> FREEZE = REGISTRY.register("freeze", () -> FreezePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<GroundedPower>> GROUNDED = REGISTRY.register("grounded", () -> GroundedPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<HoverPower>> HOVER = REGISTRY.register("hover", () -> HoverPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<IgnoreWaterPower>> IGNORE_WATER = REGISTRY.register("ignore_water", () -> IgnoreWaterPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<InventoryPower>> INVENTORY = REGISTRY.register("inventory", () -> InventoryPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<InvisibilityPower>> INVISIBILITY = REGISTRY.register("invisibility", () -> InvisibilityPower.CODEC);
@@ -60,6 +61,7 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<SelfGlowPower>> SELF_GLOW = REGISTRY.register("self_glow", () -> SelfGlowPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ShaderPower>> SHADER = REGISTRY.register("shader", () -> ShaderPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ShakingPower>> SHAKING = REGISTRY.register("shaking", () -> ShakingPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<SprintingPower>> SPRINTING = REGISTRY.register("sprinting", () -> SprintingPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<StackingEffectPower>> STACKING_EFFECT = REGISTRY.register("stacking_effect", () -> StackingEffectPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<StartingEquipmentPower>> STARTING_EQUIPMENT = REGISTRY.register("starting_equipment", () -> StartingEquipmentPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<StatusBarTexturePower>> STATUS_BAR_TEXTURE = REGISTRY.register("status_bar_texture", () -> StatusBarTexturePower.CODEC);

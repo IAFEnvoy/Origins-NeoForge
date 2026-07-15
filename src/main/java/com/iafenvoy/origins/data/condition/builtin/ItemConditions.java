@@ -22,6 +22,7 @@ public final class ItemConditions {
     //List
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<AmountCondition>> AMOUNT = REGISTRY.register("amount", () -> AmountCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ArmorValueCondition>> ARMOR_VALUE = REGISTRY.register("armor_value", () -> ArmorValueCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<BaseEnchantmentCondition>> BASE_ENCHANTMENT = REGISTRY.register("base_enchantment", () -> BaseEnchantmentCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ComponentCondition>> COMPONENT = REGISTRY.register("component", () -> ComponentCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<DurabilityCondition>> DURABILITY = REGISTRY.register("durability", () -> DurabilityCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<? extends ItemCondition>> EMPTY = REGISTRY.register("empty", () -> createItem((level, stack) -> stack.isEmpty()));
@@ -32,6 +33,7 @@ public final class ItemConditions {
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<HasPowerCondition>> HAS_POWER = REGISTRY.register("has_power", () -> HasPowerCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<IngredientCondition>> INGREDIENT = REGISTRY.register("ingredient", () -> IngredientCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<InTagCondition>> IN_TAG = REGISTRY.register("in_tag", () -> InTagCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<OnCooldownCondition>> ON_COOLDOWN = REGISTRY.register("on_cooldown", () -> OnCooldownCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<? extends ItemCondition>> IS_DAMAGEABLE = REGISTRY.register("is_damageable", () -> createItem((level, stack) -> stack.isDamageableItem()));
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<IsEquipableCondition>> IS_EQUIPABLE = REGISTRY.register("is_equipable", () -> IsEquipableCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<PowerCountCondition>> POWER_COUNT = REGISTRY.register("power_count", () -> PowerCountCondition.CODEC);

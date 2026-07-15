@@ -4,6 +4,7 @@ import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.helper.ModifierPowerHelper;
 import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.power.Power;
+import com.iafenvoy.origins.util.codec.CombinedCodecs;
 import com.iafenvoy.origins.util.math.Modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -28,7 +29,7 @@ public class ModifyEnchantmentLevelPower extends Power implements ModifierPowerH
             BaseSettings.CODEC.forGetter(Power::getSettings),
             Enchantment.CODEC.fieldOf("enchantment").forGetter(ModifyEnchantmentLevelPower::getEnchantment),
             ItemCondition.optionalCodec("item_condition").forGetter(ModifyEnchantmentLevelPower::getItemCondition),
-            Modifier.CODEC.listOf().fieldOf("modifier").forGetter(ModifyEnchantmentLevelPower::getModifier)
+            CombinedCodecs.MODIFIER.fieldOf("modifier").forGetter(ModifyEnchantmentLevelPower::getModifier)
     ).apply(i, ModifyEnchantmentLevelPower::new));
     private final Holder<Enchantment> enchantment;
     private final ItemCondition itemCondition;

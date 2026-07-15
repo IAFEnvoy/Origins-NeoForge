@@ -18,6 +18,7 @@ public final class ItemActions {
     //List
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<AddEnchantmentAction>> ADD_ENCHANTMENT = REGISTRY.register("add_enchantment", () -> AddEnchantmentAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<ConsumeAction>> CONSUME = REGISTRY.register("consume", () -> ConsumeAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<CooldownAction>> COOLDOWN = REGISTRY.register("cooldown", () -> CooldownAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<DamageAction>> DAMAGE = REGISTRY.register("damage", () -> DamageAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<HolderActionAction>> HOLDER_ACTION = REGISTRY.register("holder_action", () -> HolderActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemAction>, MapCodec<MergeComponentAction>> MERGE_COMPONENT = REGISTRY.register("merge_component", () -> MergeComponentAction.CODEC);
