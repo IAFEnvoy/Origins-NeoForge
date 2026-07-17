@@ -65,7 +65,6 @@ public class PermanentEffectPower extends Power {
 
     @Override
     public void respawn(OriginDataHolder holder, boolean backFromEnd) {
-        super.respawn(holder, backFromEnd);
         // 死后重生重新给一遍防止失效（末地传送门除外）
         if (!backFromEnd) this.active(holder);
     }

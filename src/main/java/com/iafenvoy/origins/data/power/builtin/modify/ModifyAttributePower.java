@@ -50,13 +50,25 @@ public class ModifyAttributePower extends Power {
         return Optional.empty();
     }
 
+    private void modify(OriginDataHolder holder, boolean grant) {
+        this.getAttribute(holder.getEntity()).ifPresent(x -> this.modifier.stream().filter(mod -> grant != x.hasModifier(mod.id())).forEach(mod -> {
+            if (grant) x.addPermanentModifier(mod);
+            else x.removeModifier(mod);
+        }));
+    }
+
     @Override
     public void active(@NotNull OriginDataHolder holder) {
-        this.getAttribute(holder.getEntity()).ifPresent(x -> this.modifier.stream().filter(mod -> !x.hasModifier(mod.id())).forEach(x::addPermanentModifier));
+        this.modify(holder, true);
     }
 
     @Override
     public void inactive(@NotNull OriginDataHolder holder) {
-        this.getAttribute(holder.getEntity()).ifPresent(x -> this.modifier.stream().filter(mod -> x.hasModifier(mod.id())).forEach(x::removeModifier));
+        this.modify(holder, false);
+    }
+
+    @Override
+    public void respawn(OriginDataHolder holder, boolean backFromEnd) {
+        if (!backFromEnd) this.modify(holder, true);
     }
 }

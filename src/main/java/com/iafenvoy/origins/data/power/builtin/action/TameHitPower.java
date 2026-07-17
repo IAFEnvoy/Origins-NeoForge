@@ -4,8 +4,6 @@ import com.iafenvoy.origins.data.action.BiEntityAction;
 import com.iafenvoy.origins.data.condition.BiEntityCondition;
 import com.iafenvoy.origins.data.condition.DamageCondition;
 import com.iafenvoy.origins.data.power.HasCooldownPower;
-import com.iafenvoy.origins.data.power.Power;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 

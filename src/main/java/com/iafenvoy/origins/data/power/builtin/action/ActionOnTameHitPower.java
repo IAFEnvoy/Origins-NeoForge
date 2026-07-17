@@ -37,12 +37,12 @@ public class ActionOnTameHitPower extends TameHitPower {
 
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent.Post event) {
-        if (!(event.getSource().getEntity() instanceof TamableAnimal tame) || !(event.getEntity() instanceof LivingEntity target))
+        if (!(event.getSource().getEntity() instanceof TamableAnimal tame))
             return;
         LivingEntity owner = tame.getOwner();
         if (owner == null)
             return;
         PowerHelper.get(owner).execute(ActionOnTameHitPower.class,
-                (holder, power) -> execute(power, holder, tame, target, owner, target, event.getSource(), event.getNewDamage()));
+                (holder, power) -> execute(power, holder, tame, event.getEntity(), owner, event.getEntity(), event.getSource(), event.getNewDamage()));
     }
 }

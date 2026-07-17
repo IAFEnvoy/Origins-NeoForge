@@ -1,9 +1,11 @@
 package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.accessor.EntityLinkedItemStack;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,17 +21,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class EnchantmentHelperMixin {
 
     @Inject(method = "getEnchantmentLevel(Lnet/minecraft/core/Holder;Lnet/minecraft/world/entity/LivingEntity;)I", at = @At("HEAD"))
-    private static void origins$setEntityOnStackForLevelQuery(net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment, LivingEntity entity, CallbackInfoReturnable<Integer> cir) {
+    private static void origins$setEntityOnStackForLevelQuery(Holder<Enchantment> enchantment, LivingEntity entity, CallbackInfoReturnable<Integer> cir) {
         for (EquipmentSlot slot : net.minecraft.world.entity.EquipmentSlot.values()) {
             ItemStack stack = entity.getItemBySlot(slot);
-            if (!stack.isEmpty()) {
-                ((EntityLinkedItemStack) (Object) stack).origins$setEntity(entity);
-            }
+            if (!stack.isEmpty()) ((EntityLinkedItemStack) (Object) stack).origins$setEntity(entity);
         }
-    }
-
-    @Inject(method = "getItemEnchantmentLevel", at = @At("HEAD"))
-    private static void origins$setEntityOnStackForItemQuery(net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> enchantment, ItemStack stack, CallbackInfoReturnable<Integer> cir) {
-        // The stack may not have entity context; GetEnchantmentLevelEvent will handle it via EntityLinkedItemStack
     }
 }
