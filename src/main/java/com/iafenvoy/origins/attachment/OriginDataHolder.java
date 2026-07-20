@@ -61,16 +61,19 @@ import java.util.stream.Stream;
 @EventBusSubscriber
 public final class OriginDataHolder {
     public static final ResourceLocation DEFAULT_SOURCE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "command");
+    private static final Map<Entity, OriginDataHolder> CACHED_HOLDERS = new IdentityHashMap<>();
     private final Entity entity;
     private final EntityOriginAttachment data;
     private final RegistryAccess access;
     private final PowerHelper helper;
+    private Set<PowerHolder> cachedPowers;
 
     public OriginDataHolder(Entity entity, EntityOriginAttachment data) {
         this.entity = entity;
         this.data = data;
         this.access = entity.registryAccess();
         this.helper = new PowerHelperImpl(this);
+        this.cachedPowers = this.buildAllPowers();
     }
 
     public Entity getEntity() {
@@ -156,6 +159,7 @@ public final class OriginDataHolder {
     public boolean hasAllOrigins() {
         List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(this.access).toList();
         for (Holder<Layer> layer : layers) {
+            if (layer.value().getOriginOptionCount(this.entity) == 0) continue;
             if (this.data.getOrigins().containsKey(layer)) continue;
             return false;
         }
@@ -165,6 +169,7 @@ public final class OriginDataHolder {
     //Power Related
     public void grantPower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().put(source, power);
+        this.refreshPowerCache();
         this.grantPower(new PowerHolder(power));
         NeoForge.EVENT_BUS.post(new GrantPowerEvent(this.entity, power, source));
         this.sync();
@@ -178,11 +183,12 @@ public final class OriginDataHolder {
         if (power.power() instanceof MultiplePower multiple)
             multiple.getPowers(power.id()).forEach(this::grantPower);
         if (this.entity.level().isClientSide())
-            OriginsKeyMappings.INSTANCE.registerKeyMappingsFromPowers(this.getAllPowers());
+            OriginsKeyMappings.INSTANCE.registerKeyMappingsFromPowers(this.cachedPowers);
     }
 
     public void revokePower(ResourceLocation source, Holder<Power> power) {
         this.data.getPowers().remove(source, power);
+        this.refreshPowerCache();
         this.revokePower(new PowerHolder(power));
         NeoForge.EVENT_BUS.post(new RevokePowerEvent(this.entity, power, source));
         this.sync();
@@ -208,7 +214,10 @@ public final class OriginDataHolder {
     }
 
     public Set<PowerHolder> getAllPowers() {
-        //TODO::Cache?
+        return this.cachedPowers;
+    }
+
+    private Set<PowerHolder> buildAllPowers() {
         ImmutableSet.Builder<PowerHolder> builder = ImmutableSet.builder();
         for (Holder<Power> power : this.data.getPowers().values())
             if (power.value() instanceof MultiplePower multiple)
@@ -223,9 +232,13 @@ public final class OriginDataHolder {
         return builder.build();
     }
 
+    private void refreshPowerCache() {
+        this.cachedPowers = this.buildAllPowers();
+    }
+
     //Only for toggle and hud render, which need to bypass active logic
     private <T> Stream<T> streamPowers(Class<T> clazz, Predicate<ResourceLocation> idChecker) {
-        Stream<Power> powers = this.getAllPowers().stream().filter(x -> idChecker.test(x.id())).map(PowerHolder::power).filter(power -> clazz.isAssignableFrom(power.getClass()));
+        Stream<Power> powers = this.cachedPowers.stream().filter(x -> idChecker.test(x.id())).map(PowerHolder::power).filter(power -> clazz.isAssignableFrom(power.getClass()));
         if (this.entity.level().isClientSide()) {
             powers = powers.filter(power -> {
                 if (power.getSettings().condition() instanceof Sided condition) {
@@ -235,7 +248,6 @@ public final class OriginDataHolder {
         }
 
         Stream<T> results = powers.map(clazz::cast);
-
         return Prioritized.class.isAssignableFrom(clazz) ? results.map(Prioritized.class::cast).sorted(Comparator.comparingInt(Prioritized::getPriority)).map(clazz::cast) : results;
     }
 
@@ -252,7 +264,7 @@ public final class OriginDataHolder {
     }
 
     public boolean hasPower(Holder<Power> power) {
-        return this.getAllPowers().stream().anyMatch(p -> Objects.equals(p, new PowerHolder(power)));
+        return this.cachedPowers.stream().anyMatch(p -> Objects.equals(p, new PowerHolder(power)));
     }
 
     public boolean hasPower(ResourceLocation id, Class<Power> clazz) {
@@ -281,10 +293,19 @@ public final class OriginDataHolder {
     //Utils
     public static Optional<OriginDataHolder> optional(@Nullable Entity entity) {
         try {
-            return Optional.ofNullable(entity).map(x -> new OriginDataHolder(entity, x.getData(OriginsAttachments.ENTITY_ORIGIN)));
+            return Optional.ofNullable(entity).map(OriginDataHolder::getCached);
         } catch (Exception ignored) {
             return Optional.empty();
         }
+    }
+
+    private static OriginDataHolder getCached(Entity entity) {
+        return CACHED_HOLDERS.computeIfAbsent(entity, x -> new OriginDataHolder(x, x.getData(OriginsAttachments.ENTITY_ORIGIN)));
+    }
+
+    @ApiStatus.Internal
+    public static void clearCache() {
+        CACHED_HOLDERS.clear();
     }
 
     public static Stream<OriginDataHolder> optionalStream(@Nullable Entity entity) {
@@ -302,11 +323,10 @@ public final class OriginDataHolder {
 
     public void tick() {
         long currentTick = Proxies.TICK_COUNT.getAsLong();
-        Set<PowerHolder> powers = this.getAllPowers();
-        powers.stream().map(PowerHolder::power).filter(p -> p.tickInterval() <= 0 || currentTick % p.tickInterval() == 0).forEach(p -> p.tick(this));
+        this.cachedPowers.stream().map(PowerHolder::power).filter(p -> p.tickInterval() <= 0 || currentTick % p.tickInterval() == 0).forEach(p -> p.tick(this));
         //Update components
         boolean changed = false;
-        for (PowerHolder power : powers)
+        for (PowerHolder power : this.cachedPowers)
             for (Map.Entry<Class<? extends PowerComponent>, PowerComponent> entry : this.data.getComponents().getOrDefault(power.id(), new LinkedHashMap<>()).entrySet()) {
                 PowerComponent component = entry.getValue();
                 component.tick(this, power);

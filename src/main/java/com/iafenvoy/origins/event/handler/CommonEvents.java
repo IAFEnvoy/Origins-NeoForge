@@ -22,13 +22,21 @@ import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @EventBusSubscriber
 public final class CommonEvents {
+    @ApiStatus.Internal
+    @SubscribeEvent
+    public static void clearOriginHolderCache(ServerTickEvent.Post event) {
+        OriginDataHolder.clearCache();
+    }
+
     @SubscribeEvent
     public static void preventDamageWhenSelecting(EntityInvulnerabilityCheckEvent event) {
         if (event.getEntity() instanceof Player player && OriginDataHolder.optionalStream(player).noneMatch(OriginDataHolder::hasAllOrigins))

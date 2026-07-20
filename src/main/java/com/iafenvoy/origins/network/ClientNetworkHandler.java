@@ -33,7 +33,10 @@ public final class ClientNetworkHandler {
 
     static void openOriginScreen(OpenChooseOriginScreenS2CPayload packet, IPayloadContext context) {
         OriginDataHolder holder = OriginDataHolder.get(context.player());
-        List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(context.player().registryAccess()).filter(x -> !holder.hasOriginInLayer(x)).sorted(Comparator.comparing(Holder::value)).toList();
+        List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(context.player().registryAccess())
+                .filter(x -> !holder.hasOriginInLayer(x) && x.value().getOriginOptionCount(context.player()) > 0)
+                .sorted(Comparator.comparing(Holder::value))
+                .toList();
         ClientCall.openOriginScreen(layers, packet.showBackground());
     }
 
@@ -75,6 +78,10 @@ public final class ClientNetworkHandler {
     //If I don't call in a single class server will crash
     private static final class ClientCall {
         public static void openOriginScreen(List<Holder<Layer>> layers, boolean showBackground) {
+            if (layers.isEmpty()) {
+                Minecraft.getInstance().setScreen(null);
+                return;
+            }
             Minecraft.getInstance().setScreen(new ChooseOriginScreen(layers, 0, showBackground));
         }
 

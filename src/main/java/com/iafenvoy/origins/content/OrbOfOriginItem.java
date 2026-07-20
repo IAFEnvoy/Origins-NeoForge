@@ -3,7 +3,6 @@ package com.iafenvoy.origins.content;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
-import com.iafenvoy.origins.data.origin.OriginRegistries;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -21,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 public class OrbOfOriginItem extends Item {
     public OrbOfOriginItem() {
@@ -45,17 +43,14 @@ public class OrbOfOriginItem extends Item {
         OriginDataHolder holder = OriginDataHolder.get(target);
         List<Holder<Layer>> layers = new ObjectArrayList<>();
 
-        if (layer == null) LayerRegistries.streamAvailableLayers(target.registryAccess()).forEach(layers::add);
-        else layers.add(layer);
+        if (layer == null)
+            LayerRegistries.streamAvailableLayers(target.registryAccess()).filter(x -> x.value().getOriginOptionCount(target) > 0).forEach(layers::add);
+        else if (layer.value().getOriginOptionCount(target) > 0) layers.add(layer);
 
-        layers.stream().filter(x -> x.value().enabled()).forEach(holder::clearOrigin);
+        layers.forEach(holder::clearOrigin);
 
-        boolean automaticallyAssigned = holder.fillAutoChoosing();
-        int options = Optional.ofNullable(layer)
-                .map(l -> l.value().getOriginOptionCount(target))
-                .orElseGet(() -> OriginRegistries.streamAvailableOrigins(target.registryAccess()).toList().size());
-
-        holder.getData().setSelecting(!automaticallyAssigned || options > 0);
+        holder.fillAutoChoosing();
+        holder.getData().setSelecting(!layers.isEmpty());
         holder.sync();
 
         if (holder.getData().isSelecting())
