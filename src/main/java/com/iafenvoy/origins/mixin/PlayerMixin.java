@@ -9,8 +9,12 @@ import com.iafenvoy.origins.data.power.builtin.regular.WaterBreathingPower;
 import com.iafenvoy.origins.util.wrapper.Mutable;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -49,6 +53,11 @@ public class PlayerMixin {
     private void afterEatToFoodData(Level level, ItemStack food, FoodProperties foodProperties, CallbackInfoReturnable<ItemStack> cir) {
         Entity entity = this.origins$self();
         PowerHelper.get(entity).execute(ModifyFoodPower.class, x -> x.getItemCondition().test(level, food), (h, p) -> p.getEntityAction().execute(entity));
+    }
+
+    @WrapOperation(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/food/FoodProperties;)V"))
+    private void origins$modifyEatenFoodProperties(FoodData instance, FoodProperties foodProperties, Operation<Void> original, @Local(argsOnly = true) ItemStack food) {
+        original.call(instance, ModifyFoodPower.modifyFoodProperties(this.origins$self().level(), this.origins$self(), food, foodProperties));
     }
 
     @ModifyReturnValue(method = "getFlyingSpeed", at = @At("RETURN"))
