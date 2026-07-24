@@ -1,5 +1,6 @@
 package com.iafenvoy.origins.data.power.builtin.modify;
 
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data.action.EntityAction;
 import com.iafenvoy.origins.data.action.ItemAction;
@@ -12,6 +13,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -95,5 +97,14 @@ public class ModifyFoodPower extends Power {
             p.replaceStack.ifPresent(stack -> input.set(stack.copy()));
             p.itemAction.execute(level, entity, input.toSlotAccess());
         });
+    }
+
+    public static FoodProperties modifyFoodProperties(Level level, Entity entity, ItemStack stack, FoodProperties original) {
+        PowerHelper helper = PowerHelper.get(entity);
+        List<ModifyFoodPower> powers = helper.listActive(ModifyFoodPower.class, p -> p.itemCondition.test(level, stack));
+        if (powers.isEmpty()) return original;
+        int nutrition = helper.applyModifiers(powers.stream().flatMap(p -> p.foodModifier.stream()).toList(), original.nutrition());
+        float saturation = helper.applyModifiers(powers.stream().flatMap(p -> p.saturationModifier.stream()).toList(), original.saturation());
+        return new FoodProperties(nutrition, saturation, original.canAlwaysEat(), original.eatSeconds(), original.usingConvertsTo(), original.effects());
     }
 }
