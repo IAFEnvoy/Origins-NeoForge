@@ -32,6 +32,7 @@ public final class ActionPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnTameHitPower>> ACTION_ON_TAME_HIT = REGISTRY.register("action_on_tame_hit", () -> ActionOnTameHitPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOnWakeUpPower>> ACTION_ON_WAKE_UP = REGISTRY.register("action_on_wake_up", () -> ActionOnWakeUpPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionOverTimePower>> ACTION_OVER_TIME = REGISTRY.register("action_over_time", () -> ActionOverTimePower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<HoldActionPower>> HOLD_ACTION = REGISTRY.register("hold_action", () -> HoldActionPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionWhenDamageTakenPower>> ACTION_WHEN_DAMAGE_TAKEN = REGISTRY.register("action_when_damage_taken", () -> ActionWhenDamageTakenPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionWhenHitPower>> ACTION_WHEN_HIT = REGISTRY.register("action_when_hit", () -> ActionWhenHitPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ActionWhenLightningStruckPower>> ACTION_WHEN_LIGHTNING_STRUCK = REGISTRY.register("action_when_lightning_struck", () -> ActionWhenLightningStruckPower.CODEC);

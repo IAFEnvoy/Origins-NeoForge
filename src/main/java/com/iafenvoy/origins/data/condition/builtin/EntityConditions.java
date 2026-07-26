@@ -32,6 +32,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AdvancementCondition>> ADVANCEMENT = REGISTRY.register("advancement", () -> AdvancementCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> ATTACKER_CONDITION = REGISTRY.register("attacker_condition", () -> createEntity(entity -> entity instanceof LivingEntity living && living.getLastHurtByMob() != null));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> ATTACK_TARGET_CONDITION = REGISTRY.register("attack_target_condition", () -> createEntity(entity -> entity instanceof Mob mob && mob.getTarget() != null));
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AttackCooldownCondition>> ATTACK_COOLDOWN = REGISTRY.register("attack_cooldown", () -> AttackCooldownCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AirCondition>> AIR = REGISTRY.register("air", () -> AirCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<AttributeCondition>> ATTRIBUTE = REGISTRY.register("attribute", () -> AttributeCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<BiomeInCondition>> BIOME = REGISTRY.register("biome_in", () -> BiomeInCondition.CODEC);
@@ -99,6 +100,7 @@ public final class EntityConditions {
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<SubmergedInCondition>> SUBMERGED_IN = REGISTRY.register("submerged_in", () -> SubmergedInCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> SWIMMING = REGISTRY.register("swimming", () -> createEntity(Entity::isSwimming));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> TAMED = REGISTRY.register("tamed", () -> createEntity(entity -> entity instanceof OwnableEntity ownable && ownable.getOwnerUUID() != null));
+    public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<TeamCondition>> TEAM = REGISTRY.register("team", () -> TeamCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<TimeOfDayCondition>> TIME_OF_DAY = REGISTRY.register("time_of_day", () -> TimeOfDayCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<? extends EntityCondition>> THUNDERING = REGISTRY.register("thundering", () -> createEntity(entity -> entity.level().isThundering()));
     public static final DeferredHolder<MapCodec<? extends EntityCondition>, MapCodec<UsingEffectiveToolCondition>> USING_EFFECTIVE_TOOL = REGISTRY.register("using_effective_tool", () -> UsingEffectiveToolCondition.CODEC);

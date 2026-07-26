@@ -47,6 +47,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<GrantPowerAction>> GRANT_POWER = REGISTRY.register("grant_power", () -> GrantPowerAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<HealAction>> HEAL = REGISTRY.register("heal", () -> HealAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ModifyDeathTicksAction>> MODIFY_DEATH_TICKS = REGISTRY.register("modify_death_ticks", () -> ModifyDeathTicksAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ModifyAttackCooldownAction>> MODIFY_ATTACK_COOLDOWN = REGISTRY.register("modify_attack_cooldown", () -> ModifyAttackCooldownAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ModifyInventoryAction>> MODIFY_INVENTORY = REGISTRY.register("modify_inventory", () -> ModifyInventoryAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ModifyResourceAction>> MODIFY_RESOURCE = REGISTRY.register("modify_resource", () -> ModifyResourceAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<PassengerActionAction>> PASSENGER_ACTION = REGISTRY.register("passenger_action", () -> PassengerActionAction.CODEC);
@@ -55,14 +56,17 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RaycastAction>> RAYCAST = REGISTRY.register("raycast", () -> RaycastAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RemoveEffectAction>> REMOVE_EFFECT = REGISTRY.register("remove_effect", () -> RemoveEffectAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ReplaceInventoryAction>> REPLACE_INVENTORY = REGISTRY.register("replace_inventory", () -> ReplaceInventoryAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ReplaceEntityAction>> REPLACE_ENTITY = REGISTRY.register("replace_entity", () -> ReplaceEntityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ResetStatAction>> RESET_STAT = REGISTRY.register("reset_stat", () -> ResetStatAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RevokeAdvancementAction>> REVOKE_ADVANCEMENT = REGISTRY.register("revoke_advancement", () -> RevokeAdvancementAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RevokePowerAction>> REVOKE_POWER = REGISTRY.register("revoke_power", () -> RevokePowerAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<RidingActionAction>> RIDING_ACTION = REGISTRY.register("riding_action", () -> RidingActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SelectorActionAction>> SELECTOR_ACTION = REGISTRY.register("selector_action", () -> SelectorActionAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SelfBiEntityAction>> SELF_BI_ENTITY_ACTION = REGISTRY.register("self_bientity_action", () -> SelfBiEntityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SetFallDistanceAction>> SET_FALL_DISTANCE = REGISTRY.register("set_fall_distance", () -> SetFallDistanceAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SetOnFireAction>> SET_ON_FIRE = REGISTRY.register("set_on_fire", () -> SetOnFireAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SetNoGravityAction>> SET_NO_GRAVITY = REGISTRY.register("set_no_gravity", () -> SetNoGravityAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SetOriginAction>> SET_ORIGIN = REGISTRY.register("set_origin", () -> SetOriginAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnEffectCloudAction>> SPAWN_EFFECT_CLOUD = REGISTRY.register("spawn_effect_cloud", () -> SpawnEffectCloudAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnEntityAction>> SPAWN_ENTITY = REGISTRY.register("spawn_entity", () -> SpawnEntityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<SpawnParticlesAction>> SPAWN_PARTICLES = REGISTRY.register("spawn_particles", () -> SpawnParticlesAction.CODEC);

@@ -32,6 +32,7 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<EffectImmunityPower>> EFFECT_IMMUNITY = REGISTRY.register("effect_immunity", () -> EffectImmunityPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ElytraFlightPower>> ELYTRA_FLIGHT = REGISTRY.register("elytra_flight", () -> ElytraFlightPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<EntityGlowPower>> ENTITY_GLOW = REGISTRY.register("entity_glow", () -> EntityGlowPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<EntityGroupPower>> ENTITY_GROUP = REGISTRY.register("entity_group", () -> EntityGroupPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<EntitySetPower>> ENTITY_SET = REGISTRY.register("entity_set", () -> EntitySetPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ExhaustPower>> EXHAUST = REGISTRY.register("exhaust", () -> ExhaustPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<FireImmunityPower>> FIRE_IMMUNITY = REGISTRY.register("fire_immunity", () -> FireImmunityPower.CODEC);
@@ -48,15 +49,19 @@ public final class RegularPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<LaunchPower>> LAUNCH = REGISTRY.register("launch", () -> LaunchPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<LikeWaterPower>> LIKE_WATER = REGISTRY.register("like_water", () -> LikeWaterPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModelColorPower>> MODEL_COLOR = REGISTRY.register("model_color", () -> ModelColorPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ModifyTargetRangePower>> MODIFY_TARGET_RANGE = REGISTRY.register("modify_target_range", () -> ModifyTargetRangePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<NightVisionPower>> NIGHT_VISION = REGISTRY.register("night_vision", () -> NightVisionPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<OverlayPower>> OVERLAY = REGISTRY.register("overlay", () -> OverlayPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ParticlePower>> PARTICLE = REGISTRY.register("particle", () -> ParticlePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PermanentEffectPower>> PERMANENT_EFFECT = REGISTRY.register("permanent_effect", () -> PermanentEffectPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PhasingPower>> PHASING = REGISTRY.register("phasing", () -> PhasingPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventTargetingPower>> PREVENT_TARGETING = REGISTRY.register("prevent_targeting", () -> PreventTargetingPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ProtectPower>> PROTECT = REGISTRY.register("protect", () -> ProtectPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<RecipePower>> RECIPE = REGISTRY.register("recipe", () -> RecipePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ReplaceLootTablePower>> REPLACE_LOOT_TABLE = REGISTRY.register("replace_loot_table", () -> ReplaceLootTablePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ResourcePower>> RESOURCE = REGISTRY.register("resource", () -> ResourcePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<RestrictArmorPower>> RESTRICT_ARMOR = REGISTRY.register("restrict_armor", () -> RestrictArmorPower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<RiptidePower>> RIPTIDE = REGISTRY.register("riptide", () -> RiptidePower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ScareCreepersPower>> SCARE_CREEPERS = REGISTRY.register("scare_creepers", () -> ScareCreepersPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<SelfGlowPower>> SELF_GLOW = REGISTRY.register("self_glow", () -> SelfGlowPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<ShaderPower>> SHADER = REGISTRY.register("shader", () -> ShaderPower.CODEC);

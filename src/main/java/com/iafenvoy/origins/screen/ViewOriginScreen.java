@@ -60,6 +60,7 @@ public class ViewOriginScreen extends OriginDisplayScreen {
 
     @Override
     public @NotNull Component getTitle() {
+        if (this.originLayers.isEmpty()) return Component.translatable("origins.gui.view_origin.empty");
         return this.getCurrentLayer().value().getViewOriginTitle(Component.translatable("origins.gui.view_origin.title", Layer.getName(this.getCurrentLayer())));
     }
 

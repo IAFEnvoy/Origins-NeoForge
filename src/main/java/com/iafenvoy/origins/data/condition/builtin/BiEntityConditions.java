@@ -35,6 +35,7 @@ public final class BiEntityConditions {
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<? extends BiEntityCondition>> RIDING = REGISTRY.register("riding", () -> createBiEntity((source, target) -> Objects.equals(source.getVehicle(), target)));
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<RidingRecursiveCondition>> RIDING_RECURSIVE = REGISTRY.register("riding_recursive", () -> RidingRecursiveCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<? extends BiEntityCondition>> RIDING_ROOT = REGISTRY.register("riding_root", () -> createBiEntity((source, target) -> Objects.equals(source.getRootVehicle(), target)));
+    public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<SameTeamCondition>> SAME_TEAM = REGISTRY.register("same_team", () -> SameTeamCondition.CODEC);
     //Meta
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<ActorConditionCondition>> ACTOR_CONDITION = REGISTRY.register("actor_condition", () -> ActorConditionCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends BiEntityCondition>, MapCodec<AndCondition>> AND = REGISTRY.register("and", () -> AndCondition.CODEC);

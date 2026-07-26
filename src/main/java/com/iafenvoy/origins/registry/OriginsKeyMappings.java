@@ -1,6 +1,7 @@
 package com.iafenvoy.origins.registry;
 
 import com.iafenvoy.origins.Constants;
+import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.Toggleable;
 import com.iafenvoy.origins.data.power.reference.PowerHolder;
@@ -56,6 +57,17 @@ public enum OriginsKeyMappings {
     public static void clientTick(ClientTickEvent.Pre event) {
         if (INSTANCE.VIEW_ORIGIN.consumeClick()) Minecraft.getInstance().setScreen(new ViewOriginScreen());
         for (KeyMapping key : INSTANCE.ACTIVATE_KEYS)
-            if (key.consumeClick()) PacketDistributor.sendToServer(new PowerToggleC2SPayload(key.getName()));
+            if (key.consumeClick() || (key.isDown() && INSTANCE.isContinuous(key.getName())))
+                PacketDistributor.sendToServer(new PowerToggleC2SPayload(key.getName()));
+    }
+
+    private boolean isContinuous(String key) {
+        return OriginDataHolder.optional(Minecraft.getInstance().player)
+                .map(holder -> holder.getAllPowers().stream()
+                        .map(PowerHolder::power)
+                        .filter(Toggleable.class::isInstance)
+                        .map(Toggleable.class::cast)
+                        .anyMatch(power -> power.getKey().match(key) && power.getKey().continuous()))
+                .orElse(false);
     }
 }

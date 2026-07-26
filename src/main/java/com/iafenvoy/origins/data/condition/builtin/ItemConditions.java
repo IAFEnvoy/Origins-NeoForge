@@ -8,6 +8,7 @@ import com.iafenvoy.origins.data.condition.ItemCondition;
 import com.iafenvoy.origins.data.condition.builtin.item.*;
 import com.iafenvoy.origins.data.condition.builtin.item.meta.*;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -23,6 +24,7 @@ public final class ItemConditions {
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<AmountCondition>> AMOUNT = REGISTRY.register("amount", () -> AmountCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ArmorValueCondition>> ARMOR_VALUE = REGISTRY.register("armor_value", () -> ArmorValueCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<BaseEnchantmentCondition>> BASE_ENCHANTMENT = REGISTRY.register("base_enchantment", () -> BaseEnchantmentCondition.CODEC);
+    public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<? extends ItemCondition>> BLOCK_ITEM = REGISTRY.register("block_item", () -> createItem((level, stack) -> stack.getItem() instanceof BlockItem));
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<ComponentCondition>> COMPONENT = REGISTRY.register("component", () -> ComponentCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<DurabilityCondition>> DURABILITY = REGISTRY.register("durability", () -> DurabilityCondition.CODEC);
     public static final DeferredHolder<MapCodec<? extends ItemCondition>, MapCodec<? extends ItemCondition>> EMPTY = REGISTRY.register("empty", () -> createItem((level, stack) -> stack.isEmpty()));
