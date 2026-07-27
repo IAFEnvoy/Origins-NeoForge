@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 @EventBusSubscriber
@@ -98,6 +99,16 @@ public class ModifyPlayerSpawnPower extends Power {
         if (!(holder.getEntity() instanceof ServerPlayer serverPlayer)) return;
         if (!serverPlayer.hasDisconnected() && serverPlayer.getRespawnPosition() != null && !serverPlayer.isRespawnForced())
             serverPlayer.setRespawnPosition(Level.OVERWORLD, null, 0F, false, false);
+    }
+
+    @Override
+    public void active(@NotNull OriginDataHolder holder) {
+        if (!(holder.getEntity() instanceof ServerPlayer serverPlayer)) return;
+        this.getSpawn(serverPlayer).ifPresent(spawn -> {
+            ServerLevel level = spawn.getA();
+            BlockPos position = spawn.getB();
+            serverPlayer.teleportTo(level, position.getX() + 0.5, position.getY(), position.getZ() + 0.5, Set.of(), serverPlayer.getYRot(), serverPlayer.getXRot());
+        });
     }
 
     @SubscribeEvent

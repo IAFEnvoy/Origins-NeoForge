@@ -5,7 +5,6 @@ import com.iafenvoy.origins.data.layer.Layer;
 import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -32,7 +31,7 @@ public class OrbOfOriginItem extends Item {
         if (player instanceof ServerPlayer serverPlayer) {
             List<Holder<Layer>> layers = stack.getOrDefault(OriginsDataComponents.ORB_LAYERS, List.of());
             if (layers.isEmpty()) openGuiForLayer(serverPlayer, null);
-            else for (Holder<Layer> layer : layers) openGuiForLayer(serverPlayer, layer);
+            else openGuiForLayers(serverPlayer, layers);
             stack.shrink(1);
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
@@ -40,12 +39,17 @@ public class OrbOfOriginItem extends Item {
 
     // I don't know why but this can work
     public static void openGuiForLayer(ServerPlayer target, @Nullable Holder<Layer> layer) {
-        OriginDataHolder holder = OriginDataHolder.get(target);
-        List<Holder<Layer>> layers = new ObjectArrayList<>();
-
         if (layer == null)
-            LayerRegistries.streamAvailableLayers(target.registryAccess()).filter(x -> x.value().getOriginOptionCount(target) > 0).forEach(layers::add);
-        else if (layer.value().getOriginOptionCount(target) > 0) layers.add(layer);
+            openGuiForLayers(target, LayerRegistries.streamAvailableLayers(target.registryAccess()).toList());
+        else openGuiForLayers(target, List.of(layer));
+    }
+
+    private static void openGuiForLayers(ServerPlayer target, List<Holder<Layer>> requestedLayers) {
+        List<Holder<Layer>> layers = requestedLayers.stream()
+                .filter(layer -> layer.value().getOriginOptionCount(target) > 0)
+                .distinct()
+                .toList();
+        OriginDataHolder holder = OriginDataHolder.get(target);
 
         layers.forEach(holder::clearOrigin);
 
@@ -54,6 +58,6 @@ public class OrbOfOriginItem extends Item {
         holder.sync();
 
         if (holder.getData().isSelecting())
-            PacketDistributor.sendToPlayer(target, new OpenChooseOriginScreenS2CPayload(false));
+            PacketDistributor.sendToPlayer(target, new OpenChooseOriginScreenS2CPayload(false, layers));
     }
 }

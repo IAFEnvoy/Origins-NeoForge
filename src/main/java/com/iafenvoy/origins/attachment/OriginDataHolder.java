@@ -363,7 +363,12 @@ public final class OriginDataHolder {
         if (!holder.hasAllOrigins() && !isFakePlayer(player)) {
             holder.data.setSelecting(true);
             holder.sync();
-            PacketDistributor.sendToPlayer(player, new OpenChooseOriginScreenS2CPayload(true));
+            List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(player.registryAccess())
+                    .filter(layer -> !holder.hasOriginInLayer(layer))
+                    .filter(layer -> layer.value().getOriginOptionCount(player) > 0)
+                    .sorted(Comparator.comparing(Holder::value))
+                    .toList();
+            PacketDistributor.sendToPlayer(player, new OpenChooseOriginScreenS2CPayload(true, layers));
             return;
         }
         holder.sync();

@@ -3,7 +3,6 @@ package com.iafenvoy.origins.network;
 import com.iafenvoy.origins.Origins;
 import com.iafenvoy.origins.attachment.OriginDataHolder;
 import com.iafenvoy.origins.data.layer.Layer;
-import com.iafenvoy.origins.data.layer.LayerRegistries;
 import com.iafenvoy.origins.data.origin.Origin;
 import com.iafenvoy.origins.network.payload.*;
 import com.iafenvoy.origins.registry.OriginsKeyMappings;
@@ -17,7 +16,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -32,12 +30,7 @@ public final class ClientNetworkHandler {
     }
 
     static void openOriginScreen(OpenChooseOriginScreenS2CPayload packet, IPayloadContext context) {
-        OriginDataHolder holder = OriginDataHolder.get(context.player());
-        List<Holder<Layer>> layers = LayerRegistries.streamAvailableLayers(context.player().registryAccess())
-                .filter(x -> !holder.hasOriginInLayer(x) && x.value().getOriginOptionCount(context.player()) > 0)
-                .sorted(Comparator.comparing(Holder::value))
-                .toList();
-        ClientCall.openOriginScreen(layers, packet.showBackground());
+        ClientCall.openOriginScreen(packet.layers(), packet.showBackground());
     }
 
     public static void onReapplyShaders(ReapplyShadersS2CPayload payload, IPayloadContext context) {

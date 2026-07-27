@@ -66,7 +66,7 @@ public abstract class ServerPlayerMixin extends Player implements ContainerListe
 
     @ModifyReturnValue(method = "getRespawnPosition", at = @At("RETURN"))
     private BlockPos origins$modifySpawnPointPosition(BlockPos original) {
-        if (this.origins$isEndRespawning() || !PowerHelper.get(this).noneActive(ModifyPlayerSpawnPower.class))
+        if (this.origins$isEndRespawning() || PowerHelper.get(this).noneActive(ModifyPlayerSpawnPower.class))
             return original;
         else if (original == null)
             return this.origins$findPowerSpawnPoint();

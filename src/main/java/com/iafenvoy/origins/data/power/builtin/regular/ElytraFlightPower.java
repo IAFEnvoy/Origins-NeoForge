@@ -51,26 +51,37 @@ public class ElytraFlightPower extends Power {
     @Override
     public void active(@NotNull OriginDataHolder holder) {
         super.active(holder);
-        if (holder.getEntity() instanceof LivingEntity living && living.getAttributes().hasAttribute(FLIGHT_ATTRIBUTE)) {
-            AttributeInstance instance = living.getAttribute(FLIGHT_ATTRIBUTE);
-            if (instance != null) instance.addOrReplacePermanentModifier(FLIGHT_MODIFIER);
-        }
+        this.addFlightModifier(holder);
     }
 
     @Override
     public void inactive(@NotNull OriginDataHolder holder) {
         super.inactive(holder);
-        if (holder.getEntity() instanceof LivingEntity living && living.getAttributes().hasAttribute(FLIGHT_ATTRIBUTE)) {
-            AttributeInstance instance = living.getAttribute(FLIGHT_ATTRIBUTE);
-            if (instance != null) instance.removeModifier(FLIGHT_MODIFIER);
-        }
+        if (holder.streamActivePowers(ElytraFlightPower.class).noneMatch(power -> power != this))
+            this.removeFlightModifier(holder);
+    }
+
+    @Override
+    public void activeTick(@NotNull OriginDataHolder holder) {
+        this.addFlightModifier(holder);
     }
 
     @Override
     public void respawn(@NotNull OriginDataHolder holder, boolean backFromEnd) {
+        this.addFlightModifier(holder);
+    }
+
+    private void addFlightModifier(OriginDataHolder holder) {
         if (holder.getEntity() instanceof LivingEntity living && living.getAttributes().hasAttribute(FLIGHT_ATTRIBUTE)) {
             AttributeInstance instance = living.getAttribute(FLIGHT_ATTRIBUTE);
-            if (instance != null) instance.addOrReplacePermanentModifier(FLIGHT_MODIFIER);
+            if (instance != null && !instance.hasModifier(MODIFIER_ID)) instance.addPermanentModifier(FLIGHT_MODIFIER);
+        }
+    }
+
+    private void removeFlightModifier(OriginDataHolder holder) {
+        if (holder.getEntity() instanceof LivingEntity living && living.getAttributes().hasAttribute(FLIGHT_ATTRIBUTE)) {
+            AttributeInstance instance = living.getAttribute(FLIGHT_ATTRIBUTE);
+            if (instance != null) instance.removeModifier(MODIFIER_ID);
         }
     }
 }

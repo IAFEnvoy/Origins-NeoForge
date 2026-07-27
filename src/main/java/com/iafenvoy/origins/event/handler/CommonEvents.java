@@ -10,6 +10,7 @@ import com.iafenvoy.origins.network.payload.DismountPlayerS2CPayload;
 import com.iafenvoy.origins.network.payload.NotifyKeymapsS2CPayload;
 import com.iafenvoy.origins.util.MiscUtil;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -39,6 +40,7 @@ public final class CommonEvents {
 
     @SubscribeEvent
     public static void preventDamageWhenSelecting(EntityInvulnerabilityCheckEvent event) {
+        if (event.getSource().is(DamageTypes.GENERIC_KILL)) return;
         if (event.getEntity() instanceof Player player && OriginDataHolder.optionalStream(player).noneMatch(OriginDataHolder::hasAllOrigins))
             event.setInvulnerable(true);
     }
