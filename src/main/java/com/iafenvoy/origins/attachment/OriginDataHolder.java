@@ -24,6 +24,7 @@ import com.iafenvoy.origins.event.GrantPowerEvent;
 import com.iafenvoy.origins.event.RevokeOriginEvent;
 import com.iafenvoy.origins.event.RevokePowerEvent;
 import com.iafenvoy.origins.network.payload.OpenChooseOriginScreenS2CPayload;
+import com.iafenvoy.origins.network.payload.NotifyKeymapsS2CPayload;
 import com.iafenvoy.origins.registry.OriginsAttachments;
 import com.iafenvoy.origins.registry.OriginsDataComponents;
 import com.iafenvoy.origins.registry.OriginsKeyMappings;
@@ -173,6 +174,7 @@ public final class OriginDataHolder {
         this.grantPower(new PowerHolder(power));
         NeoForge.EVENT_BUS.post(new GrantPowerEvent(this.entity, power, source));
         this.sync();
+        this.notifyKeyMappings();
     }
 
     private void grantPower(PowerHolder power) {
@@ -192,6 +194,7 @@ public final class OriginDataHolder {
         this.revokePower(new PowerHolder(power));
         NeoForge.EVENT_BUS.post(new RevokePowerEvent(this.entity, power, source));
         this.sync();
+        this.notifyKeyMappings();
     }
 
     private void revokePower(PowerHolder power) {
@@ -319,6 +322,11 @@ public final class OriginDataHolder {
     //Ticking
     public void sync() {
         this.entity.syncData(OriginsAttachments.ENTITY_ORIGIN);
+    }
+
+    private void notifyKeyMappings() {
+        if (this.entity instanceof ServerPlayer player)
+            PacketDistributor.sendToPlayer(player, NotifyKeymapsS2CPayload.INSTANCE);
     }
 
     public void tick() {

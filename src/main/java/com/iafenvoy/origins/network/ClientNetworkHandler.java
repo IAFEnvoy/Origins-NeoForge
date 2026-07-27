@@ -42,6 +42,7 @@ public final class ClientNetworkHandler {
     }
 
     public static void onNotifyKeymaps(NotifyKeymapsS2CPayload payload, IPayloadContext context) {
+        OriginDataHolder.clearCache();
         OriginsKeyMappings.INSTANCE.registerKeyMappingsFromPowers(OriginDataHolder.optional(context.player()).map(OriginDataHolder::getAllPowers).orElse(Set.of()));
     }
 
