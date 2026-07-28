@@ -10,6 +10,8 @@ import com.iafenvoy.origins.data.origin.OriginRegistries;
 import com.iafenvoy.origins.util.HolderHelper;
 import com.iafenvoy.origins.util.RandomHelper;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -29,8 +31,8 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public final class OriginCommand {
-    public static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
-        dispatcher.register(literal("origin")
+    public static LiteralArgumentBuilder<CommandSourceStack> registerCommand(CommandBuildContext context) {
+        return literal("origin")
                 .requires(source -> source.hasPermission(2))
                 .then(literal("set")
                         .then(argument("targets", EntityArgument.players())
@@ -57,8 +59,7 @@ public final class OriginCommand {
                         .then(argument("targets", EntityArgument.players())
                                 .executes(ctx -> OriginCommand.randomAll(ctx, false))
                                 .then(argument("layer", ResourceArgument.resource(context, LayerRegistries.LAYER_KEY))
-                                        .executes(OriginCommand::randomSpecific))))
-        );
+                                        .executes(OriginCommand::randomSpecific))));
     }
 
     private static int set(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

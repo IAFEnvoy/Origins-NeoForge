@@ -6,6 +6,7 @@ import com.iafenvoy.origins.data.power.reference.PowerHolder;
 import com.iafenvoy.origins.data.power.reference.PowerReference;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -32,8 +33,8 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public final class ResourceCommand {
-    public static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
-        dispatcher.register(literal("resource")
+    public static LiteralArgumentBuilder<CommandSourceStack> registerCommand() {
+        return literal("resource")
                 .requires(source -> source.hasPermission(2))
                 .then(literal("has")
                         .then(argument("target", EntityArgument.entity())
@@ -64,7 +65,7 @@ public final class ResourceCommand {
                                         .then(operationBranch(Operation.SET))
                                         .then(operationBranch(Operation.MAX))
                                         .then(operationBranch(Operation.SWAP))
-                                ))));
+                                )));
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> operationBranch(Operation operation) {

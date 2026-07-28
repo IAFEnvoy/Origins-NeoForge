@@ -9,7 +9,9 @@ import com.iafenvoy.origins.registry.OriginsKeyMappings;
 import com.iafenvoy.origins.render.LevelRenderHelper;
 import com.iafenvoy.origins.screen.ChooseOriginScreen;
 import com.iafenvoy.origins.screen.WaitForNextLayerScreen;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -34,7 +36,7 @@ public final class ClientNetworkHandler {
     }
 
     public static void onReapplyShaders(ReapplyShadersS2CPayload payload, IPayloadContext context) {
-        ClientCall.onReapplyShaders();
+        ClientCall.reapplyShaders();
     }
 
     public static void onReloadLevelRenderer(ReloadLevelRendererS2CPayload payload, IPayloadContext context) {
@@ -69,6 +71,10 @@ public final class ClientNetworkHandler {
         dismounter.stopRiding();
     }
 
+    public static void onOpenEditor(OpenEditorS2CPayload payload, IPayloadContext context) {
+        Util.getPlatform().openUri("https://origins.mcdev.tech/");
+    }
+
     //If I don't call in a single class server will crash
     private static final class ClientCall {
         public static void openOriginScreen(List<Holder<Layer>> layers, boolean showBackground) {
@@ -79,11 +85,9 @@ public final class ClientNetworkHandler {
             Minecraft.getInstance().setScreen(new ChooseOriginScreen(layers, 0, showBackground));
         }
 
-        public static void onReapplyShaders() {
+        public static void reapplyShaders() {
             Minecraft minecraft = Minecraft.getInstance();
             minecraft.gameRenderer.checkEntityPostEffect(minecraft.options.getCameraType().isFirstPerson() ? minecraft.getCameraEntity() : null);
         }
     }
-
-
 }

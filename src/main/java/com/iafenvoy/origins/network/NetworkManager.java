@@ -20,6 +20,7 @@ public final class NetworkManager {
                 .playToClient(ReloadLevelRendererS2CPayload.TYPE, ReloadLevelRendererS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onReloadLevelRenderer))
                 .playToClient(NotifyKeymapsS2CPayload.TYPE, NotifyKeymapsS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onNotifyKeymaps))
                 .playToClient(MountPlayerS2CPayload.TYPE, MountPlayerS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onMountPlayer))
-                .playToClient(DismountPlayerS2CPayload.TYPE, DismountPlayerS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onDismountPlayer));
+                .playToClient(DismountPlayerS2CPayload.TYPE, DismountPlayerS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onDismountPlayer))
+                .playToClient(OpenEditorS2CPayload.TYPE, OpenEditorS2CPayload.STREAM_CODEC, new MainThreadPayloadHandler<>(ClientNetworkHandler::onOpenEditor));
     }
 }

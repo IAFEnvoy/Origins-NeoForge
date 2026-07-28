@@ -5,6 +5,8 @@ import com.iafenvoy.origins.data.power.Power;
 import com.iafenvoy.origins.data.power.PowerRegistries;
 import com.iafenvoy.origins.util.HolderHelper;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -30,8 +32,8 @@ import static net.minecraft.commands.Commands.literal;
 
 //TODO::"remove" sub command, optimize suggestions
 public final class PowerCommand {
-    public static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
-        dispatcher.register(literal("power")
+    public static LiteralArgumentBuilder<CommandSourceStack> registerCommand(CommandBuildContext context) {
+        return literal("power")
                 .requires(source -> source.hasPermission(2))
                 .then(argument("target", EntityArgument.player())
                         .then(literal("grant")
@@ -63,8 +65,7 @@ public final class PowerCommand {
                                         .executes(PowerCommand::revokeAll)))
                         .then(literal("sources")
                                 .then(argument("power", ResourceArgument.resource(context, PowerRegistries.POWER_KEY))
-                                        .executes(PowerCommand::sources)))
-                ));
+                                        .executes(PowerCommand::sources))));
     }
 
     private static CompletableFuture<Suggestions> suggestPowers(final CommandContext<CommandSourceStack> context, final SuggestionsBuilder builder) throws CommandSyntaxException {
