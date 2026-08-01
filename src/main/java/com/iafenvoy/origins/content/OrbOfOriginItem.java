@@ -18,6 +18,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class OrbOfOriginItem extends Item {
@@ -48,6 +49,7 @@ public class OrbOfOriginItem extends Item {
         List<Holder<Layer>> layers = requestedLayers.stream()
                 .filter(layer -> layer.value().getOriginOptionCount(target) > 0)
                 .distinct()
+                .sorted(Comparator.comparing(Holder::value))
                 .toList();
         OriginDataHolder holder = OriginDataHolder.get(target);
 

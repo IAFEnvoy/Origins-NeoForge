@@ -7,6 +7,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Comparator;
 import java.util.stream.Stream;
 
 public final class LayerRegistries {
@@ -14,7 +15,10 @@ public final class LayerRegistries {
 
     @SuppressWarnings("unchecked")
     public static Stream<Holder<Layer>> streamAvailableLayers(RegistryAccess access) {
-        return access.registryOrThrow(LAYER_KEY).holders().filter(x -> x.value().enabled()).map(Holder.class::cast);
+        return access.registryOrThrow(LAYER_KEY).holders()
+                .filter(x -> x.value().enabled())
+                .sorted(Comparator.comparing(Holder::value))
+                .map(Holder.class::cast);
     }
 
     public static Stream<Holder<Layer>> streamAutoChooseLayers(RegistryAccess access) {
