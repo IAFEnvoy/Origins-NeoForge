@@ -37,7 +37,7 @@ public interface CommandHelper {
 
     default BooleanIntPair executeCommand(Entity entity, Vec3 pos, String command) {
         if (entity.level() instanceof ServerLevel level)
-            this.executeCommand(entity.createCommandSourceStack().withPosition(pos).withPermission(OriginsConfig.INSTANCE.general.permissionLevel.getValue()).withSuppressedOutput(), level.getServer(), command);
+            return this.executeCommand(entity.createCommandSourceStack().withPosition(pos).withPermission(OriginsConfig.INSTANCE.general.permissionLevel.getValue()).withSuppressedOutput(), level.getServer(), command);
         return NO_OP;
     }
 

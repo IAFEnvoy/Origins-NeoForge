@@ -23,6 +23,7 @@ public final class EntityActions {
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddVelocityAction>> ADD_VELOCITY = REGISTRY.register("add_velocity", () -> AddVelocityAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AddXPAction>> ADD_XP = REGISTRY.register("add_xp", () -> AddXPAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<ApplyEffectAction>> APPLY_EFFECT = REGISTRY.register("apply_effect", () -> ApplyEffectAction.CODEC);
+    public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AreaOfEffectAction>> AREA_OF_EFFECT = REGISTRY.register("area_of_effect", () -> AreaOfEffectAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<AwardStatAction>> AWARD_STAT = REGISTRY.register("award_stat", () -> AwardStatAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<BlockActionAction>> BLOCK_ACTION = REGISTRY.register("block_action", () -> BlockActionAction.CODEC);
     public static final DeferredHolder<MapCodec<? extends EntityAction>, MapCodec<BlockActionAtAction>> BLOCK_ACTION_AT = REGISTRY.register("block_action_at", () -> BlockActionAtAction.CODEC);
