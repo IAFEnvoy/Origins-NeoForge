@@ -22,6 +22,7 @@ public final class PreventPowers {
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventEntityCollisionPower>> PREVENT_ENTITY_COLLISION = REGISTRY.register("prevent_entity_collision", () -> PreventEntityCollisionPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventEntityRenderPower>> PREVENT_ENTITY_RENDER = REGISTRY.register("prevent_entity_render", () -> PreventEntityRenderPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventEntityUsePower>> PREVENT_ENTITY_USE = REGISTRY.register("prevent_entity_use", () -> PreventEntityUsePower.CODEC);
+    public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventFeatureRenderPower>> PREVENT_FEATURE_RENDER = REGISTRY.register("prevent_feature_render", () -> PreventFeatureRenderPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventGameEventPower>> PREVENT_GAME_EVENT = REGISTRY.register("prevent_game_event", () -> PreventGameEventPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventItemPickupPower>> PREVENT_ITEM_PICKUP = REGISTRY.register("prevent_item_pickup", () -> PreventItemPickupPower.CODEC);
     public static final DeferredHolder<MapCodec<? extends Power>, MapCodec<PreventItemUsePower>> PREVENT_ITEM_USE = REGISTRY.register("prevent_item_use", () -> PreventItemUsePower.CODEC);

@@ -2,6 +2,7 @@ package com.iafenvoy.origins.mixin;
 
 import com.iafenvoy.origins.attachment.PowerHelper;
 import com.iafenvoy.origins.data._common.ColorSettings;
+import com.iafenvoy.origins.data.power.builtin.prevent.PreventFeatureRenderPower;
 import com.iafenvoy.origins.data.power.builtin.regular.InvisibilityPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ModelColorPower;
 import com.iafenvoy.origins.data.power.builtin.regular.ShakingPower;
@@ -13,6 +14,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.layers.CapeLayer;
+import net.minecraft.client.renderer.entity.layers.ElytraLayer;
+import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,7 +42,13 @@ public abstract class LivingEntityRendererMixin extends EntityRenderer<LivingEnt
 
     @WrapWithCondition(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/RenderLayer;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/Entity;FFFFFF)V"))
     private <T extends Entity> boolean preventFeatureRendering(RenderLayer<T, ?> instance, PoseStack poseStack, MultiBufferSource buffer, int packedLight, T living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        return PowerHelper.get(living).noneActive(InvisibilityPower.class, InvisibilityPower::shouldRenderArmor);
+        PowerHelper helper = PowerHelper.get(living);
+        if (!helper.noneActive(InvisibilityPower.class, InvisibilityPower::shouldRenderArmor)) return false;
+        if (instance instanceof HumanoidArmorLayer<?, ?, ?>) return helper.noneActive(PreventFeatureRenderPower.class, power -> !power.shouldRenderArmor());
+        if (instance instanceof ItemInHandLayer<?, ?>) return helper.noneActive(PreventFeatureRenderPower.class, power -> !power.shouldRenderHeldItem());
+        if (instance instanceof CapeLayer) return helper.noneActive(PreventFeatureRenderPower.class, power -> !power.shouldRenderCape());
+        if (instance instanceof ElytraLayer<?, ?>) return helper.noneActive(PreventFeatureRenderPower.class, power -> !power.shouldRenderElytra());
+        return true;
     }
 
     @Inject(method = "isShaking", at = @At("HEAD"), cancellable = true)
