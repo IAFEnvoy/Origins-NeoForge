@@ -24,10 +24,10 @@ public record CopyResourceValueAction(ResourceLocation actorResource, ResourceLo
 
     @Override
     public void execute(@NotNull Entity source, @NotNull Entity target) {
-        double value = ResourceValueHelper.valueOrThrow(target, this.targetResource);
+        double value = ResourceValueHelper.value(target, this.targetResource);
         if (this.operation == ResourceOperation.ADD)
-            ResourceValueHelper.addOrThrow(source, this.actorResource, value);
+            ResourceValueHelper.add(source, this.actorResource, value);
         else
-            ResourceValueHelper.setOrThrow(source, this.actorResource, value);
+            ResourceValueHelper.set(source, this.actorResource, value);
     }
 }

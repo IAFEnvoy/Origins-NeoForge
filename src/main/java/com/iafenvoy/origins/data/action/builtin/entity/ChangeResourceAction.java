@@ -30,8 +30,8 @@ public record ChangeResourceAction(ResourceLocation resource, ResourceReference 
         if (!(source instanceof LivingEntity)) return;
         double change = this.change.resolve(source);
         if (this.operation == ResourceOperation.ADD)
-            ResourceValueHelper.addOrThrow(source, this.resource, change);
+            ResourceValueHelper.add(source, this.resource, change);
         else
-            ResourceValueHelper.setOrThrow(source, this.resource, change);
+            ResourceValueHelper.set(source, this.resource, change);
     }
 }

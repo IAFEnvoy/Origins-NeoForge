@@ -74,7 +74,6 @@ public abstract class Power {
     }
 
     public void grant(@NotNull OriginDataHolder holder) {
-        this.tick(holder);
     }
 
     public void revoke(@NotNull OriginDataHolder holder) {

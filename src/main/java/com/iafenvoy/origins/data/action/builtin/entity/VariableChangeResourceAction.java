@@ -62,8 +62,8 @@ public final class VariableChangeResourceAction implements EntityAction {
         if (!(source instanceof LivingEntity)) return;
         double change = this.parsedExpression.evaluate(source, this.variables);
         if (this.operation == ResourceOperation.ADD)
-            ResourceValueHelper.addOrThrow(source, this.resource, change);
+            ResourceValueHelper.add(source, this.resource, change);
         else
-            ResourceValueHelper.setOrThrow(source, this.resource, change);
+            ResourceValueHelper.set(source, this.resource, change);
     }
 }
